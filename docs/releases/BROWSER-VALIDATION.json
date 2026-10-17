@@ -1,0 +1,124 @@
+{
+  "candidate": "Mindustry³ Alpha 1.0.4 [v160.7]",
+  "modVersion": "0.18.31",
+  "tag": "v1.0.4-alpha.1",
+  "date": "2026-10-17",
+  "status": "LOCAL ONLY; no push, tag creation, publication, Topic change or Workshop update",
+  "target": "Windows x64 / Mindustry 160.7",
+  "scope": "Metadata, release documentation, packaging and metadata tests only; no runtime Java source changes",
+  "jar": {
+    "bytes": 4199779,
+    "sha256": "f5017ce837820bd106135ddc01290fe25014513a428b7ab89e22fe4e71fd7fba",
+    "entries": 1010,
+    "unchangedFpvClasses": 830,
+    "onlyChangedEntryComparedWith01830": [
+      "mod.hjson"
+    ],
+    "payloadIdentity": "payload1-1509eef697578f17c62f97ce4b3738aad913dbcf805bc15fb54e54e23526e7c0",
+    "noticesAndLicenses": "byte-identical to 0.18.30"
+  },
+  "metadata": {
+    "rootSourceJarWorkshop": "PASS; byte-identical mod.hjson",
+    "hideBrowser": false,
+    "repo": "RostiSllAVE/Mindustry3D",
+    "version": "0.18.31",
+    "minGameVersion": "160.7",
+    "java": true,
+    "hidden": false
+  },
+  "officialListing": {
+    "criteria": "https://github.com/Anuken/MindustryMods#criteria",
+    "implementation": "https://github.com/Anuken/MindustryMods/blob/master/src/modupdater/ModUpdater.java",
+    "repositoryPublic": true,
+    "archived": false,
+    "template": false,
+    "discoveryTopicAlreadyPresent": true,
+    "topicChangedByTask": false,
+    "metadataLocation": "root mod.hjson (also synchronized source resource)",
+    "generalMinimumBuild": 136,
+    "javaMinimumBuildUnlessLegacyCompatible": 154,
+    "minBuild160Passes": true,
+    "nameDescriptionBlacklist": "PASS for checked upstream filters",
+    "displayNameLength": "PASS <=55",
+    "lastPushAfter20220501": true,
+    "validJavaAsset": "PASS local candidate; not uploaded",
+    "requiredSemver": "0.18.31",
+    "starMinimumForListing": null
+  },
+  "tests": {
+    "java17CleanBuildPrograms": 113,
+    "java17Build": "PASS; tools/build.py completed with all test programs",
+    "stockSteamJava25Targeted": {
+      "metadataChecks": 14,
+      "fingerprintChecks": 23,
+      "windowsNativeFFMBinding": "PASS; actual readonly query/release"
+    },
+    "upstreamReleaseSelection": {
+      "checks": 9,
+      "status": "PASS",
+      "fixture": "published prerelease, older stable, newer draft; actual current buildReleaseMap/findLatestRelease/parseVersionKey and installed 160.7 ModListing",
+      "adaptation": "upstream scanning/file-writing initializer omitted; tag metadata lookup local and network forbidden",
+      "limitations": "Offline fixture, not a live indexer run or download"
+    },
+    "jarImportRestart": {
+      "status": "PASS",
+      "scriptedFixtureChecks": 209,
+      "networkVerification": "verified",
+      "loadedFrom": "candidate installed in isolated profile"
+    },
+    "compiledFolderStartup": {
+      "status": "PASS",
+      "scriptedFixtureChecks": 209,
+      "networkVerification": "verified",
+      "loadedFrom": "candidate compiled folder in isolated profile"
+    },
+    "nativeWorkshopPrerequisites": {
+      "status": "PASS",
+      "nativePrePublish": true,
+      "preview": "512x512 native Pixmap decode passed",
+      "payloadIdentity": "payload1-1509eef697578f17c62f97ce4b3738aad913dbcf805bc15fb54e54e23526e7c0",
+      "published": false
+    },
+    "oldArtifactSnapshot": {
+      "files": 1042,
+      "status": "PASS; all preserved SHA-256 values unchanged"
+    }
+  },
+  "testIsolation": {
+    "runtime": "Stock Steam Java 25.0.1 and installed Mindustry 160.7 host",
+    "sameComputer": true,
+    "initialUnisolatedAttempts": "INVALID: existing global Workshop subscription loaded the preceding FPV package; JAR import correctly refused duplicate; folder origin check rejected external Workshop classes",
+    "successfulRerun": "test-only DesktopLauncher subclass returns empty Workshop content inventory; Steam/runtime and host loading retained; native Mods.importMod then new JVM restart",
+    "adapterPlacement": "ignored local test instrumentation only; never included in player JAR/ZIP/folder/source archive",
+    "fpvClassesFromInstalledCandidateOnly": true,
+    "profileOrSubscriptionChanges": "Only separate throwaway test profiles; existing subscriptions and primary saves untouched",
+    "physicalMenusMouseAltTab": "NOT RETESTED in 0.18.31; predecessor owner acceptance retained, runtime classes unchanged",
+    "cleanMachine": "NOT TESTED by this task"
+  },
+  "releaseSelection": {
+    "currentPublicReleases": "all prereleases, no revision marker",
+    "unqualifiedLatestEndpoint": {
+      "httpStatus": 404,
+      "reason": "GitHub excludes prereleases/drafts from releases/latest"
+    },
+    "candidatePrerelease": true,
+    "draftAllowed": false,
+    "requiredName": "Mindustry³ Alpha 1.0.4 [v160.7]",
+    "actual1607MappedReleaseId": "PASS offline; explicit ID avoids latest endpoint",
+    "otherGameRevisions": "Not certified; exact revision map does not select this candidate",
+    "liveCandidateListingDownloadRestart": "NOT TESTED; candidate unpublished"
+  },
+  "platformEvidence": {
+    "Windows": "validated target",
+    "Linux": "owner reported launch on one separate laptop for preceding build; broad compatibility NOT CERTIFIED",
+    "Android": "UNSUPPORTED; not tested or advertised"
+  },
+  "remainingOwnerActions": [
+    "Push this exact source checkpoint to main of RostiSllAVE/Mindustry3D after approval.",
+    "Create v1.0.4-alpha.1 at this checkpoint and publish a non-draft release named Mindustry³ Alpha 1.0.4 [v160.7]; prerelease is permitted.",
+    "Upload one player JAR, corresponding-source ZIP and SHA256SUMS.txt from dist/alpha-1.0.4; optional convenience ZIPs.",
+    "Keep the already present mindustry-mod Topic. Wait for index refresh; verify repository entry and 160.7 release ID.",
+    "Test the live 160.7 Mod Browser installation, restart, F5, Tab and mouse capture after publication."
+  ],
+  "multiplayer": "Strict identity/protocol implementation unchanged; 0.18.30 versus 0.18.31 intentionally mismatch because metadata is hashed. New JAR and folder identities agree."
+}

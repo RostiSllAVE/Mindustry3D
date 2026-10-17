@@ -1,12 +1,13 @@
-MINDUSTRY3 / FPV - EXPERIMENTAL ALPHA 1.0.3 (MOD 0.18.30)
+MINDUSTRY3 / FPV - EXPERIMENTAL ALPHA 1.0.4 (MOD 0.18.31)
 
 Supported release target: Windows 64-bit, Mindustry 160.7.
 Install Mindustry separately. This package does not contain the game or Java.
 Steam's bundled Java 25.0.1 is sufficient. No JDK, Python, PowerShell or developer
-files are needed to play. Other platforms and Android are not supported here.
+files are needed to play. An owner-reported Linux laptop launch is not broad
+Linux certification. Android is not supported.
 
 JAR DOWNLOAD
-1. Back up your saves. Download mindustry-fpv-0.18.30.jar.
+1. Back up your saves. Download mindustry-fpv-0.18.31.jar.
 2. In Mindustry open Mods > Import Mod > Import File. Choose that JAR.
 3. Accept replacement of an older Mindustry FPV mod. Do not enable two copies.
 4. Restart Mindustry normally through Steam.
@@ -22,6 +23,11 @@ Mindustry, check that the mod is enabled, then start a map and press F5.
 Do not combine a subscribed copy with an imported JAR of this same mod.
 This local preparation does not publish an item or prove subscription works.
 
+MOD BROWSER (AFTER THIS CANDIDATE IS PUBLISHED AND INDEXED)
+Open Mods > Mod Browser, find Mindustry3 / FPV, install and restart.
+Check that the installed version is 0.18.31 on Mindustry 160.7. If it is not yet
+listed, use the ready-to-import JAR; indexing is not immediate.
+
 ESSENTIAL CONTROLS
 F5: original 2D / FPV 3D view.
 Tab: Build Mode / return to flight. Build Mode releases the mouse cursor.
@@ -36,8 +42,9 @@ Fullscreen is strongly recommended: windowed mode has caused severe slowdown
 on the development PC. Visual glitches and incomplete custom-mod support remain.
 Multiplayer is experimental. All peers need matching code, resources and version;
 the JAR and extracted Workshop package from this release have the same identity.
-Independent multiplayer, separate-PC/clean-Windows tests and the real Workshop
-Subscribe > Download > Restart flow remain pending until explicitly verified.
+The owner reports working GitHub/Workshop installation for the previous release.
+This new candidate has not been uploaded or subscription-tested. Independent
+multiplayer and clean-Windows tests remain pending.
 
 IF SOMETHING GOES WRONG
 Check that the game is 160.7 and only one copy of the mod is enabled. Restart.
@@ -48,4 +55,4 @@ remove private paths, account details, IP addresses and tokens before sharing.
 LICENSE AND SOURCE
 Project: GPL-3.0-only. See LICENSE and THIRD_PARTY_NOTICES.md.
 JNA/libffi notices are included in the JAR and convenience package.
-Use the matching mindustry-fpv-0.18.30-corresponding-source.zip for this binary.
+Use the matching mindustry-fpv-0.18.31-corresponding-source.zip for this binary.

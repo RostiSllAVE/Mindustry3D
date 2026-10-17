@@ -1,4 +1,4 @@
-# Build/package 0.18.30 from corresponding source
+# Build/package 0.18.31 from corresponding source
 
 These are developer instructions. Players only import the compiled JAR and
 restart Mindustry; see [player instructions](../player/INSTALL.txt).
@@ -23,8 +23,8 @@ Its tests and temporary files stay beneath the source tree's `build/` directory.
 For maintainer packaging from a clean, verified Git checkpoint:
 
 ```powershell
-python tools/distribution.py --jar dist/mindustry-fpv-0.18.30.jar `
-  --out dist/alpha-1.0.3 --source-commit (git rev-parse HEAD)
+python tools/distribution.py --jar dist/mindustry-fpv-0.18.31.jar `
+  --out dist/alpha-1.0.4 --source-commit (git rev-parse HEAD)
 ```
 
 The packager verifies metadata, mandatory license files, forbidden host/artifact
@@ -49,3 +49,9 @@ separate. Local network tests use PowerShell 7 and explicit game/JDK/server path
 
 Historical release/launch/profiling tools target older accepted binaries and can
 retain developer paths. Do not run them to recreate or replace historical assets.
+
+For the 0.18.31 audit, an existing global Workshop subscription meant an empty
+profile alone did not isolate the candidate. The recorded rerun used an ignored
+test launcher adapter to exclude subscribed content enumeration. It is not a
+player requirement, is not packaged, and is disclosed in BROWSER-VALIDATION.json.
+Do not mistake a fresh profile for a clean Windows machine or a physical menu test.

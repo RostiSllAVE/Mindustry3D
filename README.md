@@ -1,4 +1,4 @@
-# Mindustry³ / Mindustry 3D FPV — Alpha 1.0.3 distribution candidate
+# Mindustry³ / Mindustry 3D FPV — Alpha 1.0.4 Mod Browser candidate
 
 (Hello! before you read that repository i want to let you know that that project 99% vibe-coded but tested by human, i mean by me😁. That is actually my first project and i am new on GitHub as creator. In a few days i will publish an YouTube channel where i show how that mod works. Hope you will have fun with this mod!)
 
@@ -8,15 +8,15 @@ An **experimental, unofficial fan-made mod** that presents Mindustry in 3D,
 adds FPV flight and spatial combat, and extends construction across elevated
 floors. This is not an official Mindustry release or a standalone game.
 
-**Prepared locally: Alpha 1.0.3 / mod 0.18.30**, targeting Windows 64-bit and
+**Prepared locally: Alpha 1.0.4 / mod 0.18.31**, targeting Windows 64-bit and
 Mindustry 160.7. This distribution pass is not published by its preparation tools.
 It includes direct JAR installation, a convenience ZIP, and a compiled Workshop
-folder with matching code/resource identity. See [distribution audit and validation](docs/releases/ALPHA-1.0.3-DISTRIBUTION.md)
+folder with matching code/resource identity. See [Mod Browser readiness and final release steps](docs/releases/ALPHA-1.0.4-BROWSER.md)
 and [simple installation instructions](docs/player/INSTALL.txt).
 
 Liftoff inspired the FPV concept; its code/assets are not included, it is not
 required, and this is not a validated Melty two-game mashup. Historical published
-Alpha 1.0.0–1.0.2 artifacts are preserved.
+Alpha 1.0.0–1.0.3 artifacts are preserved.
 
 Screenshots of units and blocks:
 <img width="2559" height="1438" alt="Screenshot 2026-10-12 153603" src="https://github.com/user-attachments/assets/749e0b75-2755-4255-9a84-558c8c6b76b0" />
@@ -72,11 +72,13 @@ mouse bridge remains available. A full JDK 17 is needed only to build from sourc
 
 **Fullscreen is strongly recommended.** Android, Linux/macOS, hardware FPV
 controllers and independent dedicated-server packages are unverified.
-Bundled JNA native libraries do not imply support for every platform.
+Bundled JNA native libraries do not imply support for every platform. The owner
+reports a successful launch on a separate Linux laptop; broader Linux
+compatibility is not certified, and this does not establish Android support.
 
 ## Installation — native Mindustry Import Mod
 
-1. Back up saves and download **`mindustry-fpv-0.18.30.jar`**.
+1. Back up saves and download **`mindustry-fpv-0.18.31.jar`**.
 2. Launch Mindustry normally through Steam. Open **Mods → Import Mod → Import File**
    and select that JAR. Accept replacement of the previous Mindustry FPV version
    if updating; do not keep duplicate copies enabled.
@@ -86,7 +88,7 @@ Bundled JNA native libraries do not imply support for every platform.
 
 Do not import the source ZIP or whole repository as a mod. The JAR embeds GPL,
 JNA/libffi license texts and third-party notices. Matching source is distributed
-separately as `mindustry-fpv-0.18.30-corresponding-source.zip`.
+separately as `mindustry-fpv-0.18.31-corresponding-source.zip`.
 
 The older `Play-*`, `Launch-Alpha.ps1` and profiling scripts retain their historical
 paths/version requirements for Alpha 1.0.0. They are not needed for this hotfix's
@@ -178,18 +180,21 @@ log excerpt. Remove usernames, IPs, private paths and tokens before sharing.
 
 ## Release verification and source
 
-Candidate JAR: **0.18.30**. Exact package/source hashes and the canonical
+Candidate JAR: **0.18.31**. Exact package/source hashes and the canonical
 multiplayer payload identity are in the prepared `release-manifest.json` and
 `SHA256SUMS.txt`. The JAR and Workshop folder share one verified payload.
 
-See [distribution report](docs/releases/ALPHA-1.0.3-DISTRIBUTION.md),
-[validation matrix](docs/releases/DISTRIBUTION-VALIDATION.json) and
+See [browser release report](docs/releases/ALPHA-1.0.4-BROWSER.md),
+[validation](docs/releases/BROWSER-VALIDATION.json) and
 [current build/package instructions](docs/releases/BUILDING-DISTRIBUTION.md).
 Folder loading is tested separately from the real Steam subscription lifecycle.
 A separate clean Windows machine and independent multiplayer remain unverified.
-Mod Browser discovery is deliberately disabled pending approval.
+Prepared metadata enables Mod Browser discovery and names `RostiSllAVE/Mindustry3D`.
+The repository already has the discovery topic. Actual listing/download of this
+candidate remains pending publication; no remote change is performed by this task.
 
-Historical [Alpha 1.0.0 notes](docs/releases/ALPHA-1.0.0.md),
+Historical [Alpha 1.0.3 distribution audit](docs/releases/ALPHA-1.0.3-DISTRIBUTION.md),
+[Alpha 1.0.0 notes](docs/releases/ALPHA-1.0.0.md),
 [1.0.1 import hotfix](docs/releases/ALPHA-1.0.1-HOTFIX.md),
 [0.18.29 capture validation](docs/releases/MOUSE-CAPTURE-0.18.29.md) and the
 [original publication audit](docs/releases/PUBLICATION-READINESS.md) are preserved.
