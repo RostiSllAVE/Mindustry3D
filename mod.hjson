@@ -1,0 +1,11 @@
+name: mindustry-fpv
+displayName: "Mindustry³ / FPV"
+author: RostiSllAVE
+description: "Experimental fan-made 3D/FPV conversion. Distribution tested on Windows 64-bit, Mindustry 160.7. Other platforms, including Android, are not supported by this release. F5: view; Tab: Build; F7: camera. Multiplayer requires matching compiled code/resources."
+version: 0.18.30
+minGameVersion: 160.7
+java: true
+main: fpv.FpvMod
+hidden: false
+hideBrowser: true
+repo: RostiSllAVE/Mindustry3

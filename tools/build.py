@@ -10,13 +10,31 @@ import sys
 import zipfile
 from preflight import ROOT, run
 
-run()
-jdk = Path(os.environ.get("FPV_JDK", r"D:\Linux\tools\jdk17\jdk-17.0.20.1+1"))
-host = Path(os.environ.get("FPV_MINDUSTRY", r"D:\SteamLibrary\steamapps\common\Mindustry")) / "jre/desktop.jar"
-jna = ROOT / "lib/jna-5.19.1.jar"
+metadata = ROOT / "src/main/resources/mod.hjson"
+if not (ROOT / "mod.hjson").is_file() or (ROOT / "mod.hjson").read_bytes() != metadata.read_bytes():
+    raise SystemExit("Root and packaged mod.hjson must be identical")
+version = re.search(r"^version:\s*(\S+)", metadata.read_text(encoding="utf-8"), re.M).group(1)
+output = ROOT / "dist" / ("mindustry-fpv-" + version + ".jar")
+manifest_output = output.with_name(output.stem + "-manifest.json")
+if output.exists() or manifest_output.exists():
+    raise SystemExit("Refusing to overwrite an existing versioned build: " + str(output))
+jdk_hint = os.environ.get("FPV_JDK") or os.environ.get("JAVA_HOME")
+compiler = shutil.which("javac")
+if not jdk_hint and not compiler:
+    raise SystemExit("Source build only: set FPV_JDK/JAVA_HOME or put a complete JDK on PATH")
+jdk = Path(jdk_hint) if jdk_hint else Path(compiler).resolve().parent.parent
+host_hint = os.environ.get("FPV_MINDUSTRY")
+if not host_hint:
+    raise SystemExit("Source build only: set FPV_MINDUSTRY to your Mindustry installation or desktop.jar")
+host = Path(host_hint)
+if host.is_dir(): host = host / "jre/desktop.jar"
+jna = Path(os.environ.get("FPV_JNA", str(ROOT / "lib/jna-5.19.1.jar")))
 for path in (jdk / "bin/javac.exe", host, jna):
     if not path.is_file():
         raise SystemExit(f"Missing required local dependency: {path}")
+if hashlib.sha256(jna.read_bytes()).hexdigest() != "4fb141dd8ef6b0585ffceea4bc49602fbc6312fa977e2c488794ea3e6aafecae":
+    raise SystemExit("Expected unmodified JNA core 5.19.1")
+run()
 build = ROOT / "build"
 classes = build / "classes"
 # Build output is owned by this tool; remove stale classes before compiling a new version.
@@ -36,13 +54,13 @@ if tests:
     testclasses.mkdir(exist_ok=True)
     cp = str(classes) + os.pathsep + str(host) + os.pathsep + str(jna)
     subprocess.run([str(jdk / "bin/javac.exe"), "--release", "17", "-encoding", "UTF-8", "-classpath", cp, "-d", str(testclasses)] + [str(p) for p in tests], check=True)
+    test_tmp = build / "test-tmp"
+    test_tmp.mkdir(exist_ok=True)
     for test in tests:
         name = test.relative_to(ROOT / "src/test/java").with_suffix("").as_posix().replace("/", ".")
-        subprocess.run([str(jdk / "bin/java.exe"), "-ea", "-cp", str(testclasses) + os.pathsep + cp, name], check=True)
+        subprocess.run([str(jdk / "bin/java.exe"), "-Djava.io.tmpdir=" + str(test_tmp), "-ea", "-cp", str(testclasses) + os.pathsep + cp, name], check=True)
 dist = ROOT / "dist"
 dist.mkdir(exist_ok=True)
-version = re.search(r"^version:\s*(\S+)", (ROOT / "src/main/resources/mod.hjson").read_text(encoding="utf-8"), re.M).group(1)
-output = dist / ("mindustry-fpv-" + version + ".jar")
 entries = []
 with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as z:
     for base in (classes, ROOT / "src/main/resources"):
@@ -67,6 +85,6 @@ with zipfile.ZipFile(output) as z:
     forbidden = [e["path"] for e in entries if e["path"].startswith(("arc/", "mindustry/")) or "Assembly-CSharp" in e["path"]]
     if forbidden:
         raise SystemExit("Unexpected game classes in package: " + str(forbidden))
-manifest = {"fileName":output.name,"bytes":output.stat().st_size,"sha256":hashlib.sha256(output.read_bytes()).hexdigest(),"entries":entries,"status":"local prototype; not Melty validated"}
-(dist / "package-manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+manifest = {"fileName":output.name,"bytes":output.stat().st_size,"sha256":hashlib.sha256(output.read_bytes()).hexdigest(),"entries":entries,"status":"local distribution candidate; not published"}
+manifest_output.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 print(json.dumps({k:v for k,v in manifest.items() if k != "entries"}, indent=2))

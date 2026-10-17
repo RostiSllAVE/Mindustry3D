@@ -1,9 +1,11 @@
 name: mindustry-fpv
-displayName: Mindustry FPV
-author: Mindustry FPV project
-description: "3D FPV flight, spatial combat, layered construction and native upper-floor production. Matching-mod multiplayer with server authority. Mindustry 160.5 / 160.7. F5: view, F7: camera, F9: flight mode, Tab: Build."
-version: 0.18.29
-minGameVersion: 160.5
+displayName: "Mindustry³ / FPV"
+author: RostiSllAVE
+description: "Experimental fan-made 3D/FPV conversion. Distribution tested on Windows 64-bit, Mindustry 160.7. Other platforms, including Android, are not supported by this release. F5: view; Tab: Build; F7: camera. Multiplayer requires matching compiled code/resources."
+version: 0.18.30
+minGameVersion: 160.7
 java: true
 main: fpv.FpvMod
 hidden: false
+hideBrowser: true
+repo: RostiSllAVE/Mindustry3

@@ -1,4 +1,4 @@
-# Mindustry³ / Mindustry 3D FPV — Alpha 1.0.1 Hotfix
+# Mindustry³ / Mindustry 3D FPV — Alpha 1.0.3 distribution candidate
 
 (Hello! before you read that repository i want to let you know that that project 99% vibe-coded but tested by human, i mean by me😁. That is actually my first project and i am new on GitHub as creator. In a few days i will publish an YouTube channel where i show how that mod works. Hope you will have fun with this mod!)
 
@@ -6,15 +6,15 @@ An **experimental, unofficial fan-made mod** that presents Mindustry in 3D,
 adds FPV flight and spatial combat, and extends construction across elevated
 floors. This is not an official Mindustry release or a standalone game.
 
-**Local follow-up candidate: 0.18.29**, not uploaded by this task. It adds
-captured/recentered mouse input on stock 64-bit Windows Steam Java 25 without
-JNA or extra Java modules. See [mouse-capture notes](docs/releases/MOUSE-CAPTURE-0.18.29.md)
-for verification status and limitations. The Alpha 1.0.1 installation details
-below describe 0.18.28; import `mindustry-fpv-0.18.29.jar` to test this candidate.
+**Prepared locally: Alpha 1.0.3 / mod 0.18.30**, targeting Windows 64-bit and
+Mindustry 160.7. This distribution pass is not published by its preparation tools.
+It includes direct JAR installation, a convenience ZIP, and a compiled Workshop
+folder with matching code/resource identity. See [distribution audit and validation](docs/releases/ALPHA-1.0.3-DISTRIBUTION.md)
+and [simple installation instructions](docs/player/INSTALL.txt).
 
-**Prepared hotfix: Alpha 1.0.1**, internal mod version **0.18.28**. The first public Alpha remains **0.18.27** / Alpha 1.0.0 and is available through GitHub Releases (https://github.com/RostiSllAVE/Mindustry3/releases/tag/v1.0.0-alpha.1). This hotfix has not been published by this task; Alpha 1.0.0 remains the public release. It fixes native installation on Steam's bundled Java 25.0.1, which lacks `java.logging`. Optional Win32/JNA input now falls back to the game's own input without aborting 3D initialization. Liftoff inspired the FPV concept;
-its code/assets are not included, it is not required, and this is not a validated
-Melty two-game mashup.
+Liftoff inspired the FPV concept; its code/assets are not included, it is not
+required, and this is not a validated Melty two-game mashup. Historical published
+Alpha 1.0.0–1.0.2 artifacts are preserved.
 
 Screenshots of units and blocks:
 <img width="2559" height="1438" alt="Screenshot 2026-10-12 153603" src="https://github.com/user-attachments/assets/749e0b75-2755-4255-9a84-558c8c6b76b0" />
@@ -64,7 +64,7 @@ not every native/custom rendering or combat pattern is converted identically.
 The verified setup is **64-bit Windows desktop, Mindustry 160.7**, with an
 OpenGL-capable GPU. Its standard Steam bundled **Java 25.0.1** can load this hotfix
 directly; installing a separate JDK or running PowerShell is not required.
-Metadata allows 160.5+, but other versions are not certified by this Alpha pass.
+This distribution targets 160.7; other versions/platforms are not certified here.
 When a complete Java runtime provides `java.logging`, the existing Win32/JNA
 mouse bridge remains available. A full JDK 17 is needed only to build from source.
 
@@ -74,7 +74,7 @@ Bundled JNA native libraries do not imply support for every platform.
 
 ## Installation — native Mindustry Import Mod
 
-1. Back up saves and download **`mindustry-fpv-0.18.28.jar`**.
+1. Back up saves and download **`mindustry-fpv-0.18.30.jar`**.
 2. Launch Mindustry normally through Steam. Open **Mods → Import Mod → Import File**
    and select that JAR. Accept replacement of the previous Mindustry FPV version
    if updating; do not keep duplicate copies enabled.
@@ -84,26 +84,24 @@ Bundled JNA native libraries do not imply support for every platform.
 
 Do not import the source ZIP or whole repository as a mod. The JAR embeds GPL,
 JNA/libffi license texts and third-party notices. Matching source is distributed
-separately as `mindustry-fpv-0.18.28-corresponding-source.zip`.
+separately as `mindustry-fpv-0.18.30-corresponding-source.zip`.
 
 The older `Play-*`, `Launch-Alpha.ps1` and profiling scripts retain their historical
 paths/version requirements for Alpha 1.0.0. They are not needed for this hotfix's
 native installation. Do not run the old `prepare-alpha.py` in the history-free
 public repository to recreate historical artifacts.
 
-### Mouse behavior in Alpha 1.0.1 (0.18.28)
+### Mouse capture
 
-The host-input fallback keeps the cursor **visible**, samples actual movement
-inside the game window and releases its logical flight input on focus loss,
-menus, pause and Build Mode. It cannot warp/center or confine the OS cursor;
-ordinary mouse look is bounded by the window edges.
+Stock 64-bit Windows Steam Java 25 uses the java.base native binding for hidden,
+confined/recentered FPV mouse input. Full Java 17 retains Win32/JNA input. Build
+Mode, command mode, menus, pause and focus loss release capture; returning to
+active flight restores it. Windows pointer acceleration/DPI can affect sensitivity.
 
-Use **arrow keys** for continuous aiming at an edge. In Stabilized/ground modes,
-left/right turn the view and up/down change vertical aim. In Acro they preserve
-the existing pitch/roll alternatives; A/D still yaw. WASD, firing, mining, F5,
-F7, Tab, building and command interactions keep their existing roles.
-The HUD indicates host mouse input. Complete Java installations retain the
-original captured/hidden/recentered native mouse behavior.
+If native access is unavailable, the HUD explicitly says **HOST MOUSE**. That
+fallback remains visible and bounded by window edges; arrow keys keep aiming.
+Native input failure does not abort the rest of the mod. See the distribution
+report for the exact physical tests completed for this candidate.
 
 ## Controls (defaults)
 
@@ -178,23 +176,21 @@ log excerpt. Remove usernames, IPs, private paths and tokens before sharing.
 
 ## Release verification and source
 
-Hotfix JAR: **0.18.28**. Exact checksums and validation scope are in
-[hotfix notes](docs/releases/ALPHA-1.0.1-HOTFIX.md) and the prepared `SHA256SUMS.txt`.
-The corresponding-source archive identifies its exact public-repository checkpoint.
-Current source retains opt-in diagnostics from the release snapshot; no legacy
-compiled helper is carried into a clean hotfix build.
+Candidate JAR: **0.18.30**. Exact package/source hashes and the canonical
+multiplayer payload identity are in the prepared `release-manifest.json` and
+`SHA256SUMS.txt`. The JAR and Workshop folder share one verified payload.
 
-The owner confirmed a real **Steam Import File → restart through Steam → F5/Tab**
-test, and the runtime log confirms successful initialization on Java 25.0.1.
-Input regression tests run on both bundled Steam Java and full Java 17.
-Physical/native mouse capture, controller hardware and multiplayer verification
-limits are reported explicitly in the hotfix notes.
+See [distribution report](docs/releases/ALPHA-1.0.3-DISTRIBUTION.md),
+[validation matrix](docs/releases/DISTRIBUTION-VALIDATION.json) and
+[current build/package instructions](docs/releases/BUILDING-DISTRIBUTION.md).
+Folder loading is tested separately from the real Steam subscription lifecycle.
+A separate clean Windows machine and independent multiplayer remain unverified.
+Mod Browser discovery is deliberately disabled pending approval.
 
-[Hotfix build guide](docs/releases/BUILDING-HOTFIX.md).
 Historical [Alpha 1.0.0 notes](docs/releases/ALPHA-1.0.0.md),
-[source provenance](docs/releases/BUILDING.md) and
-[publication audit](docs/releases/PUBLICATION-READINESS.md) remain unchanged and
-refer to the old accepted **0.18.27** binary, not this hotfix.
+[1.0.1 import hotfix](docs/releases/ALPHA-1.0.1-HOTFIX.md),
+[0.18.29 capture validation](docs/releases/MOUSE-CAPTURE-0.18.29.md) and the
+[original publication audit](docs/releases/PUBLICATION-READINESS.md) are preserved.
 
 ## License
 

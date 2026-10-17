@@ -1,0 +1,145 @@
+{
+  "candidate": "Alpha 1.0.3",
+  "modVersion": "0.18.30",
+  "date": "2026-10-17",
+  "target": "Windows 64-bit / Mindustry 160.7",
+  "jar": {
+    "bytes": 4199760,
+    "sha256": "42d02493f377acdb79f1b77f0c00e4eae83d0b482cc4ec3170f13f0daa5deff0",
+    "entries": 1010,
+    "payloadIdentity": "payload1-66b569429235d638ab8a771de7c93cf7bb97e1a9595b8c7cf7f6ff72ec4ee03b"
+  },
+  "tests": {
+    "java17": {
+      "cleanBuildPrograms": 112,
+      "additionalBrowserMetadataProgram": 1,
+      "totalPassed": 113
+    },
+    "stockSteamJava25": {
+      "programsPassed": 113
+    },
+    "fingerprintChecks": 23,
+    "mouseLifecycleChecks": 218,
+    "browserHostParserChecks": 11
+  },
+  "cleanSourceRebuild": {
+    "status": "PASS",
+    "entryByteEquality": 1010,
+    "wholeJarIdentical": false,
+    "reason": "ZIP entry timestamps differ; all payload bytes identical",
+    "sha256": "6e9945206a5d348a074cbd0876bb06e5f24297b468263f23c856db5fdc451543"
+  },
+  "installationMatrix": [
+    {
+      "method": "GitHub JAR (local candidate)",
+      "package": "PASS",
+      "nativeImportRestart": "PASS",
+      "gameplayF5BuildSaveLoad": "PASS",
+      "physicalInputMenusAltTab": "PASS",
+      "hostedDownload": "NOT TESTED; unpublished"
+    },
+    {
+      "method": "GitHub convenience ZIP (local candidate)",
+      "package": "PASS",
+      "extractImportRestart": "PASS",
+      "gameplayF5BuildSaveLoad": "PASS",
+      "physicalInputMenusAltTab": "PASS",
+      "evidence": "owner tested all requested steps using extracted JAR in fresh private host profile"
+    },
+    {
+      "method": "Steam Workshop folder (local staged package)",
+      "package": "PASS",
+      "nativeFolderStartup": "PASS",
+      "gameplayF5BuildSaveLoad": "PASS (scripted SDL fixture)",
+      "physicalInput": "NOT TESTED specifically as folder",
+      "subscribeDownloadRestartF5": "NOT TESTED; publishing prohibited"
+    },
+    {
+      "method": "Mindustry Mod Browser",
+      "synchronizedMetadata": "PASS",
+      "actualHostReleaseParser": "PASS",
+      "publicDiscovery": "NOT TESTED; deliberately opted out",
+      "actualCandidateDownload": "NOT TESTED; unpublished",
+      "currentUnqualifiedLatestEndpoint": "FAIL: HTTP 404; current public releases all prereleases"
+    }
+  ],
+  "nativeFixtures": {
+    "jarImportAndRestart": {
+      "status": "PASS",
+      "fixtureChecks": 209,
+      "classpath": "installed host only; FPV origin installed archive"
+    },
+    "folder": {
+      "status": "PASS",
+      "fixtureChecks": 209,
+      "classpath": "installed host only; FPV origin installed folder"
+    },
+    "unverifiableArchiveSinglePlayer": {
+      "status": "PASS",
+      "fixtureChecks": 209,
+      "multiplayer": "disabled as required",
+      "fixture": "deliberate duplicate ZIP entry; never distributed"
+    },
+    "workshopPrerequisites": {
+      "status": "PASS",
+      "nativePrePublish": true,
+      "preview": "512x512 native Pixmap decode",
+      "published": false
+    }
+  },
+  "multiplayer": {
+    "localMixedFormats": {
+      "server": {
+        "status": "PASS",
+        "checks": 146,
+        "payloadIdentity": "payload1-66b569429235d638ab8a771de7c93cf7bb97e1a9595b8c7cf7f6ff72ec4ee03b"
+      },
+      "client-a": {
+        "status": "PASS",
+        "checks": 42,
+        "payloadIdentity": "payload1-66b569429235d638ab8a771de7c93cf7bb97e1a9595b8c7cf7f6ff72ec4ee03b"
+      },
+      "client-b": {
+        "status": "PASS",
+        "checks": 42,
+        "payloadIdentity": "payload1-66b569429235d638ab8a771de7c93cf7bb97e1a9595b8c7cf7f6ff72ec4ee03b"
+      }
+    },
+    "mismatchRejectedAndReconnect": "PASS",
+    "independentRemoteTesting": "NOT TESTED"
+  },
+  "ownerConfirmation": {
+    "status": "PASS",
+    "statement": "Everything checked and working; no bugs with windows.zip",
+    "nativeLogRuntime": "Steam Java 25.0.1; java.base FFM; isolated profile",
+    "installedJarShaMatches": true
+  },
+  "independence": {
+    "isolatedFreshProfiles": "PASS",
+    "developerClassesOnRestartClasspath": false,
+    "cleanWindowsOrSeparatePC": "NOT TESTED",
+    "existingSteamMaps": "enumerated by host; fixtures do not depend on them",
+    "playerNeedsExtraJavaOrScripts": false
+  },
+  "browser": {
+    "rootMetadataVersion": "0.18.30",
+    "packagedMetadataIdentical": true,
+    "hideBrowser": true,
+    "discoveryTopicAdded": false,
+    "latestEndpointHttpStatus": 404,
+    "recommendTitle": "Mindustry\u00b3 Alpha 1.0.3 [v160.7]",
+    "prereleaseSelection": "explicit indexed release ID required; generic /latest excludes prereleases"
+  },
+  "preservation": {
+    "existingArtifactHashesUnchanged": 20,
+    "originalRepositoryHistory": "untouched",
+    "pushOrPublishPerformed": false
+  },
+  "remainingLimitations": [
+    "real Steam subscription lifecycle pending",
+    "clean/separate Windows machine pending",
+    "independent multiplayer pending",
+    "Android outside scope",
+    "known windowed slowdown and visual glitches remain"
+  ]
+}

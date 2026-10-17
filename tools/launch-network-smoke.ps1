@@ -1,14 +1,19 @@
 param([Parameter(Mandatory=$true)][string]$RunId,[int]$Port=16567,[string]$ModJar,[switch]$XyzPower,[switch]$NavalProductionOnly,
-      [ValidateSet('160.5','160.7')][string]$HostVersion='160.7')
+      [ValidateSet('160.5','160.7')][string]$HostVersion='160.7',
+      [string]$JavaHome=$env:FPV_JDK,[string]$DesktopJar,[string]$ServerJar,[string]$GameDir=$env:FPV_MINDUSTRY,
+      [string]$WorkshopFolder)
 $ErrorActionPreference='Stop'
 if($RunId -notmatch '^[a-zA-Z0-9-]+$'){throw 'Use a simple unique run ID'}
 $projectRoot=Split-Path -Parent $PSScriptRoot
 $runRoot=Join-Path $projectRoot ('local\net-lab\'+$RunId)
 if(Test-Path -LiteralPath $runRoot){throw 'This run already exists; choose a fresh ID'}
-$javaExe='D:\Linux\tools\jdk17\jdk-17.0.20.1+1\bin\java.exe'
-$hostJar=Join-Path $projectRoot ('local\server-runtime\Mindustry-v'+$HostVersion+'.jar')
-$serverJar=Join-Path $projectRoot ('local\server-runtime\server-release-v'+$HostVersion+'.jar')
-$modJar=if($ModJar){(Resolve-Path -LiteralPath $ModJar).Path}else{Join-Path $projectRoot 'dist\mindustry-fpv-0.18.27.jar'}
+if(-not $JavaHome){throw 'Supply -JavaHome or FPV_JDK for this developer test'}
+if(-not $GameDir){throw 'Supply -GameDir or FPV_MINDUSTRY for this developer test'}
+$javaExe=Join-Path $JavaHome 'bin\java.exe'
+$hostJar=if($DesktopJar){$DesktopJar}else{Join-Path $GameDir 'jre\desktop.jar'}
+$serverJar=if($ServerJar){$ServerJar}else{Join-Path $projectRoot ('local\server-runtime\server-release-v'+$HostVersion+'.jar')}
+$version=[regex]::Match((Get-Content (Join-Path $projectRoot 'mod.hjson') -Raw),'(?m)^version:\s*(\S+)').Groups[1].Value
+$modJar=if($ModJar){(Resolve-Path -LiteralPath $ModJar).Path}else{Join-Path $projectRoot ('dist\mindustry-fpv-'+$version+'.jar')}
 foreach($file in @($javaExe,$hostJar,$serverJar,$modJar)){if(-not(Test-Path -LiteralPath $file)){throw "Missing $file"}}
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 foreach($runtime in @($hostJar,$serverJar)){
@@ -30,12 +35,14 @@ foreach($role in @('server','client-a','client-b')){
     $data=Join-Path $work 'config'
     $tmp=Join-Path $work 'tmp'
     New-Item -ItemType Directory -Force -Path (Join-Path $data 'mods'),$tmp | Out-Null
-    Copy-Item -LiteralPath $modJar -Destination (Join-Path $data 'mods\mindustry-fpv.jar')
+    if($WorkshopFolder -and $role -eq 'client-b'){
+        Copy-Item -LiteralPath $WorkshopFolder -Destination (Join-Path $data 'mods\Mindustry3') -Recurse
+    }else{Copy-Item -LiteralPath $modJar -Destination (Join-Path $data 'mods\mindustry-fpv.jar')}
     $arguments=@('-Dnodiscord=true',('-Djava.io.tmpdir="'+$tmp+'"'),('-Dmindustry.data.dir="'+$data+'"'),('-Dfpv.netSmokeRoot="'+$runRoot+'"'),('-Dfpv.netSmokePort='+$Port),('-Dfpv.netSmokeRole='+$role))
     if($XyzPower){$arguments+=@('-Dfpv.xyzPower.netSmoke=true')}
     if($NavalProductionOnly){$arguments+=@('-Dfpv.navalProduction.netSmoke=true')}
     if($role -eq 'server'){$arguments+=@('-jar',('"'+$serverJar+'"'))}
-    else{$arguments+=@('-Djava.library.path="D:\SteamLibrary\steamapps\common\Mindustry"','-cp',('"'+$hostJar+'"'),'mindustry.desktop.DesktopLauncher','-width','960','-height','640','-maximized','false')}
+    else{$arguments+=@(('-Djava.library.path="'+$GameDir+'"'),'-cp',('"'+$hostJar+'"'),'mindustry.desktop.DesktopLauncher','-width','960','-height','640','-maximized','false')}
     $process=Start-Process -FilePath $javaExe -ArgumentList $arguments -WorkingDirectory $work -WindowStyle Hidden -Environment @{APPDATA=(Join-Path $work 'appdata');LOCALAPPDATA=(Join-Path $work 'appdata')} -PassThru -RedirectStandardOutput (Join-Path $work 'stdout.log') -RedirectStandardError (Join-Path $work 'stderr.log')
     $records+=@{role=$role;pid=$process.Id;profile=$data;startedUtc=$process.StartTime.ToUniversalTime().ToString('o')}
 }

@@ -26,9 +26,6 @@ import mindustry.gen.*;
 import mindustry.net.NetConnection;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.MessageDigest;
 import java.util.*;
 import java.util.function.*;
 
@@ -79,6 +76,7 @@ public final class FpvNetwork implements AutoCloseable {
     private final Cons2<NetConnection,Object> snapshotHandler=this::snapshot;
     private NetworkControls submitted=NetworkControls.hold();
     private String fingerprint,status="Offline";
+    private ModFingerprint.Verification verification;
     private long epoch,sequence,revision;
     private double nextHello,nextInput,nextSnapshot;
     private boolean installed,closed,acknowledged,wasActive;
@@ -94,7 +92,9 @@ public final class FpvNetwork implements AutoCloseable {
         boost=new NativeBoostSystem(world,altitudes,explosions);
     }
     public void install(){
-        if(installed)return;fingerprint=jarFingerprint();
+        if(installed)return;verification=ModFingerprint.current(FpvNetwork.class);
+        fingerprint=verification.verified()?verification.token():"unverified";
+        if(!verification.verified())Log.warn("[FPV-NET] Payload verification unavailable (@). Single-player remains available; multiplayer is disabled.",verification.problem());
         Vars.netServer.addBinaryPacketHandler(PACKET,serverHandler);if(Vars.netClient!=null)Vars.netClient.addBinaryPacketHandler(PACKET,clientHandler);
         try{Field field=Vars.net.getClass().getDeclaredField("serverListeners");field.setAccessible(true);
             @SuppressWarnings("unchecked") var map=(ObjectMap<Class<?>,Cons2<NetConnection,Object>>)field.get(Vars.net);nativeListeners=map;
@@ -123,11 +123,11 @@ public final class FpvNetwork implements AutoCloseable {
         Events.on(WorldLoadEvent.class,worldHook);Events.on(ResetEvent.class,resetHook);Events.on(PlayerLeave.class,leaveHook);
         Events.on(PlayerJoin.class,joinHook);Events.on(ClientServerConnectEvent.class,connectHook);
         installed=true;resetWorld();
-        Log.info("[FPV-NET] Installed protocol @; fingerprint @",(int)NetworkConfig.PROTOCOL_VERSION,fingerprint.substring(0,12));
+        Log.info("[FPV-NET] Installed protocol @; payload @",(int)NetworkConfig.PROTOCOL_VERSION,fingerprint.substring(0,Math.min(20,fingerprint.length())));
     }
     /** True means frontend skips local integration/bridge/damage and displays server flight instead. */
-    public boolean controlsLocalFlight(){return Vars.net.active();}
-    public boolean allowed(){return Vars.net.server()||!Vars.net.active()||acknowledged;}
+    public boolean controlsLocalFlight(){return Vars.net.active()&&verification.verified();}
+    public boolean allowed(){return !Vars.net.active()||verification.verified()&&(Vars.net.server()||acknowledged);}
     public boolean authoritative(){return !Vars.net.client();}
     public CreatorFlightSystem creatorFlight(){return creator;}
     public NativeBoostSystem nativeBoost(){return boost;}
@@ -252,6 +252,12 @@ public final class FpvNetwork implements AutoCloseable {
     private void remove(Player player){Peer peer=peers.remove(player);Session session=sessions.remove(player.id);if(session!=null)session.release();}
     private void before(){
         if(closed)return;boolean active=Vars.net.active();
+        if(active&&!verification.verified()){
+            status="Multiplayer disabled: cannot verify mod files";
+            Log.warn("[FPV-NET] Refusing unverified multiplayer; reinstall the complete matching mod package.");
+            if(Vars.net.client())Vars.netClient.disconnectQuietly();else Vars.net.closeServer();
+            return;
+        }
         if(!active){if(wasActive){resetWorld();peers.clear();status="Offline";}wasActive=false;return;}wasActive=true;
         if(fixtureControls!=null)submitted=Objects.requireNonNull(fixtureControls.get());
         if(Vars.net.client()){
@@ -270,7 +276,7 @@ public final class FpvNetwork implements AutoCloseable {
         for(Player player:Groups.player){
             Peer peer=peers.computeIfAbsent(player,p->new Peer());
             if(player.isLocal()){peer.accepted=true;peer.controls=submitted;peer.lastInput=now();}
-            if(!peer.accepted){if(now()-peer.joined>NetworkConfig.HANDSHAKE_TIMEOUT_SECONDS&&player.con!=null)player.con.kick("FPV requires the identical mod JAR and protocol",0);continue;}
+            if(!peer.accepted){if(now()-peer.joined>NetworkConfig.HANDSHAKE_TIMEOUT_SECONDS&&player.con!=null)player.con.kick("FPV requires matching mod code/resources/version and protocol",0);continue;}
             if(!UnitControlCapabilities.validOwner(player,player.unit())){Session old=sessions.remove(player.id);if(old!=null)old.release();continue;}
             Session session=sessions.get(player.id);if(session==null||session.unit!=player.unit()||session.unitId!=player.unit().id){if(session!=null)session.release();session=new Session(player,player.unit());sessions.put(player.id,session);}
             session.controls=now()-peer.lastInput>NetworkConfig.INPUT_TIMEOUT_SECONDS?NetworkControls.hold():peer.controls;
@@ -286,7 +292,7 @@ public final class FpvNetwork implements AutoCloseable {
         status="Server authoritative: "+sessions.size()+" pilots";
     }
     private void after(){
-        if(closed||!Vars.net.server())return;
+        if(closed||!verification.verified()||!Vars.net.server())return;
         for(Session session:sessions.values()){session.motion.afterSimulation(session.unit,session.flight.state());session.crash.applyPending();}
         creator.after();boost.after();
         altitudes.update(Math.max(0,Math.min(.1,Time.delta/60.0)));
@@ -327,11 +333,12 @@ public final class FpvNetwork implements AutoCloseable {
     }
     private void receiveServer(Player player,byte[] bytes){
         if(!Vars.net.server()||player==null)return;
+        if(!verification.verified()){rejectedPackets++;if(player.con!=null)player.con.kick("FPV server mod files cannot be verified",0);return;}
         if(bytes==null||bytes.length>NetworkConfig.MAX_CLIENT_MESSAGE_BYTES){rejectedPackets++;return;}
         try{Peer peer=peers.computeIfAbsent(player,p->new Peer());double time=now();if(time-peer.rateStart>=1){peer.rateStart=time;peer.rateCount=0;}if(++peer.rateCount>NetworkConfig.INPUT_RATE_LIMIT){rejectedPackets++;return;}
             NetProtocol.Envelope packet=NetProtocol.decode(bytes);
             if(packet.kind()==NetProtocol.HELLO){String hash=NetProtocol.read(packet.payload(),in->in.readUTF());
-                if(!fingerprint.equals(hash)){rejectedPackets++;if(player.con!=null)player.con.kick("FPV mod JAR differs from this server",0);return;}
+                if(!verification.matches(hash)){rejectedPackets++;if(player.con!=null)player.con.kick("FPV mod code/resources/version differ from this server",0);return;}
                 if(!peer.accepted){peer.accepted=true;peer.lastSequence=-1;peer.lastInput=time;}peer.channels.clear();sendAck(player);return;}
             if(packet.kind()!=NetProtocol.INPUT||!peer.accepted||packet.epoch()!=epoch||packet.sequence()<=peer.lastSequence){rejectedPackets++;return;}
             NetworkControls controls=NetProtocol.read(packet.payload(),NetProtocol::controls);peer.controls=controls;peer.lastSequence=packet.sequence();peer.lastInput=time;acceptedInputs++;
@@ -339,8 +346,9 @@ public final class FpvNetwork implements AutoCloseable {
     }
     private void receiveClient(byte[] bytes){
         if(!Vars.net.client())return;
+        if(!verification.verified()){rejectedPackets++;return;}
         try{NetProtocol.Envelope packet=NetProtocol.decode(bytes);
-            if(packet.kind()==NetProtocol.ACK){String hash=NetProtocol.read(packet.payload(),in->in.readUTF());if(!fingerprint.equals(hash)||packet.epoch()==0)throw new IllegalArgumentException("Server mismatch");
+            if(packet.kind()==NetProtocol.ACK){String hash=NetProtocol.read(packet.payload(),in->in.readUTF());if(!verification.matches(hash)||packet.epoch()==0)throw new IllegalArgumentException("Server mismatch");
                 if(epoch!=packet.epoch()){remote.clear();assemblies.clear();GroundUnitProfiles.clearRemoteSettings();}epoch=packet.epoch();acknowledged=true;status="Matching FPV server; authoritative XYZ";return;}
             if(!acknowledged||packet.epoch()!=epoch||packet.kind()!=NetProtocol.CHANNEL){rejectedPackets++;return;}
             var chunk=NetProtocol.chunk(packet.payload());if(!chunk.channel().equals("poses")&&!channels.containsKey(chunk.channel())){rejectedPackets++;return;}
@@ -424,7 +432,6 @@ public final class FpvNetwork implements AutoCloseable {
     private byte[] explosionBytes(){return NetProtocol.bytes(out->{var values=explosions.visualSnapshot();out.writeInt(values.size());for(var v:values){out.writeInt(v.id());out.writeDouble(v.x());out.writeDouble(v.y());out.writeDouble(v.z());var s=v.spec();out.writeDouble(s.radius());out.writeDouble(s.damage());out.writeDouble(s.visualRadius());out.writeDouble(s.duration());out.writeByte(s.style().ordinal());out.writeBoolean(false);out.writeDouble(v.age());}});}
     private void applyExplosions(byte[] bytes){explosions.acceptVisuals(NetProtocol.read(bytes,in->{int count=in.readInt();if(count<0||count>CrashConfig.MAX_EFFECTS)throw new IOException("Explosion count");var list=new ArrayList<RadialExplosion.VisualBurst>(count);for(int i=0;i<count;i++){int id=in.readInt();double x=NetProtocol.number(in),y=NetProtocol.number(in),z=NetProtocol.number(in);double radius=NetProtocol.number(in),damage=NetProtocol.number(in),visual=NetProtocol.number(in),duration=NetProtocol.number(in);int style=in.readUnsignedByte();if(style>=RadialExplosion.Style.values().length)throw new IOException("Explosion style");var spec=new RadialExplosion.Spec(radius,damage,visual,duration,RadialExplosion.Style.values()[style],in.readBoolean());list.add(new RadialExplosion.VisualBurst(id,x,y,z,spec,NetProtocol.number(in)));}return list;}));}
     private static float color(DataInputStream in)throws IOException{float value=in.readFloat();if(!Float.isFinite(value)||value<0||value>16)throw new IOException("Invalid visual color");return value;}
-    private static String jarFingerprint(){try{Path file=Path.of(FpvNetwork.class.getProtectionDomain().getCodeSource().getLocation().toURI());if(!Files.isRegularFile(file))throw new IllegalStateException("Network requires a packaged matching mod JAR");var digest=MessageDigest.getInstance("SHA-256");try(var input=Files.newInputStream(file)){byte[] block=new byte[65536];for(int n;(n=input.read(block))>=0;)if(n>0)digest.update(block,0,n);}return HexFormat.of().formatHex(digest.digest());}catch(Exception e){throw new IllegalStateException("Cannot verify mod JAR",e);}}
     private static double now(){return System.nanoTime()/1e9;}
     private static final class Peer{boolean accepted;NetworkControls controls=NetworkControls.hold();long lastSequence=-1,lastConstructionSequence=-1;double joined=now(),lastInput,rateStart;int rateCount;final Map<String,Long> channels=new HashMap<>();}
     private static final class Channel{final Supplier<byte[]> serverData;final Consumer<byte[]> clientApply;double next;byte[] bytes;long version;boolean failed;
