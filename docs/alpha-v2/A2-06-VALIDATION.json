@@ -1,0 +1,90 @@
+{
+  "task": "A2-06 Linux FPV mouse capture",
+  "date": "2026-10-19",
+  "status": "PASS automated validation; physical Linux capture NOT TESTED",
+  "baselineCommit": "92eac12040bd85ca45b28e304dbee79368001807",
+  "branch": "main",
+  "internalVersion": "0.18.31",
+  "protocol": 4,
+  "buildRun": "acceptance",
+  "java17": {
+    "programsPassed": 127,
+    "runtime": "17.0.20.1+1",
+    "windowsFactory": "Actual JNA initialize/query/idle release PASS; no physical capture"
+  },
+  "stockSteamJava25": {
+    "programsPassed": 127,
+    "failed": 0,
+    "runtime": "25.0.1+8-LTS; java.logging absent; existing native-access permission",
+    "windowsFactory": "Actual FFM initialize/query/idle release PASS; no physical capture"
+  },
+  "linuxMouseContracts": {
+    "checks": 671,
+    "driversModeled": [
+      "x11",
+      "wayland"
+    ],
+    "tests": [
+      "continuous relative samples",
+      "entry backlog/idempotence/idle",
+      "F5/Tab/command/menu/pause release signals",
+      "focus/minimize/Alt+Tab/reacquire",
+      "other capture owner/window identity",
+      "compositor denial/runtime failure/fallback",
+      "shutdown/release retry"
+    ],
+    "boundary": "Injected SDL API; NOT native Linux binding or physical compositor proof"
+  },
+  "mappedLibraryAndHostApiChecks": 13,
+  "actualFactoryChecksPerRuntime": 6,
+  "artifact": {
+    "jarSha256": "034fd153cf1404c4163c60b52bff00d5e027441529acd407a4905d1338f40906",
+    "payloadIdentity": "payload1-093ca966c0fc686c39cd320dd06f44fef32772fdfbfb004b5943ee3cf74383cc",
+    "entries": 1032,
+    "changedExistingEntriesFromA205": [
+      "fpv/generated/DesignManifest.class",
+      "fpv/platform/FlightMouseInputs.class",
+      "design/platform.sheet.json"
+    ],
+    "newEntries": [
+      "fpv/platform/ForeignSdlMouseApi.class",
+      "fpv/platform/JnaSdlMouseApi.class",
+      "fpv/platform/LinuxSdlMouseCapture$Api.class",
+      "fpv/platform/LinuxSdlMouseCapture$Motion.class",
+      "fpv/platform/LinuxSdlMouseCapture.class",
+      "fpv/platform/LoadedSdlLibrary.class"
+    ],
+    "unchangedExistingClasses": 969,
+    "maxClassMajor": 61,
+    "linuxWindowsJnaResourcesIncluded": true,
+    "licensesUnchanged": true,
+    "priorAlphaSnapshotFilesUnchanged": 2065,
+    "priorDiagnosticAssetsUnchanged": [
+      "mindustry-fpv-a2-02-diagnostics.jar",
+      "mindustry-fpv-a2-02-corresponding-source.zip",
+      "mindustry-fpv-a2-02-test-kit.zip",
+      "mindustry-fpv-a2-03-diagnostics.jar",
+      "mindustry-fpv-a2-03-corresponding-source.zip",
+      "mindustry-fpv-a2-03-test-kit.zip",
+      "mindustry-fpv-a2-04-diagnostics.jar",
+      "mindustry-fpv-a2-04-corresponding-source.zip",
+      "mindustry-fpv-a2-04-test-kit.zip",
+      "mindustry-fpv-a2-05-diagnostics.jar",
+      "mindustry-fpv-a2-05-corresponding-source.zip",
+      "mindustry-fpv-a2-05-test-kit.zip"
+    ]
+  },
+  "actualJavaJarFolderFingerprint": "PASS",
+  "physicalLinuxStartup": "NOT TESTED",
+  "physicalLinuxX11Mouse": "NOT TESTED",
+  "physicalLinuxNativeWaylandMouse": "NOT TESTED",
+  "physicalWindowsImportRestartCameraBuildMenuFocus": "NOT TESTED for this build",
+  "limitations": [
+    "WSL inventory denied with Wsl/E_ACCESSDENIED; not bypassed",
+    "Selector/socket setup IOException; no normal desktop-game startup claimed",
+    "HOST MOUSE fallback remains bounded; keyboard look available",
+    "No native Linux ABI/compositor acceptance until owner tests"
+  ],
+  "primaryPlayerSavesAccessed": false,
+  "pushPublishWorkshopUpdate": false
+}

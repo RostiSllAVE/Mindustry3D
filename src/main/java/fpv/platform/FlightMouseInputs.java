@@ -12,9 +12,19 @@ public final class FlightMouseInputs {
     public static FlightMouseInput create(Input input){
         boolean logging=OptionalFlightInput.loggingAvailable();
         boolean windows=System.getProperty("os.name","").startsWith("Windows");
+        boolean linux=System.getProperty("os.name","").equals("Linux");
         boolean forced=Boolean.getBoolean("fpv.input.forceArc");
-        String reason=forced?"host input explicitly selected":!windows?"Win32 input is unavailable on this platform":"java.logging is absent from this runtime";
-        return new OptionalFlightInput(windows&&!forced,reason,()->{
+        String reason=forced?"host input explicitly selected":"native mouse capture is unavailable on this platform";
+        return new OptionalFlightInput((windows||linux)&&!forced,reason,()->{
+                if(linux){
+                    if(!(Core.app instanceof SdlApplication app)||Thread.currentThread()!=app.getMainThread())
+                        throw new IllegalStateException("Linux capture requires the host SDL input thread");
+                    String path=LoadedSdlLibrary.hostLibrary();
+                    LinuxSdlMouseCapture.Api api=logging?new JnaSdlMouseApi(path):new ForeignSdlMouseApi(path);
+                    FlightMouseInput nativeInput=new LinuxSdlMouseCapture(api,app.getWindow(),FlightMouseInputs::hostFocused);
+                    Log.info("[FPV] Mouse capture: host SDL relative / @ / @",api.driver(),logging?"JNA":"java.base FFM");
+                    return nativeInput;
+                }
                 if(logging){Log.info("[FPV] Mouse capture: Win32 / JNA");return new WindowsFlightInput();}
                 FlightMouseInput nativeInput=new ForeignWindowsInput();
                 Log.info("[FPV] Mouse capture: Win32 / java.base FFM");return nativeInput;

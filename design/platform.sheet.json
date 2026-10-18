@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "windows-flight-input",
-  "descriptor": "fpv.platform.WindowsFlightInput",
-  "status": "native library initialized successfully on full portable Java17; physical mouse behavior awaits playtest",
+  "id": "optional-flight-mouse-input",
+  "descriptor": "fpv.platform.FlightMouseInputs",
+  "status": "Windows JNA/FFM retained; Linux host-SDL relative implementation added in A2-06; physical X11/Wayland validation pending",
   "runtimeVerified": false,
   "verificationLegend": {
     "design-verified": "Explicit reviewed implementation contract; not evidence of tested native behavior.",
@@ -14,7 +14,7 @@
     "licenseChoice": "Apache-2.0",
     "verification": "design-verified",
     "use": "JNA core only: Native, Pointer, Structure, IntByReference, StdCallLibrary. No JNA platform artifact, AWT, Robot, or java.desktop dependency.",
-    "runtime": "Complete Java17+ with java.logging. Tested bundled Steam Java25 is stripped and fails JNA initialization. Launch via D: portable Java17; do not advertise this JAR as stock-runtime drop-in."
+    "runtime": "JNA on complete Java17+ with java.logging; java.base FFM on reduced Java22+ hosts. Linux uses only the already mapped host SDL bridge; unsupported native access falls back to bounded Arc pointer/keyboard look. No separate Java installation is required for startup."
   },
   "policies": [
     {
@@ -76,6 +76,11 @@
       "id": "limitations",
       "value": "Cursor recentering is not raw input: OS pointer acceleration and DPI coordinates affect sensitivity, and exceptionally large per-frame movement can hit the clip edge. Focus checks precede mutations but Win32 has no atomic ownership-and-cursor operation. Multi-monitor, DPI, Alt-Tab, overlay and disposal behavior remain runtime tests.",
       "verification": "design-verified"
+    },
+    {
+      "id": "linux-relative-host",
+      "value": "On the host SDL main thread, locate exactly one mapped libsdl-arc[64].so, resolve SDL2 relative functions and validate its original window identity. Accept actual x11/wayland video drivers only. SDL relative mode hides/confines the pointer and supplies right/down deltas; discard acquisition backlog. Never initialize SDL, create another window, pump events, or load an SDL installation by name. Failed acquisition is isolated once via OptionalFlightInput. Keep existing mode/focus/pause/release fences.",
+      "verification": "design-verified"
     }
   ],
   "acceptance": [
@@ -108,10 +113,15 @@
   "sources": [
     "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-clipcursor",
     "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getforegroundwindow",
-    "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setcursorpos"
+    "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-setcursorpos",
+    "https://wiki.libsdl.org/SDL2/SDL_SetRelativeMouseMode",
+    "https://wiki.libsdl.org/SDL2/SDL_GetRelativeMouseState",
+    "https://github.com/Anuken/Arc/blob/8eb00ffff0/backends/backend-sdl/src/arc/backend/sdl/SdlInput.java",
+    "https://github.com/Anuken/Arc/blob/8eb00ffff0/backends/backend-sdl/build.gradle"
   ],
   "testResults": {
     "nativeInitialization": "passed on full Java17 in actual Mindustry process",
-    "cursorCapture": "not exercised by scripted smoke"
+    "cursorCapture": "not exercised by scripted smoke",
+    "linuxPhysical": "NOT TESTED: no accessible Linux desktop/compositor in this environment"
   }
 }

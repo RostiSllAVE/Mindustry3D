@@ -224,6 +224,11 @@ native actions and persistent state authoritative; ground stance and landing
 transitions remain server-confirmed. The diagnostic payload must match on both
 sides. [Owner comparison procedure](docs/alpha-v2/A2-05-MANUAL-TEST.md).
 
+[A2-06 Linux mouse capture](docs/alpha-v2/A2-06-LINUX-MOUSE-REPORT.md) adds an
+optional host-SDL relative input backend. Physical X11 and Wayland acceptance is
+still pending; follow the [Linux mouse test](docs/alpha-v2/A2-06-MANUAL-TEST.md).
+This local diagnostic is separate from published releases.
+
 ## License
 
 Project code: **GPL-3.0-only**, [LICENSE](LICENSE). No warranty.
