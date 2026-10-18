@@ -10,6 +10,7 @@ import static fpv.net.NetworkDiagnostics.Counter.*;
 final class NetworkDiagnosticSession {
     static final String SETTING="fpv-net-diagnostics";
     final NetworkDiagnostics data=new NetworkDiagnostics();
+    ConnectionLifecycle connection;
     private long poll,nextExport,started,lastFrame,lastInputSend,lastSnapshot,lastPingAt,simulation,draw;
     private int previousPing=-1;
     private Path output;
@@ -57,7 +58,9 @@ final class NetworkDiagnosticSession {
             StringBuilder json=new StringBuilder(base.substring(0,base.length()-1))
                 .append(",\"unreleasedDiagnostics\":true,\"sourceBaseline\":\"0.18.31\",\"payloadIdentity\":\"").append(identity)
                 .append("\",\"hostBuild\":").append(mindustry.core.Version.build).append(",\"hostRevision\":").append(mindustry.core.Version.revision)
-                .append(",\"javaFeature\":").append(Runtime.version().feature()).append(",\"trend\":[");
+                .append(",\"javaFeature\":").append(Runtime.version().feature());
+            if(connection!=null)json.append(",\"connection\":").append(role>=2?"{\"stage\":\"HOST\",\"clientReadinessGate\":false}":connection.json());
+            json.append(",\"trend\":[");
             for(int n=0;n<trendSize;n++){if(n>0)json.append(',');json.append(java.util.Arrays.toString(trend[(trendAt-trendSize+n+trend.length)%trend.length]));}
             Files.writeString(output,json.append("]}\n").toString());
         }catch(Exception failure){data.count(EXPORT_FAILURES);} // Never log paths or abort gameplay.

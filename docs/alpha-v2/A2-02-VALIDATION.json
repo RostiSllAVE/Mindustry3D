@@ -1,0 +1,130 @@
+{
+  "task": "A2-02",
+  "date": "2026-10-18",
+  "branch": "main",
+  "startingCheckpoint": "f4d592c7973dd646a47277a7874813ff4e2f4efd",
+  "status": "LOCAL DIAGNOSTIC CHECKPOINT; physical connection acceptance pending",
+  "internalVersion": "0.18.31",
+  "protocol": 3,
+  "releasedArtifactsOverwritten": false,
+  "publishedOrPushed": false,
+  "artifact": {
+    "status": "PASS",
+    "jarSha256": "d9f0a66f599a035a9accb8175d58226e37da53ac3b9b4240b9ee26765337f890",
+    "jarBytes": 4224077,
+    "jarEntries": 1020,
+    "payloadIdentity": "payload1-de866da67105b61bac677bc90e60396ed7052ba928fbaa6fc1571a8281edd164",
+    "licensesByteIdenticalToAlpha104": true,
+    "metadataByteIdenticalToAlpha104": true,
+    "fpvClassTarget": 17,
+    "samePayloadInFolder": true,
+    "forbiddenHostClassesOrNestedBinaries": false
+  },
+  "confirmedBefore": {
+    "level": "Actual preserved A2-01 JAR handlers/native content with mock application; no sockets",
+    "jarSha256": "5a05dbba926f8b4e56a41d10b75e25e3176b6abc2a106eac5d0fbf349a8af0ed",
+    "ackOnlyAllowed": true,
+    "snapshotsAtPrematureReady": 0,
+    "allowedAfterApplyFailure": true,
+    "sameFailedRevisionDeliveries": 2,
+    "sameFailedRevisionApplyAttempts": 1,
+    "firstHostAckEpoch": 0,
+    "forwardBeforeWorldReset": 1.0,
+    "forwardAfterWorldReset": 1.0
+  },
+  "fixedAutomated": [
+    "ACK-only premature READY",
+    "silent failed state application/partial-session continuation",
+    "fresh reconnect after failed application",
+    "zero first-host ACK epoch",
+    "stale previous-world controls"
+  ],
+  "tests": {
+    "fullJava17": {
+      "status": "PASS",
+      "programs": 119,
+      "java": "Temurin 17.0.20.1+1",
+      "compileRelease": 17
+    },
+    "stockSteamJava25": {
+      "status": "PASS",
+      "programs": 119,
+      "java": "Temurin 25.0.1+8-LTS",
+      "separateJavaModulesAdded": false,
+      "expectNoLogging": true
+    },
+    "readinessTimeoutRejoinChecks": 68,
+    "actualHandlerEventChecks": 46,
+    "reportOptInPrivacyChecks": 15,
+    "existingProtocolChecks": 160,
+    "strictFingerprintChecks": 23,
+    "existingMouseLifecycleChecks": 218,
+    "handlerFixtureLimits": "In-memory provider; explicitly injected fixture digest; mock native UI/disconnect. Real JAR/folder identity verified separately.",
+    "java25ActualJarFolderFingerprint": "PASS",
+    "previousArtifactsUnchanged": {
+      "status": "PASS",
+      "existingFilesChecked": 2065,
+      "changedCount": 0
+    },
+    "intermediateFailures": [
+      {
+        "run": "final",
+        "reason": "Test wall overlapped fixture unit; moved fixture to a free cell; construction validation unchanged"
+      },
+      {
+        "run": "verified",
+        "reason": "Export test expected unsampled metric; explicitly sample metric before checking. Runtime metric collection unchanged."
+      }
+    ]
+  },
+  "transport": {
+    "status": "NOT TESTED",
+    "capability": "UNAVAILABLE",
+    "exception": "IOException",
+    "stage": "selector/socket setup before a game connection",
+    "newPermissionsRequested": false,
+    "applicationProcessesStartedForNetworkTest": false
+  },
+  "notReproduced": [
+    "Historical friend-host failure",
+    "Historical Steam delay/failure",
+    "Physical campaign-specific partial initialization"
+  ],
+  "notTested": [
+    "Windows/Windows sockets or two-device play",
+    "Windows host/Linux client",
+    "Linux host/Windows client",
+    "Steam invitations both host directions",
+    "Current build import/restart and Workshop subscription",
+    "Physical F5/Tab/camera/capture/menus/building",
+    "Actual same-process reconnect/rehost and campaign/save/sector transitions",
+    "Paired native vanilla connection comparison"
+  ],
+  "unchanged": [
+    "packet formats/protocol",
+    "input/snapshot/channel rates",
+    "100ms display interpolation",
+    "server authority/ownership",
+    "canonical fingerprint enforcement",
+    "gameplay/save formats",
+    "camera/input logic",
+    "metadata/notices"
+  ],
+  "timeoutsSeconds": {
+    "nativeWorld": 120,
+    "ackAfterWorldLoad": 15,
+    "initialStateMissingChannelIdle": 45,
+    "initialStateTotal": 180,
+    "liveOwnPose": 45
+  },
+  "nextStage": "Physical host-swap/rejoin acceptance is required before declaring A2-02 accepted; A2-03 planning can proceed separately.",
+  "runtimeSourceFiles": 365,
+  "runtimeSourceAggregateSha256": "c8ab3d285c5f67f813d24da14fab1cf78cb6e889ab8a1eaa03af1c2aa4e01105",
+  "localEvidenceHashes": {
+    "baseline-probe.log": "e53332d55804858976d238196ea73fa13053a60fe70fa9c8bc5771d27a3d7e12",
+    "socket-capability.log": "4d978c6dd9774c8511670503de60242bbb723154e4ab79e68cda66c4a20a5ab6",
+    "accepted-build.log": "dfd07c6f7eb9183b7b540f153a239bee6d840467d6e2e88603440da4dae1d377",
+    "accepted-steam25-tests.log": "5e0571085be80dfbea92df3ef872f0bd18c8aac340ec00ba0953ad3dcaa58f59",
+    "identity-check.log": "bfe7678e29534b5c34a9bd3b8062f26f951870ceb894af60a058847fc660a8f9"
+  }
+}

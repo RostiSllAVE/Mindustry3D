@@ -32,6 +32,10 @@ import java.util.function.*;
 /** Matching-mod multiplayer: native economy/entities, server flight/damage, input-only clients. */
 public final class FpvNetwork implements AutoCloseable {
     private final NetworkDiagnosticSession diagnostic=new NetworkDiagnosticSession();
+    private final ConnectionLifecycle connection=new ConnectionLifecycle();
+    private ConnectionLifecycle.Stage lastConnectionStage=ConnectionLifecycle.Stage.OFFLINE;
+    private long connectionGeneration;
+    private boolean connectionFailureQueued,firstClientInput,replayInitialState;
     public static final String PACKET="fpv7";
     private static final String CONSTRUCTION_PACKET="fpv7-layers";
     private static final int CONSTRUCTION_MAGIC=0x46504c31;
@@ -64,11 +68,12 @@ public final class FpvNetwork implements AutoCloseable {
     private final Cons2<Player,byte[]> serverHandler=this::receiveServer;
     private final Cons<byte[]> clientHandler=this::receiveClient;
     private final Runnable beforeHook=this::before,afterHook=this::after;
-    private final Cons<WorldLoadEvent> worldHook=e->resetWorld();
+    private final Cons<WorldLoadEvent> worldHook=e->{resetWorld();if(Vars.net.client())connection.worldLoaded(now());};
+    private final Cons<WorldLoadBeginEvent> worldBeginHook=e->{if(Vars.net.client())resetWorld();};
     private final Cons<ResetEvent> resetHook=e->resetWorld();
     private final Cons<PlayerLeave> leaveHook=e->remove(e.player);
     private final Cons<PlayerJoin> joinHook=e->{if(Vars.net.server())peers.computeIfAbsent(e.player,p->new Peer());};
-    private final Cons<ClientServerConnectEvent> connectHook=e->{diagnostic.data.count(NetworkDiagnostics.Counter.CONNECT_RESETS);acknowledged=false;epoch=0;sequence=0;remote.clear();assemblies.clear();GroundUnitProfiles.clearRemoteSettings();nextHello=0;};
+    private final Cons<ClientServerConnectEvent> connectHook=e->beginClientConnection();
     private ObjectMap<Class<?>,Cons2<NetConnection,Object>> nativeListeners;
     private Cons2<NetConnection,Object> previousSnapshot;
     private ObjectMap<Class<?>,Cons> nativeClientListeners;
@@ -96,6 +101,7 @@ public final class FpvNetwork implements AutoCloseable {
         if(installed)return;verification=ModFingerprint.current(FpvNetwork.class);
         fingerprint=verification.verified()?verification.token():"unverified";
         diagnostic.identity(fingerprint);
+        diagnostic.connection=connection;
         if(!verification.verified())Log.warn("[FPV-NET] Payload verification unavailable (@). Single-player remains available; multiplayer is disabled.",verification.problem());
         Vars.netServer.addBinaryPacketHandler(PACKET,serverHandler);if(Vars.netClient!=null)Vars.netClient.addBinaryPacketHandler(PACKET,clientHandler);
         try{Field field=Vars.net.getClass().getDeclaredField("serverListeners");field.setAccessible(true);
@@ -123,6 +129,7 @@ public final class FpvNetwork implements AutoCloseable {
             bytes->NetProtocol.read(bytes,in->{int a=in.readInt();if(a<5||a>in.available())throw new IOException("Creator mode length");creator.applyReplication(in.readNBytes(a));int b=in.readInt();if(b<5||b>in.available())throw new IOException("Boost mode length");boost.applyReplication(in.readNBytes(b));return null;}));
         Events.run(Trigger.update,beforeHook);Events.run(Trigger.afterGameUpdate,afterHook);
         Events.on(WorldLoadEvent.class,worldHook);Events.on(ResetEvent.class,resetHook);Events.on(PlayerLeave.class,leaveHook);
+        Events.on(WorldLoadBeginEvent.class,worldBeginHook);
         Events.on(PlayerJoin.class,joinHook);Events.on(ClientServerConnectEvent.class,connectHook);
         installed=true;resetWorld();
         Events.run(Trigger.beforeGameUpdate,()->{if(!closed)diagnostic.simulationStart();});
@@ -133,7 +140,8 @@ public final class FpvNetwork implements AutoCloseable {
     }
     /** True means frontend skips local integration/bridge/damage and displays server flight instead. */
     public boolean controlsLocalFlight(){return Vars.net.active()&&verification.verified();}
-    public boolean allowed(){return !Vars.net.active()||verification.verified()&&(Vars.net.server()||acknowledged);}
+    public boolean allowed(){return !Vars.net.active()||verification.verified()&&(Vars.net.server()||connection.ready());}
+    public String connectionStage(){return Vars.net.server()?"HOST":connection.stage().name();}
     public boolean authoritative(){return !Vars.net.client();}
     public CreatorFlightSystem creatorFlight(){return creator;}
     public NativeBoostSystem nativeBoost(){return boost;}
@@ -169,7 +177,7 @@ public final class FpvNetwork implements AutoCloseable {
         if(Vars.player==null||Vars.player.dead())return false;
         if(Vars.net.server()){Session session=sessions.get(Vars.player.id);if(session==null||session.unit!=Vars.player.unit())return false;
             target.configureProfile(session.flight.profile());NetProtocol.copy(session.flight.state(),target.state());return true;}
-        var latest=remote.latestFlight();return acknowledged&&latest!=null&&latest.playerId()==Vars.player.id&&latest.unitId()==Vars.player.unit().id&&remote.copyFlight(target,now());
+        var latest=remote.latestFlight();return connection.ready()&&latest!=null&&latest.playerId()==Vars.player.id&&latest.unitId()==Vars.player.unit().id&&remote.copyFlight(target,now());
     }
     public Unit3DState externalState(Unit unit){
         if(unit==null||!Vars.net.active())return null;
@@ -215,7 +223,7 @@ public final class FpvNetwork implements AutoCloseable {
     public LayerActions.Result submitConstruction(LayerActions.Action action){
         if(construction==null)return LayerActions.Result.rejected("Construction is unavailable");
         if(!Vars.net.client())return construction.apply(Vars.player,action);
-        if(!acknowledged)return LayerActions.Result.rejected("Waiting for the matching FPV server");
+        if(!allowed())return LayerActions.Result.rejected(connection.message());
         byte[] bytes=constructionPacket(action);
         if(bytes.length>fpv.construction.LayerConfiguration.MAX_BYTES+1024)return LayerActions.Result.rejected("Construction request is too large");
         Call.serverBinaryPacketReliable(CONSTRUCTION_PACKET,bytes);diagnostic.data.packet(true,true,bytes.length);return LayerActions.Result.queued();
@@ -248,6 +256,8 @@ public final class FpvNetwork implements AutoCloseable {
     }
     private void resetWorld(){
         diagnostic.data.count(NetworkDiagnostics.Counter.WORLD_RESETS);
+        submitted=NetworkControls.hold();firstClientInput=false;replayInitialState=false;
+        if(Vars.net.client())connection.resetWorld(now(),channels.keySet());else connection.offline();
         lastConstructionReply=-1;
         supportEffects.clear();GroundUnitProfiles.clearRemoteSettings();
         for(Session session:sessions.values())session.release();sessions.clear();creator.clear();boost.clear();remote.clear();assemblies.clear();frameStart.clear();contacts.clear();collisionOwner=null;
@@ -256,7 +266,41 @@ public final class FpvNetwork implements AutoCloseable {
         // through WorldLoad so a new-epoch input cannot make later controls look like replays.
         if(!Vars.net.client())sequence=0;
         nextHello=nextInput=nextSnapshot=0;for(var channel:channels.values())channel.next=0;
-        if(Vars.net.server())for(var entry:peers.entrySet()){entry.getValue().lastSequence=-1;entry.getValue().lastConstructionSequence=-1;entry.getValue().channels.clear();if(entry.getValue().accepted)sendAck(entry.getKey());}
+        if(Vars.net.server())for(var entry:peers.entrySet()){Peer peer=entry.getValue();peer.controls=NetworkControls.hold();peer.lastInput=0;peer.diagnosticPending=false;peer.inputSeen=peer.usableInputSeen=false;peer.joined=now();peer.lastSequence=-1;peer.lastConstructionSequence=-1;peer.channels.clear();if(peer.accepted)sendAck(entry.getKey());}
+    }
+    private void beginClientConnection(){
+        if(closed)return;connectionGeneration++;connectionFailureQueued=false;firstClientInput=false;
+        diagnostic.data.count(NetworkDiagnostics.Counter.CONNECT_RESETS);
+        resetWorld();peers.clear();sequence=0;lastConstructionReply=-1;
+        connection.begin(now(),channels.keySet());lastConnectionStage=ConnectionLifecycle.Stage.OFFLINE;
+        status=connection.message();wasActive=true;
+    }
+    private void updateClientConnection(){
+        var latest=remote.latestFlight();boolean live=Vars.player!=null&&!Vars.player.dead();
+        boolean own=live&&latest!=null&&latest.playerId()==Vars.player.id&&latest.unitId()==Vars.player.unit().id;
+        connection.tick(now(),Vars.state.isGame()&&!Vars.world.isGenerating()&&Vars.netClient!=null&&!Vars.netClient.isConnecting(),live,own);
+        status=connection.message();
+        if(connection.stage()!=lastConnectionStage){
+            lastConnectionStage=connection.stage();
+            if(connection.ready()){
+                diagnostic.data.count(NetworkDiagnostics.Counter.CONNECTION_READY);
+                diagnostic.data.sample(NetworkDiagnostics.Metric.CONNECTION_READY_MS,connection.readyMs());
+                if(!Vars.headless&&Vars.ui!=null)Vars.ui.showInfoToast("FPV READY / F5 view / Tab build",4);
+            }
+        }
+        if(connection.stage()==ConnectionLifecycle.Stage.FAILED)failClient(connection.failure(),null);
+    }
+    private void failClient(ConnectionLifecycle.Failure reason,String channel){
+        connection.fail(reason,channel);status=connection.message();acknowledged=false;submitted=NetworkControls.hold();remote.clear();assemblies.clear();
+        if(connectionFailureQueued)return;connectionFailureQueued=true;
+        diagnostic.data.count(NetworkDiagnostics.Counter.CONNECTION_FAILED);diagnostic.flush();
+        Log.warn("[FPV-NET] Session failed: @ / @",connection.failure().name(),channel==null?"NONE":NetworkDiagnostics.Channel.of(channel).name());
+        long failedGeneration=connectionGeneration;
+        Core.app.post(()->{
+            if(closed||failedGeneration!=connectionGeneration||connection.stage()!=ConnectionLifecycle.Stage.FAILED)return;
+            if(Vars.net.client()&&Vars.netClient!=null)Vars.netClient.disconnectQuietly();
+            if(!Vars.headless&&Vars.ui!=null)Vars.ui.showErrorMessage(connection.message());
+        });
     }
     private void remove(Player player){Peer peer=peers.remove(player);Session session=sessions.remove(player.id);if(session!=null)session.release();}
     private void before(){
@@ -269,20 +313,23 @@ public final class FpvNetwork implements AutoCloseable {
         if(active&&!verification.verified()){
             status="Multiplayer disabled: cannot verify mod files";
             Log.warn("[FPV-NET] Refusing unverified multiplayer; reinstall the complete matching mod package.");
-            if(Vars.net.client())Vars.netClient.disconnectQuietly();else Vars.net.closeServer();
+            if(Vars.net.client())failClient(ConnectionLifecycle.Failure.PAYLOAD_UNAVAILABLE,null);else Vars.net.closeServer();
             return;
         }
-        if(!active){if(wasActive){resetWorld();peers.clear();status="Offline";}wasActive=false;return;}wasActive=true;
+        if(!active){if(wasActive){resetWorld();peers.clear();connection.offline();status=connection.stage()==ConnectionLifecycle.Stage.FAILED?connection.message():"Offline";}wasActive=false;return;}wasActive=true;
         if(fixtureControls!=null)submitted=Objects.requireNonNull(fixtureControls.get());
         if(Vars.net.client()){
-            if(Vars.state.isGame()&&Vars.player!=null&&now()>=nextHello&&!acknowledged){nextHello=now()+1;byte[] message=NetProtocol.encode(NetProtocol.HELLO,0,sequence++,out->out.writeUTF(fingerprint));Call.serverBinaryPacketReliable(PACKET,message);diagnostic.data.packet(true,true,message.length);diagnostic.data.count(NetworkDiagnostics.Counter.HELLO_TX);status="Waiting for matching FPV server";}
-            if(acknowledged&&now()>=nextInput&&(fixtureTransmit==null||fixtureTransmit.getAsBoolean())){nextInput=now()+1/NetworkConfig.INPUT_HZ;byte[] message=NetProtocol.encode(NetProtocol.INPUT,epoch,sequence++,out->NetProtocol.controls(out,submitted));Call.serverBinaryPacketUnreliable(PACKET,message);diagnostic.data.packet(true,false,message.length);diagnostic.inputSent();}
+            if(connection.stage()==ConnectionLifecycle.Stage.OFFLINE)connection.begin(now(),channels.keySet());
+            updateClientConnection();
+            if(connection.stage()==ConnectionLifecycle.Stage.FAILED)return;
+            if(Vars.state.isGame()&&Vars.player!=null&&now()>=nextHello&&(!acknowledged||replayInitialState&&!Vars.netClient.isConnecting()&&!Vars.world.isGenerating())){nextHello=now()+1;byte[] message=NetProtocol.encode(NetProtocol.HELLO,0,sequence++,out->out.writeUTF(fingerprint));Call.serverBinaryPacketReliable(PACKET,message);replayInitialState=false;diagnostic.data.packet(true,true,message.length);diagnostic.data.count(NetworkDiagnostics.Counter.HELLO_TX);}
+            if(connection.initialStateComplete()&&now()>=nextInput&&(fixtureTransmit==null||fixtureTransmit.getAsBoolean())){nextInput=now()+1/NetworkConfig.INPUT_HZ;NetworkControls outbound=connection.ready()?submitted:NetworkControls.hold();byte[] message=NetProtocol.encode(NetProtocol.INPUT,epoch,sequence++,out->NetProtocol.controls(out,outbound));Call.serverBinaryPacketUnreliable(PACKET,message);diagnostic.data.packet(true,false,message.length);diagnostic.inputSent();if(!firstClientInput){firstClientInput=true;diagnostic.data.count(NetworkDiagnostics.Counter.FIRST_INPUT_TX);}}
             diagnostic.localAge();
             if(diagnostic.data.enabled())diagnostic.data.sample(NetworkDiagnostics.Metric.INTERPOLATION_ALPHA,remote.diagnosticAlpha(now()));
             // Native SyncLocal fields deliberately omit the owner's XY. Reconcile those fields
             // explicitly; camera smoothing is separate and never changes the server sample.
             var own=remote.latestFlight();
-            if(acknowledged&&own!=null&&Vars.player!=null&&!Vars.player.dead()&&own.playerId()==Vars.player.id&&own.unitId()==Vars.player.unit().id){
+            if(connection.ready()&&own!=null&&Vars.player!=null&&!Vars.player.dead()&&own.playerId()==Vars.player.id&&own.unitId()==Vars.player.unit().id){
                 Unit unit=Vars.player.unit();if(diagnostic.data.enabled())diagnostic.data.sample(NetworkDiagnostics.Metric.OWNER_CORRECTION_TILES,Math.hypot(unit.x/Vars.tilesize-own.state().x,unit.y/Vars.tilesize+own.state().z));unit.set((float)(own.state().x*Vars.tilesize),(float)(-own.state().z*Vars.tilesize));unit.vel.setZero();
                 Unit3DState body=remote.latest(unit.id);if(body!=null)unit.rotation=(float)body.yaw();
             }
@@ -351,7 +398,7 @@ public final class FpvNetwork implements AutoCloseable {
             sendChunks(player,"poses",NetProtocol.snapshot(new NetProtocol.Snapshot(units,own)));
         }
     }
-    private void sendAck(Player player){if(player.con!=null){byte[] message=NetProtocol.encode(NetProtocol.ACK,epoch,sequence++,out->out.writeUTF(fingerprint));Call.clientBinaryPacketReliable(player.con,PACKET,message);diagnostic.data.packet(true,true,message.length);}}
+    private void sendAck(Player player){if(epoch==0)epoch=Math.max(1,System.nanoTime());if(player.con!=null){byte[] message=NetProtocol.encode(NetProtocol.ACK,epoch,sequence++,out->out.writeUTF(fingerprint));Call.clientBinaryPacketReliable(player.con,PACKET,message);diagnostic.data.packet(true,true,message.length);}}
     private void sendChunks(Player player,String name,byte[] data){
         diagnostic.data.channel(name,true,data.length);diagnostic.data.sample(NetworkDiagnostics.Metric.CHANNEL_LOGICAL_BYTES,data.length);
         int size=(int)NetworkConfig.CHUNK_BYTES,count=Math.max(1,(data.length+size-1)/size);long rev=++revision;
@@ -376,28 +423,49 @@ public final class FpvNetwork implements AutoCloseable {
                 peer.diagnosticPending=true;diagnostic.data.count(NetworkDiagnostics.Counter.INPUT_ACCEPTED);
             }
             peer.controls=controls;peer.lastSequence=packet.sequence();peer.lastInput=time;acceptedInputs++;
+            if(!peer.inputSeen){peer.inputSeen=true;diagnostic.data.count(NetworkDiagnostics.Counter.FIRST_INPUT_ACCEPTED);diagnostic.data.sample(NetworkDiagnostics.Metric.FIRST_INPUT_ACCEPTED_MS,Math.max(0,time-peer.joined)*1000);}
+            if(!peer.usableInputSeen&&controls.active()&&UnitControlCapabilities.validOwner(player,player.unit())){peer.usableInputSeen=true;diagnostic.data.count(NetworkDiagnostics.Counter.FIRST_USABLE_INPUT_ACCEPTED);diagnostic.data.sample(NetworkDiagnostics.Metric.FIRST_USABLE_INPUT_MS,Math.max(0,time-peer.joined)*1000);}
         }catch(IllegalArgumentException invalid){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_PROTOCOL_OR_PAYLOAD);rejectedPackets++;}
     }
     private void receiveClient(byte[] bytes){
         diagnostic.data.packet(false,true,bytes==null?0:bytes.length);
-        if(!Vars.net.client())return;
-        if(!verification.verified()){rejectedPackets++;return;}
-        try{NetProtocol.Envelope packet=NetProtocol.decode(bytes);
-            if(packet.kind()==NetProtocol.ACK){String hash=NetProtocol.read(packet.payload(),in->in.readUTF());if(!verification.matches(hash)||packet.epoch()==0)throw new IllegalArgumentException("Server mismatch");
+        if(!Vars.net.client()||connection.stage()==ConnectionLifecycle.Stage.FAILED)return;
+        if(!verification.verified()){rejectedPackets++;failClient(ConnectionLifecycle.Failure.PAYLOAD_UNAVAILABLE,null);return;}
+        try{
+            NetProtocol.Envelope packet=NetProtocol.decode(bytes);
+            if(packet.kind()==NetProtocol.ACK){
+                String hash=NetProtocol.read(packet.payload(),in->in.readUTF());
+                if(!verification.matches(hash)){rejectedPackets++;failClient(ConnectionLifecycle.Failure.MOD_MISMATCH,null);return;}
+                if(packet.epoch()==0){rejectedPackets++;failClient(ConnectionLifecycle.Failure.INVALID_PROTOCOL,null);return;}
                 diagnostic.data.count(NetworkDiagnostics.Counter.ACK_RX);
-                if(epoch!=packet.epoch()){remote.clear();assemblies.clear();GroundUnitProfiles.clearRemoteSettings();}epoch=packet.epoch();acknowledged=true;status="Matching FPV server; authoritative XYZ";return;}
+                if(connection.stage()==ConnectionLifecycle.Stage.OFFLINE)connection.begin(now(),channels.keySet());
+                if(epoch!=packet.epoch()){remote.clear();assemblies.clear();GroundUnitProfiles.clearRemoteSettings();}
+                epoch=packet.epoch();acknowledged=true;connection.acknowledged(epoch,now());
+                diagnostic.data.sample(NetworkDiagnostics.Metric.CONNECTION_HANDSHAKE_MS,connection.handshakeMs());
+                status=connection.message();return;
+            }
             if(!acknowledged||packet.epoch()!=epoch||packet.kind()!=NetProtocol.CHANNEL){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_EPOCH_OR_KIND);rejectedPackets++;return;}
-            var chunk=NetProtocol.chunk(packet.payload());if(!chunk.channel().equals("poses")&&!channels.containsKey(chunk.channel())){rejectedPackets++;return;}
-            var assembly=assemblies.computeIfAbsent(chunk.channel(),key->new NetProtocol.Assembly());
+            if(!connection.acceptsState()||Vars.world.isGenerating()||Vars.netClient.isConnecting()){
+                replayInitialState=true;diagnostic.data.count(NetworkDiagnostics.Counter.EARLY_STATE_IGNORED);return;
+            }
+            var chunk=NetProtocol.chunk(packet.payload());
+            if(!chunk.channel().equals("poses")&&!channels.containsKey(chunk.channel())){rejectedPackets++;failClient(ConnectionLifecycle.Failure.INVALID_PROTOCOL,null);return;}
+            var assembly=assemblies.computeIfAbsent(chunk.channel(),key->new NetProtocol.Assembly());int previouslyRetained=assembly.pendingBytes();
             if(diagnostic.data.enabled()&&assembly.diagnosticStale(chunk))diagnostic.data.count(NetworkDiagnostics.Counter.CHUNKS_STALE_OR_REPLAY);
             byte[] complete=assembly.accept(chunk,now());
+            if(complete!=null||assembly.pendingBytes()>previouslyRetained)connection.progress(chunk.channel(),now());
             if(diagnostic.data.enabled()){int pending=0,retained=0;for(var pendingAssembly:assemblies.values()){if(pendingAssembly.pendingBytes()>0)pending++;retained+=pendingAssembly.pendingBytes();}diagnostic.data.sample(NetworkDiagnostics.Metric.ASSEMBLY_CHANNELS,pending);diagnostic.data.sample(NetworkDiagnostics.Metric.ASSEMBLY_RETAINED_BYTES,retained);}
             if(complete==null){diagnostic.data.count(NetworkDiagnostics.Counter.CHUNKS_INCOMPLETE_OR_STALE);return;}
             diagnostic.data.channel(chunk.channel(),false,complete.length);long applyStart=diagnostic.start();
-            try{if(chunk.channel().equals("poses")){remote.accept(NetProtocol.snapshot(complete),now());receivedSnapshots++;diagnostic.snapshot();}
-            else {channels.get(chunk.channel()).clientApply.accept(complete);diagnostic.data.count(NetworkDiagnostics.Counter.CHANNEL_APPLIES);}}
-            finally{diagnostic.end(NetworkDiagnostics.Metric.CHANNEL_APPLY_MS,applyStart);}
-        }catch(IllegalArgumentException invalid){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_PROTOCOL_OR_PAYLOAD);rejectedPackets++;}
+            try{
+                if(chunk.channel().equals("poses")){remote.accept(NetProtocol.snapshot(complete),now());receivedSnapshots++;diagnostic.snapshot();connection.poses();}
+                else {channels.get(chunk.channel()).clientApply.accept(complete);connection.applied(chunk.channel());diagnostic.data.count(NetworkDiagnostics.Counter.CHANNEL_APPLIES);}
+            }catch(RuntimeException|LinkageError invalidState){
+                rejectedPackets++;diagnostic.data.count(NetworkDiagnostics.Counter.STATE_APPLY_FAILURE);
+                failClient(ConnectionLifecycle.Failure.STATE_APPLY_FAILED,chunk.channel());return;
+            }finally{diagnostic.end(NetworkDiagnostics.Metric.CHANNEL_APPLY_MS,applyStart);}
+            updateClientConnection();
+        }catch(IllegalArgumentException invalid){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_PROTOCOL_OR_PAYLOAD);rejectedPackets++;failClient(ConnectionLifecycle.Failure.INVALID_PROTOCOL,null);}
     }
     /** Preserve native validated build/aim plans while categorically ignoring client XY/velocity claims. */
     private void snapshot(NetConnection connection,Object object){
@@ -475,7 +543,7 @@ public final class FpvNetwork implements AutoCloseable {
     private void applyExplosions(byte[] bytes){explosions.acceptVisuals(NetProtocol.read(bytes,in->{int count=in.readInt();if(count<0||count>CrashConfig.MAX_EFFECTS)throw new IOException("Explosion count");var list=new ArrayList<RadialExplosion.VisualBurst>(count);for(int i=0;i<count;i++){int id=in.readInt();double x=NetProtocol.number(in),y=NetProtocol.number(in),z=NetProtocol.number(in);double radius=NetProtocol.number(in),damage=NetProtocol.number(in),visual=NetProtocol.number(in),duration=NetProtocol.number(in);int style=in.readUnsignedByte();if(style>=RadialExplosion.Style.values().length)throw new IOException("Explosion style");var spec=new RadialExplosion.Spec(radius,damage,visual,duration,RadialExplosion.Style.values()[style],in.readBoolean());list.add(new RadialExplosion.VisualBurst(id,x,y,z,spec,NetProtocol.number(in)));}return list;}));}
     private static float color(DataInputStream in)throws IOException{float value=in.readFloat();if(!Float.isFinite(value)||value<0||value>16)throw new IOException("Invalid visual color");return value;}
     private static double now(){return System.nanoTime()/1e9;}
-    private static final class Peer{boolean accepted,diagnosticPending;NetworkControls controls=NetworkControls.hold();long lastSequence=-1,lastConstructionSequence=-1;double joined=now(),lastInput,rateStart;int rateCount;final Map<String,Long> channels=new HashMap<>();}
+    private static final class Peer{boolean accepted,diagnosticPending,inputSeen,usableInputSeen;NetworkControls controls=NetworkControls.hold();long lastSequence=-1,lastConstructionSequence=-1;double joined=now(),lastInput,rateStart;int rateCount;final Map<String,Long> channels=new HashMap<>();}
     private static final class Channel{final Supplier<byte[]> serverData;final Consumer<byte[]> clientApply;double next;byte[] bytes;long version;boolean failed;
         Channel(Supplier<byte[]> source,Consumer<byte[]> destination){serverData=source;clientApply=destination;}}
     @Override public void close(){if(closed)return;closed=true;for(Session session:sessions.values())session.release();sessions.clear();peers.clear();remote.clear();assemblies.clear();
@@ -486,7 +554,7 @@ public final class FpvNetwork implements AutoCloseable {
         Vars.netServer.getBinaryPacketHandlers(PACKET).remove(serverHandler,true);if(Vars.netClient!=null)Vars.netClient.getBinaryPacketHandlers(PACKET).remove(clientHandler,true);
         if(construction!=null){Vars.netServer.getBinaryPacketHandlers(CONSTRUCTION_PACKET).remove(constructionServerHandler,true);if(Vars.netClient!=null)Vars.netClient.getBinaryPacketHandlers(CONSTRUCTION_PACKET).remove(constructionClientHandler,true);}
         // Arc's enum-trigger API has no removal operation. These two retained callbacks are inert after closed.
-        Events.remove(WorldLoadEvent.class,worldHook);Events.remove(ResetEvent.class,resetHook);Events.remove(PlayerLeave.class,leaveHook);Events.remove(PlayerJoin.class,joinHook);Events.remove(ClientServerConnectEvent.class,connectHook);
+        Events.remove(WorldLoadEvent.class,worldHook);Events.remove(WorldLoadBeginEvent.class,worldBeginHook);Events.remove(ResetEvent.class,resetHook);Events.remove(PlayerLeave.class,leaveHook);Events.remove(PlayerJoin.class,joinHook);Events.remove(ClientServerConnectEvent.class,connectHook);
         altitudes.setExternalStateProvider(null);altitudes.setExternalVerticalImpulse(null);altitudes.setNetworkGeometry(null);
         altitudes.setRuntimeStateProvider(null);altitudes.setRuntimeVerticalImpulse(null);
     }

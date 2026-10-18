@@ -9,11 +9,12 @@ from preflight import ROOT, run
 import argparse
 
 parser=argparse.ArgumentParser()
-parser.add_argument('--run', default='build', help='New local/a2-01 subdirectory; existing builds are never overwritten')
+parser.add_argument('--task', choices=('a2-01','a2-02'), default='a2-01')
+parser.add_argument('--run', default='build', help='New local task subdirectory; existing builds are never overwritten')
 options=parser.parse_args()
 if not options.run or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_' for c in options.run):
     raise SystemExit('Use a simple run name')
-output = ROOT / 'local/a2-01' / options.run
+output = ROOT / 'local' / options.task / options.run
 if output.exists():
     raise SystemExit('Diagnostic build already exists; preserve it and select a new --run name')
 jdk = Path(os.environ['FPV_JDK'])
@@ -36,7 +37,7 @@ for source in test_sources:
     name=source.relative_to(ROOT/'src/test/java').with_suffix('').as_posix().replace('/','.')
     subprocess.run([str(jdk/'bin/java.exe'),'-Djava.io.tmpdir='+str(temp),'-ea','-cp',str(tests)+os.pathsep+str(classes)+os.pathsep+cp,name],check=True)
     passed.append(name)
-jar=output/'mindustry-fpv-a2-01-diagnostics.jar'
+jar=output/f'mindustry-fpv-{options.task}-diagnostics.jar'
 with zipfile.ZipFile(jar,'w',zipfile.ZIP_DEFLATED) as z:
     for base in (classes,ROOT/'src/main/resources'):
         for p in sorted(base.rglob('*')):

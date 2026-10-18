@@ -22,6 +22,10 @@ public final class NetworkDiagnosticSessionTest {
         Core.settings.put(NetworkDiagnosticSession.SETTING,true);poll(session);
         check(session.data.enabled(),"menu setting enables collection without JVM options");
         session.identity("payload1-"+"a".repeat(64));session.identity("PRIVATE_PLAYER C:\\private");
+        var lifecycle=new ConnectionLifecycle();lifecycle.begin(1,java.util.List.of("combat","layered-world"));
+        lifecycle.worldLoaded(2);lifecycle.acknowledged(7,3);lifecycle.applied("combat");
+        lifecycle.fail(ConnectionLifecycle.Failure.STATE_APPLY_FAILED,"layered-world");session.connection=lifecycle;
+        session.data.sample(NetworkDiagnostics.Metric.FIRST_USABLE_INPUT_MS,125);
         session.data.packet(true,true,123);session.simulationStart();session.simulationEnd();session.drawStart();session.drawEnd();session.flush();
         Path report;try(var files=Files.list(profile.resolve("fpv-diagnostics"))){var all=files.toList();check(all.size()==1,"one bounded report file");report=all.get(0);}
         String text=Files.readString(report);var json=Jval.read(text);
@@ -31,6 +35,10 @@ public final class NetworkDiagnosticSessionTest {
         check(json.get("counters").getInt("TX_PAYLOAD_BYTES",0)==123,"actual aggregate exported");
         check(!text.contains("PRIVATE_PLAYER")&&!text.contains("192.0.2.23")&&!text.contains(profile.toString()),"no settings identity, endpoint or data path exported");
         check(json.get("metrics").has("SIMULATION_TRIGGER_MS")&&json.get("metrics").has("DRAW_CPU_SPAN_MS"),"trigger spans available");
+        var connection=json.get("connection");
+        check(connection.getString("stage").equals("FAILED")&&connection.getString("failedChannel").equals("LAYERED_WORLD"),"fixed-key failed connection stage and channel exported");
+        check(connection.getDouble("handshakeMs",-1)==2000&&connection.getInt("requiredChannels",0)==2&&connection.getInt("appliedChannels",0)==1,"connection timing and partial synchronization exported");
+        check(json.get("metrics").has("FIRST_USABLE_INPUT_MS")&&json.get("counters").has("CONNECTION_READY"),"readiness and first usable input diagnostics retained");
         Core.settings.put(NetworkDiagnosticSession.SETTING,false);poll(session);check(!session.data.enabled(),"disabling flushes and stops collection");
         session.data.packet(true,true,5);check(session.data.value(NetworkDiagnostics.Counter.TX_PAYLOAD_BYTES)==123,"no collection after stop");
         Path invalid=profile.resolve("file-not-directory");Files.writeString(invalid,"fixture");Vars.dataDirectory=new Fi(invalid.toFile());
