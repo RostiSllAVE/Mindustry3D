@@ -27,6 +27,8 @@ public final class BuildControls implements AutoCloseable {
             panel.defaults().width(260).pad(4);
             panel.add("[accent]BUILD / precision flight").left().row();
             if(layers!=null){
+                panel.button(layers.constructionLabel(),layers::toggleConstruction).update(button->button.setText(layers.constructionLabel())).height(30).row();
+                panel.add("Pause retains plans. RMB cancels the tool.\nClear building removes queued requests.").fontScale(.7f).left().row();
                 panel.label(layers::label).left().row();
                 panel.table(buttons->{buttons.button("Lower floor",()->layers.setLayer(layers.layer()-1)).width(124);buttons.button("Higher floor",()->layers.setLayer(layers.layer()+1)).width(124);}).row();
                 panel.check("Lock placement floor",false,layers::setFloorLocked).update(box->box.setChecked(layers.floorLocked())).row();

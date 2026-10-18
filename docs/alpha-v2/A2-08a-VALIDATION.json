@@ -1,0 +1,83 @@
+{
+  "task": "A2-08a FPV construction cancellation",
+  "date": "2026-10-19",
+  "baselineCommit": "9134008dc75d94d7811d60b4624e12f40686658c",
+  "branch": "main",
+  "status": "PASS automated/native-fixture validation; physical gameplay NOT TESTED",
+  "internalVersion": "0.18.31",
+  "protocol": 4,
+  "java17TestProgramsPassed": 129,
+  "stockSteamJava25TestProgramsPassed": 129,
+  "stockSteamJava25Failures": 0,
+  "constructionNativeChecks": 45,
+  "baselineReproduction": {
+    "nativePauseBlockedInFlight": true,
+    "Z2WallCompletedWithBuildingFlagFalse": true,
+    "copperConsumedWhilePaused": 6,
+    "acceptedA207Classes": true,
+    "physicalGameplay": false
+  },
+  "defaultRemappableShortcut": "F3",
+  "nativeBuildPauseBindingRetained": true,
+  "native2DInputBoundaryPreserved": true,
+  "noNewNetworkPackets": true,
+  "actualNativeServerClientSnapshotTest": "PASS in-memory authenticated host handler; pause/resume/stale sequence/idempotence/progress/exact cost",
+  "artifactAudit": {
+    "jarSha256": "e3f60dbc5122af7cbe652a6da7b4a75c1fc1ff38ba00457dbb88a94a864b1138",
+    "payloadIdentity": "payload1-4717643494e344ed3611210f014a09b39b44810d23f7a17b8e3bfe92d1e84ffe",
+    "entries": 1033,
+    "changedExistingEntriesFromA207": [
+      "fpv/construction/LayerBuildController$Buttons.class",
+      "fpv/construction/LayerBuildController.class",
+      "fpv/construction/LayerPasteQueue.class",
+      "fpv/FpvMod$2.class",
+      "fpv/FpvMod.class",
+      "fpv/generated/DesignManifest.class",
+      "fpv/input/FpvDesktopInput.class",
+      "fpv/ui/BuildControls.class",
+      "design/input.sheet.json"
+    ],
+    "newEntries": [
+      "fpv/input/ConstructionBinding.class"
+    ],
+    "unchangedExistingClasses": 969,
+    "maxClassMajor": 61,
+    "linuxWindowsJnaResourcesIncluded": true,
+    "licensesUnchanged": true,
+    "priorAlphaSnapshotFilesUnchanged": 2065,
+    "priorDiagnosticAssetsUnchanged": [
+      "mindustry-fpv-a2-02-diagnostics.jar",
+      "mindustry-fpv-a2-02-corresponding-source.zip",
+      "mindustry-fpv-a2-02-test-kit.zip",
+      "mindustry-fpv-a2-03-diagnostics.jar",
+      "mindustry-fpv-a2-03-corresponding-source.zip",
+      "mindustry-fpv-a2-03-test-kit.zip",
+      "mindustry-fpv-a2-04-diagnostics.jar",
+      "mindustry-fpv-a2-04-corresponding-source.zip",
+      "mindustry-fpv-a2-04-test-kit.zip",
+      "mindustry-fpv-a2-05-diagnostics.jar",
+      "mindustry-fpv-a2-05-corresponding-source.zip",
+      "mindustry-fpv-a2-05-test-kit.zip",
+      "mindustry-fpv-a2-06-diagnostics.jar",
+      "mindustry-fpv-a2-06-corresponding-source.zip",
+      "mindustry-fpv-a2-06-test-kit.zip",
+      "mindustry-fpv-a2-07-diagnostics.jar",
+      "mindustry-fpv-a2-07-corresponding-source.zip",
+      "mindustry-fpv-a2-07-test-kit.zip"
+    ]
+  },
+  "actualJavaJarFolderIdentity": "PASS",
+  "testBoundaries": [
+    "Native builder and ConstructBuild progress/cost logic with mock input/scene/GL and no-op pathfinding tile notification",
+    "Actual native clientSnapshot handler with in-memory connection; no socket transport session",
+    "Server-owned timed upper queue on Z2/Z3, free mode explicitly authorized in fixture; no new support bypass",
+    "Command-mode early return, Tab transitions, possession and world identity exercised at adapter boundary",
+    "Instantaneous upper single placements cannot be paused after completion; no new partial upper save format or priority selection"
+  ],
+  "physicalWindowsGameplay": "NOT TESTED",
+  "physicalLinuxGameplay": "NOT TESTED",
+  "physicalTwoComputerMultiplayer": "NOT TESTED",
+  "socketPreflight": "IOException before selector/socket setup; no permissions requested or bypassed",
+  "primaryPlayerSavesAccessed": false,
+  "pushPublishWorkshopUpdate": false
+}

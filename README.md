@@ -245,3 +245,5 @@ Publish the hotfix JAR **together with** its corresponding-source ZIP; license
 texts are embedded in the JAR and included with the source. No game binaries,
 Java runtime, profiles, saves, backups, raw recordings
 or proprietary Liftoff resources are included in the prepared assets.
+
+[A2-08a construction pause](docs/alpha-v2/A2-08a-CONSTRUCTION-CANCELLATION.md) adds a remappable F3 pause/resume action that retains plans on Z0 and upper floors. Physical gameplay acceptance is pending.

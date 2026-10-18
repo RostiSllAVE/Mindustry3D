@@ -99,6 +99,53 @@ public final class FpvDesktopInput extends DesktopInput {
         ownedMiner=unit;ownedMiningTile=miningPick;return true;
     }
     private boolean suspended;
+    private Unit constructionUnit;
+    private Object constructionTiles;
+    private Boolean constructionIntent;
+    private boolean constructionPauseConsumed;
+    private long constructionFrame=Long.MIN_VALUE,constructionFeedbackUntil;
+    private void syncConstructionUnit(){
+        Unit current=Vars.player==null||Vars.player.dead()?null:Vars.player.unit();
+        Object tiles=Vars.world==null?null:Vars.world.tiles;
+        if(current!=constructionUnit||tiles!=constructionTiles){
+            constructionUnit=current;constructionTiles=tiles;constructionIntent=null;constructionFeedbackUntil=0;
+            if(current!=null){isBuilding=current.updateBuilding();buildWasAutoPaused=false;}
+        }
+    }
+    /** Pause work, never clear plans, selected tools, mining or the partially built world block. */
+    public boolean toggleConstruction(){
+        if(!fpvEnabled)return false;
+        syncConstructionUnit();
+        if(suspended||constructionUnit==null||!constructionUnit.canBuild()||!Vars.state.isGame()
+            ||Core.scene!=null&&(Core.scene.hasKeyboard()||Core.scene.hasDialog()))return false;
+        isBuilding=!isBuilding;constructionIntent=isBuilding;buildWasAutoPaused=false;
+        constructionUnit.updateBuilding(isBuilding);constructionFeedbackUntil=Time.millis()+2500;
+        return true;
+    }
+    /** Shared input boundary, sampled once per host frame; native Build E and F3 cannot double-toggle. */
+    public void pollConstructionInput(){
+        constructionPauseConsumed=false;
+        if(!fpvEnabled){constructionUnit=null;constructionIntent=null;return;}
+        syncConstructionUnit();
+        if(suspended||Core.scene!=null&&(Core.scene.hasKeyboard()||Core.scene.hasDialog()))return;
+        boolean nativeTap=buildMode&&projection.original().keyTap(Binding.pauseBuilding);
+        if(!nativeTap&&!projection.original().keyTap(ConstructionBinding.toggle))return;
+        long frame=Core.graphics.getFrameId();
+        if(frame==constructionFrame){constructionPauseConsumed=nativeTap;return;}
+        constructionFrame=frame;
+        if(toggleConstruction())constructionPauseConsumed=nativeTap;
+    }
+    private void applyConstructionIntent(){
+        if(!fpvEnabled)return;
+        syncConstructionUnit();
+        if(constructionUnit!=null&&constructionIntent!=null){
+            // DesktopInput auto-pauses an empty native queue. Upper timed jobs are server-owned
+            // and absent from that queue, so it must not undo an explicit resume each frame.
+            isBuilding=constructionIntent;buildWasAutoPaused=false;constructionUnit.updateBuilding(isBuilding);
+        }
+    }
+    public String constructionLabel(){return (isBuilding?"Pause construction":"Resume construction")+" ("+ConstructionBinding.key()+")";}
+    public String constructionFeedback(){return Time.millis()<constructionFeedbackUntil?(isBuilding?"Construction resumed":"Construction paused — plans retained"):"";}
     private Unit controlPick;
     private boolean selectionConsumed;
     private boolean upperLayerOwned;
@@ -272,6 +319,7 @@ public final class FpvDesktopInput extends DesktopInput {
     }
 
     boolean suppressBinding(KeyBind binding) {
+        if(constructionPauseConsumed&&binding==Binding.pauseBuilding)return true;
         if(releaseConsumed&&binding==Binding.respawn)return true;
         if (!fpvEnabled) return false;
         if(commands!=null&&binding==Binding.commandMode)return true; // The FPV mode adapter reads the unfiltered native binding once.
@@ -313,6 +361,10 @@ public final class FpvDesktopInput extends DesktopInput {
     public void update() {
         if (beforeUpdate != null) beforeUpdate.run();
         syncCommands();
+        pollConstructionInput();
+        try{updateNativeInput();}finally{applyConstructionIntent();}
+    }
+    private void updateNativeInput(){
         if(fpvEnabled&&commandActive()){
             commands.update();stopCommandFire();
             if(Vars.player!=null&&!Vars.player.dead())Vars.player.unit().updateBuilding(isBuilding);
@@ -324,9 +376,6 @@ public final class FpvDesktopInput extends DesktopInput {
             return;
         }
         if((upperLayerOwned||ownsInteraction())&&buildMode){
-            if(!interfaceOwnsInput()&&projection.original().keyTap(Binding.pauseBuilding)){
-                isBuilding=!isBuilding;buildWasAutoPaused=false;
-            }
             // Native possession remains available when automatic picking resolves an elevated floor.
             applyControlSelection(projection.original().keyDown(Binding.control),projection.original().keyTap(Binding.select));
             cancelPointerGesture();

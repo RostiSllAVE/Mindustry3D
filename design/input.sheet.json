@@ -168,5 +168,9 @@
   "groupCommandMode": {
     "verification": "user-approved",
     "behavior": "Flight uses native commandMode binding (default Shift), respecting commandmodehold and native boost-binding conflict. F10 toggles Command Mode from Flight or Build; Build Shift retains linking. Screen drag selects visible canonical XYZ units; LMB selection, RMB order, native commandQueue binding, Escape cancellation. Preserve team/CommandAI rules, queued build plans and selected block/rotation; fence held pointer on exit until release. No new AI or network protocol; native movement commands retain XY destinations."
+  },
+  "constructionPause": {
+    "verification": "automated-native-fixture; physical acceptance pending",
+    "behavior": "Remappable host KeyBind fpv-construction-toggle (default F3) pauses/resumes only the possessed builder via native isBuilding/updateBuilding; native pauseBuilding remains available in Build Mode and is consumed once per frame. E/Q retain flight altitude. Pausing preserves committed plans, native partial blueprints and server-owned timed upper jobs. RMB cancels only the uncommitted tool/gesture; clearBuilding explicitly clears pending requests. Tab preserves explicit intent; unit/world changes read the new unit state. Native clientSnapshot transports the existing building flag; no protocol change."
   }
 }

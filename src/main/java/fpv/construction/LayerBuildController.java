@@ -115,6 +115,8 @@ public final class LayerBuildController {
         return LayerVerticalTransfers.groundId(building.tile.x,building.tile.y);
     }
     public String label(){return "Z"+layer+(layer==0?" / native world":" / "+(free?"FREE":"STRUCTURAL"));}
+    public String constructionLabel(){return input.constructionLabel();}
+    public void toggleConstruction(){input.toggleConstruction();}
     public String status(){
         String reason=schematics.active()?schematics.status():previewReason.isBlank()?runtime.status():previewReason;
         if(!Boolean.getBoolean("fpv.picking.diagnostics")||hover==null)return reason;

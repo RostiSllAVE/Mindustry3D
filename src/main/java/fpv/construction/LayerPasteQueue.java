@@ -61,7 +61,10 @@ public final class LayerPasteQueue {
     }
     public void update(double dt){
         for(var iterator=jobs.iterator();iterator.hasNext();){var job=iterator.next();
-            if(job.player.dead()||job.player.unit()!=job.unit||job.player.team().id!=job.team||!job.unit.isAdded()||!job.unit.canBuild()){iterator.remove();continue;}
+            if(job.player.team().id!=job.team||job.unit.dead||!job.unit.isAdded()||!job.unit.canBuild()){iterator.remove();continue;}
+            // Native clientSnapshot already carries updateBuilding for this player's owned unit.
+            // Suspend work and costs without deleting plans or accumulating a resume-time burst.
+            if(job.player.dead()||job.player.unit()!=job.unit||!job.unit.updateBuilding())continue;
             double speed=job.unit.type.buildSpeed*job.unit.buildSpeedMultiplier*Vars.state.rules.buildSpeed(job.player.team());
             if(!Double.isFinite(speed)||speed<=0)continue;job.work+=dt*60*speed;int completed=0;
             while(!job.pending.isEmpty()&&completed<32){var plan=job.pending.peek();var a=place(plan,job.layer,job.mode);var allowed=runtime.preview(job.player,a);

@@ -280,6 +280,8 @@ public final class FpvMod extends Mod {
         CameraView.smoothingKey.load();
         Core.bundle.getProperties().put("keybind.fpv-native-boost-toggle.name","Ground / native boost flight (F2)");
         fpv.input.BoostModeBinding.toggle.load(); // register and restore the native Controls preference
+        Core.bundle.getProperties().put("keybind.fpv-construction-toggle.name","Pause / resume construction (retain plans)");
+        fpv.input.ConstructionBinding.toggle.load();
         Core.bundle.getProperties().put("keybind.fpv-camera-smoothing-toggle.name","Toggle camera smoothing (modifier in FPV settings)");
         Core.bundle.getProperties().put("category.FPV camera.name","FPV camera");
         Core.bundle.getProperties().put("setting.fpv-camera-smoothing.name","Camera Smoothing");
@@ -422,7 +424,7 @@ public final class FpvMod extends Mod {
             public int buildTimePercent(){return Vars.net.active()?100:RuntimeConfig.TIME_PERCENT[timeIndex];}
             public FlightController.State state(){return flight.state();}
             public Camera3D camera(){return camera;}
-            public String status(){String cameraFeedback=CameraView.feedback();String text=!cameraFeedback.isEmpty()?cameraFeedback:arc.util.Time.millis()<ramFeedbackUntil?ramFeedbackText:status;return mouse!=null&&!mouse.nativeCapture()?text+" / HOST MOUSE · arrows at edges":text;}
+            public String status(){String buildFeedback=input.constructionFeedback(),cameraFeedback=CameraView.feedback();String text=!buildFeedback.isEmpty()?buildFeedback:!cameraFeedback.isEmpty()?cameraFeedback:arc.util.Time.millis()<ramFeedbackUntil?ramFeedbackText:status;return mouse!=null&&!mouse.nativeCapture()?text+" / HOST MOUSE · arrows at edges":text;}
             public String skyClock(){return renderer3d.environment().clockLabel();}
             public String skyPhase(){return renderer3d.environment().phaseLabel();}
             public String flightMode(){return pilotModeLabel();}
