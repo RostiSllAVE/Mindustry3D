@@ -65,6 +65,8 @@ public final class FpvNetwork implements AutoCloseable {
     private final Map<String,Channel> channels=new LinkedHashMap<>();
     private final Map<String,NetProtocol.Assembly> assemblies=new HashMap<>();
     private final RemotePoses remote=new RemotePoses();
+    // Reused only within one game-thread snapshot batch; immutable values, visibility stays per peer.
+    private final IdentityHashMap<Unit,Unit3DState> poseFrame=new IdentityHashMap<>();
     private final Cons2<Player,byte[]> serverHandler=this::receiveServer;
     private final Cons<byte[]> clientHandler=this::receiveClient;
     private final Runnable beforeHook=this::before,afterHook=this::after;
@@ -259,7 +261,7 @@ public final class FpvNetwork implements AutoCloseable {
         submitted=NetworkControls.hold();firstClientInput=false;replayInitialState=false;
         if(Vars.net.client())connection.resetWorld(now(),channels.keySet());else connection.offline();
         lastConstructionReply=-1;
-        supportEffects.clear();GroundUnitProfiles.clearRemoteSettings();
+        supportEffects.clear();GroundUnitProfiles.clearRemoteSettings();poseFrame.clear();
         for(Session session:sessions.values())session.release();sessions.clear();creator.clear();boost.clear();remote.clear();assemblies.clear();frameStart.clear();contacts.clear();collisionOwner=null;
         epoch=Vars.net.server()?Math.max(1,System.nanoTime()):0;revision=0;acknowledged=false;
         // ACK can reach a client before native world streaming finishes. Retain its sequence
@@ -389,14 +391,30 @@ public final class FpvNetwork implements AutoCloseable {
         }
     }
     private void sendSnapshots(){
+        int recipients=0;for(var e:peers.entrySet())if(e.getValue().accepted&&e.getKey().con!=null)recipients++;
+        boolean reuse=recipients>1;poseFrame.clear();
+        try{
         for(var entry:peers.entrySet()){
             Player player=entry.getKey();if(!entry.getValue().accepted||player.con==null)continue;
-            var units=new ArrayList<Unit3DState>();for(Unit unit:Groups.unit){if(unit.isSyncHidden(player.team()))continue;Unit3DState s=world.unitState(unit);if(s!=null&&units.size()<NetworkConfig.MAX_UNIT_STATES)units.add(s);}
+            long collect=diagnostic.start();int queried=0,hits=0;
+            var units=new ArrayList<Unit3DState>();for(Unit unit:Groups.unit){
+                if(unit.isSyncHidden(player.team())||units.size()>=NetworkConfig.MAX_UNIT_STATES)continue;
+                Unit3DState s;
+                if(reuse&&poseFrame.containsKey(unit)){s=poseFrame.get(unit);hits++;}
+                else {s=world.unitState(unit);queried++;if(reuse)poseFrame.put(unit,s);}
+                if(s!=null)units.add(s);
+            }
             Session local=sessions.get(player.id);
             if(local!=null&&UnitControlCapabilities.stationary(local.unit))units.add(local.body());
+            diagnostic.end(NetworkDiagnostics.Metric.POSE_COLLECT_MS,collect);
+            diagnostic.data.add(NetworkDiagnostics.Counter.POSE_QUERIES,queried);diagnostic.data.add(NetworkDiagnostics.Counter.POSE_QUERY_REUSE,hits);
+            diagnostic.data.add(NetworkDiagnostics.Counter.POSE_VISIBLE_STATES,units.size());
             NetProtocol.Flight own=local==null?null:new NetProtocol.Flight(player.id,local.unitId,local.flight.profile(),local.flight.state());
-            sendChunks(player,"poses",NetProtocol.snapshot(new NetProtocol.Snapshot(units,own)));
+            long encode=diagnostic.start();byte[] bytes;
+            try{bytes=PoseSnapshotCodec.encode(new NetProtocol.Snapshot(units,own));}finally{diagnostic.end(NetworkDiagnostics.Metric.POSE_ENCODE_MS,encode);}
+            long submit=diagnostic.start();try{sendChunks(player,"poses",bytes);}finally{diagnostic.end(NetworkDiagnostics.Metric.POSE_CHUNK_SUBMIT_MS,submit);}
         }
+        }finally{poseFrame.clear();}
     }
     private void sendAck(Player player){if(epoch==0)epoch=Math.max(1,System.nanoTime());if(player.con!=null){byte[] message=NetProtocol.encode(NetProtocol.ACK,epoch,sequence++,out->out.writeUTF(fingerprint));Call.clientBinaryPacketReliable(player.con,PACKET,message);diagnostic.data.packet(true,true,message.length);}}
     private void sendChunks(Player player,String name,byte[] data){
@@ -458,7 +476,12 @@ public final class FpvNetwork implements AutoCloseable {
             if(complete==null){diagnostic.data.count(NetworkDiagnostics.Counter.CHUNKS_INCOMPLETE_OR_STALE);return;}
             diagnostic.data.channel(chunk.channel(),false,complete.length);long applyStart=diagnostic.start();
             try{
-                if(chunk.channel().equals("poses")){remote.accept(NetProtocol.snapshot(complete),now());receivedSnapshots++;diagnostic.snapshot();connection.poses();}
+                if(chunk.channel().equals("poses")){
+                    long decode=diagnostic.start();NetProtocol.Snapshot snapshot;
+                    try{snapshot=PoseSnapshotCodec.decode(complete);}finally{diagnostic.end(NetworkDiagnostics.Metric.POSE_DECODE_MS,decode);}
+                    long apply=diagnostic.start();try{remote.accept(snapshot,now());}finally{diagnostic.end(NetworkDiagnostics.Metric.POSE_APPLY_MS,apply);}
+                    receivedSnapshots++;diagnostic.snapshot();connection.poses();
+                }
                 else {channels.get(chunk.channel()).clientApply.accept(complete);connection.applied(chunk.channel());diagnostic.data.count(NetworkDiagnostics.Counter.CHANNEL_APPLIES);}
             }catch(RuntimeException|LinkageError invalidState){
                 rejectedPackets++;diagnostic.data.count(NetworkDiagnostics.Counter.STATE_APPLY_FAILURE);

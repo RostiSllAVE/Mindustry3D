@@ -133,3 +133,11 @@ is the exact point and visible error from the previously affected campaign copy,
 including whether F5 fails on entry or only after changing/reloading a sector.
 Physical offline campaign acceptance remains pending; multiplayer acceptance
 requires a real two-computer run and is not inferred from this work.
+
+### Owner follow-up received before A2-04
+
+The owner reports successful offline campaign F5, Tab, saving and transitions
+between sectors. These specific physical checks are now owner-confirmed. The
+automated evidence above is unchanged; long playthrough and real two-computer
+hosted campaign acceptance are still pending. No platform-wide certification is
+inferred from this report.

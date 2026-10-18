@@ -1,0 +1,127 @@
+{
+  "status": "LOCAL DIAGNOSTIC ONLY; no publication or real-network acceptance",
+  "date": "2026-10-18",
+  "branch": "main",
+  "baselineCommit": "cb54e181109f80ded051a795dfb6af62dd4fc14b",
+  "baselineJarSha256": "07342fb7d389ec1d860715c8a4099f2036d8b5152fc07b57f31c6e853cbcca4f",
+  "internalVersion": "0.18.31",
+  "protocolBefore": 3,
+  "protocolAfter": 4,
+  "jarFile": "mindustry-fpv-a2-04-diagnostics.jar",
+  "jarSha256": "40063e1177b72b553f9020ffe807d7a43c647aceb27ac564fd16eb87e852e60b",
+  "payloadIdentity": "payload1-d9a8e93c05213bc972f5c3e1b8b1913ff158d3fedc3cf4eeab25d4c445fa0341",
+  "jarEntries": 1021,
+  "javaClassMajorMax": 61,
+  "tests": {
+    "java17ProgramsPassed": 122,
+    "stockSteamJava25ProgramsPassed": 122,
+    "codecChecksPassed": 8088,
+    "nativeSenderChecksPassed": 8,
+    "coldLegacyCampaignChecksPassed": 8,
+    "nativeFixturesUseInMemoryConnectionsAndInjectedDigest": true,
+    "pairedPhysicalGameplay": "NOT TESTED",
+    "socketCapability": "UNAVAILABLE: IOException before connection; no escalation",
+    "linuxPhysicalRuntime": "NOT TESTED",
+    "steamJoinAndNewImportRestart": "NOT TESTED",
+    "jarFolderIdentityStockJava25": "PASS"
+  },
+  "transport": {
+    "poses": "reliable, unchanged",
+    "persistentState": "reliable, unchanged",
+    "snapshotHz": 10,
+    "interpolationMilliseconds": 100,
+    "prediction": false,
+    "deltaDependencies": false,
+    "numericPrecision": "bit-exact double values, no quantization",
+    "strictCanonicalIdentity": "unchanged; old protocol rejected"
+  },
+  "measurementBoundary": "Actual encoder/native LZ4 serializer and reader/assembler/apply in memory; not NIC throughput, gameplay FPS, live battle or OS queue depth",
+  "models": {
+    "scenarios": 72,
+    "bytesPerSecond": [
+      32000,
+      125000,
+      500000,
+      2000000
+    ],
+    "roundTripMilliseconds": [
+      20,
+      250
+    ],
+    "optionalServiceStallMilliseconds": 250,
+    "socketOrTcpSteamEmulation": false
+  },
+  "confirmedLimitation": {
+    "status": "FAIL in deterministic existing assembler probe, before AND after",
+    "units": 4096,
+    "bytesPerSecond": 32000,
+    "existingAssemblyLimitSeconds": 5,
+    "frameDeliveryBeforeSeconds": 9.222656,
+    "frameDeliveryAfterSeconds": 6.589625,
+    "realRemoteFailureConfirmed": false
+  },
+  "regressions": [
+    "100 and 1000 single-recipient native sender mean costs increase in this sample",
+    "4096 entropy native serialized size increases about 0.5%; encode/decode costs increase",
+    "Reliable congestion/backlog and head-of-line blocking remain"
+  ],
+  "priorArtifacts": {
+    "a201SnapshotFilesUnchanged": 2065,
+    "a202AndA203JarSourceKitUnchanged": [
+      "mindustry-fpv-a2-02-diagnostics.jar",
+      "mindustry-fpv-a2-02-corresponding-source.zip",
+      "mindustry-fpv-a2-02-test-kit.zip",
+      "mindustry-fpv-a2-03-diagnostics.jar",
+      "mindustry-fpv-a2-03-corresponding-source.zip",
+      "mindustry-fpv-a2-03-test-kit.zip"
+    ],
+    "primaryPlayerSaveAccess": false
+  },
+  "a203OwnerReport": "Offline campaign F5, Tab, saving and sector transitions work; no hosted or Linux networking inference",
+  "evidence": {
+    "local/a2-04/verified-build.log": {
+      "sha256": "61ae3f495e3616125499df6ea61ece4fc50ea4a8c1903671e157dc6e71c873a3",
+      "bytes": 13365
+    },
+    "local/a2-04/steam25-tests.log": {
+      "sha256": "c5b36250457135810d794b3e422c6fb9edd2d00d65f6cc3fdc67093ba8f7c57a",
+      "bytes": 18297
+    },
+    "local/a2-04/legacy-campaign.log": {
+      "sha256": "17e80c733df4f42d1becf05fe99b450f11431c04b8a355f54934d96c0d6146a0",
+      "bytes": 228
+    },
+    "local/a2-04/socket-capability.log": {
+      "sha256": "4d978c6dd9774c8511670503de60242bbb723154e4ab79e68cda66c4a20a5ab6",
+      "bytes": 86
+    },
+    "docs/alpha-v2/A2-04-after-codec.csv": {
+      "sha256": "8a4ce29d5e9ec280eda0bcd900d75be3d8217ce39ba378f85d4d37ff140977d5",
+      "bytes": 1268
+    },
+    "docs/alpha-v2/A2-04-after-native-server.csv": {
+      "sha256": "5910d4c2b3586892f1145b0ab92de6ad5a4b2558542b6fa7797c60bd8ac0e1b8",
+      "bytes": 455
+    },
+    "docs/alpha-v2/A2-04-before-codec.csv": {
+      "sha256": "fe69a1adbb21d15a26bb1bb69f817bf7a96fbaba0347eb0b3cc16c0eeccaad3d",
+      "bytes": 1268
+    },
+    "docs/alpha-v2/A2-04-before-native-server.csv": {
+      "sha256": "206112f0ac6271b10d5361510b29745beb2ff7e16cc25069b790650aa5f14341",
+      "bytes": 454
+    },
+    "docs/alpha-v2/A2-04-link-model.csv": {
+      "sha256": "b107a97ac7d3f90a52b50db537069011cb3973cf5b5aadfde6a878c8fdcbc82e",
+      "bytes": 8121
+    },
+    "docs/alpha-v2/A2-04-slow-assembly.csv": {
+      "sha256": "f3458d42b646c6b10a035257d628ad5b7c337fe6c6d6dc167ad950fe93b33d0f",
+      "bytes": 749
+    },
+    "local/a2-04/identity-check.log": {
+      "sha256": "e78ad4747dd6580dbeb99f5f7acf8f2d9f2bf496db9b0ecffb20446308b42d17",
+      "bytes": 119
+    }
+  }
+}

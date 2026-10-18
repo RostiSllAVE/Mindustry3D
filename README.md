@@ -211,6 +211,13 @@ Historical [Alpha 1.0.3 distribution audit](docs/releases/ALPHA-1.0.3-DISTRIBUTI
 [0.18.29 capture validation](docs/releases/MOUSE-CAPTURE-0.18.29.md) and the
 [original publication audit](docs/releases/PUBLICATION-READINESS.md) are preserved.
 
+Unreleased Alpha v2 diagnostic work is documented separately:
+[A2-04 snapshot measurements and limits](docs/alpha-v2/A2-04-NETWORK-OPTIMIZATION.md),
+[test matrix](docs/alpha-v2/A2-04-TEST-MATRIX.md) and
+[paired owner test](docs/alpha-v2/A2-04-MANUAL-TEST.md).
+Its protocol 4 payload must match on every participant; it is not a replacement
+for the published Alpha artifacts. Reliable-stream congestion remains unresolved.
+
 ## License
 
 Project code: **GPL-3.0-only**, [LICENSE](LICENSE). No warranty.

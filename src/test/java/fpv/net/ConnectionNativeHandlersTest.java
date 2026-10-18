@@ -94,7 +94,7 @@ public final class ConnectionNativeHandlersTest {
         void poses(long epoch)throws Exception{
             var u=Vars.player.unit();var f=new FlightController(FlightProfiles.create());f.reset(10,4,-10,0);
             var pose=new Unit3DState(u.id,u.type.id,u.team.id,10,10,4,0,0,0,0,0,0,4,.5,.2,u.type.flying);
-            state("poses",NetProtocol.snapshot(new NetProtocol.Snapshot(List.of(pose),new NetProtocol.Flight(Vars.player.id,u.id,f.profile(),f.state()))),epoch);
+            state("poses",PoseSnapshotCodec.encode(new NetProtocol.Snapshot(List.of(pose),new NetProtocol.Flight(Vars.player.id,u.id,f.profile(),f.state()))),epoch);
         }
         void synchronize(long epoch)throws Exception{var values=initial();for(var item:values.entrySet())state(item.getKey(),item.getValue(),epoch);poses(epoch);tick();}
         public void close(){net.close();layers.close();}
