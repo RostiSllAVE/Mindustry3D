@@ -65,6 +65,13 @@ public final class FpvNetwork implements AutoCloseable {
     private final Map<String,Channel> channels=new LinkedHashMap<>();
     private final Map<String,NetProtocol.Assembly> assemblies=new HashMap<>();
     private final RemotePoses remote=new RemotePoses();
+    public static final String PREDICTION_SETTING="fpv-client-prediction";
+    private final LocalPilotPrediction prediction=new LocalPilotPrediction();
+    private final PredictionContact predictionContact;
+    private PilotCheckpoint pilotCheckpoint;
+    private long remotePoseRevision=-1,predictedRevision=-1;
+    private Unit predictedUnit;
+    private Unit3DState presentedBody;
     // Reused only within one game-thread snapshot batch; immutable values, visibility stays per peer.
     private final IdentityHashMap<Unit,Unit3DState> poseFrame=new IdentityHashMap<>();
     private final Cons2<Player,byte[]> serverHandler=this::receiveServer;
@@ -96,6 +103,7 @@ public final class FpvNetwork implements AutoCloseable {
                       RadialExplosion explosions,DoubleBinaryOperator surfaceHeight){
         this.world=Objects.requireNonNull(world);this.altitudes=Objects.requireNonNull(altitudes);
         this.combat=Objects.requireNonNull(combat);this.explosions=Objects.requireNonNull(explosions);surface=Objects.requireNonNull(surfaceHeight);
+        predictionContact=new PredictionContact(world);
         creator=new CreatorFlightSystem(world,altitudes,explosions);
         boost=new NativeBoostSystem(world,altitudes,explosions);
     }
@@ -153,7 +161,7 @@ public final class FpvNetwork implements AutoCloseable {
         boost.control(player,unit,controls);creator.control(player,unit,controls);
         if(UnitControlCapabilities.boostEligible(unit))player.boosting=boost.active(unit)||creator.active(unit);
     }
-    public String status(){return status;}
+    public String status(){return Vars.net.client()&&predictedUnit!=null&&prediction.active(predictedUnit.id,predictedUnit.type.id,predictedUnit.team.id)&&!prediction.fresh(now())?status+" / LOCAL POSE HOLD":status;}
     public String fingerprint(){return fingerprint;}
     public int acceptedInputs(){return acceptedInputs;}
     public int rejectedPackets(){return rejectedPackets;}
@@ -179,8 +187,48 @@ public final class FpvNetwork implements AutoCloseable {
         if(Vars.player==null||Vars.player.dead())return false;
         if(Vars.net.server()){Session session=sessions.get(Vars.player.id);if(session==null||session.unit!=Vars.player.unit())return false;
             target.configureProfile(session.flight.profile());NetProtocol.copy(session.flight.state(),target.state());return true;}
-        var latest=remote.latestFlight();return connection.ready()&&latest!=null&&latest.playerId()==Vars.player.id&&latest.unitId()==Vars.player.unit().id&&remote.copyFlight(target,now());
+        var latest=remote.latestFlight();if(!connection.ready()||latest==null||latest.playerId()!=Vars.player.id||latest.unitId()!=Vars.player.unit().id)return false;
+        if(predictionEnabled()){
+            if(predictedUnit==Vars.player.unit()&&prediction.active(Vars.player.unit().id,Vars.player.unit().type.id,Vars.player.unit().team.id)&&prediction.copy(target))return true;
+            target.configureProfile(latest.profile());NetProtocol.copy(latest.state(),target.state());return true;
+        }
+        return remote.copyFlight(target,now());
     }
+    private boolean predictionEnabled(){return Core.settings==null||Core.settings.getBool(PREDICTION_SETTING,true);}
+    public void clearLocalPrediction(){
+        if(predictedUnit==null&&presentedBody==null&&predictedRevision==-1)return;
+        prediction.clear();predictedUnit=null;presentedBody=null;predictedRevision=-1;
+    }
+    /** Called by the frontend AFTER current-frame mouse/input sampling. No authoritative entity write. */
+    public boolean predictLocalFlight(FlightController target,NetworkControls controls,double seconds){
+        if(!Vars.net.client()||!connection.ready()||!predictionEnabled()||Vars.player==null||Vars.player.dead()||Vars.state.isPaused()){
+            clearLocalPrediction();return false;
+        }
+        Unit unit=Vars.player.unit();if(predictedUnit!=unit||presentedBody!=null&&(presentedBody.unitId()!=unit.id||presentedBody.typeId()!=unit.type.id||presentedBody.teamId()!=unit.team.id)){clearLocalPrediction();predictedUnit=unit;}
+        var own=remote.latestFlight();var body=remote.latest(unit.id);var receipt=pilotCheckpoint;
+        if(own==null||body==null||receipt==null||receipt.unitId()!=unit.id||receipt.typeId()!=unit.type.id||receipt.teamId()!=unit.team.id)return false;
+        predictionContact.configure(unit,body,receipt.kind());predictionContact.begin();long timer=diagnostic.start();
+        try{
+            if(receipt.revision()==remotePoseRevision&&predictedRevision!=receipt.revision()){
+                int corrections=prediction.corrections(),hard=prediction.hardCorrections();
+                if(!prediction.accept(own,body,receipt,now(),predictionContact))return false;
+                predictedRevision=receipt.revision();
+                diagnostic.data.sample(NetworkDiagnostics.Metric.PREDICTION_POSITION_ERROR_TILES,prediction.positionError());
+                diagnostic.data.sample(NetworkDiagnostics.Metric.PREDICTION_ANGLE_ERROR_DEGREES,prediction.orientationErrorDegrees());
+                diagnostic.data.sample(NetworkDiagnostics.Metric.PREDICTION_CORRECTION_TILES,prediction.correctionMagnitude());
+                diagnostic.data.add(NetworkDiagnostics.Counter.PREDICTION_REPLAY_FRAMES,prediction.replayedSteps());
+                diagnostic.data.add(NetworkDiagnostics.Counter.PREDICTION_CORRECTIONS,prediction.corrections()-corrections);
+                diagnostic.data.add(NetworkDiagnostics.Counter.PREDICTION_HARD_RESETS,prediction.hardCorrections()-hard);
+            }
+            boolean stepped=prediction.step(now(),Math.max(0,Math.min(.1,seconds)),controls,predictionContact);
+            if(prediction.copy(target))presentedBody=prediction.body(body);
+            if(!stepped)diagnostic.data.count(NetworkDiagnostics.Counter.PREDICTION_STALE_HOLDS);
+            return stepped;
+        }finally{predictionContact.end();diagnostic.end(NetworkDiagnostics.Metric.PREDICTION_MS,timer);}
+    }
+    /** Renderer-only ghost. World queries, hit tests, builder range and native entity XY stay authoritative. */
+    public Unit3DState presentationBody(Unit unit){return Vars.net.client()&&connection.ready()&&Vars.player!=null&&!Vars.player.dead()&&unit==Vars.player.unit()
+        &&unit==predictedUnit&&presentedBody!=null&&presentedBody.unitId()==unit.id&&presentedBody.typeId()==unit.type.id&&presentedBody.teamId()==unit.team.id&&predictionEnabled()?presentedBody:null;}
     public Unit3DState externalState(Unit unit){
         if(unit==null||!Vars.net.active())return null;
         if(Vars.net.client()){Unit3DState pose=remote.display(unit.id,now());return pose!=null&&pose.typeId()==unit.type.id&&pose.teamId()==unit.team.id?pose:null;}
@@ -261,7 +309,7 @@ public final class FpvNetwork implements AutoCloseable {
         submitted=NetworkControls.hold();firstClientInput=false;replayInitialState=false;
         if(Vars.net.client())connection.resetWorld(now(),channels.keySet());else connection.offline();
         lastConstructionReply=-1;
-        supportEffects.clear();GroundUnitProfiles.clearRemoteSettings();poseFrame.clear();
+        supportEffects.clear();GroundUnitProfiles.clearRemoteSettings();poseFrame.clear();clearLocalPrediction();pilotCheckpoint=null;remotePoseRevision=-1;
         for(Session session:sessions.values())session.release();sessions.clear();creator.clear();boost.clear();remote.clear();assemblies.clear();frameStart.clear();contacts.clear();collisionOwner=null;
         epoch=Vars.net.server()?Math.max(1,System.nanoTime()):0;revision=0;acknowledged=false;
         // ACK can reach a client before native world streaming finishes. Retain its sequence
@@ -293,7 +341,7 @@ public final class FpvNetwork implements AutoCloseable {
         if(connection.stage()==ConnectionLifecycle.Stage.FAILED)failClient(connection.failure(),null);
     }
     private void failClient(ConnectionLifecycle.Failure reason,String channel){
-        connection.fail(reason,channel);status=connection.message();acknowledged=false;submitted=NetworkControls.hold();remote.clear();assemblies.clear();
+        connection.fail(reason,channel);status=connection.message();acknowledged=false;submitted=NetworkControls.hold();remote.clear();assemblies.clear();clearLocalPrediction();pilotCheckpoint=null;remotePoseRevision=-1;
         if(connectionFailureQueued)return;connectionFailureQueued=true;
         diagnostic.data.count(NetworkDiagnostics.Counter.CONNECTION_FAILED);diagnostic.flush();
         Log.warn("[FPV-NET] Session failed: @ / @",connection.failure().name(),channel==null?"NONE":NetworkDiagnostics.Channel.of(channel).name());
@@ -325,7 +373,7 @@ public final class FpvNetwork implements AutoCloseable {
             updateClientConnection();
             if(connection.stage()==ConnectionLifecycle.Stage.FAILED)return;
             if(Vars.state.isGame()&&Vars.player!=null&&now()>=nextHello&&(!acknowledged||replayInitialState&&!Vars.netClient.isConnecting()&&!Vars.world.isGenerating())){nextHello=now()+1;byte[] message=NetProtocol.encode(NetProtocol.HELLO,0,sequence++,out->out.writeUTF(fingerprint));Call.serverBinaryPacketReliable(PACKET,message);replayInitialState=false;diagnostic.data.packet(true,true,message.length);diagnostic.data.count(NetworkDiagnostics.Counter.HELLO_TX);}
-            if(connection.initialStateComplete()&&now()>=nextInput&&(fixtureTransmit==null||fixtureTransmit.getAsBoolean())){nextInput=now()+1/NetworkConfig.INPUT_HZ;NetworkControls outbound=connection.ready()?submitted:NetworkControls.hold();byte[] message=NetProtocol.encode(NetProtocol.INPUT,epoch,sequence++,out->NetProtocol.controls(out,outbound));Call.serverBinaryPacketUnreliable(PACKET,message);diagnostic.data.packet(true,false,message.length);diagnostic.inputSent();if(!firstClientInput){firstClientInput=true;diagnostic.data.count(NetworkDiagnostics.Counter.FIRST_INPUT_TX);}}
+            if(connection.initialStateComplete()&&now()>=nextInput&&(fixtureTransmit==null||fixtureTransmit.getAsBoolean())){nextInput=now()+1/NetworkConfig.INPUT_HZ;NetworkControls outbound=connection.ready()?submitted:NetworkControls.hold();long inputSequence=sequence++;byte[] message=NetProtocol.encode(NetProtocol.INPUT,epoch,inputSequence,out->NetProtocol.controls(out,outbound));Call.serverBinaryPacketUnreliable(PACKET,message);if(predictedUnit!=null)prediction.sent(inputSequence,now());diagnostic.data.packet(true,false,message.length);diagnostic.inputSent();if(!firstClientInput){firstClientInput=true;diagnostic.data.count(NetworkDiagnostics.Counter.FIRST_INPUT_TX);}}
             diagnostic.localAge();
             if(diagnostic.data.enabled())diagnostic.data.sample(NetworkDiagnostics.Metric.INTERPOLATION_ALPHA,remote.diagnosticAlpha(now()));
             // Native SyncLocal fields deliberately omit the owner's XY. Reconcile those fields
@@ -412,7 +460,10 @@ public final class FpvNetwork implements AutoCloseable {
             NetProtocol.Flight own=local==null?null:new NetProtocol.Flight(player.id,local.unitId,local.flight.profile(),local.flight.state());
             long encode=diagnostic.start();byte[] bytes;
             try{bytes=PoseSnapshotCodec.encode(new NetProtocol.Snapshot(units,own));}finally{diagnostic.end(NetworkDiagnostics.Metric.POSE_ENCODE_MS,encode);}
-            long submit=diagnostic.start();try{sendChunks(player,"poses",bytes);}finally{diagnostic.end(NetworkDiagnostics.Metric.POSE_CHUNK_SUBMIT_MS,submit);}
+            long submit=diagnostic.start();try{sendChunks(player,"poses",bytes);
+                if(local!=null){var checkpoint=local.checkpoint(revision);byte[] adjunct=NetProtocol.encode(NetProtocol.STATE,epoch,sequence++,out->out.write(checkpoint.encode()));
+                    Call.clientBinaryPacketReliable(player.con,PACKET,adjunct);diagnostic.data.packet(true,true,adjunct.length);}
+            }finally{diagnostic.end(NetworkDiagnostics.Metric.POSE_CHUNK_SUBMIT_MS,submit);}
         }
         }finally{poseFrame.clear();}
     }
@@ -457,14 +508,19 @@ public final class FpvNetwork implements AutoCloseable {
                 if(packet.epoch()==0){rejectedPackets++;failClient(ConnectionLifecycle.Failure.INVALID_PROTOCOL,null);return;}
                 diagnostic.data.count(NetworkDiagnostics.Counter.ACK_RX);
                 if(connection.stage()==ConnectionLifecycle.Stage.OFFLINE)connection.begin(now(),channels.keySet());
-                if(epoch!=packet.epoch()){remote.clear();assemblies.clear();GroundUnitProfiles.clearRemoteSettings();}
+                if(epoch!=packet.epoch()){remote.clear();assemblies.clear();GroundUnitProfiles.clearRemoteSettings();clearLocalPrediction();pilotCheckpoint=null;remotePoseRevision=-1;}
                 epoch=packet.epoch();acknowledged=true;connection.acknowledged(epoch,now());
                 diagnostic.data.sample(NetworkDiagnostics.Metric.CONNECTION_HANDSHAKE_MS,connection.handshakeMs());
                 status=connection.message();return;
             }
-            if(!acknowledged||packet.epoch()!=epoch||packet.kind()!=NetProtocol.CHANNEL){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_EPOCH_OR_KIND);rejectedPackets++;return;}
+            if(!acknowledged||packet.epoch()!=epoch||(packet.kind()!=NetProtocol.CHANNEL&&packet.kind()!=NetProtocol.STATE)){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_EPOCH_OR_KIND);rejectedPackets++;return;}
             if(!connection.acceptsState()||Vars.world.isGenerating()||Vars.netClient.isConnecting()){
                 replayInitialState=true;diagnostic.data.count(NetworkDiagnostics.Counter.EARLY_STATE_IGNORED);return;
+            }
+            if(packet.kind()==NetProtocol.STATE){
+                var receipt=PilotCheckpoint.decode(packet.payload());
+                if(receipt.revision()==remotePoseRevision&&(pilotCheckpoint==null||receipt.revision()>pilotCheckpoint.revision()))pilotCheckpoint=receipt;
+                return;
             }
             var chunk=NetProtocol.chunk(packet.payload());
             if(!chunk.channel().equals("poses")&&!channels.containsKey(chunk.channel())){rejectedPackets++;failClient(ConnectionLifecycle.Failure.INVALID_PROTOCOL,null);return;}
@@ -480,7 +536,7 @@ public final class FpvNetwork implements AutoCloseable {
                     long decode=diagnostic.start();NetProtocol.Snapshot snapshot;
                     try{snapshot=PoseSnapshotCodec.decode(complete);}finally{diagnostic.end(NetworkDiagnostics.Metric.POSE_DECODE_MS,decode);}
                     long apply=diagnostic.start();try{remote.accept(snapshot,now());}finally{diagnostic.end(NetworkDiagnostics.Metric.POSE_APPLY_MS,apply);}
-                    receivedSnapshots++;diagnostic.snapshot();connection.poses();
+                    remotePoseRevision=chunk.revision();receivedSnapshots++;diagnostic.snapshot();connection.poses();
                 }
                 else {channels.get(chunk.channel()).clientApply.accept(complete);connection.applied(chunk.channel());diagnostic.data.count(NetworkDiagnostics.Counter.CHANNEL_APPLIES);}
             }catch(RuntimeException|LinkageError invalidState){
@@ -516,6 +572,15 @@ public final class FpvNetwork implements AutoCloseable {
         final GroundedPilot groundPilot=new GroundedPilot();
         final FlightController.StepObserver collision=(s,x,y,z,dt,elapsed)->collide(x,y,z,dt,elapsed);
         NetworkControls controls=NetworkControls.hold();FlightProfile performance;
+        long appliedSequence=-1;double heldSeconds;
+        PilotCheckpoint checkpoint(long rev){
+            boolean airborne=boost.active(unit)||creator.active(unit);boolean landing=boost.landing(unit)||creator.landing(unit);
+            int kind=UnitControlCapabilities.stationary(unit)?PilotCheckpoint.FIXED:landing?PilotCheckpoint.LANDING:creator.active(unit)?PilotCheckpoint.CREATOR:unit.type.flying||airborne?PilotCheckpoint.AIR:PilotCheckpoint.GROUND;
+            var memory=boost.presentationMemory(unit);if(memory==null)memory=creator.presentationMemory(unit);if(memory==null)memory=flight.memory();
+            double speed=boost.active(unit)?boost.presentationSpeed(unit):creator.active(unit)?creator.presentationSpeed(unit):unit.type.flying?performance.practicalSpeedMps():unit.speed()*60.0/Vars.tilesize*flight.profile().metersPerTile;
+            return new PilotCheckpoint(rev,player.id,unitId,unit.type.id,unit.team.id,appliedSequence,heldSeconds,kind,Math.max(0,Math.min(400,speed)),
+                Math.max(0,Math.min(60,Core.settings.getInt("fpv-build-speed",12))),Math.max(0,Math.min(100,unit.type.accel)),Math.max(0,Math.min(100,unit.drag)),memory);
+        }
         Session(Player player,Unit unit){this.player=player;this.unit=unit;unitId=unit.id;
             var initial=altitudes.unitState(unit);double height=initial==null?surface.applyAsDouble(unit.x/8.0,-unit.y/8.0)+RuntimeConfig.START_HEIGHT:initial.z();
             flight.reset(unit.x/8.0,Math.max(height,surface.applyAsDouble(unit.x/8.0,-unit.y/8.0)+halfDepth()),-unit.y/8.0,90-unit.rotation);
@@ -529,6 +594,8 @@ public final class FpvNetwork implements AutoCloseable {
             if(unit.type.flying)motion.syncFromSimulation(unit,flight.state());else {motion.reset();copyGroundPose();}
         }
         void step(double dt){
+            Peer peer=peers.get(player);long input=peer==null?-1:peer.lastSequence;
+            if(appliedSequence!=input){appliedSequence=input;heldSeconds=0;}heldSeconds=Math.min(60,heldSeconds+dt);
             controlGroundFlight(player,unit,controls);
             if(!unit.type.flying){
                 if(creator.active(unit)||boost.active(unit))GroundedPilot.weapons(player,unit,controls);
@@ -569,7 +636,7 @@ public final class FpvNetwork implements AutoCloseable {
     private static final class Peer{boolean accepted,diagnosticPending,inputSeen,usableInputSeen;NetworkControls controls=NetworkControls.hold();long lastSequence=-1,lastConstructionSequence=-1;double joined=now(),lastInput,rateStart;int rateCount;final Map<String,Long> channels=new HashMap<>();}
     private static final class Channel{final Supplier<byte[]> serverData;final Consumer<byte[]> clientApply;double next;byte[] bytes;long version;boolean failed;
         Channel(Supplier<byte[]> source,Consumer<byte[]> destination){serverData=source;clientApply=destination;}}
-    @Override public void close(){if(closed)return;closed=true;for(Session session:sessions.values())session.release();sessions.clear();peers.clear();remote.clear();assemblies.clear();
+    @Override public void close(){if(closed)return;closed=true;clearLocalPrediction();pilotCheckpoint=null;for(Session session:sessions.values())session.release();sessions.clear();peers.clear();remote.clear();assemblies.clear();
         diagnostic.flush();diagnostic.data.enabled(false);
         creator.clear();boost.clear();supportEffects.clear();GroundUnitProfiles.clearRemoteSettings();
         if(nativeListeners!=null&&nativeListeners.get(ClientSnapshotCallPacket.class)==snapshotHandler){if(previousSnapshot==null)nativeListeners.remove(ClientSnapshotCallPacket.class);else nativeListeners.put(ClientSnapshotCallPacket.class,previousSnapshot);}

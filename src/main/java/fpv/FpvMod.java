@@ -161,6 +161,7 @@ public final class FpvMod extends Mod {
             }
             factorySpawns.install();combat.install();
             network=new FpvNetwork(world3d,unitAltitudes,combat,explosions,renderer3d::surfaceHeight);
+            renderer3d.setPilotPresentation(network::presentationBody);
             renderer3d.supportEffects().setState(network.supportEffects());
             network.registerProjection(projectedWalls);
             network.registerForceProjectors(forceProjectors);
@@ -308,8 +309,10 @@ public final class FpvMod extends Mod {
         Core.bundle.getProperties().put("setting.fpv-ram-strength.name","Impact damage strength");
         Core.bundle.getProperties().put("setting.fpv-threat-markers.name","Show Unit Threat Markers");
         Core.bundle.getProperties().put("setting.fpv-net-diagnostics.name","Record multiplayer diagnostics (local, opt-in)");
+        Core.bundle.getProperties().put("setting.fpv-client-prediction.name","Local pilot prediction (multiplayer presentation)");
         Vars.ui.settings.addCategory("FPV flight", table -> {
             table.checkPref("fpv-net-diagnostics",false);
+            table.checkPref(FpvNetwork.PREDICTION_SETTING,true);
             table.label(()->network.status()).wrap().width(460).row();
             table.checkPref("fpv-threat-markers",true);
             table.sliderPref("fpv-wall-view-distance",100,20,2000,10,i->i+" tiles (visual only)");
@@ -464,7 +467,7 @@ public final class FpvMod extends Mod {
             if(Vars.player==null||Vars.player.dead()) {releasePilot();setBuildMode(false);if(mouse!=null)mouse.setCaptured(false);input.setSuspended(true);restoreCursor();ready=false;if(network!=null)network.submit(NetworkControls.hold());return;}
             Unit unit=Vars.player.unit();
             if(unit.id!=unitId||unit!=trackedPilot||!ready) {resetPose();if(autoEnable)setEnabled(true);}
-            if(!enabled){submitNativeControls();return;}
+            if(!enabled){network.clearLocalPrediction();submitNativeControls();return;}
             if(!onlineFlight()){
                 var performance=flightSettings.configure(flight,unit);
                 crashes.setControlledMass(performance.massKg());
@@ -540,8 +543,7 @@ public final class FpvMod extends Mod {
                 flight.getForward(vector);
                 unit.rotation=Mathf.angle((float)vector[0],(float)-vector[2]);
             }
-            updateCamera();
-            updatePick();
+            NetworkControls pendingControls=null;
             if(bodyOwned){
                 var aim=controlledAim();
                 boolean commandFence=commanding||input.commandPointerFence();
@@ -551,7 +553,15 @@ public final class FpvMod extends Mod {
                     commandFence?0:down(KeyCode.end)-down(KeyCode.home),freeLook.headingRadians(),aim.x(),aim.y(),aim.z(),
                     !suspended&&!buildMode&&!commanding&&!input.commandPointerFence()&&input.originalInput().keyDown(mindustry.input.Binding.select),false,boostRequested);
                 if(smokeMode&&smokeBoostControls!=null)controls=smokeBoostControls;
-                if(onlineFlight())network.submit(controls);else {network.controlGroundFlight(Vars.player,unit,controls);GroundedPilot.weapons(Vars.player,unit,controls);}
+                if(onlineFlight())network.predictLocalFlight(flight,controls,dt);
+                pendingControls=controls;
+            }
+            // One camera/picking update, after current input and display replay; no duplicate raycast pass.
+            updateCamera();updatePick();
+            if(pendingControls!=null){
+                if(!(smokeMode&&smokeBoostControls!=null)){var sight=controlledAim();pendingControls=pendingControls.withAim(sight.x(),sight.y(),sight.z());}
+                if(onlineFlight())network.submit(pendingControls);
+                else {network.controlGroundFlight(Vars.player,unit,pendingControls);GroundedPilot.weapons(Vars.player,unit,pendingControls);}
             }
         } catch(Throwable failure) {
             Log.err("[FPV] Controller error; returning to native 2D",failure);
@@ -585,7 +595,7 @@ public final class FpvMod extends Mod {
             fallbackLook(dt);
         }
         if(!onlineFlight())copyGroundPose(unit);
-        updateCamera();updatePick();var aim=controlledAim();
+        var aim=controlledAim();
         boolean active=!commanding&&!suspended&&!Vars.state.isPaused();
         NetworkControls controls=new NetworkControls(active,buildMode?2:3,0,0,0,0,
             commanding?0:down(KeyCode.w)-down(KeyCode.s),commanding?0:down(KeyCode.d)-down(KeyCode.a),
@@ -593,6 +603,9 @@ public final class FpvMod extends Mod {
             0,freeLook.headingRadians(),aim.x(),aim.y(),aim.z(),
             !buildMode&&active&&input.originalInput().keyDown(mindustry.input.Binding.select),creatorRequested,boostRequested);
         if(smokeMode&&smokeBoostControls!=null)controls=smokeBoostControls;
+        if(onlineFlight())network.predictLocalFlight(flight,controls,dt);
+        updateCamera();updatePick();
+        if(!(smokeMode&&smokeBoostControls!=null)){var sight=controlledAim();controls=controls.withAim(sight.x(),sight.y(),sight.z());}
         if(onlineFlight())network.submit(controls);
         else {
             network.controlGroundFlight(Vars.player,unit,controls);
@@ -609,6 +622,7 @@ public final class FpvMod extends Mod {
     }
     private void releasePilot(){
         observerCamera.reset();
+        if(network!=null)network.clearLocalPrediction();
         if(trackedPilot!=null&&!onlineFlight()){
             if(network!=null){network.creatorFlight().release(trackedPilot);network.nativeBoost().release(trackedPilot);}
             unitAltitudes.setGroundStanceControl(trackedPilot,false,0,0);motion.release(trackedPilot,flight.state());

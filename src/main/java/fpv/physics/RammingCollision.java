@@ -18,10 +18,13 @@ public final class RammingCollision {
     private final World3DAdapter world;
     private final IntSet visited=new IntSet();
     private final TargetPredictor predictor;
+    private final java.util.function.Function<Unit,Unit3DState> states;
     private final CollisionResponse.Motion targetMotion=new CollisionResponse.Motion();
     private Contact best;
     public RammingCollision(World3DAdapter world){this(world,null);}
-    public RammingCollision(World3DAdapter world,TargetPredictor predictor){this.world=world;this.predictor=predictor;}
+    public RammingCollision(World3DAdapter world,TargetPredictor predictor){this(world,predictor,world::unitState);}
+    /** Optional read-only poses; authoritative solvers retain the original world query. */
+    public RammingCollision(World3DAdapter world,TargetPredictor predictor,java.util.function.Function<Unit,Unit3DState> states){this.world=world;this.predictor=predictor;this.states=states;}
 
     public Contact first(Unit self,double x,double y,double z,double endX,double endY,double endZ,
                          double vx,double vy,double vz,double radius,double halfHeight,double seconds){
@@ -52,7 +55,7 @@ public final class RammingCollision {
         float qw=(float)(Math.abs(dx)+pad*2)*Vars.tilesize,qh=(float)(Math.abs(dy)+pad*2)*Vars.tilesize;
         Units.nearby(qx,qy,qw,qh,u->{
             if(u==self||u.dead||!u.hittable())return;
-            var target=world.unitState(u);if(target==null)return;
+            var target=states.apply(u);if(target==null)return;
             targetMotion.set(target.x(),target.y(),target.z(),target.vx(),target.vy(),target.vz(),elapsed);
             if(predictor!=null)predictor.predict(u,target,elapsed,targetMotion);
             var hit=SweptBodies.ellipsoid(x-targetMotion.x,y-targetMotion.y,z-targetMotion.z,

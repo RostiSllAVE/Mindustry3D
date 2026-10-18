@@ -110,6 +110,9 @@ public class CreatorFlightSystem {
     public Unit3DState state(Unit unit){Entry e=entries.get(unit);return e==null||e.id!=unit.id||unit.dead?null:e.body();}
     public boolean addVerticalVelocity(Unit unit,double delta){Entry e=entries.get(unit);if(e==null||e.groundedHold)return false;e.flight.state().vy+=Math.max(-30,Math.min(30,delta));return true;}
     public boolean copy(Unit unit,FlightController target){Entry e=entries.get(unit);if(e==null)return false;target.configureProfile(e.flight.profile());NetProtocol.copy(e.flight.state(),target.state());return true;}
+    /** Read-only server checkpoint adjunct; the client never creates flight/landing entries. */
+    public FlightController.Memory presentationMemory(Unit unit){Entry e=entries.get(unit);return e==null?null:e.flight.memory();}
+    public double presentationSpeed(Unit unit){Entry e=entries.get(unit);return e==null?0:e.configuredSpeed;}
     /** Called with authenticated axes for the player's actually possessed unit. */
     public void control(Player player,Unit unit,NetworkControls controls){
         if(Vars.net.client())return;
@@ -179,7 +182,7 @@ public class CreatorFlightSystem {
         final AIController landingController=new AIController(){@Override public void updateUnit(){}};
         UnitController previousController;NetworkControls controls=NetworkControls.hold();
         double landX,landY,landHeight,retrySeconds;boolean siteFound,siteChecked,roofFallback,groundedHold;int siteChanges=-1,siteMode;
-        FlightController.Profile boostSource,boostProfile;double boostSpeed=-1;final double[] direction=new double[3];
+        FlightController.Profile boostSource,boostProfile;double boostSpeed=-1,configuredSpeed;final double[] direction=new double[3];
         Entry(Player player,Unit unit){this(player,unit,null);}
         Entry(Player player,Unit unit,Saved saved){
             this.unit=unit;id=unit.id;owner=player;oldElevation=saved==null?0:saved.oldElevation();
@@ -201,10 +204,10 @@ public class CreatorFlightSystem {
         void land(){landing=true;}
         double configure(){
             var performance=settings.configure(flight,unit);crash.setControlledMass(performance.massKg());
-            if(!nativeBoost)return performance.practicalSpeedMps();
+            if(!nativeBoost)return configuredSpeed=performance.practicalSpeedMps();
             double speed=NativeBoostProfile.speed(unit.type.speed,unit.type.boostMultiplier,flight.profile().metersPerTile,Math.max(.25,Math.min(3,Core.settings.getInt("fpv-flight-speed",100)/100d)));
             if(boostSource!=performance.profile()||boostSpeed!=speed){boostSource=performance.profile();boostSpeed=speed;boostProfile=NativeBoostProfile.resolve(boostSource,speed);}
-            flight.configureProfile(boostProfile);return speed;
+            flight.configureProfile(boostProfile);return configuredSpeed=speed;
         }
         void step(double dt){
             unit.lastUpdated=0;unit.elevation=1;

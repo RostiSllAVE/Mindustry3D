@@ -119,6 +119,19 @@ public final class FlightController {
         return profile;
     }
 
+    /** Integrator-only checkpoint, for read-only presentation replay; never a client authority claim. */
+    public record Memory(double remainder,double motorThrottle) {
+        public Memory {
+            if(!Double.isFinite(remainder)||remainder<0||remainder>.1||!Double.isFinite(motorThrottle)||motorThrottle<0||motorThrottle>1)
+                throw new IllegalArgumentException("Bounded integration memory required");
+        }
+    }
+    public Memory memory(){return new Memory(accumulator,motorThrottle);}
+    public void restoreMemory(Memory memory){
+        if(memory.remainder()>profile.fixedStepSeconds+1e-12)throw new IllegalArgumentException("Integration remainder exceeds step");
+        accumulator=memory.remainder();motorThrottle=memory.motorThrottle();
+    }
+
     /**
      * Apply physical tuning on the simulation thread without resetting flight.
      * Coordinate scale and integration clocks cannot change under existing state.

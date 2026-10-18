@@ -26,6 +26,10 @@ final class AircraftWeaponRenderer implements AutoCloseable {
     int draws,ports;
     double maximumRecoil;
     java.util.function.DoubleBinaryOperator recoil;
+    private java.util.function.Function<Unit,fpv.world.Unit3DState> presentation;
+    private Point sourceCenter,displayCenter;
+    private AircraftWeaponGeometry.Frame sourceFrame,displayFrame;
+    void setPilotPresentation(java.util.function.Function<Unit,fpv.world.Unit3DState> value){presentation=value;}
     void setAim(AircraftWeapons value){aim=value;}
     void begin(){draws=ports=0;maximumRecoil=0;if(atlas!=Core.atlas){integrated.clear();colors.clear();atlas=Core.atlas;}guns.begin();}
     long builds(){return guns.builds();}long bytes(){return guns.bytes()+(port==null?0:12288)+(support==null?0:2304);}int models(){return guns.entries();}
@@ -33,6 +37,12 @@ final class AircraftWeaponRenderer implements AutoCloseable {
     boolean supports(Unit unit){if(aim==null||!aim.supports(unit))return false;for(var m:unit.mounts)if(aim.profile(unit,m)!=null)return true;return false;}
     void render(Unit unit,Camera3D camera,float ambient,boolean fpv){
         if(aim==null)return;
+        var ghost=presentation==null?null:presentation.apply(unit);var physical=ghost==null?null:aim.body(unit);
+        displayCenter=sourceCenter=null;
+        if(ghost!=null&&physical!=null){
+            sourceCenter=new Point(physical.x(),physical.y(),physical.z());displayCenter=new Point(ghost.x(),ghost.y(),ghost.z());
+            sourceFrame=AircraftWeaponGeometry.frame(physical.yaw(),physical.pitch(),physical.roll());displayFrame=AircraftWeaponGeometry.frame(ghost.yaw(),ghost.pitch(),ghost.roll());
+        }
         double maxX=0;if(fpv)for(var m:unit.mounts)maxX=Math.max(maxX,Math.abs(m.weapon.x));
         for(int index=0;index<unit.mounts.length;index++){var mount=unit.mounts[index];
             var s=aim.visual(unit,mount);if(s==null)continue;
@@ -47,6 +57,7 @@ final class AircraftWeaponRenderer implements AutoCloseable {
                 if(s.bomber()&&side!=s.side()||fpv&&side!=s.side())continue;
                 Point pivot=s.pivot();
                 if(side!=s.side())pivot=s.oppositePivot();
+                if(!fpv&&displayCenter!=null){var local=sourceFrame.local(AircraftWeaponGeometry.difference(pivot,sourceCenter));pivot=AircraftWeaponGeometry.add(displayCenter,displayFrame.world(local.x(),local.y(),local.z()));}
                 if(!fpv&&!s.bomber())drawSupport(unit,s,pivot,camera,ambient);
                 double kick=side==s.side()?FirstPersonRigPose.recoil(mount.recoil,w.recoilPow,w.recoil/Vars.tilesize):0;
                 if(fpv&&recoil!=null)kick=recoil.applyAsDouble(index,kick);maximumRecoil=Math.max(maximumRecoil,kick);
@@ -79,15 +90,16 @@ final class AircraftWeaponRenderer implements AutoCloseable {
         drawSolid(port,unit,camera,ambient);
     }
     private void drawSupport(Unit unit,AircraftWeapons.Solution s,Point pivot,Camera3D camera,float ambient){
-        var body=aim.body(unit);var bodyCenter=new Point(body.x(),body.y(),body.z());var offset=s.frame().local(AircraftWeaponGeometry.difference(pivot,bodyCenter));
+        var body=aim.body(unit);var bodyCenter=displayCenter==null?new Point(body.x(),body.y(),body.z()):displayCenter;
+        var frame=displayCenter==null?s.frame():displayFrame;var offset=frame.local(AircraftWeaponGeometry.difference(pivot,bodyCenter));
         double half=AircraftWeapons.walker(unit.type)?body.halfHeight():Math.min(Math.max(.15,Math.min(.75,unit.hitSize/(double)Vars.tilesize*.1)),Math.max(.025,SpriteExtrusionRenderer.halfDepth(unit))),gap=Math.max(.01,Math.abs(offset.y())-half),side=Math.signum(offset.y());
         if(support==null){float[] vertices=new float[36*8];int n=0;int[][] faces={{0,1,3,2},{4,6,7,5},{0,4,5,1},{2,3,7,6},{0,2,6,4},{1,5,7,3}};
             for(int f=0;f<6;f++)for(int corner:new int[]{0,1,2,0,2,3}){int v=faces[f][corner];vertices[n++]=(v&1)==0?-.5f:.5f;vertices[n++]=(v&2)==0?-.5f:.5f;vertices[n++]=(v&4)==0?-.5f:.5f;vertices[n++]=f==4?-1:f==5?1:0;vertices[n++]=f==2?-1:f==3?1:0;vertices[n++]=f==0?-1:f==1?1:0;vertices[n++]=.5f;vertices[n++]=.5f;}
             support=new Mesh(true,36,0,VertexAttribute.position3,VertexAttribute.normal,VertexAttribute.texCoords);support.setVertices(vertices);
         }
         double width=Math.max(.07,Math.min(.2,unit.hitSize/(double)Vars.tilesize*.05));
-        set(center,AircraftWeaponGeometry.add(bodyCenter,s.frame().world(offset.x(),side*(half+gap*.5),offset.z())));
-        set(right,s.frame().right()).scl((float)width);set(up,s.frame().up()).scl((float)gap);set(forward,s.frame().forward()).scl((float)(width*1.2));drawSolid(support,unit,camera,ambient);
+        set(center,AircraftWeaponGeometry.add(bodyCenter,frame.world(offset.x(),side*(half+gap*.5),offset.z())));
+        set(right,frame.right()).scl((float)width);set(up,frame.up()).scl((float)gap);set(forward,frame.forward()).scl((float)(width*1.2));drawSolid(support,unit,camera,ambient);
     }
     private void drawSolid(Mesh geometry,Unit unit,Camera3D camera,float ambient){
         if(portShader==null)portShader=new Shader("attribute vec3 a_position;attribute vec3 a_normal;uniform mat4 u_combined;uniform vec3 center,right,up,back;varying vec3 n;void main(){n=a_normal;gl_Position=u_combined*vec4(center+right*a_position.x+up*a_position.y+back*a_position.z,1.0);}","uniform sampler2D u_texture;uniform vec2 uv;uniform float ambient;varying vec3 n;void main(){vec3 c=texture2D(u_texture,uv).rgb;gl_FragColor=vec4(c*ambient*(.55+.3*abs(n.y)),1.0);}");

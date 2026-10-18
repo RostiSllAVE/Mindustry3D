@@ -27,4 +27,5 @@ public record NetworkControls(boolean active,int mode,double throttle,double pit
         headingRadians=Math.IEEEremainder(headingRadians,Math.PI*2);
     }
     public static NetworkControls hold(){return new NetworkControls(false,1,0,0,0,0,0,0,0,0,0,0,1,0,false);}
+    public NetworkControls withAim(double x,double y,double z){return new NetworkControls(active,mode,throttle,pitch,roll,yaw,forward,right,climb,turn,headingRadians,x,y,z,shooting,creatorFlight,boostFlight);}
 }

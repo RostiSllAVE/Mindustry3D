@@ -9,7 +9,7 @@ from preflight import ROOT, run
 import argparse
 
 parser=argparse.ArgumentParser()
-parser.add_argument('--task', choices=('a2-01','a2-02','a2-03','a2-04'), default='a2-01')
+parser.add_argument('--task', choices=('a2-01','a2-02','a2-03','a2-04','a2-05'), default='a2-01')
 parser.add_argument('--run', default='build', help='New local task subdirectory; existing builds are never overwritten')
 options=parser.parse_args()
 if not options.run or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_' for c in options.run):

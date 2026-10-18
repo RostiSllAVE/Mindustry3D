@@ -170,6 +170,9 @@ public final class FpvWorldRenderer {
         }
     };
     private UnitAltitudeSystem unitAltitudes;
+    private java.util.function.Function<Unit,fpv.world.Unit3DState> pilotPresentation;
+    /** Local ghost is used only by unit drawing, never shared physical/picking queries. */
+    public void setPilotPresentation(java.util.function.Function<Unit,fpv.world.Unit3DState> value){pilotPresentation=value;aircraftWeapons.setPilotPresentation(value);}
     private RadialExplosion explosions;
     private final Vec3 terrainA=new Vec3(),terrainB=new Vec3(),terrainC=new Vec3(),terrainD=new Vec3(),terrainHit=new Vec3();
     private final ArrayList<Candidate> visibleChunks = new ArrayList<>();
@@ -933,6 +936,7 @@ public final class FpvWorldRenderer {
         boolean family=unitAltitudes!=null&&unitAltitudes.groundFamily()!=null&&GroundFamilyRenderer.supportsVisual(unit);
         var pose=unitAltitudes==null?null:unitAltitudes.pose(unit);
         var controlledPose=(controlled||family&&Vars.net.client())&&unitAltitudes!=null?unitAltitudes.unitState(unit):null;
+        if(controlled&&pilotPresentation!=null){var predicted=pilotPresentation.apply(unit);if(predicted!=null)controlledPose=predicted;}
         if(pose!=null)h=(float)pose.height();
         else h+=elevation.heightAt(x,z);
         if(controlledPose!=null){x=(float)controlledPose.x();h=(float)controlledPose.z();z=(float)-controlledPose.y();}

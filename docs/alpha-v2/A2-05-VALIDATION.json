@@ -1,0 +1,131 @@
+{
+  "status": "LOCAL DIAGNOSTIC; physical multiplayer acceptance NOT TESTED",
+  "date": "2026-10-18",
+  "branch": "main",
+  "baselineCommit": "012710651f4e48427c352e1b642e4681e22ecb7f",
+  "internalVersion": "0.18.31",
+  "protocol": 4,
+  "buildRun": "acceptance",
+  "artifact": {
+    "jarSha256": "18da4b43bdb900c68ba80927e61e4172e2612742e9e85cd0f2a9c9dd86c7e575",
+    "payloadIdentity": "payload1-4d10ea111f6d57f29a02c6754dc602ef2abfb54c5d32b8a8bc15fc1cf44d9523",
+    "jarEntries": 1026,
+    "classMajorMax": 61,
+    "unchangedClassesFromAcceptedA204": [
+      "fpv/net/PoseSnapshotCodec.class",
+      "fpv/net/RemotePoses.class",
+      "fpv/net/NetProtocol.class",
+      "fpv/net/ModFingerprint.class",
+      "fpv/net/ConnectionLifecycle.class",
+      "fpv/flight/UnitMotionBridge.class"
+    ],
+    "licensesUnchangedFromA204": true,
+    "windowsLinuxX64NativesIncluded": true,
+    "priorAlphaSnapshotFilesUnchanged": 2065,
+    "a202A203A204AssetsUnchanged": [
+      "mindustry-fpv-a2-02-diagnostics.jar",
+      "mindustry-fpv-a2-02-corresponding-source.zip",
+      "mindustry-fpv-a2-02-test-kit.zip",
+      "mindustry-fpv-a2-03-diagnostics.jar",
+      "mindustry-fpv-a2-03-corresponding-source.zip",
+      "mindustry-fpv-a2-03-test-kit.zip",
+      "mindustry-fpv-a2-04-diagnostics.jar",
+      "mindustry-fpv-a2-04-corresponding-source.zip",
+      "mindustry-fpv-a2-04-test-kit.zip"
+    ],
+    "primarySaveAccess": false,
+    "noNewDeveloperMeasurementOrManagementClassesBundled": true
+  },
+  "tests": {
+    "java17ProgramsPassed": 124,
+    "stockSteamJava25ProgramsPassed": 124,
+    "predictionChecksPassed": 47,
+    "nativePredictionChecksPassed": 21,
+    "coldLegacyCampaignChecksPassed": 8,
+    "nativeFixtures": "in-memory provider and explicit fixture identity; not a real connection",
+    "actualJarFolderFingerprint": "PASS stock Java25",
+    "physicalWindowsLinuxAndTwoComputer": "NOT TESTED",
+    "stockImportRestartMouseCameraComfort": "NOT TESTED"
+  },
+  "model": {
+    "cases": 60,
+    "rttMilliseconds": [
+      0,
+      50,
+      100,
+      200,
+      400
+    ],
+    "oneWayJitterMilliseconds": 15,
+    "inputAndWholeFrameLossProbability": 0.05,
+    "durationSecondsPerCase": 20,
+    "displayHz": 120,
+    "authorityHz": 60,
+    "inputHz": 30,
+    "snapshotHz": 10,
+    "tcpSteamOrRealNetworkEmulation": false,
+    "realLatencyImprovementClaimed": false
+  },
+  "safety": {
+    "nativeUnitCoordinatesPredicted": false,
+    "damageShotsResourcesConstructionPredicted": false,
+    "serverBoostAndLandingPermissionPredicted": false,
+    "otherUnitInterpolationChanged": false,
+    "saveFormatChanged": false,
+    "inputOrCompactPoseSchemaChanged": false,
+    "newWireData": "server-only STATE receipt paired by pose revision",
+    "replaySeconds": 0.6,
+    "sourceFreshnessSeconds": 0.75,
+    "historyCapacity": 512,
+    "groundVerticalStance": "server-confirmed",
+    "cacheLifetime": "one visual call; finally clears references"
+  },
+  "wireExample": {
+    "receiptBytes": 91,
+    "fpvEnvelopeBytes": 114,
+    "exampleNativeLz4Bytes": 102,
+    "hz": 10,
+    "nicTrafficMeasured": false
+  },
+  "limitations": [
+    "ground motion is approximate and Z/stance/support changes remain authoritative",
+    "reliable congestion and action latency remain",
+    "short loss holds and long-outage/warp corrections remain possible",
+    "server-driven animation/VFX can lag ghost",
+    "native physical Linux and paired real gameplay not tested"
+  ],
+  "evidence": {
+    "local/a2-05-acceptance-build.log": {
+      "sha256": "a3ee9d2d8e8c8b10211e2da3eb5699391e0fb376492f12c001c1947c02e0bff9",
+      "bytes": 14410
+    },
+    "local/a2-05/steam25-acceptance-tests.log": {
+      "sha256": "e29404761d8dcd30a669d27a7afcafc32d82a94f841df573dafebf9c81c99d43",
+      "bytes": 17091
+    },
+    "local/a2-05/legacy-campaign.log": {
+      "sha256": "caeb486385eb1e053683b4418d0ac4fe5fc83299f1bb4d9ac1d9aaa85e7895a6",
+      "bytes": 228
+    },
+    "local/a2-05/socket-capability.log": {
+      "sha256": "4d978c6dd9774c8511670503de60242bbb723154e4ab79e68cda66c4a20a5ab6",
+      "bytes": 86
+    },
+    "local/a2-05/identity-check.log": {
+      "sha256": "93b6cde14eecefe0b0ef1086a833b3b2cc739fe69262c939544058af8ddcec48",
+      "bytes": 119
+    },
+    "docs/alpha-v2/A2-05-candidate-before-hold.csv": {
+      "sha256": "b1070388360857056d749bdbf4d36c33ccafbeb5fb6974e3973f6f2917cb3b9a",
+      "bytes": 12487
+    },
+    "docs/alpha-v2/A2-05-native-contact.csv": {
+      "sha256": "84780f2b168b79cfcfc14a8d6f7c35183e8592f150fa20ae5cc849851b8f8736",
+      "bytes": 477
+    },
+    "docs/alpha-v2/A2-05-prediction-model.csv": {
+      "sha256": "db96ec8c6674df5251f650ae0e48a4d309884f2e9ea96f0fbf7564f4c5610c68",
+      "bytes": 14176
+    }
+  }
+}

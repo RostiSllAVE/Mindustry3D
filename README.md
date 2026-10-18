@@ -218,6 +218,12 @@ Unreleased Alpha v2 diagnostic work is documented separately:
 Its protocol 4 payload must match on every participant; it is not a replacement
 for the published Alpha artifacts. Reliable-stream congestion remains unresolved.
 
+[A2-05 local-pilot prediction](docs/alpha-v2/A2-05-PREDICTION-REPORT.md) adds a
+bounded presentation ghost and an optional server receipt on protocol 4. It keeps
+native actions and persistent state authoritative; ground stance and landing
+transitions remain server-confirmed. The diagnostic payload must match on both
+sides. [Owner comparison procedure](docs/alpha-v2/A2-05-MANUAL-TEST.md).
+
 ## License
 
 Project code: **GPL-3.0-only**, [LICENSE](LICENSE). No warranty.
