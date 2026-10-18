@@ -229,6 +229,11 @@ optional host-SDL relative input backend. Physical X11 and Wayland acceptance is
 still pending; follow the [Linux mouse test](docs/alpha-v2/A2-06-MANUAL-TEST.md).
 This local diagnostic is separate from published releases.
 
+[A2-07 flying ground attacks](docs/alpha-v2/A2-07-FLYING-AI-REPORT.md) corrects
+native AI hull-heading alignment and inherited-velocity aiming for aircraft guns.
+See the [owner test](docs/alpha-v2/A2-07-MANUAL-TEST.md); physical gameplay acceptance
+for this diagnostic remains pending.
+
 ## License
 
 Project code: **GPL-3.0-only**, [LICENSE](LICENSE). No warranty.

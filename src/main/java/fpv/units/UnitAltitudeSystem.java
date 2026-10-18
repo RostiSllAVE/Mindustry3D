@@ -285,7 +285,8 @@ public final class UnitAltitudeSystem implements AutoCloseable {
                 // Their top is a smooth target; the actual swept hull enforces hard clearance.
                 ahead=Math.max(ahead,aircraftStructures.ahead());
             }
-            if(unit.isFlying())model.update(tracked.pose,simulationSeconds,floor,ahead,vx,vz,unit.rotation,true);
+            if(unit.isFlying())model.updateFlight(tracked.pose,simulationSeconds,floor,ahead,vx,vz,unit.rotation,
+                unit.type.flying&&!unit.type.omniMovement&&unit.hasWeapons()&&unit.controller() instanceof mindustry.entities.units.AIController);
             else{
                 var contact=groundContact(unit,x,-z,radius,bodyHalfDepth(unit));
                 if(tracked.boostGround&&boostGroundWorld!=null){

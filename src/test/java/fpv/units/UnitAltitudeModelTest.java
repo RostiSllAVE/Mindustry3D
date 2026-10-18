@@ -9,6 +9,7 @@ public final class UnitAltitudeModelTest {
         clearanceAndGround();
         attitudeAndPause();
         idleStationKeepingAndCommandedCircle();
+        nativeCombatHeading();
         frameRatesAndLanding();
         invalidInput();
         System.out.println("UnitAltitudeModel: " + checks + " assertions passed (hybrid render sidecar; no 3D native combat claim).");
@@ -149,6 +150,21 @@ public final class UnitAltitudeModelTest {
         rejects(() -> model.update(state, Double.NaN, 0, 0, 0, 0, 0, false));
         rejects(() -> model.update(state, 0.1, Double.NaN, 0, 0, 0, 0, false));
         rejects(() -> model.create(1, 1, -1, 0, 0, false));
+    }
+
+    private static void nativeCombatHeading(){
+        var model=model();var nativeState=model.create(71,1,1,0,0,true);var ordinary=model.create(71,1,1,0,0,true);
+        for(int i=0;i<180;i++){
+            double yaw=(i*5)%360;
+            model.updateFlight(nativeState,1d/60,0,2,5,0,yaw,true);
+            model.updateFlight(ordinary,1d/60,0,2,5,0,yaw,false);
+            close(nativeState.yaw(),yaw,1e-9,"native non-omni hull yaw is not delayed behind its actual AI turn");
+            close(nativeState.height(),ordinary.height(),0,"heading correction cannot alter physical height integration");
+            close(nativeState.verticalVelocity(),ordinary.verticalVelocity(),0,"heading correction cannot alter climb/descent velocity");
+            yes(Math.abs(nativeState.roll())<=UnitAltitudeSystem.profile().maxRoll()+1e-8,"native turning keeps bounded existing bank");
+        }
+        close(ordinary.yaw(),0,1e-8,"other aircraft retain velocity-following presentation");
+        double before=nativeState.yaw();model.updateFlight(nativeState,0,0,2,5,0,200,true);close(nativeState.yaw(),before,0,"paused heading remains frozen");
     }
 
     private static void rejects(Runnable action) {

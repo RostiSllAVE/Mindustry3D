@@ -113,10 +113,21 @@ public final class UnitAltitudeModel {
             terrain+(state==null?0:state.bodyOffset));
     }
 
+    /** Non-omni combat aircraft already steer their actual hull with native AI yaw. */
+    public void updateFlight(State state,double seconds,double terrain,double aheadTerrain,
+                             double vx,double vz,double nativeYaw,boolean nativeFacing){
+        update(state,seconds,terrain,aheadTerrain,vx,vz,nativeYaw,true,0,0,0,nativeFacing);
+    }
+
     /** Ground contact includes slope attitude and the tilted mesh's actual resting center. */
     public void update(State state, double seconds, double terrain, double aheadTerrain,
                        double vx, double vz, double nativeYaw, boolean flying,
                        double groundPitch, double groundRoll, double groundCenterHeight) {
+        update(state,seconds,terrain,aheadTerrain,vx,vz,nativeYaw,flying,groundPitch,groundRoll,groundCenterHeight,false);
+    }
+    private void update(State state,double seconds,double terrain,double aheadTerrain,
+                        double vx,double vz,double nativeYaw,boolean flying,
+                        double groundPitch,double groundRoll,double groundCenterHeight,boolean nativeFacing){
         if (state == null) throw new IllegalArgumentException("Altitude state is required");
         finite(seconds); finite(terrain); finite(aheadTerrain); finite(vx); finite(vz); finite(nativeYaw);
         finite(groundPitch);finite(groundRoll);finite(groundCenterHeight);
@@ -163,7 +174,7 @@ public final class UnitAltitudeModel {
             }
             double attitudeMix = -Math.expm1(-step / p.attitudeResponseSeconds);
             double oldYaw = state.yaw;
-            state.yaw = !flying&&!state.landing ? normalize(nativeYaw) : normalize(state.yaw + difference(travelYaw, state.yaw) * attitudeMix);
+            state.yaw = nativeFacing||!flying&&!state.landing ? normalize(nativeYaw) : normalize(state.yaw + difference(travelYaw, state.yaw) * attitudeMix);
             double yawRate = difference(state.yaw, oldYaw) / step;
             double targetPitch = flying ? speed >= p.minTravelSpeed
                 ? clamp(Math.toDegrees(Math.atan2(state.verticalVelocity, Math.max(speed, 0.4))), -p.maxPitch, p.maxPitch)

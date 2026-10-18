@@ -17,6 +17,7 @@ import static fpv.combat.AircraftWeaponGeometry.*;
 
 /** Shared aircraft/walker dual-mount geometry. One native weapon/event per mount. */
 public final class AircraftWeapons {
+    private static final Point ZERO=new Point(0,0,0);
     public record Solution(boolean bomber,int side,boolean allowed,double yaw,double pitch,Point pivot,Point muzzle,Point direction,Point right,Point up,double thickness,Point oppositePivot,Frame frame,double launchSpeed){}
     private static final class Pose {final Unit owner;final IdentityHashMap<WeaponMount,Joint> joints=new IdentityHashMap<>();double yaw=Double.NaN,pitch,roll;Frame frame;Pose(Unit u){owner=u;}}
     private static final class Joint {int side=1;double yaw;float tick=Float.NaN;Solution cached;double x,y,z,byaw,bpitch,broll,ayaw,apitch,jyaw;Profile profile;}
@@ -83,14 +84,14 @@ public final class AircraftWeapons {
         var p=poses.get(unit.id);if(p==null||p.owner!=unit){p=new Pose(unit);poses.put(unit.id,p);}
         if(p.yaw!=body.yaw()||p.pitch!=body.pitch()||p.roll!=body.roll()){p.frame=frame(body.yaw(),body.pitch(),body.roll());p.yaw=body.yaw();p.pitch=body.pitch();p.roll=body.roll();}return p.frame;
     }
-    private Point target(Unit unit,WeaponMount mount,boolean bomber,Point origin){
+    private Point target(Unit unit,WeaponMount mount,boolean bomber,Point origin,boolean motionAim){
         var obstacle=fpv.construction.LayerNavigationAdapter.aim(unit,combat.originalType(mount.weapon.bullet));if(walker(unit.type)&&obstacle!=null)return obstacle;
         Teamc target=mount.target;
         if(Combat3DSystem.usableTarget(target)){
             if(target instanceof Unit u){
                 var state=world.unitState(u);if(state==null)return null;
                 var source=combat.originalType(mount.weapon.bullet);
-                if(!bomber&&mount.weapon.predictTarget&&source!=null){var lead=combat.unitRanges().prediction(unit,u,source,origin.x(),origin.y(),origin.z());if(lead!=null)return new Point(lead.x(),lead.y(),lead.z());}
+                if(!motionAim&&!bomber&&mount.weapon.predictTarget&&source!=null){var lead=combat.unitRanges().prediction(unit,u,source,origin.x(),origin.y(),origin.z());if(lead!=null)return new Point(lead.x(),lead.y(),lead.z());}
                 return new Point(state.x(),state.y(),state.z());
             }
             if(target instanceof Building b)return new Point(b.x/Vars.tilesize,b.y/Vars.tilesize,(world.buildingBase(b)+world.buildingTop(b))*.5);
@@ -102,19 +103,23 @@ public final class AircraftWeapons {
     private Solution solve(Unit unit,WeaponMount mount,boolean advance,double spread,Bullet bullet){
         var profile=profile(unit,mount);if(profile==null||!active)return null;var body=world.unitState(unit);if(body==null)return null;
         var frame=frameFor(unit,body);var center=new Point(body.x(),body.y(),body.z());var j=joint(unit,mount);
-        Point control=mount.weapon.controllable?combat.controlDirection(unit):null,end=control==null?target(unit,mount,profile.bomber(),center):null;
+        var source=combat.originalType(mount.weapon.bullet);
+        boolean motionAim=unit.type.flying&&!profile.bomber()&&source instanceof BasicBulletType&&!(source instanceof ArtilleryBulletType)&&unit.controller() instanceof AIController;
+        Point control=mount.weapon.controllable?combat.controlDirection(unit):null,end=control==null?target(unit,mount,profile.bomber(),center,motionAim):null;
         var w=mount.weapon;double size=unit.hitSize/(double)Vars.tilesize;
         double thick=Math.max(.09,Math.min(.4,size*.07)),half=walker(unit.type)?body.halfHeight():Math.max(.15,Math.min(.75,size*.1)),length=Math.max(.25,Math.abs(w.shootY)/Vars.tilesize);
         if(walker(unit.type))length=Math.max(length,MechWeaponPitch.halfLength(w.name,size,w.shootY/Vars.tilesize));
-        var source=combat.originalType(w.bullet);boolean artillery=walker(unit.type)&&control==null&&end!=null&&source instanceof ArtilleryBulletType;
+        boolean artillery=walker(unit.type)&&control==null&&end!=null&&source instanceof ArtilleryBulletType;
         double life=source==null?1:source.lifetime/60.0;
         if(artillery){
             if(bullet!=null)life=bullet.lifetime/60.0;
             else if(source.scaleLife){double a=Math.toRadians(unit.rotation+(w.rotate?mount.rotation:w.baseRotation));double b=Math.toRadians(unit.rotation-90);double nx=unit.x+Math.cos(b)*w.x-Math.sin(b)*w.y+Math.cos(a)*w.shootY+Math.sin(a)*w.shootX,ny=unit.y+Math.sin(b)*w.x+Math.cos(b)*w.y+Math.sin(a)*w.shootY-Math.cos(a)*w.shootX;life*=Math.max(0,Math.min(1,Math.hypot(mount.aimX-nx,mount.aimY-ny)/Math.max(.001,w.bullet.range)));}
             life=Math.min(120,Math.max(1.0/60,life)*Math.hypot(combat.unitRanges().horizontal(unit.type),combat.unitRanges().vertical(unit.type)));
         }
-        double ballisticSpeed=source==null?1:Math.max(.01,source.speed*60.0/Vars.tilesize);
-        Point launch=end==null?null:trajectory(center,end,artillery,life,ballisticSpeed);
+        double ballisticSpeed=source==null?1:Math.max(.01,(motionAim&&bullet!=null?bullet.vel.len():source.speed)*60.0/Vars.tilesize);
+        Point targetVelocity=ZERO,inheritedVelocity=motionAim&&end!=null&&source.keepVelocity?new Point(body.vx(),body.vy(),body.vz()):ZERO;
+        if(motionAim&&w.predictTarget&&mount.target instanceof Unit target){var state=world.unitState(target);if(state!=null)targetVelocity=new Point(state.vx(),state.vy(),state.vz());}
+        Point launch=end==null?null:motionAim?motionTrajectory(center,end,targetVelocity,inheritedVelocity,ballisticSpeed):trajectory(center,end,artillery,life,ballisticSpeed);
         Point local=frame.local(control!=null?control:launch==null?frame.forward():launch);
         double bodyAimYaw=yaw(frame.local(control!=null?control:end==null?frame.forward():difference(end,center)));
         if(control!=null){var bodyLocal=frame.local(control);if(Math.hypot(bodyLocal.x(),bodyLocal.z())<1e-9)bodyAimYaw=-w.baseRotation;}
@@ -129,7 +134,7 @@ public final class AircraftWeapons {
             Point barrelRight=direction(frame,yaw(local)+90,0);
             Point origin=add(hinge,scale(barrelRight,w.shootX/Vars.tilesize));
             if(artillery)origin=add(origin,scale(direction(frame,yaw(local),p),Math.max(.15,w.shootY/Vars.tilesize)));
-            launch=trajectory(origin,end,artillery,life,ballisticSpeed);local=frame.local(launch);
+            launch=motionAim?motionTrajectory(origin,end,targetVelocity,inheritedVelocity,ballisticSpeed):trajectory(origin,end,artillery,life,ballisticSpeed);local=frame.local(launch);
         }
         double desiredYaw=Math.hypot(local.x(),local.z())<1e-9?(w.rotate?j.yaw:-w.baseRotation):yaw(local),desiredPitch=pitch(local);
         double baseYaw=-w.baseRotation;
@@ -167,6 +172,10 @@ public final class AircraftWeapons {
         if(bullet==null){j.cached=result;j.profile=profile;j.x=body.x();j.y=body.y();j.z=body.z();j.byaw=body.yaw();j.bpitch=body.pitch();j.broll=body.roll();j.ayaw=desiredYaw;j.apitch=desiredPitch;j.jyaw=gunYaw;}return result;
     }
     private static Point trajectory(Point origin,Point end,boolean artillery,double life,double speed){var d=difference(end,origin);return artillery?ProjectileDynamics.arc(Math.toDegrees(Math.atan2(d.y(),d.x())),Math.hypot(d.x(),d.y()),d.z(),Math.min(life,Math.sqrt(dot(d,d))/speed)):d;}
+    /** Aim the barrel against relative target motion; physical shots still inherit native owner velocity. */
+    private static Point motionTrajectory(Point origin,Point end,Point targetVelocity,Point inheritedVelocity,double speed){
+        return difference(CombatGeometry.intercept(origin.x(),origin.y(),origin.z(),end.x(),end.y(),end.z(),targetVelocity.x()-inheritedVelocity.x(),targetVelocity.y()-inheritedVelocity.y(),targetVelocity.z()-inheritedVelocity.z(),speed,120),origin);
+    }
     private static Point cross(Point a,Point b){return new Point(a.y()*b.z()-a.z()*b.y(),a.z()*b.x()-a.x()*b.z(),a.x()*b.y()-a.y()*b.x());}
     private boolean clearMuzzle(Point body,Point muzzle){return world.lineOfSight(body.x(),body.y(),body.z(),muzzle.x(),muzzle.y(),muzzle.z());}
     private static double angleDifference(double angle,double center){return ((angle-center)%360+540)%360-180;}

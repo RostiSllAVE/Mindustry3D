@@ -1,0 +1,17 @@
+stage,mode,block,first_damage_tick,native_projectiles_counted,actual_HP_damage,allowed_frames,shoot_intent_frames,max_simulation_ticks,stop_on_target_death
+before A2-06,2D,copper-wall,44,36,324.0,0,740,2400,True
+before A2-06,2D,duo,44,30,252.0,0,594,2400,True
+before A2-06,2D,graphite-press,44,18,162.0,0,367,2400,True
+before A2-06,2D,core-shard,42,75,675.0,0,1792,2400,True
+before A2-06,3D,copper-wall,46,3,24.773,54,1592,2400,True
+before A2-06,3D,duo,-1,3,0.0,51,1579,2400,True
+before A2-06,3D,graphite-press,48,3,22.843,57,1691,2400,True
+before A2-06,3D,core-shard,43,3,23.697,53,1797,2400,True
+after A2-07,2D,copper-wall,44,36,324.0,0,740,2400,True
+after A2-07,2D,duo,44,30,252.0,0,594,2400,True
+after A2-07,2D,graphite-press,44,18,162.0,0,367,2400,True
+after A2-07,2D,core-shard,42,75,675.0,0,1792,2400,True
+after A2-07,3D,copper-wall,44,36,324.0,168,740,2400,True
+after A2-07,3D,duo,45,27,144.0,85,1579,2400,True
+after A2-07,3D,graphite-press,45,18,162.0,117,371,2400,True
+after A2-07,3D,core-shard,41,75,675.0,337,1795,2400,True
