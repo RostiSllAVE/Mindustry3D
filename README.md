@@ -21,6 +21,11 @@ acceptance, which is still pending. Follow the [two-device procedure](docs/alpha
 with the exact same diagnostic JAR on every participant. These local test builds
 are separate from the preserved Alpha 1.0.4 player artifacts.
 
+[A2-03 campaign audit](docs/alpha-v2/A2-03-CAMPAIGN-REPORT.md) adds full native
+sector/save/transition regression tests. No campaign gameplay fix was justified
+by the available reproduction. Physical campaign UI/control acceptance remains
+pending; see the [three-step owner check](docs/alpha-v2/A2-03-MANUAL-TEST.md).
+
 Liftoff inspired the FPV concept; its code/assets are not included, it is not
 required, and this is not a validated Melty two-game mashup. Historical published
 Alpha 1.0.0–1.0.3 artifacts are preserved.

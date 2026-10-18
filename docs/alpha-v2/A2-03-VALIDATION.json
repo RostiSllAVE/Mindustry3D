@@ -1,0 +1,135 @@
+{
+  "task": "A2-03",
+  "date": "2026-10-18",
+  "branch": "main",
+  "baselineCommit": "08671a79f88f6b70bae5f7c63a87a70cbf423133",
+  "status": "Campaign failure NOT REPRODUCED; native offline tests PASS; physical acceptance pending",
+  "confirmedRuntimeDefects": [],
+  "gameplayFixesMade": [],
+  "productionSourcesResourcesAndLicensesUnchanged": true,
+  "changes": [
+    "Native campaign regression test",
+    "A2-03 diagnostic build output selector",
+    "Campaign report/matrix/three-step owner procedure/evidence",
+    "README link"
+  ],
+  "artifact": {
+    "status": "PASS",
+    "jarSha256": "07342fb7d389ec1d860715c8a4099f2036d8b5152fc07b57f31c6e853cbcca4f",
+    "jarBytes": 4224077,
+    "jarEntries": 1020,
+    "payloadIdentity": "payload1-de866da67105b61bac677bc90e60396ed7052ba928fbaa6fc1571a8281edd164",
+    "allPayloadEntriesByteIdenticalToA202": true,
+    "samePayloadInFolder": true,
+    "metadataAndLicensesUnchanged": true
+  },
+  "internalVersion": "0.18.31",
+  "protocol": 3,
+  "tests": {
+    "java17FullSuite": {
+      "status": "PASS",
+      "programs": 120
+    },
+    "stockSteamJava25FullSuite": {
+      "status": "PASS",
+      "programs": 120,
+      "extraModulesAdded": false
+    },
+    "finalCampaignJava17": {
+      "status": "PASS",
+      "checks": 39
+    },
+    "finalCampaignStockJava25": {
+      "status": "PASS",
+      "checks": 39
+    },
+    "testSourceRefinement": "Initial full build used 36 campaign checks; final aircraft and active-transition checks added afterwards and entire final 39-check campaign program rerun on each runtime. No production class changed.",
+    "oldA202ColdRestoreJava17": {
+      "status": "PASS",
+      "checks": 8
+    },
+    "oldA202ColdRestoreStock25": {
+      "status": "PASS",
+      "checks": 8
+    },
+    "oldAlpha104ColdRestoreStock25": {
+      "status": "PASS",
+      "checks": 8,
+      "fixtureWriterJarSha256": "f5017ce837820bd106135ddc01290fe25014513a428b7ab89e22fe4e71fd7fba"
+    },
+    "level": "Real native 160.7 generators/full disk SaveIO/Settings in fresh profiles; mock app/audio/graphics and offline Net(null). Cold runs use real diagnostic JAR payload. No physical gameplay proof.",
+    "sectors": [
+      "Ground Zero preset",
+      "Serpulo procedural sector 2",
+      "Onset/Erekir preset",
+      "Generated custom map"
+    ],
+    "persistence": [
+      "Native core/resources",
+      "Supported Z1 wall and damaged rotated Z2 conveyor",
+      "Native Flare ID/XY/HP and regenerated finite altitude",
+      "Walker stance",
+      "Boost/creator XYZ and safe landing",
+      "Exact native overwrite backup",
+      "Sector Settings metadata"
+    ],
+    "fixturesAreSynthetic": true,
+    "actualPlayerSaveOpened": false,
+    "fixtureRefinements": [
+      "Configured native JsonIO for Settings",
+      "Added fixture player to native player group before unit updates",
+      "Simple walls tested as components; functional conveyor uses native adapter",
+      "Derived native sector metadata key from actual preset ID"
+    ]
+  },
+  "desktopAttempt": {
+    "status": "NOT TESTED",
+    "outcome": "Environmental startup FAIL before mod initialization/sector entry",
+    "runtime": "Stock Steam Java 25.0.1 with official non-Steam desktop 160.7 host JAR",
+    "error": "Native ArcNetProvider selector loopback SocketException: Permission denied: connect",
+    "graphicsReached": "OpenGL 4.6 startup only; no mod rendering verification",
+    "earlyNativeLogWrites": "Default profile logger/crash writes attempted before data-directory override and denied; no primary saves accessed",
+    "newPermissionsRequested": false,
+    "bypassAttempted": false
+  },
+  "notTested": [
+    "Physical F5/Tab/mouse/planet UI/save-menu interaction",
+    "Actual affected player save copy",
+    "Linux physical current-build campaign",
+    "Two-computer hosted/Steam campaign or reconnect",
+    "Research/capture/recapture/launch progression and long offline exports",
+    "Modded planets and corrupt saves"
+  ],
+  "knownBoundary": "Ordinary aircraft altitude is rederived after load, not serialized exact FPV altitude. Network sessions/controls/epochs intentionally reset across worlds; A2-02 synchronization unchanged.",
+  "preservation": {
+    "oldAlphaFilesVerified": 2065,
+    "a202JarSourceAndKitVerified": true,
+    "primarySavesModified": false,
+    "historyRewritten": false,
+    "pushedOrPublished": false
+  },
+  "localEvidenceHashes": {
+    "verified-build.log": "9631daa8b4ccef00414237c7040656929afb718b2ca74d21e597e95672653196",
+    "steam25-tests.log": "ead028d19ee18d98ee3bf5202f1fd056726a0529a1902cd475cbf434a91559ca",
+    "final-campaign-java17.log": "a91b5bc785934f0ebee6b61590459641b061fe30f632d7f466cd1662410f8135",
+    "final-campaign-steam25.log": "38b39d9d6d9a143b5f4ba3d9a39010cb6e89af1770ec059827fd6780746bb0b1",
+    "cold-restore-java17.log": "01b32309991d284d44707e5a5fac71fad68866f396de356dee11c645935c76bb",
+    "cold-restore-steam25.log": "01b32309991d284d44707e5a5fac71fad68866f396de356dee11c645935c76bb",
+    "alpha104-cold-steam25.log": "01b32309991d284d44707e5a5fac71fad68866f396de356dee11c645935c76bb",
+    "alpha104-save-probe.log": "653885be7ca0c2fd4c475a656e4738dc013f8419dfa51aa8b5bd3ee446844533",
+    "identity-check.log": "bfe7678e29534b5c34a9bd3b8062f26f951870ceb894af60a058847fc660a8f9",
+    "desktop-attempt/stdout.log": "efc3945862644d4ae21b920feb4f0f17cad46c7bace6e9198155279ba71d0b22",
+    "pinned-lifecycle-bytecode.txt": "c3636e21ebaf421c29844324db48f257afee5f6a4924ac7d97bcf4a1ebde746e",
+    "final39-campaign-java17.log": "d301956b34c0ac19b2e271620714225a1c24d495ebf6b9bd8ed5c7901dac8935",
+    "final39-campaign-steam25.log": "04738d0e00697aa625665c2b0e2ca7dccb900597e99d2acf86e3d500e93aa8d5"
+  },
+  "syntheticFixtureHashes": {
+    "a202-campaign-copy.msav": "8896e0d6a15ef6005e23dba8f4dc16f5fc79f787e27ccd9d5941542677cc4acc",
+    "alpha104-campaign-copy.msav": "59dff700c282b8d76e76bd81d562d86765983d9586c035d423775a842e06e3b6"
+  },
+  "ownerNextActions": [
+    "Fresh offline Ground Zero: F5/Tab/build/save/reload",
+    "Normal planet sector switch and return, Onset if available",
+    "Previously affected backup in a verified separate profile; repeat available checks on Linux and report exact failing step/error"
+  ]
+}
