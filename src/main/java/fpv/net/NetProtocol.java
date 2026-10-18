@@ -74,13 +74,15 @@ public final class NetProtocol {
         if(length!=Math.min((int)NetworkConfig.CHUNK_BYTES,total-index*(int)NetworkConfig.CHUNK_BYTES))throw new IOException("Chunk length");return new Chunk(name,rev,index,count,total,in.readNBytes(length));});}
     /** One bounded in-flight full snapshot per channel. Apply only after all chunks arrive. */
     public static final class Assembly{
-        private long revision=-1,completed=-1;private byte[][] parts;private int remaining,total;private double started;
+        private long revision=-1,completed=-1;private byte[][] parts;private int remaining,total,retained;private double started;
+        public int pendingBytes(){return retained;}
+        public boolean diagnosticStale(Chunk c){return c.revision<=completed||c.revision<revision;}
         public byte[] accept(Chunk c,double now){
             if(c.revision<=completed||c.revision<revision)return null;
-            if(c.revision!=revision||parts==null||now-started>5){revision=c.revision;parts=new byte[c.count][];remaining=c.count;total=c.total;started=now;}
+            if(c.revision!=revision||parts==null||now-started>5){revision=c.revision;parts=new byte[c.count][];remaining=c.count;total=c.total;retained=0;started=now;}
             if(parts.length!=c.count||total!=c.total)throw new IllegalArgumentException("Chunk conflict");
-            if(parts[c.index]==null){parts[c.index]=c.data.clone();remaining--;}
-            if(remaining!=0)return null;byte[] result=new byte[total];int at=0;for(byte[] part:parts){System.arraycopy(part,0,result,at,part.length);at+=part.length;}completed=revision;parts=null;return result;
+            if(parts[c.index]==null){parts[c.index]=c.data.clone();remaining--;retained+=c.data.length;}
+            if(remaining!=0)return null;byte[] result=new byte[total];int at=0;for(byte[] part:parts){System.arraycopy(part,0,result,at,part.length);at+=part.length;}completed=revision;parts=null;retained=0;return result;
         }
     }
 }

@@ -17,6 +17,8 @@ public final class RemotePoses {
         Map<Integer,Unit3DState> next=new HashMap<>();for(var state:value.units())next.put(state.unitId(),state);current=Map.copyOf(next);flight=value.local();
     }
     public NetProtocol.Flight latestFlight(){return flight;}
+    /** Read-only diagnostic observation; does not change the display buffer. */
+    double diagnosticAlpha(double now){return alpha(now);}
     public Unit3DState latest(int id){return current.get(id);}
     private double alpha(double now){return currentTime<=previousTime?1:Math.max(0,Math.min(1,(now-NetworkConfig.INTERPOLATION_DELAY_SECONDS-previousTime)/(currentTime-previousTime)));}
     public Unit3DState display(int id,double now){

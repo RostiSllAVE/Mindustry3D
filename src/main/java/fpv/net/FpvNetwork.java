@@ -31,6 +31,7 @@ import java.util.function.*;
 
 /** Matching-mod multiplayer: native economy/entities, server flight/damage, input-only clients. */
 public final class FpvNetwork implements AutoCloseable {
+    private final NetworkDiagnosticSession diagnostic=new NetworkDiagnosticSession();
     public static final String PACKET="fpv7";
     private static final String CONSTRUCTION_PACKET="fpv7-layers";
     private static final int CONSTRUCTION_MAGIC=0x46504c31;
@@ -67,7 +68,7 @@ public final class FpvNetwork implements AutoCloseable {
     private final Cons<ResetEvent> resetHook=e->resetWorld();
     private final Cons<PlayerLeave> leaveHook=e->remove(e.player);
     private final Cons<PlayerJoin> joinHook=e->{if(Vars.net.server())peers.computeIfAbsent(e.player,p->new Peer());};
-    private final Cons<ClientServerConnectEvent> connectHook=e->{acknowledged=false;epoch=0;sequence=0;remote.clear();assemblies.clear();GroundUnitProfiles.clearRemoteSettings();nextHello=0;};
+    private final Cons<ClientServerConnectEvent> connectHook=e->{diagnostic.data.count(NetworkDiagnostics.Counter.CONNECT_RESETS);acknowledged=false;epoch=0;sequence=0;remote.clear();assemblies.clear();GroundUnitProfiles.clearRemoteSettings();nextHello=0;};
     private ObjectMap<Class<?>,Cons2<NetConnection,Object>> nativeListeners;
     private Cons2<NetConnection,Object> previousSnapshot;
     private ObjectMap<Class<?>,Cons> nativeClientListeners;
@@ -94,6 +95,7 @@ public final class FpvNetwork implements AutoCloseable {
     public void install(){
         if(installed)return;verification=ModFingerprint.current(FpvNetwork.class);
         fingerprint=verification.verified()?verification.token():"unverified";
+        diagnostic.identity(fingerprint);
         if(!verification.verified())Log.warn("[FPV-NET] Payload verification unavailable (@). Single-player remains available; multiplayer is disabled.",verification.problem());
         Vars.netServer.addBinaryPacketHandler(PACKET,serverHandler);if(Vars.netClient!=null)Vars.netClient.addBinaryPacketHandler(PACKET,clientHandler);
         try{Field field=Vars.net.getClass().getDeclaredField("serverListeners");field.setAccessible(true);
@@ -123,6 +125,10 @@ public final class FpvNetwork implements AutoCloseable {
         Events.on(WorldLoadEvent.class,worldHook);Events.on(ResetEvent.class,resetHook);Events.on(PlayerLeave.class,leaveHook);
         Events.on(PlayerJoin.class,joinHook);Events.on(ClientServerConnectEvent.class,connectHook);
         installed=true;resetWorld();
+        Events.run(Trigger.beforeGameUpdate,()->{if(!closed)diagnostic.simulationStart();});
+        Events.run(Trigger.afterGameUpdate,()->{if(!closed)diagnostic.simulationEnd();});
+        Events.run(Trigger.preDraw,()->{if(!closed)diagnostic.drawStart();});
+        Events.run(Trigger.uiDrawEnd,()->{if(!closed)diagnostic.drawEnd();});
         Log.info("[FPV-NET] Installed protocol @; payload @",(int)NetworkConfig.PROTOCOL_VERSION,fingerprint.substring(0,Math.min(20,fingerprint.length())));
     }
     /** True means frontend skips local integration/bridge/damage and displays server flight instead. */
@@ -212,10 +218,11 @@ public final class FpvNetwork implements AutoCloseable {
         if(!acknowledged)return LayerActions.Result.rejected("Waiting for the matching FPV server");
         byte[] bytes=constructionPacket(action);
         if(bytes.length>fpv.construction.LayerConfiguration.MAX_BYTES+1024)return LayerActions.Result.rejected("Construction request is too large");
-        Call.serverBinaryPacketReliable(CONSTRUCTION_PACKET,bytes);return LayerActions.Result.queued();
+        Call.serverBinaryPacketReliable(CONSTRUCTION_PACKET,bytes);diagnostic.data.packet(true,true,bytes.length);return LayerActions.Result.queued();
     }
     private byte[] constructionPacket(LayerActions.Action action){long request=sequence++;return NetProtocol.bytes(out->{out.writeInt(CONSTRUCTION_MAGIC);out.writeByte(1);out.writeLong(epoch);out.writeLong(request);LayerActions.write(out,action);});}
     private void receiveConstructionServer(Player player,byte[] bytes){
+        diagnostic.data.packet(false,true,bytes==null?0:bytes.length);
         if(!Vars.net.server()||construction==null||player==null)return;
         Peer peer=peers.get(player);
         if(peer==null||!peer.accepted||bytes==null||bytes.length>fpv.construction.LayerConfiguration.MAX_BYTES+1024){rejectedPackets++;return;}
@@ -226,11 +233,12 @@ public final class FpvNetwork implements AutoCloseable {
                 long requestEpoch=in.readLong(),request=in.readLong();LayerActions.Action action=LayerActions.read(in);
                 if(in.available()!=0||requestEpoch!=epoch||request<0||request<=peer.lastConstructionSequence)throw new IOException("Stale construction request");
                 peer.lastConstructionSequence=request;LayerActions.Result result=construction.apply(player,action);
-                if(player.con!=null)Call.clientBinaryPacketReliable(player.con,CONSTRUCTION_PACKET,NetProtocol.bytes(out->{out.writeInt(CONSTRUCTION_MAGIC);out.writeByte(2);out.writeLong(epoch);out.writeLong(request);LayerActions.writeResult(out,result);}));
+                if(player.con!=null){byte[] reply=NetProtocol.bytes(out->{out.writeInt(CONSTRUCTION_MAGIC);out.writeByte(2);out.writeLong(epoch);out.writeLong(request);LayerActions.writeResult(out,result);});Call.clientBinaryPacketReliable(player.con,CONSTRUCTION_PACKET,reply);diagnostic.data.packet(true,true,reply.length);}
                 return null;});
         }catch(IllegalArgumentException invalid){rejectedPackets++;}
     }
     private void receiveConstructionClient(byte[] bytes){
+        diagnostic.data.packet(false,true,bytes==null?0:bytes.length);
         if(!Vars.net.client()||construction==null||!acknowledged)return;
         try{NetProtocol.read(bytes,in->{if(in.readInt()!=CONSTRUCTION_MAGIC||in.readUnsignedByte()!=2)throw new IOException("Construction reply header");
             long resultEpoch=in.readLong(),request=in.readLong();var result=LayerActions.readResult(in);
@@ -239,6 +247,7 @@ public final class FpvNetwork implements AutoCloseable {
         }catch(IllegalArgumentException invalid){rejectedPackets++;}
     }
     private void resetWorld(){
+        diagnostic.data.count(NetworkDiagnostics.Counter.WORLD_RESETS);
         lastConstructionReply=-1;
         supportEffects.clear();GroundUnitProfiles.clearRemoteSettings();
         for(Session session:sessions.values())session.release();sessions.clear();creator.clear();boost.clear();remote.clear();assemblies.clear();frameStart.clear();contacts.clear();collisionOwner=null;
@@ -251,6 +260,11 @@ public final class FpvNetwork implements AutoCloseable {
     }
     private void remove(Player player){Peer peer=peers.remove(player);Session session=sessions.remove(player.id);if(session!=null)session.release();}
     private void before(){
+        if(closed)return;
+        diagnostic.update(verification.verified());long start=diagnostic.start();
+        try{beforeObserved();}finally{diagnostic.end(NetworkDiagnostics.Metric.NETWORK_BEFORE_MS,start);}
+    }
+    private void beforeObserved(){
         if(closed)return;boolean active=Vars.net.active();
         if(active&&!verification.verified()){
             status="Multiplayer disabled: cannot verify mod files";
@@ -261,13 +275,15 @@ public final class FpvNetwork implements AutoCloseable {
         if(!active){if(wasActive){resetWorld();peers.clear();status="Offline";}wasActive=false;return;}wasActive=true;
         if(fixtureControls!=null)submitted=Objects.requireNonNull(fixtureControls.get());
         if(Vars.net.client()){
-            if(Vars.state.isGame()&&Vars.player!=null&&now()>=nextHello&&!acknowledged){nextHello=now()+1;Call.serverBinaryPacketReliable(PACKET,NetProtocol.encode(NetProtocol.HELLO,0,sequence++,out->out.writeUTF(fingerprint)));status="Waiting for matching FPV server";}
-            if(acknowledged&&now()>=nextInput&&(fixtureTransmit==null||fixtureTransmit.getAsBoolean())){nextInput=now()+1/NetworkConfig.INPUT_HZ;Call.serverBinaryPacketUnreliable(PACKET,NetProtocol.encode(NetProtocol.INPUT,epoch,sequence++,out->NetProtocol.controls(out,submitted)));}
+            if(Vars.state.isGame()&&Vars.player!=null&&now()>=nextHello&&!acknowledged){nextHello=now()+1;byte[] message=NetProtocol.encode(NetProtocol.HELLO,0,sequence++,out->out.writeUTF(fingerprint));Call.serverBinaryPacketReliable(PACKET,message);diagnostic.data.packet(true,true,message.length);diagnostic.data.count(NetworkDiagnostics.Counter.HELLO_TX);status="Waiting for matching FPV server";}
+            if(acknowledged&&now()>=nextInput&&(fixtureTransmit==null||fixtureTransmit.getAsBoolean())){nextInput=now()+1/NetworkConfig.INPUT_HZ;byte[] message=NetProtocol.encode(NetProtocol.INPUT,epoch,sequence++,out->NetProtocol.controls(out,submitted));Call.serverBinaryPacketUnreliable(PACKET,message);diagnostic.data.packet(true,false,message.length);diagnostic.inputSent();}
+            diagnostic.localAge();
+            if(diagnostic.data.enabled())diagnostic.data.sample(NetworkDiagnostics.Metric.INTERPOLATION_ALPHA,remote.diagnosticAlpha(now()));
             // Native SyncLocal fields deliberately omit the owner's XY. Reconcile those fields
             // explicitly; camera smoothing is separate and never changes the server sample.
             var own=remote.latestFlight();
             if(acknowledged&&own!=null&&Vars.player!=null&&!Vars.player.dead()&&own.playerId()==Vars.player.id&&own.unitId()==Vars.player.unit().id){
-                Unit unit=Vars.player.unit();unit.set((float)(own.state().x*Vars.tilesize),(float)(-own.state().z*Vars.tilesize));unit.vel.setZero();
+                Unit unit=Vars.player.unit();if(diagnostic.data.enabled())diagnostic.data.sample(NetworkDiagnostics.Metric.OWNER_CORRECTION_TILES,Math.hypot(unit.x/Vars.tilesize-own.state().x,unit.y/Vars.tilesize+own.state().z));unit.set((float)(own.state().x*Vars.tilesize),(float)(-own.state().z*Vars.tilesize));unit.vel.setZero();
                 Unit3DState body=remote.latest(unit.id);if(body!=null)unit.rotation=(float)body.yaw();
             }
             return;
@@ -280,6 +296,11 @@ public final class FpvNetwork implements AutoCloseable {
             if(!UnitControlCapabilities.validOwner(player,player.unit())){Session old=sessions.remove(player.id);if(old!=null)old.release();continue;}
             Session session=sessions.get(player.id);if(session==null||session.unit!=player.unit()||session.unitId!=player.unit().id){if(session!=null)session.release();session=new Session(player,player.unit());sessions.put(player.id,session);}
             session.controls=now()-peer.lastInput>NetworkConfig.INPUT_TIMEOUT_SECONDS?NetworkControls.hold():peer.controls;
+            if(diagnostic.data.enabled()&&!player.isLocal()){
+                diagnostic.data.sample(NetworkDiagnostics.Metric.INPUT_SILENCE_MS,Math.max(0,now()-peer.lastInput)*1000);
+                if(now()-peer.lastInput>NetworkConfig.INPUT_TIMEOUT_SECONDS)diagnostic.data.count(NetworkDiagnostics.Counter.INPUT_TIMEOUT_POLLS);
+                if(peer.diagnosticPending){diagnostic.data.sample(NetworkDiagnostics.Metric.INPUT_ARRIVAL_TO_STEP_MS,Math.max(0,now()-peer.lastInput)*1000);peer.diagnosticPending=false;}
+            }
         }
         sessions.entrySet().removeIf(entry->{Session s=entry.getValue();if(!s.player.isAdded()){s.release();return true;}return false;});
         if(Vars.state.isPlaying()&&!Vars.state.isPaused()){
@@ -292,6 +313,9 @@ public final class FpvNetwork implements AutoCloseable {
         status="Server authoritative: "+sessions.size()+" pilots";
     }
     private void after(){
+        long start=diagnostic.start();try{afterObserved();}finally{diagnostic.end(NetworkDiagnostics.Metric.NETWORK_AFTER_MS,start);}
+    }
+    private void afterObserved(){
         if(closed||!verification.verified()||!Vars.net.server())return;
         for(Session session:sessions.values()){session.motion.afterSimulation(session.unit,session.flight.state());session.crash.applyPending();}
         creator.after();boost.after();
@@ -302,13 +326,15 @@ public final class FpvNetwork implements AutoCloseable {
             Channel channel=entry.getValue();if(time<channel.next)continue;
             channel.next=time+1/(entry.getKey().equals("combat")||entry.getKey().equals("explosions")?NetworkConfig.VISUAL_HZ:NetworkConfig.CHANNEL_HZ);
             byte[] bytes;
+            long encodeStart=diagnostic.start();
             try{bytes=entry.getValue().serverData.get();if(bytes.length>NetworkConfig.MAX_MESSAGE_BYTES)throw new IllegalStateException("State channel too large");channel.failed=false;}
             catch(RuntimeException failure){
+                diagnostic.data.count(NetworkDiagnostics.Counter.CHANNEL_ENCODE_FAILURE);
                 if(!channel.failed)Log.err("[FPV] State channel @ could not encode; retaining its last complete snapshot.",entry.getKey(),failure);
                 channel.failed=true;status="State synchronization paused: "+entry.getKey();
                 if(construction!=null&&entry.getKey().equals("layered-world"))construction.replicationFailed("state exceeds the safe save/network budget");
                 continue;
-            }
+            }finally{diagnostic.end(NetworkDiagnostics.Metric.CHANNEL_ENCODE_MS,encodeStart);}
             if(!Arrays.equals(channel.bytes,bytes)){channel.bytes=bytes;channel.version++;}
             for(var p:peers.entrySet())if(p.getValue().accepted&&p.getKey().con!=null&&p.getValue().channels.getOrDefault(entry.getKey(),-1L)!=channel.version){
                 sendChunks(p.getKey(),entry.getKey(),bytes);p.getValue().channels.put(entry.getKey(),channel.version);
@@ -325,37 +351,53 @@ public final class FpvNetwork implements AutoCloseable {
             sendChunks(player,"poses",NetProtocol.snapshot(new NetProtocol.Snapshot(units,own)));
         }
     }
-    private void sendAck(Player player){if(player.con!=null)Call.clientBinaryPacketReliable(player.con,PACKET,NetProtocol.encode(NetProtocol.ACK,epoch,sequence++,out->out.writeUTF(fingerprint)));}
+    private void sendAck(Player player){if(player.con!=null){byte[] message=NetProtocol.encode(NetProtocol.ACK,epoch,sequence++,out->out.writeUTF(fingerprint));Call.clientBinaryPacketReliable(player.con,PACKET,message);diagnostic.data.packet(true,true,message.length);}}
     private void sendChunks(Player player,String name,byte[] data){
+        diagnostic.data.channel(name,true,data.length);diagnostic.data.sample(NetworkDiagnostics.Metric.CHANNEL_LOGICAL_BYTES,data.length);
         int size=(int)NetworkConfig.CHUNK_BYTES,count=Math.max(1,(data.length+size-1)/size);long rev=++revision;
         for(int i=0;i<count;i++){int offset=i*size;var chunk=new NetProtocol.Chunk(name,rev,i,count,data.length,Arrays.copyOfRange(data,offset,Math.min(data.length,offset+size)));
-            Call.clientBinaryPacketReliable(player.con,PACKET,NetProtocol.encode(NetProtocol.CHANNEL,epoch,sequence++,out->NetProtocol.chunk(out,chunk)));}
+            byte[] message=NetProtocol.encode(NetProtocol.CHANNEL,epoch,sequence++,out->NetProtocol.chunk(out,chunk));Call.clientBinaryPacketReliable(player.con,PACKET,message);diagnostic.data.packet(true,true,message.length);}
     }
     private void receiveServer(Player player,byte[] bytes){
+        diagnostic.data.packet(false,false,bytes==null?0:bytes.length);
         if(!Vars.net.server()||player==null)return;
-        if(!verification.verified()){rejectedPackets++;if(player.con!=null)player.con.kick("FPV server mod files cannot be verified",0);return;}
-        if(bytes==null||bytes.length>NetworkConfig.MAX_CLIENT_MESSAGE_BYTES){rejectedPackets++;return;}
-        try{Peer peer=peers.computeIfAbsent(player,p->new Peer());double time=now();if(time-peer.rateStart>=1){peer.rateStart=time;peer.rateCount=0;}if(++peer.rateCount>NetworkConfig.INPUT_RATE_LIMIT){rejectedPackets++;return;}
+        if(!verification.verified()){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_VERIFICATION);rejectedPackets++;if(player.con!=null)player.con.kick("FPV server mod files cannot be verified",0);return;}
+        if(bytes==null||bytes.length>NetworkConfig.MAX_CLIENT_MESSAGE_BYTES){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_SIZE);rejectedPackets++;return;}
+        try{Peer peer=peers.computeIfAbsent(player,p->new Peer());double time=now();if(time-peer.rateStart>=1){peer.rateStart=time;peer.rateCount=0;}if(++peer.rateCount>NetworkConfig.INPUT_RATE_LIMIT){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_RATE);rejectedPackets++;return;}
             NetProtocol.Envelope packet=NetProtocol.decode(bytes);
             if(packet.kind()==NetProtocol.HELLO){String hash=NetProtocol.read(packet.payload(),in->in.readUTF());
-                if(!verification.matches(hash)){rejectedPackets++;if(player.con!=null)player.con.kick("FPV mod code/resources/version differ from this server",0);return;}
+                diagnostic.data.count(NetworkDiagnostics.Counter.HELLO_RX);
+                if(!verification.matches(hash)){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_VERIFICATION);rejectedPackets++;if(player.con!=null)player.con.kick("FPV mod code/resources/version differ from this server",0);return;}
                 if(!peer.accepted){peer.accepted=true;peer.lastSequence=-1;peer.lastInput=time;}peer.channels.clear();sendAck(player);return;}
-            if(packet.kind()!=NetProtocol.INPUT||!peer.accepted||packet.epoch()!=epoch||packet.sequence()<=peer.lastSequence){rejectedPackets++;return;}
-            NetworkControls controls=NetProtocol.read(packet.payload(),NetProtocol::controls);peer.controls=controls;peer.lastSequence=packet.sequence();peer.lastInput=time;acceptedInputs++;
-        }catch(IllegalArgumentException invalid){rejectedPackets++;}
+            if(packet.kind()!=NetProtocol.INPUT||!peer.accepted||packet.epoch()!=epoch||packet.sequence()<=peer.lastSequence){diagnostic.data.count(packet.kind()==NetProtocol.INPUT&&packet.epoch()==epoch&&peer.accepted?NetworkDiagnostics.Counter.INPUT_STALE_OR_REORDERED:NetworkDiagnostics.Counter.REJECT_EPOCH_OR_KIND);rejectedPackets++;return;}
+            NetworkControls controls=NetProtocol.read(packet.payload(),NetProtocol::controls);
+            if(diagnostic.data.enabled()){
+                if(peer.lastSequence>=0){diagnostic.data.sample(NetworkDiagnostics.Metric.INPUT_ARRIVAL_GAP_MS,Math.max(0,time-peer.lastInput)*1000);diagnostic.data.add(NetworkDiagnostics.Counter.INPUT_SEQUENCE_GAP_UNATTRIBUTED,Math.max(0,packet.sequence()-peer.lastSequence-1));}
+                peer.diagnosticPending=true;diagnostic.data.count(NetworkDiagnostics.Counter.INPUT_ACCEPTED);
+            }
+            peer.controls=controls;peer.lastSequence=packet.sequence();peer.lastInput=time;acceptedInputs++;
+        }catch(IllegalArgumentException invalid){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_PROTOCOL_OR_PAYLOAD);rejectedPackets++;}
     }
     private void receiveClient(byte[] bytes){
+        diagnostic.data.packet(false,true,bytes==null?0:bytes.length);
         if(!Vars.net.client())return;
         if(!verification.verified()){rejectedPackets++;return;}
         try{NetProtocol.Envelope packet=NetProtocol.decode(bytes);
             if(packet.kind()==NetProtocol.ACK){String hash=NetProtocol.read(packet.payload(),in->in.readUTF());if(!verification.matches(hash)||packet.epoch()==0)throw new IllegalArgumentException("Server mismatch");
+                diagnostic.data.count(NetworkDiagnostics.Counter.ACK_RX);
                 if(epoch!=packet.epoch()){remote.clear();assemblies.clear();GroundUnitProfiles.clearRemoteSettings();}epoch=packet.epoch();acknowledged=true;status="Matching FPV server; authoritative XYZ";return;}
-            if(!acknowledged||packet.epoch()!=epoch||packet.kind()!=NetProtocol.CHANNEL){rejectedPackets++;return;}
+            if(!acknowledged||packet.epoch()!=epoch||packet.kind()!=NetProtocol.CHANNEL){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_EPOCH_OR_KIND);rejectedPackets++;return;}
             var chunk=NetProtocol.chunk(packet.payload());if(!chunk.channel().equals("poses")&&!channels.containsKey(chunk.channel())){rejectedPackets++;return;}
-            byte[] complete=assemblies.computeIfAbsent(chunk.channel(),key->new NetProtocol.Assembly()).accept(chunk,now());if(complete==null)return;
-            if(chunk.channel().equals("poses")){remote.accept(NetProtocol.snapshot(complete),now());receivedSnapshots++;}
-            else channels.get(chunk.channel()).clientApply.accept(complete);
-        }catch(IllegalArgumentException invalid){rejectedPackets++;}
+            var assembly=assemblies.computeIfAbsent(chunk.channel(),key->new NetProtocol.Assembly());
+            if(diagnostic.data.enabled()&&assembly.diagnosticStale(chunk))diagnostic.data.count(NetworkDiagnostics.Counter.CHUNKS_STALE_OR_REPLAY);
+            byte[] complete=assembly.accept(chunk,now());
+            if(diagnostic.data.enabled()){int pending=0,retained=0;for(var pendingAssembly:assemblies.values()){if(pendingAssembly.pendingBytes()>0)pending++;retained+=pendingAssembly.pendingBytes();}diagnostic.data.sample(NetworkDiagnostics.Metric.ASSEMBLY_CHANNELS,pending);diagnostic.data.sample(NetworkDiagnostics.Metric.ASSEMBLY_RETAINED_BYTES,retained);}
+            if(complete==null){diagnostic.data.count(NetworkDiagnostics.Counter.CHUNKS_INCOMPLETE_OR_STALE);return;}
+            diagnostic.data.channel(chunk.channel(),false,complete.length);long applyStart=diagnostic.start();
+            try{if(chunk.channel().equals("poses")){remote.accept(NetProtocol.snapshot(complete),now());receivedSnapshots++;diagnostic.snapshot();}
+            else {channels.get(chunk.channel()).clientApply.accept(complete);diagnostic.data.count(NetworkDiagnostics.Counter.CHANNEL_APPLIES);}}
+            finally{diagnostic.end(NetworkDiagnostics.Metric.CHANNEL_APPLY_MS,applyStart);}
+        }catch(IllegalArgumentException invalid){diagnostic.data.count(NetworkDiagnostics.Counter.REJECT_PROTOCOL_OR_PAYLOAD);rejectedPackets++;}
     }
     /** Preserve native validated build/aim plans while categorically ignoring client XY/velocity claims. */
     private void snapshot(NetConnection connection,Object object){
@@ -433,10 +475,11 @@ public final class FpvNetwork implements AutoCloseable {
     private void applyExplosions(byte[] bytes){explosions.acceptVisuals(NetProtocol.read(bytes,in->{int count=in.readInt();if(count<0||count>CrashConfig.MAX_EFFECTS)throw new IOException("Explosion count");var list=new ArrayList<RadialExplosion.VisualBurst>(count);for(int i=0;i<count;i++){int id=in.readInt();double x=NetProtocol.number(in),y=NetProtocol.number(in),z=NetProtocol.number(in);double radius=NetProtocol.number(in),damage=NetProtocol.number(in),visual=NetProtocol.number(in),duration=NetProtocol.number(in);int style=in.readUnsignedByte();if(style>=RadialExplosion.Style.values().length)throw new IOException("Explosion style");var spec=new RadialExplosion.Spec(radius,damage,visual,duration,RadialExplosion.Style.values()[style],in.readBoolean());list.add(new RadialExplosion.VisualBurst(id,x,y,z,spec,NetProtocol.number(in)));}return list;}));}
     private static float color(DataInputStream in)throws IOException{float value=in.readFloat();if(!Float.isFinite(value)||value<0||value>16)throw new IOException("Invalid visual color");return value;}
     private static double now(){return System.nanoTime()/1e9;}
-    private static final class Peer{boolean accepted;NetworkControls controls=NetworkControls.hold();long lastSequence=-1,lastConstructionSequence=-1;double joined=now(),lastInput,rateStart;int rateCount;final Map<String,Long> channels=new HashMap<>();}
+    private static final class Peer{boolean accepted,diagnosticPending;NetworkControls controls=NetworkControls.hold();long lastSequence=-1,lastConstructionSequence=-1;double joined=now(),lastInput,rateStart;int rateCount;final Map<String,Long> channels=new HashMap<>();}
     private static final class Channel{final Supplier<byte[]> serverData;final Consumer<byte[]> clientApply;double next;byte[] bytes;long version;boolean failed;
         Channel(Supplier<byte[]> source,Consumer<byte[]> destination){serverData=source;clientApply=destination;}}
     @Override public void close(){if(closed)return;closed=true;for(Session session:sessions.values())session.release();sessions.clear();peers.clear();remote.clear();assemblies.clear();
+        diagnostic.flush();diagnostic.data.enabled(false);
         creator.clear();boost.clear();supportEffects.clear();GroundUnitProfiles.clearRemoteSettings();
         if(nativeListeners!=null&&nativeListeners.get(ClientSnapshotCallPacket.class)==snapshotHandler){if(previousSnapshot==null)nativeListeners.remove(ClientSnapshotCallPacket.class);else nativeListeners.put(ClientSnapshotCallPacket.class,previousSnapshot);}
         if(nativeClientListeners!=null&&nativeClientListeners.get(EntitySnapshotCallPacket.class)==entitySnapshotHandler){if(previousEntitySnapshot==null)nativeClientListeners.remove(EntitySnapshotCallPacket.class);else nativeClientListeners.put(EntitySnapshotCallPacket.class,previousEntitySnapshot);}

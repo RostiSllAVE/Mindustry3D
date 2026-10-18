@@ -14,6 +14,10 @@ It includes direct JAR installation, a convenience ZIP, and a compiled Workshop
 folder with matching code/resource identity. See [Mod Browser readiness and final release steps](docs/releases/ALPHA-1.0.4-BROWSER.md)
 and [simple installation instructions](docs/player/INSTALL.txt).
 
+Unreleased development now includes [A2-01 multiplayer diagnostics](docs/alpha-v2/A2-01-MULTIPLAYER-DIAGNOSTICS.md).
+This investigation does not fix or certify multiplayer. Its opt-in diagnostic
+build is separate from the preserved Alpha 1.0.4 player artifacts.
+
 Liftoff inspired the FPV concept; its code/assets are not included, it is not
 required, and this is not a validated Melty two-game mashup. Historical published
 Alpha 1.0.0–1.0.3 artifacts are preserved.

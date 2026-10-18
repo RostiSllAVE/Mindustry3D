@@ -1,0 +1,224 @@
+{
+  "task": "A2-01",
+  "date": "2026-10-18",
+  "baseline": "Alpha 1.0.4 / internal 0.18.31 / protocol 3",
+  "startingCheckpoint": "a95b535",
+  "branch": "main",
+  "multiplayerFixed": false,
+  "sourceScope": "Opt-in aggregate diagnostics, tests, developer build/benchmark tools and documentation only; no authority/codec/schema/interpolation/tuning changes",
+  "diagnosticArtifact": {
+    "status": "PASS",
+    "diagnosticJarSha256": "5a05dbba926f8b4e56a41d10b75e25e3176b6abc2a106eac5d0fbf349a8af0ed",
+    "jarBytes": 4214092,
+    "payloadIdentity": "payload1-613a3fbf42973ac92237b8db6a6877153f3aabfa62c386bdaceaf8545586e146",
+    "jarEntries": 1016,
+    "samePayloadInFolder": true,
+    "licensesByteIdentical": true,
+    "previousArtifactsUnchanged": 2065,
+    "actualJava25JarFolderIdentityCheck": "PASS; native ModFingerprint.inspect agrees with Python canonical payload"
+  },
+  "tests": {
+    "fullJava17": {
+      "status": "PASS",
+      "programs": 117
+    },
+    "stockSteamJava25": {
+      "status": "PASS",
+      "programs": 117,
+      "expectNoLogging": true,
+      "newPhysicalImportRestart": "NOT TESTED"
+    },
+    "initialStockSuiteInvocation": {
+      "status": "FAIL",
+      "reason": "Harness omitted existing fpv.test.expectNoLogging=true; OptionalFlightInputTest expected full-runtime Logger",
+      "resolution": "Reran all 117 programs on final classes with the correct stripped-runtime expectation; all passed"
+    },
+    "protocolExistingChecks": 160,
+    "newCodecDisplayChecks": 24,
+    "collectorPrivacyBoundChecks": 16,
+    "reportLifecyclePrivacyChecks": 12,
+    "nativeCampaignChunkChecks": 8,
+    "nativeCampaignBlockChecks": 21,
+    "strictFingerprintChecks": 23,
+    "mouseLifecycleChecks": 218
+  },
+  "networkAttempt": {
+    "scenario": "Dedicated Windows host plus two same-PC SDL clients, official 160.7 / baseline released JAR / direct loopback",
+    "status": "NOT TESTED",
+    "attemptOutcome": "Environmental startup FAIL before a world or handshake",
+    "exception": "SocketException: Permission denied: connect; Unable to establish loopback connection in Java selector setup",
+    "newPermissionsRequested": false,
+    "bypassAttempted": false,
+    "actualRTTMeasured": false
+  },
+  "physicalScenarios": {
+    "A Windows-Windows": "NOT TESTED",
+    "B Windows-Linux": "NOT TESTED",
+    "C Linux-Windows": "NOT TESTED",
+    "D friend-Windows-host": "NOT TESTED",
+    "E Steam-invitation-remote-Windows": "NOT TESTED"
+  },
+  "confirmed": {
+    "ownerDisplayBufferMilliseconds": 100,
+    "prediction": "absent; server samples authoritative",
+    "poseTargetHz": 10,
+    "inputTargetHz": 30,
+    "persistentTargetHz": 5,
+    "visualTargetHz": 20,
+    "inputEnvelopeBytes": 124,
+    "poseBytesPerUnit": 106,
+    "posesReliable": true,
+    "targetRatesFrameBound": true,
+    "partialAssembliesBounded": true,
+    "assemblyIdleExpiry": "only evaluated on next chunk/reset; no proactive timer",
+    "nativeLayerChunkInNetworkWorldStream": false
+  },
+  "poseWire": [
+    {
+      "units": 0,
+      "logicalBytes": 5,
+      "chunks": 1,
+      "fpvBytesPerSecondAt10HzPerRecipient": 590
+    },
+    {
+      "units": 100,
+      "logicalBytes": 10605,
+      "chunks": 1,
+      "fpvBytesPerSecondAt10HzPerRecipient": 106590
+    },
+    {
+      "units": 1000,
+      "logicalBytes": 106005,
+      "chunks": 9,
+      "fpvBytesPerSecondAt10HzPerRecipient": 1064910
+    },
+    {
+      "units": 4096,
+      "logicalBytes": 434181,
+      "chunks": 37,
+      "fpvBytesPerSecondAt10HzPerRecipient": 4361790
+    },
+    {
+      "units": 16384,
+      "logicalBytes": 1736709,
+      "chunks": 145,
+      "fpvBytesPerSecondAt10HzPerRecipient": 17445390
+    }
+  ],
+  "wireScope": "Excludes optional own-flight profile, native entity/build packets, other FPV channels and native/transport framing. Not measured link bandwidth.",
+  "codecBenchmark": {
+    "status": "PASS",
+    "runtime": "Complete Java 17.0.20.1",
+    "heap": "64m initial / 384m max",
+    "warmupIterations": 10,
+    "measuredIterations": 30,
+    "clock": "System.nanoTime elapsed; not thread CPU time",
+    "allocation": "JDK ThreadMXBean bytes on benchmark thread",
+    "liveNetwork": false,
+    "gameplayFPS": false,
+    "samples": [
+      {
+        "units": "0",
+        "bytes": "5",
+        "chunks": "1",
+        "encodeMeanMs": "0.002693",
+        "encodeP95Ms": "0.004700",
+        "decodeMeanMs": "0.003053",
+        "decodeP95Ms": "0.007900",
+        "allocatedBytesPerEncodeDecode": "712"
+      },
+      {
+        "units": "100",
+        "bytes": "10605",
+        "chunks": "1",
+        "encodeMeanMs": "0.211907",
+        "encodeP95Ms": "0.342800",
+        "decodeMeanMs": "0.165410",
+        "decodeP95Ms": "0.234400",
+        "allocatedBytesPerEncodeDecode": "74688"
+      },
+      {
+        "units": "1000",
+        "bytes": "106005",
+        "chunks": "9",
+        "encodeMeanMs": "0.641493",
+        "encodeP95Ms": "0.907500",
+        "decodeMeanMs": "0.612917",
+        "decodeP95Ms": "1.126600",
+        "allocatedBytesPerEncodeDecode": "683440"
+      },
+      {
+        "units": "4096",
+        "bytes": "434181",
+        "chunks": "37",
+        "encodeMeanMs": "1.758320",
+        "encodeP95Ms": "3.899400",
+        "decodeMeanMs": "1.470037",
+        "decodeP95Ms": "1.637700",
+        "allocatedBytesPerEncodeDecode": "2776037"
+      },
+      {
+        "units": "16384",
+        "bytes": "1736709",
+        "chunks": "145",
+        "encodeMeanMs": "6.212957",
+        "encodeP95Ms": "7.743500",
+        "decodeMeanMs": "5.718090",
+        "decodeP95Ms": "7.080400",
+        "allocatedBytesPerEncodeDecode": "11107350"
+      }
+    ],
+    "conditions": "Final sample after test suites completed; single active-PC run, no thermal/background-app control"
+  },
+  "campaign": {
+    "nativeInMemoryChunkAndResetRestore": "PASS",
+    "nativeBlockAccounting": "PASS",
+    "realPlanetaryUITransitions": "NOT TESTED",
+    "copiedOwnerCampaignDiskRoundtrip": "NOT TESTED",
+    "friendCampaign": "NOT TESTED",
+    "networkSectorReconnect": "NOT TESTED",
+    "primarySaveChanged": false
+  },
+  "instrumentation": {
+    "default": "OFF",
+    "setting": "fpv-net-diagnostics",
+    "developerOption": "fpv.netDiagnostics",
+    "output": "fpv-diagnostics/network-<random>.json inside active test/player profile",
+    "flushSeconds": 15,
+    "recentSamplesPerMetric": 512,
+    "trendRowsMax": 64,
+    "trendColumns": [
+      "elapsedSeconds",
+      "frameP95ms",
+      "appPingP95ms",
+      "localPoseAgeP95ms",
+      "cumulativeTxBytes",
+      "cumulativeRxBytes",
+      "simulationP95ms"
+    ],
+    "contains": "fixed numeric/boolean keys, public code digest, native build/revision and Java feature",
+    "excludes": [
+      "Steam tokens",
+      "player names and IDs",
+      "public or private endpoints",
+      "local paths",
+      "save names",
+      "packet contents"
+    ],
+    "applicationPingNotPureNetworkRTT": true,
+    "rawNetworkRTT": "NOT MEASURED",
+    "oneWayLatency": "NOT MEASURED",
+    "GPUTime": "NOT MEASURED",
+    "nativeTransportQueueDepth": "NOT MEASURED",
+    "wirePacketLoss": "NOT MEASURED",
+    "runtimePerFrameAllocations": "NOT MEASURED; Java17 codec-only allocation benchmark"
+  },
+  "remaining": [
+    "Run paired vanilla/mod scenes on actual two-computer hardware.",
+    "Capture both host and client reports with exactly matching diagnostic JAR identities.",
+    "Reproduce friend-host failure and identify its stage before implementing a campaign/handshake fix.",
+    "Keep published Alpha and diagnostic packages separate."
+  ],
+  "publication": "No push, release, Workshop update, Topic change or remote modification",
+  "limitations": "Automated/native-content fixtures do not certify physical multiplayer, broad Linux or Android."
+}
