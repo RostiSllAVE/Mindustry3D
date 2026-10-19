@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "component": "natural-wall-terrain-elevation",
-  "targetMindustry": "160.5",
+  "targetMindustry": "160.7",
   "state": "incremental-implementation",
   "descriptor": "fpv.generated.TerrainConfig",
   "verification": "design-verified",
   "runtimeVerified": false,
   "generation": "Generate public static final double fields for all numeric parameter rows before compiling. Adapter builds pure TerrainHeightField.Parameters from these values.",
-  "sourceOfTruth": "Read-only original world tile grid. StaticWall instances except StaticTree, with no Building, form the mask. Player-built defense Wall blocks, trees, decorations, floors and structures never generate mountains. No floor, block, overlay, team, save or pathfinding writes.",
+  "sourceOfTruth": "Read-only native tile grid with shared TerrainClassification content defaults. Static geological walls generate mountains; live/synthetic/buildable structures, known native industrial StaticWalls, trees and decorations do not. Native rules.tags fpv-terrain-classification permits bounded static-material overrides by block identity or XY cell, never live buildings. No native tile/map/save format mutation.",
   "algorithm": "Exact Euclidean distance to nearest non-wall tile center, including a virtual open border. Distance layers feed a bounded exponential rise with broad deterministic value-noise modulation. Repeated weighted smoothing uses natural-wall neighbors only. Shared corners average adjacent natural cell heights. Isolated wall cells retain the minimum cliff height.",
   "coordinates": {
     "tileCenter": "(tileX, altitudeTiles, -tileY)",
@@ -17,14 +17,44 @@
     "ownership": "floor(renderX + 0.5), floor(-renderZ + 0.5), half-open cells",
     "surface": "Piecewise linear within the exact two rendered triangles. Non-wall cells return zero even if incident shared raw vertices are elevated. Natural/open borders are intentional vertical cliffs rendered by the consumer; natural-to-natural edges are continuous. Raw vertexHeight is used only when drawing natural tiles."
   },
-  "lifecycle": "Lazy rebuild when world tiles identity or dimensions change, explicit world invalidation, or tile event changes natural/non-natural membership. Ordinary building edits that do not change the mask do not rebuild terrain. Revision increments only after a new immutable generated field is installed. Consumer renderer must invalidate all terrain chunks after revision changes. Rebuild is deterministic and does not depend on simulation time or random state.",
+  "lifecycle": "Lazy rebuild when world tiles identity or dimensions change, explicit world invalidation, or tile event changes natural/non-natural membership. Ordinary building edits that do not change the mask do not rebuild terrain. Revision increments only after a new immutable generated field is installed. Consumer renderer must invalidate all terrain chunks after revision changes. Rebuild is deterministic and does not depend on simulation time or random state. Effective membership equality prevents full generation/terrain revision changes for irrelevant rule or presentation invalidation. Artificial edits retain local renderer chunk invalidation only.",
   "parameters": [
-    {"name":"MINIMUM_HEIGHT_TILES","value":0.85,"verification":"design-verified","unit":"tiles"},
-    {"name":"RISE_PER_LAYER","value":1.15,"verification":"design-verified","unit":"tiles per erosion layer before soft cap"},
-    {"name":"MAXIMUM_HEIGHT_TILES","value":30.0,"verification":"design-verified","unit":"tiles"},
-    {"name":"SMOOTHING_PASSES","value":3,"verification":"design-verified","unit":"passes"},
-    {"name":"HEIGHT_VARIATION","value":0.23,"verification":"design-verified","unit":"fraction of height above minimum"},
-    {"name":"VARIATION_SCALE_TILES","value":18.0,"verification":"design-verified","unit":"tiles"}
+    {
+      "name": "MINIMUM_HEIGHT_TILES",
+      "value": 0.85,
+      "verification": "design-verified",
+      "unit": "tiles"
+    },
+    {
+      "name": "RISE_PER_LAYER",
+      "value": 1.15,
+      "verification": "design-verified",
+      "unit": "tiles per erosion layer before soft cap"
+    },
+    {
+      "name": "MAXIMUM_HEIGHT_TILES",
+      "value": 30.0,
+      "verification": "design-verified",
+      "unit": "tiles"
+    },
+    {
+      "name": "SMOOTHING_PASSES",
+      "value": 3,
+      "verification": "design-verified",
+      "unit": "passes"
+    },
+    {
+      "name": "HEIGHT_VARIATION",
+      "value": 0.23,
+      "verification": "design-verified",
+      "unit": "fraction of height above minimum"
+    },
+    {
+      "name": "VARIATION_SCALE_TILES",
+      "value": 18.0,
+      "verification": "design-verified",
+      "unit": "tiles"
+    }
   ],
   "acceptance": [
     "No source mask or native map writes",
@@ -35,6 +65,15 @@
     "All-natural, all-open, one-cell, borders, holes and narrow regions remain finite and bounded",
     "Same input produces identical output without consuming native RNG"
   ],
-  "tests": {"pure":"fpv.terrain.TerrainHeightFieldTest", "runtime":"Parent integration smoke covers original-map fingerprints, collision, Build Mode and multiple maps"},
-  "testResults": "pending execution"
+  "tests": {
+    "pure": "fpv.terrain.TerrainHeightFieldTest",
+    "runtime": "Parent integration smoke covers original-map fingerprints, collision, Build Mode and multiple maps"
+  },
+  "testResults": "pending execution",
+  "classification": {
+    "default": "Natural StaticWall excluding vegetation and industrial walls. Exact native darkMetal/metalWall1/2/3 identities and ColoredWall capability are artificial; content lacks a geology flag. Unknown StaticWall uses natural default; other unknown static content is artificial. Author placement provenance is not inferred.",
+    "override": "Native saved/networked Rules.tags fpv-terrain-classification: version1 JSON blocks name->natural/artificial and tiles x,y->natural/artificial; tile takes precedence. 65536 characters,4096 entries. Invalid document falls back atomically, unknown names ignored. Never override live/synthetic/buildable structures or decorations into terrain.",
+    "geometry": "Existing EDT/smoothing/triangles unchanged. Static artificial structures keep exact block footprints even in coarse/mixed terrain chunks. Classification drives existing shared visual/physical surfaces.",
+    "cache": "Cached content policy plus sparse per-row static-structure bits built during the existing mask scan. Tile events update one static bit without a full scan when mountain membership is unchanged. Coarse rendering queries bounded row ranges with one cached visitor, preserving exact artificial footprints without per-frame policy classification or callbacks allocated per cell."
+  }
 }

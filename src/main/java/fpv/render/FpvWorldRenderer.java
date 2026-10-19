@@ -119,6 +119,7 @@ public final class FpvWorldRenderer {
     public long organicPropSubmissions(){return organicProps.submissions();}
     private final EnvironmentRenderer environment = new EnvironmentRenderer();
     private final TerrainElevation elevation = new TerrainElevation();
+    private final java.util.function.IntConsumer coarseStaticStructure=this::coarseStaticStructure;
     private long terrainRevision=-1;
     private final SpriteExtrusionRenderer extrusion=new SpriteExtrusionRenderer();
     private final GroundFamilyRenderer groundFamily=new GroundFamilyRenderer();
@@ -687,6 +688,9 @@ public final class FpvWorldRenderer {
             boolean known=!staticFogEnabled || (visibility!=null && visibility.known[(y-cy*CHUNK)/stride*visibility.side+(x-cx*CHUNK)/stride]);
             if(!known){dynamic.top(centerX,0,centerZ,width,depth,(float)RenderConfig.UNDISCOVERED_R,(float)RenderConfig.UNDISCOVERED_G,(float)RenderConfig.UNDISCOVERED_B);continue;}
             Tile sample=Vars.world.tile(x+width/2,y+depth/2);
+            // Industrial/map-authored static walls have no Building and are not in the native building pass.
+            // Emit their actual footprints, including mixed cliff cells; never enlarge one sample to LOD stride.
+            elevation.eachStaticArtificial(x,y,width,depth,coarseStaticStructure);
             // Preserve real slopes and narrow mountain edges, even in the distant tier.
             boolean hasMountain=false;
             for(int yy=y;yy<y+depth&&!hasMountain;yy++)for(int xx=x;xx<x+width;xx++)if(elevation.naturalWall(xx,yy)){hasMountain=true;break;}
@@ -701,11 +705,16 @@ public final class FpvWorldRenderer {
             TextureRegion floor=NativeRegions.floor(sample.floor(),sample);
             if(NativeAtlasMesh.valid(floor))streamAtlas.top(floor,centerX,0,centerZ,width,depth,0,1,1,1,sample.floor().isLiquid);
             else{color.set(sample.floor().mapColor);dynamic.top(centerX,0,centerZ,width,depth,color.r,color.g,color.b);}
-            if(sample.build==null&&(sample.block().solid||fpv.world.NaturalProps.supported(sample.block()))){
+            if(sample.build==null&&!elevation.staticArtificial(sample)&&(sample.block().solid||fpv.world.NaturalProps.supported(sample.block()))){
                 if(!organicProps.append(sample,streamAtlas,sample.x,-sample.y,sample.block().size,heightFor(sample.block())))
                     texturedWall(sample,streamAtlas,dynamic,centerX,centerZ,Math.min(width,depth),heightFor(sample.block()),false);
             }
         }
+    }
+
+    private void coarseStaticStructure(int index){
+        Tile piece=Vars.world.tiles.geti(index);
+        if(piece.isCenter())texturedWall(piece,streamAtlas,dynamic,piece.x,-piece.y,piece.block().size,heightFor(piece.block()),true);
     }
 
     private boolean chunkVisible(int cx,int cy){
@@ -770,7 +779,14 @@ public final class FpvWorldRenderer {
     }
     private boolean wallOpen(Tile tile,int dx,int dy,float height){
         Tile neighbor=Vars.world.tile(tile.x+dx,tile.y+dy);
-        return neighbor==null||neighbor.build!=null||!neighbor.block().solid||!discovered(neighbor)||heightFor(neighbor.block())<height;
+        if(neighbor==null||neighbor.build!=null||!neighbor.block().solid||!discovered(neighbor))return true;
+        if(elevation.naturalWall(neighbor)){
+            // A cliff is not the fixed-height StaticWall cube used by the old side-culling shortcut.
+            // Keep any face with an exposed strip above the actual shared terrain edge.
+            int a=dx>0?0:dx<0?1:dy>0?0:3,b=dx>0?3:dx<0?2:dy>0?1:2;
+            return Math.min(elevation.tileCornerHeight(neighbor.x,neighbor.y,a),elevation.tileCornerHeight(neighbor.x,neighbor.y,b))<height;
+        }
+        return heightFor(neighbor.block())<height;
     }
     private long discoveryHash(int cx,int cy){
         if(!Vars.state.rules.fog||!Vars.state.rules.staticFog)return 0;
@@ -1099,7 +1115,7 @@ public final class FpvWorldRenderer {
     public PickResult pick(Camera3D camera, float screenX, float screenY) {
         return pick(camera,screenX,screenY,false);
     }
-    /** Decorations and projected walls are not interactive; natural terrain still occludes buildings. */
+    /** Decorations and projected walls are not interactive; terrain and solid static structures still occlude. */
     public PickResult pickInteraction(Camera3D camera,float screenX,float screenY){return pick(camera,screenX,screenY,true);}
     private PickResult pick(Camera3D camera,float screenX,float screenY,boolean interaction){
         if (Vars.world == null || Vars.world.width() == 0 || Vars.player == null) return null;
@@ -1135,7 +1151,7 @@ public final class FpvWorldRenderer {
             Tile tile = Vars.world.tile(tx, ty);
             if (tile == null) break;
             Block block = tile.block();
-            if (block != mindustry.content.Blocks.air && (!interaction||tile.build!=null||elevation.naturalWall(tile)) && discovered(tile) &&
+            if (block != mindustry.content.Blocks.air && (!interaction||tile.build!=null||elevation.naturalWall(tile)||block.solid&&elevation.staticArtificial(tile)) && discovered(tile) &&
                 (tile.build == null || !tile.build.inFogTo(Vars.player.team()))) {
                 if(elevation.naturalWall(tile)){
                     float hit=hitTerrain(ray,tile,stop);

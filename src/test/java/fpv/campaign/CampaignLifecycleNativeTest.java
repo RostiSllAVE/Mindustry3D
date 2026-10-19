@@ -89,6 +89,10 @@ public final class CampaignLifecycleNativeTest {
             check(belt.accepted(),"functional Z2 conveyor supported by saved wall: "+belt.reason());
             runtime.construction.building(belt.componentId()).damage(3);
             float beltHealth=runtime.construction.building(belt.componentId()).health;
+            var natural=java.util.stream.StreamSupport.stream(Vars.world.tiles.spliterator(),false).filter(runtime.terrain::naturalWall).findFirst().orElseThrow();
+            String classification="{\"version\":1,\"tiles\":{\""+natural.x+","+natural.y+"\":\"artificial\"}}";
+            int naturalCount=runtime.terrain.naturalWallCount();Vars.state.rules.tags.put(fpv.terrain.TerrainClassification.TAG,classification);
+            check(!runtime.terrain.naturalWall(natural)&&runtime.terrain.naturalWallCount()==naturalCount-1,"native campaign rules override only the chosen rock cell");
             int copper=core.items.get(Items.copper);long nativeTiles=tiles();long terrain=runtime.terrain.mapFingerprint();
             check(tiles()==nativeTiles,"terrain height generation leaves source tiles unchanged");
             System.setProperty("fpv.smoke","true");
@@ -100,6 +104,7 @@ public final class CampaignLifecycleNativeTest {
             var saved=Vars.saveDirectory.child("serpulo-with-upper.msav");SaveIO.save(saved);byte[] first= saved.readBytes();
             check(SaveIO.isSaveValid(saved),"full native save includes entities and all FPV custom chunks");
             SaveIO.load(saved,Vars.world.makeSectorContext(SectorPresets.groundZero.sector));Vars.state.set(GameState.State.playing);
+            check(classification.equals(Vars.state.rules.tags.get(fpv.terrain.TerrainClassification.TAG)),"native full SaveIO preserves map classification without new chunks/formats");
             var wall=runtime.construction.grid().get(placed.componentId());
             check(wall!=null&&wall.layer()==1&&wall.rotation()==1,"native SaveIO restores elevated wall identity/layer/rotation");
             var restoredBelt=runtime.construction.building(belt.componentId());
@@ -120,6 +125,7 @@ public final class CampaignLifecycleNativeTest {
             sector(Planets.serpulo.sectors.get(2));
             check(runtime.construction.grid().components().isEmpty(),"old sector upper structures do not leak into generated Serpulo sector");
             check(runtime.network.creatorFlight().snapshot().isEmpty()&&runtime.network.nativeBoost().snapshot().isEmpty(),"world transition clears previous flight authority");
+            check(!Vars.state.rules.tags.containsKey(fpv.terrain.TerrainClassification.TAG),"generated next campaign sector does not inherit authored overrides");
             long other=runtime.terrain.mapFingerprint();check(other!=terrain,"terrain follows newly generated sector");
             sector(SectorPresets.onset.sector);
             check(Vars.state.getPlanet()==Planets.erekir&&runtime.construction.grid().components().isEmpty(),"Erekir preset and environment remain native without previous layers");
