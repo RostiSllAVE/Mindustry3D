@@ -28,6 +28,21 @@ public final class LayerRuntime implements AutoCloseable {
     private final World3DAdapter physical;
     private final LayerCatalog catalog=new LayerCatalog();
     private final LayerPasteQueue pastes=new LayerPasteQueue(this);
+    private final ConstructionPriority priority=new ConstructionPriority(this);
+    public ConstructionPriority priority(){return priority;}
+    public LayerActions.Result requestPriority(ConstructionPriority.Target target){
+        if(target.layer()==0&&Vars.net.client()){
+            var valid=priority.validate(Vars.player,target);if(!valid.accepted())return lastResult=valid;
+            // Same local queue operation as ConstructBuild.tapped; native snapshots validate execution.
+            priority.promoteGround(Vars.player.unit(),target);
+        }
+        return submit(LayerActions.Action.prioritize(target));
+    }
+    private ConstructionPriority.Target priorityTarget(LayerActions.Action a){
+        Block block=a.kind()==LayerComponent.Kind.PLATFORM?null:Vars.content.getByName(mindustry.ctype.ContentType.block,a.blockName());
+        if(a.componentId()<1||a.componentId()>Integer.MAX_VALUE||block==null&&a.kind()!=LayerComponent.Kind.PLATFORM)throw new IllegalArgumentException("Invalid blueprint identity");
+        return new ConstructionPriority.Target((int)a.componentId()-1,a.x(),a.y(),a.layer(),a.kind()==LayerComponent.Kind.PLATFORM,block,a.rotation());
+    }
     private final fpv.control.LayerTurretControl turretControls=new fpv.control.LayerTurretControl(this);
     public fpv.control.LayerTurretControl turretControls(){return turretControls;}
     public fpv.world.WorldCoordinates.Point turretDirection(mindustry.world.blocks.defense.turrets.Turret.TurretBuild build){return turretAiming==null?null:turretAiming.direction(build);}
@@ -112,6 +127,8 @@ public final class LayerRuntime implements AutoCloseable {
         });
         Events.on(ResetEvent.class,resetHook);Events.on(WorldLoadEvent.class,worldHook);Events.on(TileChangeEvent.class,tileHook);installed=true;
         Events.run(mindustry.game.EventType.Trigger.update,turretControls::update);
+        Events.run(mindustry.game.EventType.Trigger.beforeGameUpdate,()->{if(!closed)priority.beforeNative();});
+        Events.run(mindustry.game.EventType.Trigger.afterGameUpdate,priority::afterNative);
     }
     public LayerWorld grid(){return grid;}
     public StructuralSolver solver(){return solver;}
@@ -168,6 +185,7 @@ public final class LayerRuntime implements AutoCloseable {
         if(action!=null&&action.op()==LayerActions.Op.POSSESS_TURRET)return turretControls.possess(player,action.componentId());
         if(action!=null&&action.op()==LayerActions.Op.RELEASE_TURRET)return turretControls.release(player);
         var valid=validate(player,action,filters);if(!valid.accepted())return valid;
+        if(action.op()==LayerActions.Op.PRIORITIZE)return priority.select(player,priorityTarget(action));
         if(action.op()==LayerActions.Op.PASTE)return pastes.enqueue(player,action);
         if(action.op()==LayerActions.Op.CANCEL_PASTE){pastes.cancel(player);return new LayerActions.Result(true,false,"Schematic queue cleared",0);}
         if(action.op()==LayerActions.Op.RESPAWN){
@@ -238,6 +256,7 @@ public final class LayerRuntime implements AutoCloseable {
         if(action==null)return LayerActions.Result.rejected("Missing construction action");
         if(action.op()==LayerActions.Op.DEPOSIT||action.op()==LayerActions.Op.WITHDRAW)return validateInventory(player,action,filters);
         if(action.op()!=LayerActions.Op.CONFIGURE&&(!player.isBuilder()||!player.unit().canBuild()))return LayerActions.Result.rejected("A living builder unit is required");
+        if(action.op()==LayerActions.Op.PRIORITIZE){try{return priority.validate(player,priorityTarget(action));}catch(IllegalArgumentException bad){return LayerActions.Result.rejected("Invalid blueprint identity");}}
         if(action.op()==LayerActions.Op.CANCEL_PASTE)return LayerActions.Result.ok(0);
         if(action.op()==LayerActions.Op.PASTE){try{var p=pastes.preview(player,action);return p.ready()>0?LayerActions.Result.ok(0):LayerActions.Result.rejected(p.reason().isEmpty()?"No valid schematic positions":p.reason());}catch(IllegalArgumentException invalid){return LayerActions.Result.rejected("Invalid or unsupported schematic");}}
         if(action.op()==LayerActions.Op.LINK||action.op()==LayerActions.Op.UNLINK)return validateLink(player,action,filters);
@@ -306,6 +325,7 @@ public final class LayerRuntime implements AutoCloseable {
         if(filters&&Vars.net.server()&&!Vars.netServer.admins.allowAction(player,action.op()==LayerActions.Op.DEPOSIT?ActionType.depositItem:ActionType.withdrawItem,Vars.world.tile(b.tileX(),b.tileY()),a->{a.block=b.block;a.item=Vars.content.item(action.itemId());a.itemAmount=action.amount();}))return LayerActions.Result.rejected("Server action filter denied cargo transfer");
         return LayerActions.Result.ok(Math.max(0,action.componentId()));
     }
+    boolean withinConstruction(Player player,int x,int y,int size,int layer){return within(player,x,y,size,layer);}
     private boolean within(Player player,int x,int y,int size,int layer){
         if(player instanceof TowerActor actor){double dx=LayerCoordinates.center(x,size)-actor.tower.x/Vars.tilesize,dy=LayerCoordinates.center(y,size)-actor.tower.y/Vars.tilesize,dz=planeHeight(layer)-physical.buildingBase(actor.tower),range=((mindustry.world.blocks.defense.BuildTurret)actor.tower.block).range/Vars.tilesize;return dx*dx+dy*dy+dz*dz<=range*range;}
         if(infinite(player))return true;var pose=physical.unitState(player.unit());if(pose==null)return false;
@@ -321,7 +341,7 @@ public final class LayerRuntime implements AutoCloseable {
         return entry.block()==null||!Vars.state.rules.placeRangeCheck||Build.getEnemyOverlap(entry.block(),player.team(),x,y)==null;
     }
     private boolean allow(Player player,LayerActions.Action action,int x,int y,LayerCatalog.Entry entry){
-        if(!Vars.net.server())return true;ActionType type=switch(action.op()){case PLACE->ActionType.placeBlock;case REMOVE->ActionType.breakBlock;case ROTATE->ActionType.rotate;case DEPOSIT->ActionType.depositItem;case WITHDRAW->ActionType.withdrawItem;case LINK,UNLINK,CONFIGURE,RESPAWN,PASTE,CANCEL_PASTE,POSSESS_TURRET,RELEASE_TURRET->ActionType.configure;};
+        if(!Vars.net.server())return true;ActionType type=switch(action.op()){case PLACE->ActionType.placeBlock;case REMOVE->ActionType.breakBlock;case ROTATE->ActionType.rotate;case DEPOSIT->ActionType.depositItem;case WITHDRAW->ActionType.withdrawItem;case LINK,UNLINK,CONFIGURE,RESPAWN,PASTE,CANCEL_PASTE,POSSESS_TURRET,RELEASE_TURRET,PRIORITIZE->ActionType.configure;};
         return Vars.netServer.admins.allowAction(player,type,Vars.world.tile(x,y),a->{a.block=entry==null?null:entry.block();a.rotation=action.rotation();if(action.itemId()>=0){a.item=Vars.content.item(action.itemId());a.itemAmount=action.amount();}});
     }
     private static int price(int amount){return Math.max(0,(int)Math.min(Integer.MAX_VALUE,Math.round(amount*(double)Vars.state.rules.buildCostMultiplier)));}
@@ -488,7 +508,7 @@ public final class LayerRuntime implements AutoCloseable {
         return new StructuralSolver.Foundation(Integer.toUnsignedLong(build.id)+1,team,Math.min(physical.surfaceHeight(x,y),planeHeight(1)),support.span(),support.capacity());
     }
     public void reset(){
-        turretControls.clear();pastes.clear();destructionQueue.clear();stateLimitWarnings.clear();LayerClientLogicPresentation.clear();double spacing=1.4;int max=LayerCatalog.boundedInt("fpv-layer-max",64,1,512);
+        priority.clear();turretControls.clear();pastes.clear();destructionQueue.clear();stateLimitWarnings.clear();LayerClientLogicPresentation.clear();double spacing=1.4;int max=LayerCatalog.boundedInt("fpv-layer-max",64,1,512);
         connectorMaxGap=LayerCatalog.boundedInt("fpv-vertical-max-gap",16,1,64);grid=new LayerWorld(new LayerCoordinates(spacing,max));rebuilds=new LayerRebuildQueue(grid.coordinates());logicActors.clear();newSolver();purchases.clear();connectorPurchases.clear();falling.clear();warnings.clear();time=0;nextChunk=1;fallRevision++;compositionRevision++;invalidateCache();remoteFree=false;replicationFailure=null;
     }
     public void damage(long id,double amount){
@@ -614,7 +634,7 @@ public final class LayerRuntime implements AutoCloseable {
             connectorMaxGap=gap;transfers.setMaxLayerGap(gap);
             if(remote&&grid.coordinates().equals(loaded.coordinates())){reconcileRemote(loaded,links);if(version>=5)nativeBuildings.replacePowerLinks(powerLinks);prepared.clear();}
             else {grid=loaded;newSolver(prepared,preparedTransfers);}
-            if(!remote)turretControls.clear();pastes.clear();purchases.clear();purchases.putAll(paidStructures);connectorPurchases.clear();connectorPurchases.putAll(paidLinks);rebuilds=loadedRebuilds;destructionQueue.clear();stateLimitWarnings.clear();
+            if(!remote){priority.clear();turretControls.clear();pastes.clear();}purchases.clear();purchases.putAll(paidStructures);connectorPurchases.clear();connectorPurchases.putAll(paidLinks);rebuilds=loadedRebuilds;destructionQueue.clear();stateLimitWarnings.clear();
             falling.clear();falling.addAll(chunks);warnings.clear();warnings.putAll(restoredWarnings);nextChunk=next;fallRevision++;compositionRevision++;time=0;remoteFree=remote&&free;replicationFailure=null;invalidateCache();
         }catch(RuntimeException invalid){throw new IOException("Invalid layer state",invalid);}
     }
@@ -648,5 +668,5 @@ public final class LayerRuntime implements AutoCloseable {
             if(!ids.add(c.id())||x<0||y<0||x+c.size()>Vars.world.width()||y+c.size()>Vars.world.height()||catalog.entry(c.blockName(),c.kind()==LayerComponent.Kind.PLATFORM,loaded.coordinates().spacing())==null)throw new IOException("Unsupported layer component or map bounds");}
     }
     private void invalidateCache(){cachedGridRevision=cachedFallRevision=budgetGeometry=budgetComposition=Long.MIN_VALUE;cachedGrid=cachedSnapshot=null;}
-    @Override public void close(){if(closed)return;closed=true;turretControls.close();pastes.clear();groundBridges.close();coreLifecycle.deactivate();logicActors.clear();destructionQueue.clear();LayerClientLogicPresentation.clear();Events.remove(ResetEvent.class,resetHook);Events.remove(WorldLoadEvent.class,worldHook);Events.remove(TileChangeEvent.class,tileHook);nativeBuildings.clear();solver.close();falling.clear();warnings.clear();}
+    @Override public void close(){if(closed)return;closed=true;priority.clear();turretControls.close();pastes.clear();groundBridges.close();coreLifecycle.deactivate();logicActors.clear();destructionQueue.clear();LayerClientLogicPresentation.clear();Events.remove(ResetEvent.class,resetHook);Events.remove(WorldLoadEvent.class,worldHook);Events.remove(TileChangeEvent.class,tileHook);nativeBuildings.clear();solver.close();falling.clear();warnings.clear();}
 }

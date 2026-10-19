@@ -33,6 +33,11 @@ public final class BuildingMousePicker {
         return axis==2?(face==0?1:face==1?-1:0):axis==0?(face==2?-1:face==3?1:0):(face==4?-1:face==5?1:0);
     }
     public static Hit pick(LayerRuntime runtime,Ray ray,double limit,FpvWorldRenderer.PickResult ground){
+        return pickScene(runtime,ray,limit,ground).hit();
+    }
+    /** Keep opaque depth even when fog intentionally hides the object identity. */
+    public record ScenePick(Hit hit,double distance){}
+    public static ScenePick pickScene(LayerRuntime runtime,Ray ray,double limit,FpvWorldRenderer.PickResult ground){
         double ax=ray.origin.x,ay=-ray.origin.z,az=ray.origin.y;
         double bx=ax+ray.direction.x*limit,by=ay-ray.direction.z*limit,bz=az+ray.direction.y*limit;
         double best=ground==null?limit:ground.distance;
@@ -66,7 +71,30 @@ public final class BuildingMousePicker {
             result=hidden?null:new Hit(c.id(),b,c.layer(),ax+(bx-ax)*fraction,ay+(by-ay)*fraction,az+(bz-az)*fraction,contact.bounds(),platform,block,
                 h.nx(),h.ny(),h.nz(),type(h.nz(),platform),targetLayer(c.layer(),bounds,platform,block,h.nz(),grid.coordinates()),h.nz()>0&&(platform||block instanceof mindustry.world.blocks.defense.Wall));
         }
+        return new ScenePick(result,best);
+    }
+    public static ConstructionPriority.Target pickBlueprint(LayerRuntime runtime,Ray ray,double limit,ScenePick scene){
+        if(Vars.player==null||Vars.player.dead()||!Vars.player.isBuilder())return null;
+        double best=Math.min(limit,scene.distance())+1e-6;ConstructionPriority.Target result=null;var unit=Vars.player.unit();
+        for(var p:unit.plans)if(!p.breaking&&p.block!=null&&!p.isDone()){
+            var t=new ConstructionPriority.Target(unit.id,p.x,p.y,0,false,p.block,p.rotation);double d=blueprintDistance(runtime,ray,limit,t);
+            if(d<best){best=d;result=t;}
+        }
+        var hit=scene.hit();
+        if(hit!=null&&hit.building() instanceof mindustry.world.blocks.ConstructBlock.ConstructBuild c&&c.team==Vars.player.team()&&c.current!=null){
+            var t=new ConstructionPriority.Target(unit.id,c.tileX(),c.tileY(),0,false,c.current,c.rotation);double d=blueprintDistance(runtime,ray,limit,t);if(d<best){best=d;result=t;}
+        }
+        for(var t:runtime.pastes().targets(Vars.player))if(t.unitId()==unit.id&&t.layer()<=runtime.grid().coordinates().maxLayers()){
+            if(runtime.grid().at(t.x(),t.y(),t.layer(),t.platform()?LayerComponent.Kind.PLATFORM:LayerComponent.Kind.BLOCK)!=null)continue;
+            double d=blueprintDistance(runtime,ray,limit,t);if(d<best){best=d;result=t;}
+        }
         return result;
+    }
+    private static double blueprintDistance(LayerRuntime runtime,Ray ray,double limit,ConstructionPriority.Target t){
+        if(Vars.state.rules.fog&&Vars.state.rules.staticFog&&!Vars.fogControl.isDiscovered(Vars.player.team(),t.x(),t.y()))return Double.POSITIVE_INFINITY;
+        var b=t.bounds(runtime);double ax=ray.origin.x,ay=-ray.origin.z,az=ray.origin.y;
+        var contact=box(b,ax,ay,az,ax+ray.direction.x*limit,ay-ray.direction.z*limit,az+ray.direction.y*limit);
+        return contact==null?Double.POSITIVE_INFINITY:contact.hit().time()*limit;
     }
     private record Contact(LayerCoordinates.Bounds bounds,SweptBodies.Hit hit){}
     private static Contact intersection(Building b,LayerCoordinates.Bounds bounds,double ax,double ay,double az,double bx,double by,double bz){

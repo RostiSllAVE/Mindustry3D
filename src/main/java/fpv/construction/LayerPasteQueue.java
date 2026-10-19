@@ -14,14 +14,37 @@ public final class LayerPasteQueue {
     public record Preview(Seq<BuildPlan> plans,boolean[] valid,double[] distance,int ready,String reason){}
     private static final class Job {
         final Player player;final Unit unit;final int team,layer;final LayerComponent.Mode mode;
-        final ArrayDeque<BuildPlan> pending=new ArrayDeque<>();final LinkedHashMap<Integer,Long> made=new LinkedHashMap<>();final ArrayList<BuildPlan> completed=new ArrayList<>();double work;
+        final ArrayDeque<BuildPlan> pending=new ArrayDeque<>();final LinkedHashMap<Integer,Long> made=new LinkedHashMap<>();final ArrayList<BuildPlan> completed=new ArrayList<>();final IdentityHashMap<BuildPlan,Double> parkedWork=new IdentityHashMap<>();double work;
         Job(Player p,int layer,LayerComponent.Mode mode){player=p;unit=p.unit();team=p.team().id;this.layer=layer;this.mode=mode;}
     }
     private final LayerRuntime runtime;private final ArrayList<Job> jobs=new ArrayList<>();
+    private final Map<Player,List<ConstructionPriority.Target>> cachedTargets=new IdentityHashMap<>();
+    private List<ConstructionPriority.Target> remoteTargets=List.of();
     public LayerPasteQueue(LayerRuntime runtime){this.runtime=runtime;}
     public int pending(Player player){int total=0;for(var j:jobs)if(j.player==player)total+=j.pending.size();return total;}
-    public void clear(){jobs.clear();}
-    public void cancel(Player player){jobs.removeIf(j->j.player==player);}
+    public void clear(){jobs.clear();cachedTargets.clear();remoteTargets=List.of();}
+    public void cancel(Player player){jobs.removeIf(j->j.player==player);cachedTargets.clear();runtime.priority().clear(player);}
+    public List<ConstructionPriority.Target> targets(Player player){
+        if(Vars.net.client())return remoteTargets;
+        var cached=cachedTargets.get(player);if(cached!=null)return cached;
+        var list=new ArrayList<ConstructionPriority.Target>();for(var j:jobs)if(j.player==player&&j.team==player.team().id&&!j.unit.dead)for(var q:j.pending)list.add(target(j,q));
+        var result=List.copyOf(list);if(!result.isEmpty())cachedTargets.put(player,result);return result;
+    }
+    private ConstructionPriority.Target target(Job j,BuildPlan p){return new ConstructionPriority.Target(j.unit.id,p.x,p.y,j.layer,LayerSchematic.platform(p),LayerSchematic.platform(p)?null:p.block,p.rotation);}
+    public byte[] replication(Player player){return ConstructionPlanCodec.encode(targets(player));}
+    public void applyReplication(byte[] bytes){remoteTargets=ConstructionPlanCodec.decode(bytes);}
+    public boolean contains(Player player,ConstructionPriority.Target t){for(var j:jobs)if(j.player==player&&j.team==player.team().id&&j.unit==player.unit()&&j.unit.id==t.unitId()&&j.layer==t.layer())for(var p:j.pending)if(t.matches(p))return true;return false;}
+    public LayerActions.Result validatePriority(Player player,ConstructionPriority.Target t){
+        if(!contains(player,t))return LayerActions.Result.rejected("Blueprint is no longer pending in your upper queue");
+        for(var j:jobs)if(j.player==player&&j.unit==player.unit()&&j.layer==t.layer())for(var p:j.pending)if(t.matches(p))return runtime.preview(player,place(p,j.layer,j.mode));
+        return LayerActions.Result.rejected("Blueprint is no longer pending");
+    }
+    public void promote(Player player,ConstructionPriority.Target t){
+        for(var j:jobs)if(j.player==player&&j.unit==player.unit()&&j.layer==t.layer())for(var p:j.pending)if(t.matches(p)){
+            if(j.pending.peek()!=p){j.parkedWork.put(j.pending.peek(),j.work);j.pending.remove(p);j.pending.addFirst(p);j.work=j.parkedWork.getOrDefault(p,0.0);j.parkedWork.remove(p);cachedTargets.clear();}return;
+        }
+    }
+    private void advance(Job j){var p=j.pending.remove();runtime.priority().completed(j.player,target(j,p));j.parkedWork.remove(p);if(!j.pending.isEmpty()){var next=j.pending.peek();j.work+=j.parkedWork.getOrDefault(next,0.0);j.parkedWork.remove(next);}cachedTargets.clear();}
     public Preview preview(Player player,LayerActions.Action action){
         var s=LayerSchematic.decode(action.configuration());var plans=LayerSchematic.plans(s,action.x(),action.y());
         boolean[] valid=new boolean[plans.size];double[] distance=new double[plans.size];Arrays.fill(distance,Double.POSITIVE_INFINITY);
@@ -54,30 +77,32 @@ public final class LayerPasteQueue {
         for(int i:indices){var p=preview.plans().get(i);boolean duplicate=false;for(var other:jobs)if(other.player==player&&other.layer==job.layer)for(var q:other.pending)if(p.x==q.x&&p.y==q.y&&LayerSchematic.platform(p)==LayerSchematic.platform(q)){duplicate=true;break;}
             if(!duplicate)job.pending.add(p);
         }
-        if(job.pending.isEmpty())return LayerActions.Result.rejected("These positions are already queued");jobs.add(job);
+        if(job.pending.isEmpty())return LayerActions.Result.rejected("These positions are already queued");jobs.add(job);cachedTargets.clear();
         String message="Queued "+job.pending.size()+" schematic entries on Z"+job.layer;
         if(preview.ready()<preview.plans().size)message+="; skipped "+(preview.plans().size-preview.ready())+": "+preview.reason();
         return new LayerActions.Result(true,false,message.length()>256?message.substring(0,256):message,0);
     }
     public void update(double dt){
         for(var iterator=jobs.iterator();iterator.hasNext();){var job=iterator.next();
-            if(job.player.team().id!=job.team||job.unit.dead||!job.unit.isAdded()||!job.unit.canBuild()){iterator.remove();continue;}
+            if(job.player.team().id!=job.team||job.unit.dead||!job.unit.isAdded()||!job.unit.canBuild()){iterator.remove();cachedTargets.clear();continue;}
             // Native clientSnapshot already carries updateBuilding for this player's owned unit.
             // Suspend work and costs without deleting plans or accumulating a resume-time burst.
             if(job.player.dead()||job.player.unit()!=job.unit||!job.unit.updateBuilding())continue;
+            if(!runtime.priority().allowsUpper(job.player,job.unit,job.pending.peek(),job.layer))continue;
             double speed=job.unit.type.buildSpeed*job.unit.buildSpeedMultiplier*Vars.state.rules.buildSpeed(job.player.team());
             if(!Double.isFinite(speed)||speed<=0)continue;job.work+=dt*60*speed;int completed=0;
             while(!job.pending.isEmpty()&&completed<32){var plan=job.pending.peek();var a=place(plan,job.layer,job.mode);var allowed=runtime.preview(job.player,a);
+                if(!runtime.priority().allowsUpper(job.player,job.unit,plan,job.layer))break;
                 if(!allowed.accepted()){
                     runtime.acceptResult(allowed);
                     if(allowed.reason().startsWith("Insufficient")||allowed.reason().startsWith("Outside builder range"))break;
-                    job.pending.remove();continue;
+                    advance(job);continue;
                 }
                 double time=LayerSchematic.platform(plan)?60:Math.max(1,plan.block.buildTime*Vars.state.rules.buildCostMultiplier);
                 if(!Vars.state.rules.instantBuild&&job.work<time)break;
                 var result=runtime.apply(job.player,a);runtime.acceptResult(result);
-                if(!result.accepted()){if(result.reason().startsWith("Insufficient")||result.reason().startsWith("Outside builder range"))break;job.pending.remove();continue;}
-                job.work=Math.max(0,job.work-time);job.pending.remove();job.made.put(Point2.pack(plan.x,plan.y),result.componentId());job.completed.add(plan);completed++;
+                if(!result.accepted()){if(result.reason().startsWith("Insufficient")||result.reason().startsWith("Outside builder range"))break;advance(job);continue;}
+                job.work=Math.max(0,job.work-time);advance(job);job.made.put(Point2.pack(plan.x,plan.y),result.componentId());job.completed.add(plan);completed++;
             }
             if(job.pending.isEmpty()){configure(job);iterator.remove();}
         }

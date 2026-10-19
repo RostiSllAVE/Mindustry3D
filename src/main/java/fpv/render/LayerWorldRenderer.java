@@ -315,8 +315,9 @@ public final class LayerWorldRenderer implements AutoCloseable {
         constructionVisuals.begin();long now=Time.millis();
         while(!activities.isEmpty()&&now-activities.peekFirst().when>400)activities.removeFirst();
         boolean showPlane=planeVisible&&selectedLayer>0;
+        var pending=Vars.player==null?java.util.List.<ConstructionPriority.Target>of():runtime.pastes().targets(Vars.player);
         boolean hasWarning=false;for(var c:runtime.grid().components())if(visibleIds.contains(c.id())&&runtime.warning(c.id())){hasWarning=true;break;}
-        if(!showPlane&&!hasWarning&&activities.isEmpty())return;
+        if(!showPlane&&!hasWarning&&activities.isEmpty()&&pending.isEmpty())return;
         if(overlayShader==null)overlayShader=new Shader(
             "attribute vec3 a_position;attribute vec4 a_color;attribute vec2 a_texCoord0;uniform mat4 u_combined;varying vec4 c;void main(){c=a_color;gl_Position=u_combined*vec4(a_position,1.0);}",
             "varying vec4 c;void main(){gl_FragColor=c;}");
@@ -341,6 +342,16 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 }
             }
             }
+            if(Vars.player!=null&&!Vars.player.dead())for(var p:pending){
+                if(p.unitId()!=Vars.player.unit().id||p.layer()>worldMaxLayer()||runtime.grid().at(p.x(),p.y(),p.layer(),p.platform()?LayerComponent.Kind.PLATFORM:LayerComponent.Kind.BLOCK)!=null)continue;
+                if(Vars.state.rules.fog&&Vars.state.rules.staticFog&&!Vars.fogControl.isDiscovered(Vars.player.team(),p.x(),p.y()))continue;
+                var b=p.bounds(runtime);if(!camera.frustum.containsBounds((float)b.centerX(),(float)b.centerZ(),(float)-b.centerY(),(float)p.size()*.5f,(float)(b.maxZ()-b.minZ())*.5f,(float)p.size()*.5f))continue;
+                double z=b.maxZ()+.012,w=.025;float x0=(float)b.minX(),y0=(float)b.minY(),x1=(float)b.maxX(),y1=(float)b.maxY();
+                rect(x0,y0,x1,(float)(y0+w),(float)z,.38f,.82f,1,.7f);rect(x0,(float)(y1-w),x1,y1,(float)z,.38f,.82f,1,.7f);
+                rect(x0,y0,(float)(x0+w),y1,(float)z,.38f,.82f,1,.7f);rect((float)(x1-w),y0,x1,y1,(float)z,.38f,.82f,1,.7f);
+                if(p.platform())constructionVisuals.ghost(Core.atlas.white(),b.centerX(),b.centerY(),b.minZ(),1,LayerCoordinates.PLATFORM_THICKNESS,0,true,.25f);
+                else constructionVisuals.ghost(p.block(),b.centerX(),b.centerY(),b.minZ(),b.maxZ()-b.minZ(),p.rotation(),true,.28f);
+            }
             overlay.drawAndClear(overlayShader);
         }finally{Gl.depthMask(write);if(!blend)Gl.disable(Gl.blend);}
         for(var activity:activities){
@@ -352,6 +363,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
         }
         constructionVisuals.draw(camera);
     }
+    private int worldMaxLayer(){return runtime.grid().coordinates().maxLayers();}
     private void rect(float minX,float minY,float maxX,float maxY,float z,float r,float g,float b,float alpha){
         overlay.projectionFace(Core.atlas.white(),minX,z,-minY,maxX,z,-minY,maxX,z,-maxY,minX,z,-maxY,r,g,b,alpha);
     }

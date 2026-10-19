@@ -35,6 +35,8 @@ public final class LayerBuildController {
     private mindustry.world.Block strokeBlock;
     private MouseConstructionTarget strokeTarget;
     private boolean cancelButtonHeld;
+    private boolean priorityGesture;
+    private ConstructionPriority.Target blueprintHover;
     private BuildingMousePicker.Hit hover,mouseSource;
     private LayerVerticalTransfers.Kind riser;
     private LayerVerticalTransfers.Kind riserChoice=LayerVerticalTransfers.Kind.ITEMS;
@@ -47,6 +49,7 @@ public final class LayerBuildController {
     public String riserChoice(){return "Shift-click riser: "+riserChoice.name();}
     public void cycleRiser(){riserChoice=riserChoice==LayerVerticalTransfers.Kind.ITEMS?LayerVerticalTransfers.Kind.LIQUIDS:riserChoice==LayerVerticalTransfers.Kind.LIQUIDS?LayerVerticalTransfers.Kind.POWER:LayerVerticalTransfers.Kind.ITEMS;cancelConnection();}
     public String hoverLabel(){
+        if(blueprintHover!=null)return "Blueprint: "+(blueprintHover.platform()?"Platform":blueprintHover.block().localizedName)+" — Z"+blueprintHover.layer()+"\nPriority: click without a tool / Alt-click · construction pause unchanged";
         if(removalTarget!=null)return "Dismantle: "+(removalTarget.block()==null?"Platform":removalTarget.block().localizedName)+" — Z"+removalTarget.layer()+"\n"+previewReason;
         if(hover!=null&&hover.block()!=null&&hover.building()==null)return hover.block().localizedName+" — Z"+hover.layer()+"\nClick to inspect";
         if(hover==null||hover.building()==null)return connecting()?"Choose destination — "+mouseReason:"";
@@ -57,7 +60,7 @@ public final class LayerBuildController {
         if(!(deselect||menu)||!connecting()&&input.block==null&&!platform&&!removalGesture)return false;
         input.block=null;platform=false;removalGesture=false;pendingRemoval.clear();removed.clear();cancelConnection();cancel();placementGesture=false;cancelButtonHeld=deselect;input.setCancelConsumed(true);return true;
     }
-    public void endInteraction(){schematics.suspend();placement=null;removalTarget=null;removalGesture=false;pendingRemoval.clear();removed.clear();hover=null;cancelConnection();cancel();placementGesture=false;cancelButtonHeld=false;input.setInteractionOwned(false);input.setCancelConsumed(false);renderer.interaction(null,null,null,false);}
+    public void endInteraction(){schematics.suspend();placement=null;removalTarget=null;removalGesture=false;pendingRemoval.clear();removed.clear();hover=null;blueprintHover=null;priorityGesture=false;cancelConnection();cancel();placementGesture=false;cancelButtonHeld=false;input.setInteractionOwned(false);input.setCancelConsumed(false);renderer.interaction(null,null,null,false);}
     /** Same click boundary used by native-input update and isolated SDL integration checks. */
     public void interact(BuildingMousePicker.Hit hit,boolean shift){
         if(connecting()){
@@ -164,7 +167,21 @@ public final class LayerBuildController {
         if(!keys.cancelTap()&&!keys.breakHeld()&&!input.originalInput().keyDown(Binding.deselect))cancelButtonHeld=false;
         input.setCancelConsumed(cancelButtonHeld);
         camera.update();var ray=camera.getPickRay(sx,sy);
-        hover=keys.ui()?null:BuildingMousePicker.pick(runtime,ray,camera.far/Math.max(.001,ray.direction.dot(camera.direction)),ground);
+        double rayLimit=camera.far/Math.max(.001,ray.direction.dot(camera.direction));
+        var scene=keys.ui()?new BuildingMousePicker.ScenePick(null,0):BuildingMousePicker.pickScene(runtime,ray,rayLimit,ground);hover=scene.hit();
+        blueprintHover=keys.ui()?null:BuildingMousePicker.pickBlueprint(runtime,ray,rayLimit,scene);
+        boolean alt=input.originalInput().keyDown(KeyCode.altLeft)||input.originalInput().keyDown(KeyCode.altRight);
+        boolean priorityClick=begin&&!keys.ui()&&!keys.control()&&!keys.shift()&&!keys.breakHeld()&&!keys.cancelTap()&&!keys.menuTap()&&!connecting()
+            &&(alt||blueprintHover!=null&&input.block==null&&!platform&&!schematics.active());
+        if(!keys.selectHeld()&&!keys.selectTap())priorityGesture=false;
+        if(priorityClick){priorityGesture=true;cancel();input.cancelPointerGesture();
+            if(blueprintHover!=null&&!floorLocked)resolveLayer(blueprintHover.layer());
+            var result=blueprintHover==null?LayerActions.Result.rejected("Aim at a visible unfinished blueprint"):runtime.requestPriority(blueprintHover);runtime.acceptResult(result);previewReason=result.reason();
+        }
+        if(priorityGesture){
+            input.setInteractionOwned(true);input.setUpperLayerOwned(true);placement=null;removalTarget=null;
+            renderer.preview(false,layer,0,0,1,false,false);renderer.interaction(blueprintHover==null?null:blueprintHover.highlight(runtime),null,null,false);return;
+        }
         if(schematics.process(hover,ray,layer,floorLocked,free,begin,keys)){
             if(!floorLocked&&schematics.active())resolveLayer(schematics.layer());
             if(connecting())cancelConnection();renderer.interaction(null,null,null,false);
@@ -196,10 +213,10 @@ public final class LayerBuildController {
         renderer.interaction(hover!=null&&(hover.block()!=null||hover.platform())?hover:null,mouseSource,hover,false);
         if(cancelled||cancelButtonHeld||keys.ui()||possession){renderer.preview(false,layer,0,0,1,false,false);cancel();return;}
         if(input.block==null&&!platform){
-            if(!floorLocked&&hover!=null)resolveLayer(hover.layer());
+            if(!floorLocked){if(blueprintHover!=null)resolveLayer(blueprintHover.layer());else if(hover!=null)resolveLayer(hover.layer());}
             if(keys.selectTap())interact(hover,keys.shift());
             var plan=connecting()?MouseConnection.preview(runtime,mouseSource,hover,riser):null;
-            mouseReason=plan==null?"":plan.reason();renderer.interaction(hover!=null&&(hover.block()!=null||hover.platform())?hover:null,mouseSource,hover,plan!=null&&plan.valid());
+            mouseReason=plan==null?"":plan.reason();renderer.interaction(blueprintHover!=null&&!connecting()?blueprintHover.highlight(runtime):hover!=null&&(hover.block()!=null||hover.platform())?hover:null,mouseSource,hover,plan!=null&&plan.valid());
             renderer.preview(false,layer,0,0,1,false,false);input.setUpperLayerOwned(layer>0);return;
         }
         if(placementGesture){

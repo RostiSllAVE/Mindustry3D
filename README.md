@@ -247,3 +247,5 @@ Java runtime, profiles, saves, backups, raw recordings
 or proprietary Liftoff resources are included in the prepared assets.
 
 [A2-08a construction pause](docs/alpha-v2/A2-08a-CONSTRUCTION-CANCELLATION.md) adds a remappable F3 pause/resume action that retains plans on Z0 and upper floors. Physical gameplay acceptance is pending.
+
+[A2-08b blueprint priority](docs/alpha-v2/A2-08b-CONSTRUCTION-PRIORITY.md) selects pending work directly in 3D Build Mode: click without a tool, or Alt-click with a block/schematic selected. The existing F3 pause is retained; owner visual acceptance is pending.

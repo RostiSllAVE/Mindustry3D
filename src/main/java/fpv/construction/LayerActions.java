@@ -7,7 +7,7 @@ import java.io.IOException;
 /** Small, bounded requests. Identity, costs, support and damage are never supplied by a client. */
 public final class LayerActions {
     private LayerActions(){}
-    public enum Op { PLACE, REMOVE, ROTATE, DEPOSIT, WITHDRAW, LINK, UNLINK, CONFIGURE, RESPAWN, PASTE, CANCEL_PASTE, POSSESS_TURRET, RELEASE_TURRET }
+    public enum Op { PLACE, REMOVE, ROTATE, DEPOSIT, WITHDRAW, LINK, UNLINK, CONFIGURE, RESPAWN, PASTE, CANCEL_PASTE, POSSESS_TURRET, RELEASE_TURRET, PRIORITIZE }
     public record Action(Op op,int x,int y,int layer,LayerComponent.Kind kind,String blockName,
                          int rotation,LayerComponent.Mode mode,long componentId,int itemId,int amount,long targetId,byte[] configuration){
         public Action(Op op,int x,int y,int layer,LayerComponent.Kind kind,String blockName,int rotation,LayerComponent.Mode mode,long componentId,int itemId,int amount,long targetId){this(op,x,y,layer,kind,blockName,rotation,mode,componentId,itemId,amount,targetId,new byte[0]);}
@@ -21,6 +21,7 @@ public final class LayerActions {
             if(op==Op.PLACE&&(layer==0||componentId!=0||kind==LayerComponent.Kind.BLOCK&&blockName.isEmpty()))
                 throw new IllegalArgumentException("Upper-layer placement required");
             if(op==Op.PASTE&&(layer==0||componentId!=0))throw new IllegalArgumentException("Upper-layer schematic required");
+            if(op==Op.PRIORITIZE&&(componentId<1||kind==LayerComponent.Kind.PLATFORM&&!blockName.isEmpty()||kind==LayerComponent.Kind.BLOCK&&blockName.isEmpty()))throw new IllegalArgumentException("Builder and blueprint identity required");
             if(op!=Op.PLACE&&op!=Op.PASTE&&op!=Op.CANCEL_PASTE&&op!=Op.RELEASE_TURRET&&componentId==0)throw new IllegalArgumentException("Component identity required");
             if((op==Op.DEPOSIT||op==Op.WITHDRAW)&&(itemId<0||amount<1))throw new IllegalArgumentException("Bounded item transfer required");
             if(op!=Op.DEPOSIT&&op!=Op.WITHDRAW&&(itemId!=-1||amount!=0))throw new IllegalArgumentException("Unexpected item payload");
@@ -36,6 +37,7 @@ public final class LayerActions {
         public static Action possessTurret(long id){return new Action(Op.POSSESS_TURRET,0,0,0,LayerComponent.Kind.BLOCK,"",0,LayerComponent.Mode.STRUCTURAL,id);}
         public static Action releaseTurret(){return new Action(Op.RELEASE_TURRET,0,0,0,LayerComponent.Kind.BLOCK,"",0,LayerComponent.Mode.STRUCTURAL,0);}
         public static Action cancelPaste(){return new Action(Op.CANCEL_PASTE,0,0,0,LayerComponent.Kind.BLOCK,"",0,LayerComponent.Mode.STRUCTURAL,0);}
+        public static Action prioritize(ConstructionPriority.Target t){return new Action(Op.PRIORITIZE,t.x(),t.y(),t.layer(),t.platform()?LayerComponent.Kind.PLATFORM:LayerComponent.Kind.BLOCK,t.platform()?"":t.block().name,t.rotation(),LayerComponent.Mode.STRUCTURAL,(long)t.unitId()+1);}
         public static Action place(int x,int y,int layer,String name,boolean platform,int rotation,LayerComponent.Mode mode){
             return new Action(Op.PLACE,x,y,layer,platform?LayerComponent.Kind.PLATFORM:LayerComponent.Kind.BLOCK,
                 platform?LayerCatalog.PLATFORM:name,Math.floorMod(rotation,4),mode,0);

@@ -267,6 +267,9 @@ public final class FpvNetwork implements AutoCloseable {
         if(construction!=null)throw new IllegalStateException("Construction already registered");construction=Objects.requireNonNull(value);supportEffects.setConstruction(value);
         registerStateChannel("layered-world",value::replication,bytes->{value.applyReplication(bytes);value.turretControls().restoreClient();});
         registerStateChannel("layer-turrets",value.turretControls()::replication,value.turretControls()::applyReplication);
+        // Pending upper work is private to its owner, not part of world/save replication.
+        registerStateChannel("construction-plans",()->fpv.construction.ConstructionPlanCodec.encode(java.util.List.of()),value.pastes()::applyReplication);
+        channels.get("construction-plans").ownerData=value.pastes()::replication;
         Vars.netServer.addBinaryPacketHandler(CONSTRUCTION_PACKET,constructionServerHandler);
         if(Vars.netClient!=null)Vars.netClient.addBinaryPacketHandler(CONSTRUCTION_PACKET,constructionClientHandler);
     }
@@ -422,6 +425,18 @@ public final class FpvNetwork implements AutoCloseable {
         for(var entry:channels.entrySet()){
             Channel channel=entry.getValue();if(time<channel.next)continue;
             channel.next=time+1/(entry.getKey().equals("combat")||entry.getKey().equals("explosions")?NetworkConfig.VISUAL_HZ:NetworkConfig.CHANNEL_HZ);
+            if(channel.ownerData!=null){
+                for(var peer:peers.entrySet())if(peer.getValue().accepted&&peer.getKey().con!=null){
+                    try{
+                        byte[] privateBytes=channel.ownerData.apply(peer.getKey());
+                        if(privateBytes.length>NetworkConfig.MAX_MESSAGE_BYTES)throw new IllegalStateException("Private construction state too large");
+                        if(!peer.getValue().channels.containsKey(entry.getKey())||!Arrays.equals(privateBytes,peer.getValue().privateData.get(entry.getKey()))){
+                            sendChunks(peer.getKey(),entry.getKey(),privateBytes);peer.getValue().privateData.put(entry.getKey(),privateBytes);peer.getValue().channels.put(entry.getKey(),1L);
+                        }
+                    }catch(RuntimeException failure){diagnostic.data.count(NetworkDiagnostics.Counter.CHANNEL_ENCODE_FAILURE);Log.err("[FPV] Private construction plans could not encode",failure);}
+                }
+                continue;
+            }
             byte[] bytes;
             long encodeStart=diagnostic.start();
             try{bytes=entry.getValue().serverData.get();if(bytes.length>NetworkConfig.MAX_MESSAGE_BYTES)throw new IllegalStateException("State channel too large");channel.failed=false;}
@@ -633,8 +648,8 @@ public final class FpvNetwork implements AutoCloseable {
     private void applyExplosions(byte[] bytes){explosions.acceptVisuals(NetProtocol.read(bytes,in->{int count=in.readInt();if(count<0||count>CrashConfig.MAX_EFFECTS)throw new IOException("Explosion count");var list=new ArrayList<RadialExplosion.VisualBurst>(count);for(int i=0;i<count;i++){int id=in.readInt();double x=NetProtocol.number(in),y=NetProtocol.number(in),z=NetProtocol.number(in);double radius=NetProtocol.number(in),damage=NetProtocol.number(in),visual=NetProtocol.number(in),duration=NetProtocol.number(in);int style=in.readUnsignedByte();if(style>=RadialExplosion.Style.values().length)throw new IOException("Explosion style");var spec=new RadialExplosion.Spec(radius,damage,visual,duration,RadialExplosion.Style.values()[style],in.readBoolean());list.add(new RadialExplosion.VisualBurst(id,x,y,z,spec,NetProtocol.number(in)));}return list;}));}
     private static float color(DataInputStream in)throws IOException{float value=in.readFloat();if(!Float.isFinite(value)||value<0||value>16)throw new IOException("Invalid visual color");return value;}
     private static double now(){return System.nanoTime()/1e9;}
-    private static final class Peer{boolean accepted,diagnosticPending,inputSeen,usableInputSeen;NetworkControls controls=NetworkControls.hold();long lastSequence=-1,lastConstructionSequence=-1;double joined=now(),lastInput,rateStart;int rateCount;final Map<String,Long> channels=new HashMap<>();}
-    private static final class Channel{final Supplier<byte[]> serverData;final Consumer<byte[]> clientApply;double next;byte[] bytes;long version;boolean failed;
+    private static final class Peer{boolean accepted,diagnosticPending,inputSeen,usableInputSeen;NetworkControls controls=NetworkControls.hold();long lastSequence=-1,lastConstructionSequence=-1;double joined=now(),lastInput,rateStart;int rateCount;final Map<String,Long> channels=new HashMap<>();final Map<String,byte[]> privateData=new HashMap<>();}
+    private static final class Channel{final Supplier<byte[]> serverData;final Consumer<byte[]> clientApply;java.util.function.Function<Player,byte[]> ownerData;double next;byte[] bytes;long version;boolean failed;
         Channel(Supplier<byte[]> source,Consumer<byte[]> destination){serverData=source;clientApply=destination;}}
     @Override public void close(){if(closed)return;closed=true;clearLocalPrediction();pilotCheckpoint=null;for(Session session:sessions.values())session.release();sessions.clear();peers.clear();remote.clear();assemblies.clear();
         diagnostic.flush();diagnostic.data.enabled(false);

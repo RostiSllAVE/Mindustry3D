@@ -172,5 +172,9 @@
   "constructionPause": {
     "verification": "automated-native-fixture; physical acceptance pending",
     "behavior": "Remappable host KeyBind fpv-construction-toggle (default F3) pauses/resumes only the possessed builder via native isBuilding/updateBuilding; native pauseBuilding remains available in Build Mode and is consumed once per frame. E/Q retain flight altitude. Pausing preserves committed plans, native partial blueprints and server-owned timed upper jobs. RMB cancels only the uncommitted tool/gesture; clearBuilding explicitly clears pending requests. Tab preserves explicit intent; unit/world changes read the new unit state. Native clientSnapshot transports the existing building flag; no protocol change."
+  },
+  "constructionPriority": {
+    "verification": "automated native fixture; owner visual acceptance pending",
+    "behavior": "Build Mode: LMB on a visible pending blueprint when no tool is selected; Alt+LMB with an active block/schematic. Reuse BuildingMousePicker ScenePick depth including opaque fog identities, so hidden lower floors are never selected. Native plans move to the existing queue head; upper timed jobs retain per-plan parked work. Focus is per owner/unit, leaves F3 pause unchanged, and temporarily excludes other floors only while the selected plan is pending. Upper pending views use an owner-private reliable construction-plans state channel and an appended PRIORITIZE action in the existing bounded construction envelope. No new scheduling queue, save schema, movement, costs or protocol-version change; exact code fingerprint required on every peer."
   }
 }
