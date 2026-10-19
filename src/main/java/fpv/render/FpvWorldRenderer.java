@@ -119,6 +119,8 @@ public final class FpvWorldRenderer {
     public long organicPropSubmissions(){return organicProps.submissions();}
     private final EnvironmentRenderer environment = new EnvironmentRenderer();
     private final TerrainElevation elevation = new TerrainElevation();
+    private final FloorSurfaceRelief floorRelief = new FloorSurfaceRelief(CHUNK);
+    private final java.util.function.Predicate<Tile> floorVisible = this::discovered;
     private final java.util.function.IntConsumer coarseStaticStructure=this::coarseStaticStructure;
     private long terrainRevision=-1;
     private final SpriteExtrusionRenderer extrusion=new SpriteExtrusionRenderer();
@@ -401,7 +403,7 @@ public final class FpvWorldRenderer {
         if (tile == null) { invalidate(); return; }
         updatePlacedBuilding(tile);
         elevation.invalidate(tile);
-        int radius = Math.max(1, tile.block().size);
+        int radius = Math.max(1, tile.block().size) + FloorSurfaceRelief.ANCHOR_RADIUS;
         for (int x = Math.max(0, tile.x - radius) / CHUNK; x <= (tile.x + radius) / CHUNK; x++) {
             for (int y = Math.max(0, tile.y - radius) / CHUNK; y <= (tile.y + radius) / CHUNK; y++) {
                 ChunkMesh cached = chunks.get(key(x, y));
@@ -646,6 +648,7 @@ public final class FpvWorldRenderer {
 
     private ChunkMesh buildChunk(int cx, int cy) {
         terrain.clear();staticAtlas.clear();
+        floorRelief.prepare(cx,cy,floorVisible);
         for (int y = cy * CHUNK; y < Math.min(worldHeight, (cy + 1) * CHUNK); y++) {
             for (int x = cx * CHUNK; x < Math.min(worldWidth, (cx + 1) * CHUNK); x++) {
                 Tile tile = Vars.world.tile(x, y);
@@ -657,8 +660,7 @@ public final class FpvWorldRenderer {
                 }
                 color.set(tile.floor().mapColor);
                 TextureRegion floor=NativeRegions.floor(tile.floor(),tile);
-                if(NativeAtlasMesh.valid(floor))staticAtlas.top(floor,x,0,-y,1,1,0,1,1,1,tile.floor().isLiquid);
-                else terrain.top(x,0,-y,1,1,color.r,color.g,color.b);
+                floorSurface(tile,floor,0,false);
                 Block block = tile.block();
                 if(elevation.naturalWall(tile)){
                     terrainTile(tile,staticAtlas,terrain);
@@ -670,13 +672,28 @@ public final class FpvWorldRenderer {
                 }
                 if(tile.overlay()!=mindustry.content.Blocks.air){
                     float height=tile.overlay().wallOre?heightFor(block):0;
-                    staticAtlas.top(NativeRegions.floor(tile.overlay(),tile),x,height+(float)RenderConfig.ATLAS_SURFACE_OFFSET,-y,1,1,0,1,1,1,false);
+                    floorSurface(tile,NativeRegions.floor(tile.overlay(),tile),height+(float)RenderConfig.ATLAS_SURFACE_OFFSET,true);
                 }
             }
         }
         Mesh mesh=null;
         if(terrain.count>0){mesh=new Mesh(true,terrain.count/7,0,VertexAttribute.position3,COLOR);mesh.setVertices(terrain.vertices,0,terrain.count);}
         return new ChunkMesh(mesh,staticAtlas.upload(),revision,(long)terrain.count*4,discoveryHash(cx,cy));
+    }
+
+    /** Only cached presentation vertices move; native XYZ/picking/physical terrain remain untouched. */
+    private void floorSurface(Tile tile,TextureRegion region,float offset,boolean overlay){
+        int x=tile.x,y=tile.y;
+        float sw=floorRelief.corner(x,y)+offset,se=floorRelief.corner(x+1,y)+offset;
+        float ne=floorRelief.corner(x+1,y+1)+offset,nw=floorRelief.corner(x,y+1)+offset;
+        if(sw==offset&&se==offset&&ne==offset&&nw==offset){
+            if(NativeAtlasMesh.valid(region))staticAtlas.top(region,x,offset,-y,1,1,0,1,1,1,!overlay&&tile.floor().isLiquid);
+            else if(!overlay)terrain.top(x,offset,-y,1,1,color.r,color.g,color.b);
+        }else if(NativeAtlasMesh.valid(region))staticAtlas.terrainTop(region,x,-y,1,1,sw,se,ne,nw,1);
+        else if(!overlay){
+            terrain.reserve(6);
+            terrain.quad(x-.5f,sw,-y+.5f,x+.5f,se,-y+.5f,x+.5f,ne,-y-.5f,x-.5f,nw,-y-.5f,color.r,color.g,color.b);
+        }
     }
 
     private void coarseChunk(int cx,int cy,int stride){
@@ -719,7 +736,8 @@ public final class FpvWorldRenderer {
 
     private boolean chunkVisible(int cx,int cy){
         float h=Math.max(Math.max(6,vegetationHeight),elevation.maxHeight());
-        return camera.frustum.containsBounds(cx*CHUNK+(CHUNK-1)*.5f,h/2,-cy*CHUNK-(CHUNK-1)*.5f,CHUNK*.5f+vegetationPadding,h/2,CHUNK*.5f+vegetationPadding);
+        float low=-FloorSurfaceRelief.MAX_HEIGHT;
+        return camera.frustum.containsBounds(cx*CHUNK+(CHUNK-1)*.5f,(h+low)/2,-cy*CHUNK-(CHUNK-1)*.5f,CHUNK*.5f+vegetationPadding,(h-low)/2,CHUNK*.5f+vegetationPadding);
     }
 
     private void terrainTile(Tile tile,NativeAtlasMesh.Builder atlas,Geometry fallback){
