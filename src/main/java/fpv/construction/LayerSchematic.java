@@ -23,7 +23,7 @@ public final class LayerSchematic {
     public static final String PLATFORMS="fpv-platforms";
     private LayerSchematic(){}
     public static final class PlatformPlan extends BuildPlan {public PlatformPlan(int x,int y){super(x,y,0,Blocks.air);}}
-    public static boolean platform(BuildPlan p){return p instanceof PlatformPlan;}
+    public static boolean platform(BuildPlan p){return p instanceof PlatformPlan||p instanceof VolumeClipboard.Plan v&&v.platform;}
     public record Stamp(Schematic schematic,int x,int y){}
     public static Schematic capture(LayerRuntime runtime,int layer,int ax,int ay,int bx,int by){
         if(layer==0)return Vars.schematics.create(ax,ay,bx,by);

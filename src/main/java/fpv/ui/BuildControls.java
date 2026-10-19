@@ -31,9 +31,12 @@ public final class BuildControls implements AutoCloseable {
                 panel.add("Pause retains plans. RMB cancels the tool.\nClear building removes queued requests.").fontScale(.7f).left().row();
                 panel.add("Blueprint priority: click without a tool,\nor Alt-click with a block/schematic selected.").fontScale(.7f).left().row();
                 panel.button(layers.volumeLabel(),layers::toggleVolume).update(button->button.setText(layers.volumeLabel())).height(30).row();
+                panel.button("Copy 3D selection",layers::copyVolume).disabled(button->layers.volumeTool().selection().area()==null||layers.volumeTool().selection().dragging()).height(28).row();
+                panel.button("Paste 3D clipboard",layers::pasteVolume).disabled(button->!layers.volumePasteTool().available()).height(28).row();
                 panel.collapser(info->{
                     info.defaults().width(250).pad(2);
                     info.add("LMB drag: X/Y · Wheel: other Z boundary\nRelease: keep · New drag: replace\nRMB: clear · Esc / F4: leave\nLocked floor overrides the initial surface.\nConstruction continues; F3 pauses it.").wrap().fontScale(.7f).left().row();
+                    info.add("3D mode: Ctrl+Shift+C / V\nPASTE: wheel moves all Z levels\nR / Shift+R: rotate 90 deg\nLMB: queue · RMB: cancel preview\nEsc / F4: leave; clipboard stays in session.").wrap().fontScale(.7f).left().row();
                     info.label(layers::volumeDetails).wrap().fontScale(.72f).left().row();
                     info.add("Cyan: included structures (up to 1024 visible\noutlines); yellow: full selected volume.").wrap().fontScale(.65f).left().row();
                     info.button("Clear 3D selection",layers::clearVolume).height(28).row();

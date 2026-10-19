@@ -284,6 +284,10 @@ public final class FpvMod extends Mod {
         fpv.input.ConstructionBinding.toggle.load();
         Core.bundle.getProperties().put("keybind.fpv-volume-selection.name","3D structure selection (Build Mode)");
         fpv.construction.VolumeSelectionTool.toggle.load();
+        for(var key:new arc.input.KeyBind[]{fpv.construction.VolumePasteTool.copy,fpv.construction.VolumePasteTool.paste,fpv.construction.VolumePasteTool.rotate})key.load();
+        Core.bundle.getProperties().put("keybind.fpv-volume-copy.name","Copy 3D selection (Ctrl+Shift modifier)");
+        Core.bundle.getProperties().put("keybind.fpv-volume-paste.name","Paste 3D clipboard (Ctrl+Shift modifier)");
+        Core.bundle.getProperties().put("keybind.fpv-volume-rotate.name","Rotate 3D preview (Shift reverses)");
         Core.bundle.getProperties().put("keybind.fpv-camera-smoothing-toggle.name","Toggle camera smoothing (modifier in FPV settings)");
         Core.bundle.getProperties().put("category.FPV camera.name","FPV camera");
         Core.bundle.getProperties().put("setting.fpv-camera-smoothing.name","Camera Smoothing");

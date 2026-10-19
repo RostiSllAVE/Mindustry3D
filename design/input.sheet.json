@@ -180,5 +180,9 @@
   "volumeSelection": {
     "verification": "automated native fixtures; physical acceptance pending",
     "behavior": "Build-only remappable fpv-volume-selection (F4) or panel button. LMB drag pins visible surface height and actual floor, respecting explicit floor lock; raw wheel changes opposite Z boundary once per frame, never outside this mode or over UI. LMB release retains the volume, new drag replaces it, RMB clears, Esc/F4 exits. Input ownership prevents native placement, removal, possession, blueprint priority and schematic edits; F3 construction intent and committed queues are preserved. Tab/F5/focus/menu transitions abandon drafts and leave the mode; held pointer is fenced until release. Read-only metadata and depth-tested bounded outline rendering, no packets or save format."
+  },
+  "volumeClipboard": {
+    "verification": "automated native fixtures; owner acceptance pending",
+    "behavior": "Session-only bounded version-1 XYZ clipboard, 1024 entries / 128x128 / existing configured floors / 16 KiB payload. Build UI Copy/Paste buttons; Ctrl+Shift+C/V inside explicit F4 3D mode only. Paste wheel changes destination base Z, R/Shift+R rotates around full footprint (even anchors preserved); LMB atomically admits a normal-cost batch, RMB cancels preview, Esc/F4 leaves. Shared 3D picking and existing ghost renderer; native .msch clipboard preserved. Reuse native Z0 builder and LayerPasteQueue with support-first dry-run and real live validators; authenticated appended VOLUME_PASTE action in existing protocol-4 construction envelope, no new packets/channels. F3/priority retained; original resources/health/work/entity IDs never copied. Internal links use clipboard indices and new authoritative destination handles; external/unsupported configs cleared with warning. World/team reset clears clipboard."
   }
 }

@@ -85,6 +85,7 @@ public final class BuildingMousePicker {
             var t=new ConstructionPriority.Target(unit.id,c.tileX(),c.tileY(),0,false,c.current,c.rotation);double d=blueprintDistance(runtime,ray,limit,t);if(d<best){best=d;result=t;}
         }
         for(var t:runtime.pastes().targets(Vars.player))if(t.unitId()==unit.id&&t.layer()<=runtime.grid().coordinates().maxLayers()){
+            if(t.layer()==0){var b=Vars.world.build(t.x(),t.y());if(b!=null&&!(b instanceof mindustry.world.blocks.ConstructBlock.ConstructBuild)&&b.block==t.block())continue;}
             if(runtime.grid().at(t.x(),t.y(),t.layer(),t.platform()?LayerComponent.Kind.PLATFORM:LayerComponent.Kind.BLOCK)!=null)continue;
             double d=blueprintDistance(runtime,ray,limit,t);if(d<best){best=d;result=t;}
         }

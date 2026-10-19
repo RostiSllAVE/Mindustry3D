@@ -20,7 +20,7 @@ public final class LayerSchematicRenderer implements AutoCloseable {
     public void render(Camera3D camera,LayerRuntime runtime){
         rectangle.render(camera);lastDrawn=0;if(plans==null||runtime==null)return;batch.begin();int count=0;
         for(int i=0;i<plans.size;i++){
-            var p=plans.get(i);double x=LayerCoordinates.center(p.x,p.block.size),y=LayerCoordinates.center(p.y,p.block.size),z=runtime.planeHeight(layer);
+            var p=plans.get(i);double x=LayerCoordinates.center(p.x,p.block.size),y=LayerCoordinates.center(p.y,p.block.size),z=runtime.planeHeight(p instanceof VolumeClipboard.Plan v?v.floor:layer);
             var entry=runtime.catalog().entry(p.block.name,LayerSchematic.platform(p),runtime.grid().coordinates().spacing());
             double height=entry==null?fpv.net.HeadlessGeometry.heightFor(p.block):entry.height();boolean ok=valid!=null&&i<valid.length&&valid[i];
             if(!camera.frustum.containsBounds((float)x,(float)(z+height*.5),(float)-y,p.block.size,(float)Math.max(.1,height),p.block.size))continue;

@@ -20,14 +20,19 @@ public final class LayerBuildController {
     private final LayerWorldRenderer renderer;
     private final LayerSchematicInput schematics;
     private final VolumeSelectionTool volume;
+    private final VolumePasteTool volumePaste;private int clipboardTeam=-1;
+    public VolumePasteTool volumePasteTool(){return volumePaste;}
+    private boolean volumeAllowed(){return input.isFpvEnabled()&&input.isBuildMode()&&!input.isSuspended()&&!input.commandActive()&&Vars.player!=null&&!Vars.player.dead()&&Vars.state.isGame();}
+    public void copyVolume(){if(!volumeAllowed()||volume.selection().dragging())return;volumePaste.copy(volume.selection());if(volumePaste.active()){clipboardTeam=Vars.player.team().id;if(!volume.active())toggleVolume();schematics.suspend();input.setVolumeSelectionOwned(true);if(input.volumePointerHeld())input.fenceVolumePointer();}}
+    public void pasteVolume(){if(!volumeAllowed()||!volumePaste.available())return;if(!volume.active())toggleVolume();schematics.suspend();cancelConnection();cancel();volumePaste.start();input.setVolumeSelectionOwned(true);if(input.volumePointerHeld())input.fenceVolumePointer();}
     public VolumeSelectionTool volumeTool(){return volume;}
     public String volumeLabel(){return "3D Selection "+(volume.active()?"ON":"OFF")+" ("+(VolumeSelectionTool.toggle.value.key==null?VolumeSelectionTool.toggle.name:VolumeSelectionTool.toggle.value.key)+")";}
-    public String volumeDetails(){return volume.selection().label();}
+    public String volumeDetails(){return volumePaste.active()?volumePaste.status():volume.selection().label()+"\n"+volumePaste.status();}
     public void clearVolume(){volume.clear();if(input.volumePointerHeld())input.fenceVolumePointer();}
     public void toggleVolume(){
         if(!input.isFpvEnabled()||!input.isBuildMode()||input.isSuspended()||input.commandActive()||!Vars.state.isGame()||Vars.player==null||Vars.player.dead())return;
         boolean held=input.volumePointerHeld(),leaving=volume.active();
-        if(leaving)volume.leave(held);else {volume.selection().refresh(arc.util.Time.millis());schematics.suspend();cancelConnection();cancel();pendingRemoval.clear();removed.clear();removalGesture=priorityGesture=false;volume.enter(held);}
+        if(leaving){volumePaste.cancel();volume.leave(held);}else {volume.selection().refresh(arc.util.Time.millis());schematics.suspend();cancelConnection();cancel();pendingRemoval.clear();removed.clear();removalGesture=priorityGesture=false;volume.enter(held);}
         input.setVolumeSelectionOwned(volume.active());if(held||leaving)input.fenceVolumePointer();
         renderer.volumeSelection(volume.active(),volume.selection());
     }
@@ -72,7 +77,7 @@ public final class LayerBuildController {
         if(!(deselect||menu)||!connecting()&&input.block==null&&!platform&&!removalGesture)return false;
         input.block=null;platform=false;removalGesture=false;pendingRemoval.clear();removed.clear();cancelConnection();cancel();placementGesture=false;cancelButtonHeld=deselect;input.setCancelConsumed(true);return true;
     }
-    public void endInteraction(){if(volume.active()){volume.leave(input.volumePointerHeld());if(input.volumePointerHeld())input.fenceVolumePointer();}input.setVolumeSelectionOwned(false);renderer.volumeSelection(false,volume.selection());schematics.suspend();placement=null;removalTarget=null;removalGesture=false;pendingRemoval.clear();removed.clear();hover=null;blueprintHover=null;priorityGesture=false;cancelConnection();cancel();placementGesture=false;cancelButtonHeld=false;input.setInteractionOwned(false);input.setCancelConsumed(false);renderer.interaction(null,null,null,false);}
+    public void endInteraction(){volumePaste.cancel();if(volume.active()){volume.leave(input.volumePointerHeld());if(input.volumePointerHeld())input.fenceVolumePointer();}input.setVolumeSelectionOwned(false);renderer.volumeSelection(false,volume.selection());schematics.suspend();placement=null;removalTarget=null;removalGesture=false;pendingRemoval.clear();removed.clear();hover=null;blueprintHover=null;priorityGesture=false;cancelConnection();cancel();placementGesture=false;cancelButtonHeld=false;input.setInteractionOwned(false);input.setCancelConsumed(false);renderer.interaction(null,null,null,false);}
     /** Same click boundary used by native-input update and isolated SDL integration checks. */
     public void interact(BuildingMousePicker.Hit hit,boolean shift){
         if(connecting()){
@@ -85,7 +90,7 @@ public final class LayerBuildController {
         if(shift||MouseConnection.ordinarySource(hit.building())){mouseSource=hit;riser=shift?riserChoice:null;input.cancelPointerGesture();}
         else if(hit.building().block.configurable)configureSelected();
     }
-    public LayerBuildController(LayerRuntime runtime,FpvDesktopInput input,LayerWorldRenderer renderer){this.runtime=runtime;this.input=input;this.renderer=renderer;this.schematics=new LayerSchematicInput(runtime,input,renderer);this.volume=new VolumeSelectionTool(runtime);}
+    public LayerBuildController(LayerRuntime runtime,FpvDesktopInput input,LayerWorldRenderer renderer){this.runtime=runtime;this.input=input;this.renderer=renderer;this.schematics=new LayerSchematicInput(runtime,input,renderer);this.volume=new VolumeSelectionTool(runtime);this.volumePaste=new VolumePasteTool(runtime,input,renderer);}
     public int layer(){return layer;}
     public boolean platform(){return platform;}
     public boolean free(){return free;}
@@ -141,7 +146,7 @@ public final class LayerBuildController {
     private void resolveLayer(int value){int next=Math.max(0,Math.min(runtime.grid().coordinates().maxLayers(),value));if(next==layer)return;cancel();layer=next;input.cancelPointerGesture();}
     public void setPlatform(boolean value){platform=value;cancel();cancelConnection();}
     public void setFree(boolean value){free=value&&runtime.allowedFree();cancel();}
-    public void reset(){volume.reset();resolveLayer(0);floorLocked=false;free=false;platform=false;selectedId=0;bridgeSource=0;configSource=0;endInteraction();}
+    public void reset(){volumePaste.reset();clipboardTeam=-1;volume.reset();resolveLayer(0);floorLocked=false;free=false;platform=false;selectedId=0;bridgeSource=0;configSource=0;endInteraction();}
     private void cancel(){dragging=false;dragged.clear();placementGesture=false;strokeRelease=false;strokeTarget=null;strokeBlock=null;}
     public record Buttons(boolean selectTap,boolean selectHeld,boolean breakTap,boolean breakHeld,boolean cancelTap,boolean menuTap,boolean control,boolean shift,int rotation,boolean ui,boolean selectReleased){
         public Buttons(boolean selectTap,boolean selectHeld,boolean breakTap,boolean breakHeld,boolean cancelTap,boolean menuTap,boolean control,boolean shift,int rotation,boolean ui){this(selectTap,selectHeld,breakTap,breakHeld,cancelTap,menuTap,control,shift,rotation,ui,!selectTap&&!selectHeld);}
@@ -157,10 +162,12 @@ public final class LayerBuildController {
     public boolean possessionAvailable(){return !volume.active()&&!input.volumePointerFenced()&&input.block==null&&!platform&&!schematics.active();}
     public String dismantleBindingLabel(){var key=Binding.breakBlock.value;return "Dismantle: "+(key.key==null?Binding.breakBlock.name:key.key.toString())+" / visible object on any floor";}
     public void update(Camera3D camera,boolean active,boolean suspended,fpv.render.FpvWorldRenderer.PickResult ground){
+        if(volumePaste.available()&&(Vars.player==null||Vars.player.team().id!=clipboardTeam))volumePaste.reset();
         if(!active||suspended){input.setUpperLayerOwned(false);if(volume.active()||input.isBuildMode()||hover!=null||connecting())endInteraction();selectPressed=input.originalInput().keyDown(Binding.select);placement=null;removalTarget=null;removalGesture=false;renderer.preview(false,layer,0,0,1,false,false);return;}
         long frame=Core.graphics.getFrameId();if(inputFrame==frame)return;inputFrame=frame;
         var keys=input.originalInput();
         if(keys.keyTap(VolumeSelectionTool.toggle)&&!(Core.scene!=null&&(Core.scene.hasDialog()||Core.scene.hasKeyboard())))toggleVolume();
+        if(volume.active()&&!(Core.scene!=null&&(Core.scene.hasDialog()||Core.scene.hasKeyboard()))&&keys.ctrl()&&(keys.keyDown(KeyCode.shiftLeft)||keys.keyDown(KeyCode.shiftRight))){if(volume.active()&&keys.keyTap(VolumePasteTool.copy))copyVolume();else if(keys.keyTap(VolumePasteTool.paste))pasteVolume();}
         if(!volume.active()){if(keys.keyTap(higher))setLayer(layer+1);if(keys.keyTap(lower))setLayer(layer-1);}
         processPointer(camera,ground,keys.mouseX(),keys.mouseY(),new Buttons(keys.keyTap(Binding.select),keys.keyDown(Binding.select),keys.keyTap(Binding.breakBlock),keys.keyDown(Binding.breakBlock),keys.keyTap(Binding.deselect),keys.keyTap(Binding.menu),keys.keyDown(Binding.control),keys.keyDown(KeyCode.shiftLeft)||keys.keyDown(KeyCode.shiftRight),(int)keys.axisTap(Binding.rotate),interfaceOwnsPointer(),keys.keyRelease(Binding.select)));
     }
@@ -181,6 +188,13 @@ public final class LayerBuildController {
         camera.update();var ray=camera.getPickRay(sx,sy);
         double rayLimit=camera.far/Math.max(.001,ray.direction.dot(camera.direction));
         var scene=keys.ui()?new BuildingMousePicker.ScenePick(null,0):BuildingMousePicker.pickScene(runtime,ray,rayLimit,ground);hover=scene.hit();
+        if(volumePaste.active()){
+            input.setVolumeSelectionOwned(true);input.setInteractionOwned(true);input.setUpperLayerOwned(true);placement=null;removalTarget=null;blueprintHover=null;
+            renderer.preview(false,layer,0,0,1,false,false);renderer.interaction(null,null,null,false);renderer.volumeSelection(false,volume.selection());
+            if(keys.cancelTap()||keys.menuTap()){volumePaste.cancel();if(keys.menuTap()){volume.leave(keys.selectHeld());input.setVolumeSelectionOwned(false);}input.setCancelConsumed(true);input.fenceVolumePointer();}
+            else volumePaste.process(ray,hover,layer,floorLocked,free,keys);
+            return;
+        }
         if(volume.active()||volume.fence()||input.volumePointerFenced()){
             volume.selection().refresh(arc.util.Time.millis());
             boolean wasActive=volume.active();

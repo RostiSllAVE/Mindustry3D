@@ -42,6 +42,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private long revision=Long.MIN_VALUE,meshBuilds;
     private int groundChanges=Integer.MIN_VALUE;
     private Shader overlayShader;
+    private final arc.struct.IntSet nativeGroundBlueprints=new arc.struct.IntSet();
     private final ConstructionVisualRenderer constructionVisuals=new ConstructionVisualRenderer();
     private final LayerSchematicRenderer schematicRenderer=new LayerSchematicRenderer();
     public void schematic(arc.struct.Seq<mindustry.entities.units.BuildPlan> plans,boolean[] valid,int layer){schematicRenderer.set(plans,valid,layer);}
@@ -344,7 +345,10 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 }
             }
             }
+            nativeGroundBlueprints.clear();boolean groundPending=false;for(var p:pending)if(p.layer()==0){groundPending=true;break;}
+            if(groundPending&&Vars.player!=null&&!Vars.player.dead())for(var p:Vars.player.unit().plans)nativeGroundBlueprints.add(arc.math.geom.Point2.pack(p.x,p.y));
             if(Vars.player!=null&&!Vars.player.dead())for(var p:pending){
+                if(p.layer()==0){var b=Vars.world.build(p.x(),p.y());if(nativeGroundBlueprints.contains(arc.math.geom.Point2.pack(p.x(),p.y()))||b!=null&&!(b instanceof mindustry.world.blocks.ConstructBlock.ConstructBuild)&&b.block==p.block())continue;}
                 if(p.unitId()!=Vars.player.unit().id||p.layer()>worldMaxLayer()||runtime.grid().at(p.x(),p.y(),p.layer(),p.platform()?LayerComponent.Kind.PLATFORM:LayerComponent.Kind.BLOCK)!=null)continue;
                 if(Vars.state.rules.fog&&Vars.state.rules.staticFog&&!Vars.fogControl.isDiscovered(Vars.player.team(),p.x(),p.y()))continue;
                 var b=p.bounds(runtime);if(!camera.frustum.containsBounds((float)b.centerX(),(float)b.centerZ(),(float)-b.centerY(),(float)p.size()*.5f,(float)(b.maxZ()-b.minZ())*.5f,(float)p.size()*.5f))continue;

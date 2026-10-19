@@ -7,22 +7,23 @@ import java.io.IOException;
 /** Small, bounded requests. Identity, costs, support and damage are never supplied by a client. */
 public final class LayerActions {
     private LayerActions(){}
-    public enum Op { PLACE, REMOVE, ROTATE, DEPOSIT, WITHDRAW, LINK, UNLINK, CONFIGURE, RESPAWN, PASTE, CANCEL_PASTE, POSSESS_TURRET, RELEASE_TURRET, PRIORITIZE }
+    public enum Op { PLACE, REMOVE, ROTATE, DEPOSIT, WITHDRAW, LINK, UNLINK, CONFIGURE, RESPAWN, PASTE, CANCEL_PASTE, POSSESS_TURRET, RELEASE_TURRET, PRIORITIZE, VOLUME_PASTE }
     public record Action(Op op,int x,int y,int layer,LayerComponent.Kind kind,String blockName,
                          int rotation,LayerComponent.Mode mode,long componentId,int itemId,int amount,long targetId,byte[] configuration){
         public Action(Op op,int x,int y,int layer,LayerComponent.Kind kind,String blockName,int rotation,LayerComponent.Mode mode,long componentId,int itemId,int amount,long targetId){this(op,x,y,layer,kind,blockName,rotation,mode,componentId,itemId,amount,targetId,new byte[0]);}
         public Action(Op op,int x,int y,int layer,LayerComponent.Kind kind,String blockName,int rotation,LayerComponent.Mode mode,long componentId){this(op,x,y,layer,kind,blockName,rotation,mode,componentId,-1,0,0);}
         public Action{
-            if(configuration==null||configuration.length>LayerConfiguration.MAX_BYTES||op!=Op.CONFIGURE&&op!=Op.PASTE&&configuration.length!=0||(op==Op.CONFIGURE||op==Op.PASTE)&&configuration.length==0)throw new IllegalArgumentException("Invalid configuration payload");
+            if(configuration==null||configuration.length>LayerConfiguration.MAX_BYTES||op!=Op.CONFIGURE&&op!=Op.PASTE&&op!=Op.VOLUME_PASTE&&configuration.length!=0||(op==Op.CONFIGURE||op==Op.PASTE||op==Op.VOLUME_PASTE)&&configuration.length==0)throw new IllegalArgumentException("Invalid configuration payload");
             configuration=configuration.clone();
             if(op==null||kind==null||mode==null||blockName==null||!blockName.matches("[a-zA-Z0-9_.-]{0,96}")||
                 x<0||y<0||x>32767||y>32767||layer<0||layer>512||rotation<0||rotation>3||componentId< -4294967296L||targetId< -4294967296L||itemId< -1||itemId>32767||amount<0||amount>1000)
                 throw new IllegalArgumentException("Invalid construction request");
             if(op==Op.PLACE&&(layer==0||componentId!=0||kind==LayerComponent.Kind.BLOCK&&blockName.isEmpty()))
                 throw new IllegalArgumentException("Upper-layer placement required");
+            if(op==Op.VOLUME_PASTE&&(componentId!=0||!blockName.isEmpty()||rotation!=0||kind!=LayerComponent.Kind.BLOCK))throw new IllegalArgumentException("Invalid volumetric paste envelope");
             if(op==Op.PASTE&&(layer==0||componentId!=0))throw new IllegalArgumentException("Upper-layer schematic required");
             if(op==Op.PRIORITIZE&&(componentId<1||kind==LayerComponent.Kind.PLATFORM&&!blockName.isEmpty()||kind==LayerComponent.Kind.BLOCK&&blockName.isEmpty()))throw new IllegalArgumentException("Builder and blueprint identity required");
-            if(op!=Op.PLACE&&op!=Op.PASTE&&op!=Op.CANCEL_PASTE&&op!=Op.RELEASE_TURRET&&componentId==0)throw new IllegalArgumentException("Component identity required");
+            if(op!=Op.PLACE&&op!=Op.PASTE&&op!=Op.VOLUME_PASTE&&op!=Op.CANCEL_PASTE&&op!=Op.RELEASE_TURRET&&componentId==0)throw new IllegalArgumentException("Component identity required");
             if((op==Op.DEPOSIT||op==Op.WITHDRAW)&&(itemId<0||amount<1))throw new IllegalArgumentException("Bounded item transfer required");
             if(op!=Op.DEPOSIT&&op!=Op.WITHDRAW&&(itemId!=-1||amount!=0))throw new IllegalArgumentException("Unexpected item payload");
             if(op==Op.LINK||op==Op.UNLINK){if(componentId==0||targetId==0||componentId==targetId||!blockName.matches("ITEMS|LIQUIDS|POWER|BRIDGE_ITEMS|BRIDGE_LIQUIDS"))throw new IllegalArgumentException("Explicit vertical endpoints required");}
@@ -34,6 +35,7 @@ public final class LayerActions {
         public static Action configure(long id,Object value){return new Action(Op.CONFIGURE,0,0,0,LayerComponent.Kind.BLOCK,"",0,LayerComponent.Mode.STRUCTURAL,id,-1,0,0,LayerConfiguration.encode(value));}
         public static Action respawn(long id){return new Action(Op.RESPAWN,0,0,0,LayerComponent.Kind.BLOCK,"",0,LayerComponent.Mode.STRUCTURAL,id);}
         public static Action paste(LayerSchematic.Stamp stamp,int layer,LayerComponent.Mode mode){return new Action(Op.PASTE,stamp.x(),stamp.y(),layer,LayerComponent.Kind.BLOCK,"",0,mode,0,-1,0,0,LayerSchematic.encode(stamp.schematic()));}
+        public static Action volume(VolumeClipboard.Placement p,LayerComponent.Mode mode){return new Action(Op.VOLUME_PASTE,p.x(),p.y(),p.z(),LayerComponent.Kind.BLOCK,"",0,mode,0,-1,0,0,VolumeClipboard.encode(p.clip()));}
         public static Action possessTurret(long id){return new Action(Op.POSSESS_TURRET,0,0,0,LayerComponent.Kind.BLOCK,"",0,LayerComponent.Mode.STRUCTURAL,id);}
         public static Action releaseTurret(){return new Action(Op.RELEASE_TURRET,0,0,0,LayerComponent.Kind.BLOCK,"",0,LayerComponent.Mode.STRUCTURAL,0);}
         public static Action cancelPaste(){return new Action(Op.CANCEL_PASTE,0,0,0,LayerComponent.Kind.BLOCK,"",0,LayerComponent.Mode.STRUCTURAL,0);}
@@ -57,10 +59,10 @@ public final class LayerActions {
     public static void write(DataOutput out,Action action)throws IOException{
         out.writeByte(action.op.ordinal());out.writeShort(action.x);out.writeShort(action.y);out.writeShort(action.layer);
         out.writeByte(action.kind.ordinal());out.writeUTF(action.blockName);out.writeByte(action.rotation);out.writeByte(action.mode.ordinal());out.writeLong(action.componentId);out.writeShort(action.itemId);out.writeShort(action.amount);out.writeLong(action.targetId);
-        if(action.op==Op.CONFIGURE||action.op==Op.PASTE){out.writeShort(action.configuration.length);out.write(action.configuration);}
+        if(action.op==Op.CONFIGURE||action.op==Op.PASTE||action.op==Op.VOLUME_PASTE){out.writeShort(action.configuration.length);out.write(action.configuration);}
     }
     public static Action read(DataInput in)throws IOException{
-        try{Op op=enumAt(Op.values(),in.readUnsignedByte());int x=in.readUnsignedShort(),y=in.readUnsignedShort(),layer=in.readUnsignedShort();var kind=enumAt(LayerComponent.Kind.values(),in.readUnsignedByte());String block=in.readUTF();int rotation=in.readUnsignedByte();var mode=enumAt(LayerComponent.Mode.values(),in.readUnsignedByte());long id=in.readLong();int item=in.readShort(),amount=in.readUnsignedShort();long target=in.readLong();byte[] config=new byte[0];if(op==Op.CONFIGURE||op==Op.PASTE){int length=in.readUnsignedShort();if(length<1||length>LayerConfiguration.MAX_BYTES)throw new IOException("Configuration limit");config=new byte[length];in.readFully(config);}return new Action(op,x,y,layer,kind,block,rotation,mode,id,item,amount,target,config);}
+        try{Op op=enumAt(Op.values(),in.readUnsignedByte());int x=in.readUnsignedShort(),y=in.readUnsignedShort(),layer=in.readUnsignedShort();var kind=enumAt(LayerComponent.Kind.values(),in.readUnsignedByte());String block=in.readUTF();int rotation=in.readUnsignedByte();var mode=enumAt(LayerComponent.Mode.values(),in.readUnsignedByte());long id=in.readLong();int item=in.readShort(),amount=in.readUnsignedShort();long target=in.readLong();byte[] config=new byte[0];if(op==Op.CONFIGURE||op==Op.PASTE||op==Op.VOLUME_PASTE){int length=in.readUnsignedShort();if(length<1||length>LayerConfiguration.MAX_BYTES)throw new IOException("Configuration limit");config=new byte[length];in.readFully(config);}return new Action(op,x,y,layer,kind,block,rotation,mode,id,item,amount,target,config);}
         catch(IllegalArgumentException bad){throw new IOException("Invalid construction action",bad);}
     }
     public static void writeResult(DataOutput out,Result result)throws IOException{out.writeBoolean(result.accepted);out.writeBoolean(result.pending);out.writeUTF(result.reason);out.writeLong(result.componentId);}

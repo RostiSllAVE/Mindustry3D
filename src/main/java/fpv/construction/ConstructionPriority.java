@@ -38,13 +38,13 @@ public final class ConstructionPriority {
         BuildPlan plan=find(player.unit(),target);
         var tile=Vars.world.tile(target.x(),target.y());
         boolean physical=tile!=null&&tile.build instanceof ConstructBuild c&&c.team==player.team()&&c.tile==tile&&c.current==target.block()&&c.rotation==target.rotation();
-        if(!physical&&(plan==null||plan.isDone()))return LayerActions.Result.rejected("Blueprint is no longer pending in your queue");
+        if(!physical&&!runtime.pastes().contains(player,target)&&(plan==null||plan.isDone()))return LayerActions.Result.rejected("Blueprint is no longer pending in your queue");
         if(tile==null||tile.build!=null&&tile.build.team!=player.team())return LayerActions.Result.rejected("Blueprint belongs to another team");
         return new LayerActions.Result(true,false,"Construction priority selected on Z0",0);
     }
     public LayerActions.Result select(Player player,Target target){
         var result=validate(player,target);if(!result.accepted())return result;
-        if(target.layer()==0)promoteGround(player.unit(),target);
+        if(target.layer()==0){runtime.pastes().materializeGround(player,target);promoteGround(player.unit(),target);}
         else runtime.pastes().promote(player,target);
         focused.put(player,new Focus(player.unit(),target));
         return new LayerActions.Result(true,false,"Priority: "+(target.platform()?"platform":target.block().localizedName)+" on Z"+target.layer()+" (pause unchanged)",0);
@@ -65,9 +65,10 @@ public final class ConstructionPriority {
             var f=e.getValue();var t=f.target;
             if(t.layer()>0){if(runtime.pastes().contains(e.getKey(),t)){suspended.put(f.unit,f.unit.updateBuilding());f.unit.updateBuilding(false);}}
         }
+        runtime.pastes().suspendGroundRange();
     }
     /** Restore the user's F3 flag before upper work, snapshots, menus or any next frame. */
-    public void afterNative(){for(var e:suspended.entrySet())e.getKey().updateBuilding(e.getValue());suspended.clear();}
+    public void afterNative(){for(var e:suspended.entrySet())e.getKey().updateBuilding(e.getValue());suspended.clear();runtime.pastes().restoreGroundRange();}
     public boolean allowsUpper(Player player,Unit unit,BuildPlan plan,int layer){
         var f=focused.get(player);if(f==null)return true;
         if(!owner(player,f)){focused.remove(player);return true;}

@@ -31,7 +31,7 @@ public final class LayerRuntime implements AutoCloseable {
     private final ConstructionPriority priority=new ConstructionPriority(this);
     public ConstructionPriority priority(){return priority;}
     public LayerActions.Result requestPriority(ConstructionPriority.Target target){
-        if(target.layer()==0&&Vars.net.client()){
+        if(target.layer()==0&&Vars.net.client()&&!pastes.targets(Vars.player).contains(target)){
             var valid=priority.validate(Vars.player,target);if(!valid.accepted())return lastResult=valid;
             // Same local queue operation as ConstructBuild.tapped; native snapshots validate execution.
             priority.promoteGround(Vars.player.unit(),target);
@@ -184,6 +184,11 @@ public final class LayerRuntime implements AutoCloseable {
         if(Vars.net!=null&&Vars.net.client())return LayerActions.Result.rejected("Server authority required");
         if(action!=null&&action.op()==LayerActions.Op.POSSESS_TURRET)return turretControls.possess(player,action.componentId());
         if(action!=null&&action.op()==LayerActions.Op.RELEASE_TURRET)return turretControls.release(player);
+        if(action!=null&&action.op()==LayerActions.Op.VOLUME_PASTE){
+            if(closed||!Vars.state.isGame()||player==null||player.dead()||!player.isBuilder()||!player.unit().canBuild())return LayerActions.Result.rejected("Your living builder is required");
+            if(!pastes.claimVolume(player))return LayerActions.Result.rejected("3D paste rate limit: two requests per second");
+            try{return pastes.enqueueVolume(player,action);}catch(IllegalArgumentException bad){String reason=bad.getMessage();return LayerActions.Result.rejected(reason==null||reason.length()>240?"Invalid 3D paste":reason);}
+        }
         var valid=validate(player,action,filters);if(!valid.accepted())return valid;
         if(action.op()==LayerActions.Op.PRIORITIZE)return priority.select(player,priorityTarget(action));
         if(action.op()==LayerActions.Op.PASTE)return pastes.enqueue(player,action);
@@ -258,6 +263,7 @@ public final class LayerRuntime implements AutoCloseable {
         if(action.op()!=LayerActions.Op.CONFIGURE&&(!player.isBuilder()||!player.unit().canBuild()))return LayerActions.Result.rejected("A living builder unit is required");
         if(action.op()==LayerActions.Op.PRIORITIZE){try{return priority.validate(player,priorityTarget(action));}catch(IllegalArgumentException bad){return LayerActions.Result.rejected("Invalid blueprint identity");}}
         if(action.op()==LayerActions.Op.CANCEL_PASTE)return LayerActions.Result.ok(0);
+        if(action.op()==LayerActions.Op.VOLUME_PASTE){try{return pastes.previewVolume(player,action,filters).result();}catch(IllegalArgumentException bad){return LayerActions.Result.rejected(bad.getMessage().length()>240?"Invalid 3D clipboard":bad.getMessage());}}
         if(action.op()==LayerActions.Op.PASTE){try{var p=pastes.preview(player,action);return p.ready()>0?LayerActions.Result.ok(0):LayerActions.Result.rejected(p.reason().isEmpty()?"No valid schematic positions":p.reason());}catch(IllegalArgumentException invalid){return LayerActions.Result.rejected("Invalid or unsupported schematic");}}
         if(action.op()==LayerActions.Op.LINK||action.op()==LayerActions.Op.UNLINK)return validateLink(player,action,filters);
         if(action.op()!=LayerActions.Op.PLACE){
@@ -325,6 +331,43 @@ public final class LayerRuntime implements AutoCloseable {
         if(filters&&Vars.net.server()&&!Vars.netServer.admins.allowAction(player,action.op()==LayerActions.Op.DEPOSIT?ActionType.depositItem:ActionType.withdrawItem,Vars.world.tile(b.tileX(),b.tileY()),a->{a.block=b.block;a.item=Vars.content.item(action.itemId());a.itemAmount=action.amount();}))return LayerActions.Result.rejected("Server action filter denied cargo transfer");
         return LayerActions.Result.ok(Math.max(0,action.componentId()));
     }
+    LayerActions.Result volumeGround(Player player,VolumeClipboard.Plan p,boolean filters){
+        var block=p.block;int minX=LayerCoordinates.minCell(p.x,block.size),minY=LayerCoordinates.minCell(p.y,block.size);
+        if(minX<0||minY<0||minX+block.size>Vars.world.width()||minY+block.size>Vars.world.height())return LayerActions.Result.rejected("Outside map bounds");
+        if(!within(player,p.x,p.y,block.size,0))return LayerActions.Result.rejected("Outside builder range in XYZ");
+        if(!block.isVisible()||!Vars.state.isEditor()&&(!block.unlockedNowHost()||!block.environmentBuildable()||!block.isPlaceable()))return LayerActions.Result.rejected("Block is locked or unavailable");
+        for(int x=minX;x<minX+block.size;x++)for(int y=minY;y<minY+block.size;y++){
+            if(Vars.world.tile(x,y).build!=null)return LayerActions.Result.rejected("Ground footprint is occupied");
+            if(Vars.state.rules.fog&&Vars.state.rules.staticFog&&!Vars.fogControl.isDiscovered(player.team(),x,y))return LayerActions.Result.rejected("Undiscovered ground footprint");
+        }
+        if(!Build.validPlace(block,player.team(),p.x,p.y,p.rotation))return LayerActions.Result.rejected("Invalid native ground placement / terrain");
+        double cx=LayerCoordinates.center(p.x,block.size),cy=LayerCoordinates.center(p.y,block.size);
+        var bounds=new LayerCoordinates.Bounds(cx-block.size*.5,cy-block.size*.5,0,cx+block.size*.5,cy+block.size*.5,fpv.net.HeadlessGeometry.heightFor(block));
+        for(var c:grid.query(bounds))if(bounds.overlaps(grid.coordinates().bounds(c)))return LayerActions.Result.rejected("Intersects an elevated structure");
+        if(filters&&!volumeFilter(player,p))return LayerActions.Result.rejected("Server action filter denied construction");
+        if(!infinite(player)&&player.core()==null)return LayerActions.Result.rejected("A team core is required");return LayerActions.Result.ok(0);
+    }
+    boolean volumeFilter(Player player,VolumeClipboard.Plan p){return !Vars.net.server()||Vars.netServer.admins.allowAction(player,ActionType.placeBlock,Vars.world.tile(p.x,p.y),a->{a.block=p.platform?null:p.block;a.rotation=p.rotation;});}
+    double volumeTerrain(int x,int y){return physical.terrainHeight(x,y);}
+    boolean volumeConfigure(Player player,long id,Object value){
+        var b=endpoint(id);if(b==null||b.team!=player.team()||!within(player,b.tileX(),b.tileY(),b.block.size,endpointLayer(id)))return false;
+        if(id>0)return apply(player,LayerActions.Action.configure(id,value)).accepted();
+        if(!VolumeClipboard.safeConfig(b.block,value)&&!(value instanceof arc.math.geom.Point2))return false;
+        if(Vars.net.server()&&!Vars.netServer.admins.allowAction(player,ActionType.configure,b.tile,a->{a.block=b.block;a.config=value;}))return false;
+        try{mindustry.gen.Call.tileConfig(player,b,value);return Objects.equals(b.config(),value);}catch(RuntimeException bad){return false;}
+    }
+    boolean volumeLink(Player player,long from,long to,VolumeClipboard.LinkKind kind){
+        var a=endpoint(from);var b=endpoint(to);if(a==null||b==null||a.team!=player.team()||b.team!=player.team()||!within(player,a.tileX(),a.tileY(),a.block.size,endpointLayer(from))||!within(player,b.tileX(),b.tileY(),b.block.size,endpointLayer(to)))return false;
+        if(kind==VolumeClipboard.LinkKind.POINT){if(endpointLayer(from)!=endpointLayer(to))return false;return volumeConfigure(player,from,new arc.math.geom.Point2(b.tileX()-a.tileX(),b.tileY()-a.tileY()));}
+        if(kind==VolumeClipboard.LinkKind.POWER&&from<0&&to<0){
+            var node=a.block instanceof mindustry.world.blocks.power.PowerNode?a:b;var target=node==a?b:a;
+            if(!(node.block instanceof mindustry.world.blocks.power.PowerNode power)||!power.linkValid(node,target))return false;
+            if(Vars.net.server()&&!Vars.netServer.admins.allowAction(player,ActionType.configure,node.tile,c->c.block=node.block))return false;
+            if(node.power!=null&&node.power.links.contains(target.pos()))return true;
+            try{mindustry.gen.Call.tileConfig(player,node,Integer.valueOf(target.pos()));return node.power!=null&&node.power.links.contains(target.pos());}catch(RuntimeException bad){return false;}
+        }
+        return apply(player,LayerActions.Action.link(from,to,LayerVerticalTransfers.Kind.valueOf(kind.name()),false)).accepted();
+    }
     boolean withinConstruction(Player player,int x,int y,int size,int layer){return within(player,x,y,size,layer);}
     private boolean within(Player player,int x,int y,int size,int layer){
         if(player instanceof TowerActor actor){double dx=LayerCoordinates.center(x,size)-actor.tower.x/Vars.tilesize,dy=LayerCoordinates.center(y,size)-actor.tower.y/Vars.tilesize,dz=planeHeight(layer)-physical.buildingBase(actor.tower),range=((mindustry.world.blocks.defense.BuildTurret)actor.tower.block).range/Vars.tilesize;return dx*dx+dy*dy+dz*dz<=range*range;}
@@ -341,7 +384,7 @@ public final class LayerRuntime implements AutoCloseable {
         return entry.block()==null||!Vars.state.rules.placeRangeCheck||Build.getEnemyOverlap(entry.block(),player.team(),x,y)==null;
     }
     private boolean allow(Player player,LayerActions.Action action,int x,int y,LayerCatalog.Entry entry){
-        if(!Vars.net.server())return true;ActionType type=switch(action.op()){case PLACE->ActionType.placeBlock;case REMOVE->ActionType.breakBlock;case ROTATE->ActionType.rotate;case DEPOSIT->ActionType.depositItem;case WITHDRAW->ActionType.withdrawItem;case LINK,UNLINK,CONFIGURE,RESPAWN,PASTE,CANCEL_PASTE,POSSESS_TURRET,RELEASE_TURRET,PRIORITIZE->ActionType.configure;};
+        if(!Vars.net.server())return true;ActionType type=switch(action.op()){case PLACE->ActionType.placeBlock;case REMOVE->ActionType.breakBlock;case ROTATE->ActionType.rotate;case DEPOSIT->ActionType.depositItem;case WITHDRAW->ActionType.withdrawItem;case LINK,UNLINK,CONFIGURE,RESPAWN,PASTE,CANCEL_PASTE,POSSESS_TURRET,RELEASE_TURRET,PRIORITIZE,VOLUME_PASTE->ActionType.configure;};
         return Vars.netServer.admins.allowAction(player,type,Vars.world.tile(x,y),a->{a.block=entry==null?null:entry.block();a.rotation=action.rotation();if(action.itemId()>=0){a.item=Vars.content.item(action.itemId());a.itemAmount=action.amount();}});
     }
     private static int price(int amount){return Math.max(0,(int)Math.min(Integer.MAX_VALUE,Math.round(amount*(double)Vars.state.rules.buildCostMultiplier)));}
