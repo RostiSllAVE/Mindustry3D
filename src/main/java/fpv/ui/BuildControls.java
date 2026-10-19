@@ -30,6 +30,14 @@ public final class BuildControls implements AutoCloseable {
                 panel.button(layers.constructionLabel(),layers::toggleConstruction).update(button->button.setText(layers.constructionLabel())).height(30).row();
                 panel.add("Pause retains plans. RMB cancels the tool.\nClear building removes queued requests.").fontScale(.7f).left().row();
                 panel.add("Blueprint priority: click without a tool,\nor Alt-click with a block/schematic selected.").fontScale(.7f).left().row();
+                panel.button(layers.volumeLabel(),layers::toggleVolume).update(button->button.setText(layers.volumeLabel())).height(30).row();
+                panel.collapser(info->{
+                    info.defaults().width(250).pad(2);
+                    info.add("LMB drag: X/Y · Wheel: other Z boundary\nRelease: keep · New drag: replace\nRMB: clear · Esc / F4: leave\nLocked floor overrides the initial surface.\nConstruction continues; F3 pauses it.").wrap().fontScale(.7f).left().row();
+                    info.label(layers::volumeDetails).wrap().fontScale(.72f).left().row();
+                    info.add("Cyan: included structures (up to 1024 visible\noutlines); yellow: full selected volume.").wrap().fontScale(.65f).left().row();
+                    info.button("Clear 3D selection",layers::clearVolume).height(28).row();
+                },()->layers.volumeTool().active()).row();
                 panel.label(layers::label).left().row();
                 panel.table(buttons->{buttons.button("Lower floor",()->layers.setLayer(layers.layer()-1)).width(124);buttons.button("Higher floor",()->layers.setLayer(layers.layer()+1)).width(124);}).row();
                 panel.check("Lock placement floor",false,layers::setFloorLocked).update(box->box.setChecked(layers.floorLocked())).row();

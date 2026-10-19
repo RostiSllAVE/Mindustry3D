@@ -176,5 +176,9 @@
   "constructionPriority": {
     "verification": "automated native fixture; owner visual acceptance pending",
     "behavior": "Build Mode: LMB on a visible pending blueprint when no tool is selected; Alt+LMB with an active block/schematic. Reuse BuildingMousePicker ScenePick depth including opaque fog identities, so hidden lower floors are never selected. Native plans move to the existing queue head; upper timed jobs retain per-plan parked work. Focus is per owner/unit, leaves F3 pause unchanged, and temporarily excludes other floors only while the selected plan is pending. Upper pending views use an owner-private reliable construction-plans state channel and an appended PRIORITIZE action in the existing bounded construction envelope. No new scheduling queue, save schema, movement, costs or protocol-version change; exact code fingerprint required on every peer."
+  },
+  "volumeSelection": {
+    "verification": "automated native fixtures; physical acceptance pending",
+    "behavior": "Build-only remappable fpv-volume-selection (F4) or panel button. LMB drag pins visible surface height and actual floor, respecting explicit floor lock; raw wheel changes opposite Z boundary once per frame, never outside this mode or over UI. LMB release retains the volume, new drag replaces it, RMB clears, Esc/F4 exits. Input ownership prevents native placement, removal, possession, blueprint priority and schematic edits; F3 construction intent and committed queues are preserved. Tab/F5/focus/menu transitions abandon drafts and leave the mode; held pointer is fenced until release. Read-only metadata and depth-tested bounded outline rendering, no packets or save format."
   }
 }

@@ -282,6 +282,8 @@ public final class FpvMod extends Mod {
         fpv.input.BoostModeBinding.toggle.load(); // register and restore the native Controls preference
         Core.bundle.getProperties().put("keybind.fpv-construction-toggle.name","Pause / resume construction (retain plans)");
         fpv.input.ConstructionBinding.toggle.load();
+        Core.bundle.getProperties().put("keybind.fpv-volume-selection.name","3D structure selection (Build Mode)");
+        fpv.construction.VolumeSelectionTool.toggle.load();
         Core.bundle.getProperties().put("keybind.fpv-camera-smoothing-toggle.name","Toggle camera smoothing (modifier in FPV settings)");
         Core.bundle.getProperties().put("category.FPV camera.name","FPV camera");
         Core.bundle.getProperties().put("setting.fpv-camera-smoothing.name","Camera Smoothing");

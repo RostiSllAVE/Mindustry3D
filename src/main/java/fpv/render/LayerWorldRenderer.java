@@ -50,7 +50,9 @@ public final class LayerWorldRenderer implements AutoCloseable {
     public int schematicDrawn(){return schematicRenderer.lastDrawn();}
     private final BuildingInteractionRenderer interactionRenderer=new BuildingInteractionRenderer();
     public void interaction(BuildingMousePicker.Hit hover,BuildingMousePicker.Hit source,BuildingMousePicker.Hit target,boolean valid){interactionRenderer.set(hover,source,target,valid);}
-    public void renderInteraction(Camera3D camera){interactionRenderer.render(camera);}
+    private final VolumeSelectionRenderer volumeRenderer=new VolumeSelectionRenderer();
+    public void volumeSelection(boolean active,StructureVolume model){volumeRenderer.set(active,model,model==null?null:runtime.grid().coordinates());}
+    public void renderInteraction(Camera3D camera){interactionRenderer.render(camera);volumeRenderer.render(camera);}
     public void removalPreview(BuildingMousePicker.Hit hit,boolean valid){interactionRenderer.removal(hit,valid);}
     private final LayerDisplayRenderer displays=new LayerDisplayRenderer();
     private final NativeBlockAnimationAdapter blockAnimations=new NativeBlockAnimationAdapter();
@@ -367,5 +369,5 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private void rect(float minX,float minY,float maxX,float maxY,float z,float r,float g,float b,float alpha){
         overlay.projectionFace(Core.atlas.white(),minX,z,-minY,maxX,z,-minY,maxX,z,-maxY,minX,z,-maxY,r,g,b,alpha);
     }
-    @Override public void close(){schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
+    @Override public void close(){volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
 }

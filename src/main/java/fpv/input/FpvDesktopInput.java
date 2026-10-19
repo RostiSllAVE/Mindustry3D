@@ -75,6 +75,11 @@ public final class FpvDesktopInput extends DesktopInput {
     private BooleanSupplier boostOwned=()->false;
     public void setBoostOwnedSupplier(BooleanSupplier value){boostOwned=value==null?()->false:value;}
     private boolean buildMode;
+    private boolean volumeSelectionOwned,volumePointerFence;
+    public void setVolumeSelectionOwned(boolean value){volumeSelectionOwned=value;}
+    public void fenceVolumePointer(){volumePointerFence=true;}
+    public boolean volumePointerHeld(){return projection.original().keyDown(Binding.select)||projection.original().keyDown(Binding.deselect)||projection.original().keyDown(Binding.breakBlock);}
+    public boolean volumePointerFenced(){return volumePointerFence;}
     private boolean aimValid;
     private boolean aimInitialized;
     private Tile miningPick,ownedMiningTile;
@@ -88,7 +93,7 @@ public final class FpvDesktopInput extends DesktopInput {
     /** Original native mining state/rules, independent of the far-away weapon aim projection. */
     public boolean applyFlightMining(boolean held){
         boolean modal=Core.scene!=null&&(Core.scene.hasDialog()||Core.scene.hasKeyboard());
-        boolean allowed=fpvEnabled&&!buildMode&&!suspended&&!modal&&!commandActive()&&!commandPointerFence()
+        boolean allowed=fpvEnabled&&!buildMode&&!suspended&&!modal&&!commandActive()&&!commandPointerFence()&&!volumePointerFence
             &&Vars.player!=null&&!Vars.player.dead()&&!Vars.state.isPaused();
         Unit unit=allowed?Vars.player.unit():null;
         if(ownedMiner!=null&&ownedMiner!=unit)stopFlightMining();
@@ -249,7 +254,7 @@ public final class FpvDesktopInput extends DesktopInput {
     public void setControlPick(Unit unit){controlPick=unit;}
     /** Ray-selected bodies may be above a sky ray with no valid building tile. */
     public boolean applyControlSelection(boolean held,boolean tapped){
-        if(!fpvEnabled||commandActive()||commandPointerFence()||!buildMode||block!=null||schematicOwned||!selectPlans.isEmpty()||suspended||interfaceOwnsInput()||!held||!tapped||controlPick==null||!Vars.state.rules.possessionAllowed)return false;
+        if(!fpvEnabled||volumeSelectionOwned||volumePointerFence||commandActive()||commandPointerFence()||!buildMode||block!=null||schematicOwned||!selectPlans.isEmpty()||suspended||interfaceOwnsInput()||!held||!tapped||controlPick==null||!Vars.state.rules.possessionAllowed)return false;
         Unit unit=controlPick;
         if(unit.dead()||!unit.isAdded()||unit.team!=Vars.player.team()||!unit.isAI()||!unit.playerControllable())return false;
         controlAction.accept(unit);cancelPointerGesture();controlPick=null;return true;
@@ -321,7 +326,9 @@ public final class FpvDesktopInput extends DesktopInput {
     boolean suppressBinding(KeyBind binding) {
         if(constructionPauseConsumed&&binding==Binding.pauseBuilding)return true;
         if(releaseConsumed&&binding==Binding.respawn)return true;
+        if(volumePointerFence&&policy.pointerBlocked.contains(binding))return true;
         if (!fpvEnabled) return false;
+        if(volumeSelectionOwned&&(policy.pointerBlocked.contains(binding)||binding==Binding.rotate||binding==Binding.rotatePlaced||binding==Binding.clearBuilding||binding==Binding.schematicSelect||binding==Binding.control))return true;
         if(commands!=null&&binding==Binding.commandMode)return true; // The FPV mode adapter reads the unfiltered native binding once.
         if(commandActive()&&binding==Binding.boost)return true;
         if(commands!=null&&commands.consumeEscape()&&binding==Binding.menu)return true;
@@ -359,12 +366,18 @@ public final class FpvDesktopInput extends DesktopInput {
 
     @Override
     public void update() {
+        if(!volumePointerHeld())volumePointerFence=false;
         if (beforeUpdate != null) beforeUpdate.run();
         syncCommands();
         pollConstructionInput();
         try{updateNativeInput();}finally{applyConstructionIntent();}
     }
     private void updateNativeInput(){
+        if(fpvEnabled&&buildMode&&(volumeSelectionOwned||volumePointerFence)){
+            cancelPointerGesture();
+            if(Vars.player!=null&&!Vars.player.dead()){Vars.player.unit().updateBuilding(isBuilding);updateMovement(Vars.player.unit());}
+            return;
+        }
         if(fpvEnabled&&commandActive()){
             commands.update();stopCommandFire();
             if(Vars.player!=null&&!Vars.player.dead())Vars.player.unit().updateBuilding(isBuilding);
@@ -405,7 +418,7 @@ public final class FpvDesktopInput extends DesktopInput {
         if(!fpvEnabled||Vars.player==null||Vars.player.dead())return;
         Unit unit=Vars.player.unit();
         boolean modal=Core.scene!=null&&(Core.scene.hasDialog()||Core.scene.hasKeyboard());
-        if(commandActive()||commandPointerFence()){stopCommandFire();return;}
+        if(commandActive()||commandPointerFence()||volumePointerFence){stopCommandFire();return;}
         boolean fire=held&&!suspended&&!buildMode&&!modal&&unit.canShoot()
             &&!(unit instanceof Mechc&&unit.isFlying());
         Vars.player.shooting=fire;
@@ -469,7 +482,7 @@ public final class FpvDesktopInput extends DesktopInput {
 
     @Override
     public boolean tap(float x, float y, int count, KeyCode button) {
-        if(fpvEnabled&&(commandActive()||commandPointerFence()))return false;
+        if(volumePointerFence||fpvEnabled&&(volumeSelectionOwned||commandActive()||commandPointerFence()))return false;
         if((upperLayerOwned||ownsInteraction())&&fpvEnabled&&buildMode)return false;
         if (fpvEnabled && pointerBlocked()) return false;
         return super.tap(x, y, count, button);
@@ -477,7 +490,7 @@ public final class FpvDesktopInput extends DesktopInput {
 
     @Override
     public boolean touchDown(float x, float y, int pointer, KeyCode button) {
-        if(fpvEnabled&&(commandActive()||commandPointerFence()))return false;
+        if(volumePointerFence||fpvEnabled&&(volumeSelectionOwned||commandActive()||commandPointerFence()))return false;
         if((upperLayerOwned||ownsInteraction())&&fpvEnabled&&buildMode)return false;
         if (fpvEnabled && pointerBlocked()) return false;
         return super.touchDown(x, y, pointer, button);
