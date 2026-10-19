@@ -1,0 +1,1042 @@
+{
+  "task": "A2-11 visibility correction",
+  "branch": "main",
+  "baselineCommit": "63396f2dbe56ee548ae2eab7b9764bde82f812e7",
+  "status": "PASS automated and scripted Windows GL validation; owner gameplay and physical Linux NOT TESTED",
+  "java17ProgramsPassed": 140,
+  "stockSteamJava25ProgramsPassed": 140,
+  "stockSteamJava25Failures": 0,
+  "nativeFloorAssertions": 5614,
+  "campaignFullSaveIOAssertions": 43,
+  "hardVisualHeightBoundTiles": 0.12,
+  "fixturePeakAbsoluteCornerHeightTiles": 0.10780234,
+  "fixtureMaximumAdjacentCornerDifferenceTiles": 0.067449376,
+  "scratchBytesPerRenderer": 5956,
+  "trianglesPerNaturalDetailedCell": 4,
+  "trianglesPerFlatCell": 2,
+  "oreSurfaceSeparationTiles": 0.006,
+  "cpuMeshPerformance": {
+    "method": "Identical compiled probe, sequential before/after processes;128x128 stone native map,64 actual detailed chunk Mesh uploads/disposals through MockGL,5 warm-up passes,7 timed passes;median/min/max. Far-tier CPU geometry assembly also timed. NOT real GL/GPU/FPS. Allocation via optional ThreadMXBean; -1 means unavailable. No tests run concurrently.",
+    "baseline": "63396f2dbe56ee548ae2eab7b9764bde82f812e7",
+    "data": {
+      "java17": {
+        "before": [
+          "MESH,fallback,chunks=64,tiles=16384,medianMs=2.717499,minMs=2.309300,maxMs=4.255000,perChunkMs=0.042461,allocatedBytesPerChunk=1178.9,meshBytes=2752512,vertices=98304,triangles=32768,materialBatches=64,coarse64MedianMs=0.267300",
+          "MESH,atlas,chunks=64,tiles=16384,medianMs=2.323300,minMs=2.226401,maxMs=2.824000,perChunkMs=0.036302,allocatedBytesPerChunk=5458.9,meshBytes=3538944,vertices=98304,triangles=32768,materialBatches=64,coarse64MedianMs=0.206800"
+        ],
+        "after": [
+          "MESH,fallback,chunks=64,tiles=16384,medianMs=10.568701,minMs=10.150500,maxMs=10.928201,perChunkMs=0.165136,allocatedBytesPerChunk=1178.9,meshBytes=5505024,vertices=196608,triangles=65536,materialBatches=64,coarse64MedianMs=0.132300",
+          "MESH,atlas,chunks=64,tiles=16384,medianMs=10.795100,minMs=10.649299,maxMs=11.222600,perChunkMs=0.168673,allocatedBytesPerChunk=5458.9,meshBytes=7077888,vertices=196608,triangles=65536,materialBatches=64,coarse64MedianMs=0.305001"
+        ]
+      },
+      "steam25": {
+        "before": [
+          "MESH,fallback,chunks=64,tiles=16384,medianMs=3.610400,minMs=2.417200,maxMs=6.031600,perChunkMs=0.056413,allocatedBytesPerChunk=-1.0,meshBytes=2752512,vertices=98304,triangles=32768,materialBatches=64,coarse64MedianMs=0.298900",
+          "MESH,atlas,chunks=64,tiles=16384,medianMs=2.584800,minMs=2.408000,maxMs=2.777100,perChunkMs=0.040388,allocatedBytesPerChunk=-1.0,meshBytes=3538944,vertices=98304,triangles=32768,materialBatches=64,coarse64MedianMs=0.155100"
+        ],
+        "after": [
+          "MESH,fallback,chunks=64,tiles=16384,medianMs=6.376700,minMs=6.042600,maxMs=6.860700,perChunkMs=0.099636,allocatedBytesPerChunk=-1.0,meshBytes=5505024,vertices=196608,triangles=65536,materialBatches=64,coarse64MedianMs=0.262100",
+          "MESH,atlas,chunks=64,tiles=16384,medianMs=6.546500,minMs=6.230200,maxMs=7.142300,perChunkMs=0.102289,allocatedBytesPerChunk=-1.0,meshBytes=7077888,vertices=196608,triangles=65536,materialBatches=64,coarse64MedianMs=0.156900"
+        ]
+      }
+    }
+  },
+  "actualWindowsGraphics": {
+    "scope": "Actual GL screenshot pixel comparison; fixed scripted camera and host native atlas. Not a physical gameplay acceptance test.",
+    "before": {
+      "status": "PASS",
+      "glError": 0,
+      "frames": 95,
+      "scope": "Actual Mindustry160.7 SDL/GL renderer and native atlas; lab-only scripted camera, not physical controls"
+    },
+    "after": {
+      "status": "PASS",
+      "glError": 0,
+      "frames": 95,
+      "scope": "Actual Mindustry160.7 SDL/GL renderer and native atlas; lab-only scripted camera, not physical controls"
+    },
+    "beforeTimings": {
+      "lowCpuMs": 2.12704,
+      "topCpuMs": 1.732004,
+      "lowGpuMs": 0.6675114666666667,
+      "topGpuMs": 0.6325333333333334,
+      "lowGpuSamples": 30,
+      "topGpuSamples": 24,
+      "cachedBytes": 549504,
+      "scope": "Small scripted fixture, asynchronous GL queries, not owner gameplay FPS"
+    },
+    "afterTimings": {
+      "lowCpuMs": 1.8000960000000001,
+      "topCpuMs": 1.3840960000000002,
+      "lowGpuMs": 1.6625322666666666,
+      "topGpuMs": 0.6498133333333334,
+      "lowGpuSamples": 30,
+      "topGpuSamples": 24,
+      "cachedBytes": 999864,
+      "scope": "Small scripted fixture, asynchronous GL queries, not owner gameplay FPS"
+    },
+    "groundPixelDifference": {
+      "stone": {
+        "roi": [
+          120,
+          20,
+          260,
+          170
+        ],
+        "meanAbsoluteRgbDifference": [
+          7.810476190476191,
+          7.810476190476191,
+          8.267428571428571
+        ],
+        "maximumRgbDifference": [
+          30,
+          30,
+          27
+        ]
+      },
+      "sand": {
+        "roi": [
+          400,
+          20,
+          500,
+          170
+        ],
+        "meanAbsoluteRgbDifference": [
+          13.0808,
+          10.9822,
+          8.886066666666666
+        ],
+        "maximumRgbDifference": [
+          60,
+          49,
+          39
+        ]
+      }
+    },
+    "screenshots": {
+      "gpu-before-v2/low.png": "1859719fc052ff134f5238a8f134e01814519d19afb6dbb61306d65451fc1519",
+      "gpu-before-v2/top.png": "b0203b3c44ea9ddcc0ed7147572684464936aa6dbbe1b319e3a32a45c0d96c2d",
+      "gpu-after-final/low.png": "6ea53d4c51dc7698cf112d696fc9dc558da430bab239c0c7d39f7408370eea78",
+      "gpu-after-final/top.png": "c8e0dbe39842c4f1218ce2c7bdca3234d51f95c4c2bb7600c9f2f88ab6e59a9f"
+    }
+  },
+  "artifactVerification": {
+    "jarSha256": "dfeb396ce603500e14af8721e93a5585930d14fa0119530ed9794a9a06fbbe1a",
+    "payloadIdentity": "payload1-a6cfa838ca957ea7091f725f4ab191b606f6d6a91995fe336ba3ea8047718f58",
+    "entries": 1062,
+    "changedExistingEntriesFromA211": [
+      "fpv/render/FloorSurfaceRelief.class",
+      "fpv/render/FpvWorldRenderer$BuildBeamState.class",
+      "fpv/render/FpvWorldRenderer$Candidate.class",
+      "fpv/render/FpvWorldRenderer$ChunkMesh.class",
+      "fpv/render/FpvWorldRenderer$CoarseFogMask.class",
+      "fpv/render/FpvWorldRenderer$DepthSceneBuffer.class",
+      "fpv/render/FpvWorldRenderer$Geometry.class",
+      "fpv/render/FpvWorldRenderer$PickResult.class",
+      "fpv/render/FpvWorldRenderer.class",
+      "fpv/render/NativeAtlasMesh$Builder.class",
+      "fpv/render/NativeAtlasMesh$Data.class"
+    ],
+    "newEntries": [],
+    "unchangedExistingClasses": 996,
+    "maxClassMajor": 61,
+    "linuxWindowsJnaResourcesIncluded": true,
+    "licensesUnchanged": true,
+    "priorAlphaSnapshotFilesUnchanged": 2065,
+    "priorDiagnosticAssetsUnchanged": [
+      "mindustry-fpv-a2-02-diagnostics.jar",
+      "mindustry-fpv-a2-02-corresponding-source.zip",
+      "mindustry-fpv-a2-02-test-kit.zip",
+      "mindustry-fpv-a2-03-diagnostics.jar",
+      "mindustry-fpv-a2-03-corresponding-source.zip",
+      "mindustry-fpv-a2-03-test-kit.zip",
+      "mindustry-fpv-a2-04-diagnostics.jar",
+      "mindustry-fpv-a2-04-corresponding-source.zip",
+      "mindustry-fpv-a2-04-test-kit.zip",
+      "mindustry-fpv-a2-05-diagnostics.jar",
+      "mindustry-fpv-a2-05-corresponding-source.zip",
+      "mindustry-fpv-a2-05-test-kit.zip",
+      "mindustry-fpv-a2-06-diagnostics.jar",
+      "mindustry-fpv-a2-06-corresponding-source.zip",
+      "mindustry-fpv-a2-06-test-kit.zip",
+      "mindustry-fpv-a2-07-diagnostics.jar",
+      "mindustry-fpv-a2-07-corresponding-source.zip",
+      "mindustry-fpv-a2-07-test-kit.zip",
+      "mindustry-fpv-a2-08a-diagnostics.jar",
+      "mindustry-fpv-a2-08a-corresponding-source.zip",
+      "mindustry-fpv-a2-08a-test-kit.zip",
+      "mindustry-fpv-a2-08b-diagnostics.jar",
+      "mindustry-fpv-a2-08b-corresponding-source.zip",
+      "mindustry-fpv-a2-08b-test-kit.zip",
+      "mindustry-fpv-a2-09a-diagnostics.jar",
+      "mindustry-fpv-a2-09a-corresponding-source.zip",
+      "mindustry-fpv-a2-09a-test-kit.zip",
+      "mindustry-fpv-a2-09b-diagnostics.jar",
+      "mindustry-fpv-a2-09b-corresponding-source.zip",
+      "mindustry-fpv-a2-09b-test-kit.zip",
+      "mindustry-fpv-a2-09c-diagnostics.jar",
+      "mindustry-fpv-a2-09c-corresponding-source.zip",
+      "mindustry-fpv-a2-09c-test-kit.zip",
+      "mindustry-fpv-a2-10-diagnostics.jar",
+      "mindustry-fpv-a2-10-corresponding-source.zip",
+      "mindustry-fpv-a2-10-test-kit.zip",
+      "mindustry-fpv-a2-11-diagnostics.jar",
+      "mindustry-fpv-a2-11-corresponding-source.zip",
+      "mindustry-fpv-a2-11-test-kit.zip"
+    ]
+  },
+  "actualJarFolderFingerprint": {
+    "java17": "PASS",
+    "stockSteamJava25": "PASS"
+  },
+  "testPrograms": [
+    "fpv.campaign.CampaignLifecycleNativeTest",
+    "fpv.combat.AircraftWeaponGeometryTest",
+    "fpv.combat.AircraftWeaponNativeTest",
+    "fpv.combat.CombatBalanceTest",
+    "fpv.combat.CombatGeometryTest",
+    "fpv.combat.CompositeDefenseTest",
+    "fpv.combat.FlyingGroundAttackNativeTest",
+    "fpv.combat.HealingImpactNativeTest",
+    "fpv.combat.MechWeaponPitchCodecTest",
+    "fpv.combat.MechWeaponPitchNativeTest",
+    "fpv.combat.MechWeaponPitchTest",
+    "fpv.combat.NavalWeaponPitchNativeTest",
+    "fpv.combat.ProjectileDynamicsTest",
+    "fpv.combat.WalkerWeaponNativeTest",
+    "fpv.combat.WallTargetingNativeTest",
+    "fpv.combat.WeaponPolishNativeTest",
+    "fpv.construction.A201CampaignChunkTest",
+    "fpv.construction.LayerActionsTest",
+    "fpv.construction.LayerBaseShieldNativeTest",
+    "fpv.construction.LayerBuildingAdapterNativeTest",
+    "fpv.construction.LayerCampaignNativeTest",
+    "fpv.construction.LayerClientLogicNativeTest",
+    "fpv.construction.LayerCombatIntegrationTest",
+    "fpv.construction.LayerConfigurationSafetyTest",
+    "fpv.construction.LayerConstructionTest",
+    "fpv.construction.LayerCoreNativeTest",
+    "fpv.construction.LayerCoreRespawnNativeTest",
+    "fpv.construction.LayerDefenseNativeTest",
+    "fpv.construction.LayerInteractionTest",
+    "fpv.construction.LayerLogicBuildNativeTest",
+    "fpv.construction.LayerMassDriverNativeTest",
+    "fpv.construction.LayerMotionIntegrationTest",
+    "fpv.construction.LayerNativeFamiliesTest",
+    "fpv.construction.LayerNativeIsolationTest",
+    "fpv.construction.LayerNavigationNativeTest",
+    "fpv.construction.LayerNavigationTest",
+    "fpv.construction.LayerPayloadLogicNativeTest",
+    "fpv.construction.LayerPayloadNativeTest",
+    "fpv.construction.LayerPowerNetworkTest",
+    "fpv.construction.LayerProjectionNativeTest",
+    "fpv.construction.LayerRebuildNativeTest",
+    "fpv.construction.LayerRebuildQueueTest",
+    "fpv.construction.LayerRuntimeNativeTest",
+    "fpv.construction.LayerSchematicTest",
+    "fpv.construction.LayerStateEnvelopeNativeTest",
+    "fpv.construction.LayerStateLimitRuntimeTest",
+    "fpv.construction.LayerTargetDummyNativeTest",
+    "fpv.construction.LayerTurretControlNativeTest",
+    "fpv.construction.LayerTurretNativeTest",
+    "fpv.construction.LayerWallMigrationTest",
+    "fpv.construction.MouseInteractionTest",
+    "fpv.control.CreatorLandingMotionTest",
+    "fpv.control.CreatorSaveTest",
+    "fpv.control.NativeBoostTest",
+    "fpv.defense.ForceAircraftGeometryTest",
+    "fpv.defense.ForceGeometryTest",
+    "fpv.defense.ForceProjectorCodecTest",
+    "fpv.defense.ProjectionMathTest",
+    "fpv.flight.BuildNavigatorTest",
+    "fpv.flight.FlightControllerTest",
+    "fpv.flight.FlightProfileTest",
+    "fpv.flight.GroundEyeHeightTest",
+    "fpv.flight.ObserverCameraTest",
+    "fpv.flight.StabilizedFlightTest",
+    "fpv.input.ConstructionPauseNativeTest",
+    "fpv.input.ConstructionPriorityNativeTest",
+    "fpv.input.FloorSurfaceReliefNativeTest",
+    "fpv.input.TerrainClassificationNativeTest",
+    "fpv.input.TerrainStructureRenderTest",
+    "fpv.input.UpperConstructionNativeTest",
+    "fpv.input.VolumeClipboardLiquidTest",
+    "fpv.input.VolumeClipboardNativeTest",
+    "fpv.input.VolumeSelectionNativeTest",
+    "fpv.net.A201NetworkBehaviorTest",
+    "fpv.net.BrowserMetadataTest",
+    "fpv.net.ConnectionLifecycleTest",
+    "fpv.net.ConnectionNativeHandlersTest",
+    "fpv.net.ConstructionPriorityNetworkTest",
+    "fpv.net.ContactLedgerTest",
+    "fpv.net.LocalPilotPredictionTest",
+    "fpv.net.ModFingerprintTest",
+    "fpv.net.NetProtocolTest",
+    "fpv.net.NetworkDiagnosticSessionTest",
+    "fpv.net.NetworkDiagnosticsTest",
+    "fpv.net.PoseSnapshotCodecTest",
+    "fpv.net.PredictionNativeIntegrationTest",
+    "fpv.net.ProjectionCodecTest",
+    "fpv.net.SnapshotNativeBatchTest",
+    "fpv.net.UpperConstructionNetworkTest",
+    "fpv.net.VolumeClipboardNetworkTest",
+    "fpv.physics.CollisionResponseTest",
+    "fpv.physics.HighSpeedFlightTest",
+    "fpv.physics.ImpactModelTest",
+    "fpv.physics.RamDamageLimitTest",
+    "fpv.physics.SweptCollisionTest",
+    "fpv.platform.ArcMouseMotionTest",
+    "fpv.platform.FlightMouseFactoryTest",
+    "fpv.platform.ForeignWindowsInputTest",
+    "fpv.platform.HostCompatibilityTest",
+    "fpv.platform.LinuxSdlMouseCaptureTest",
+    "fpv.platform.LoadedSdlLibraryTest",
+    "fpv.platform.OptionalFlightInputTest",
+    "fpv.platform.WindowsMouseCaptureTest",
+    "fpv.render.FirstPersonRigPoseTest",
+    "fpv.render.FortressHullGeometryTest",
+    "fpv.render.GreenHullNativeTest",
+    "fpv.render.GroundModelAlignmentTest",
+    "fpv.render.GroundRigGeometryTest",
+    "fpv.render.LayeredHullGeometryTest",
+    "fpv.render.MiningPresentationNativeTest",
+    "fpv.render.NativeLegGeometryTest",
+    "fpv.render.NavalBodyGeometryTest",
+    "fpv.render.NavalHullProfileTest",
+    "fpv.render.NavalNativeModelTest",
+    "fpv.render.NavalWeaponPoseTest",
+    "fpv.render.OptimizedHullGeometryTest",
+    "fpv.render.OrganicPropGeometryTest",
+    "fpv.render.ProceduralUnitModelProfileTest",
+    "fpv.render.ProjectionViewSettingsTest",
+    "fpv.render.ReignHullGeometryTest",
+    "fpv.render.ScepterHullGeometryTest",
+    "fpv.render.SpriteExtrusionGeometryTest",
+    "fpv.render.SupportEffectsCodecTest",
+    "fpv.render.ThreatMarkerSymbolsTest",
+    "fpv.render.TurretPartPoseTest",
+    "fpv.render.UnitThreatTiersNativeTest",
+    "fpv.render.UnitTierProgressionTest",
+    "fpv.render.VegetationVisualScaleTest",
+    "fpv.render.VelaLegGeometryTest",
+    "fpv.render.VelaMechHullTest",
+    "fpv.render.VelaTripodTest",
+    "fpv.render.VolumetricBeamGeometryTest",
+    "fpv.terrain.TerrainHeightFieldTest",
+    "fpv.units.AircraftStructureClearanceTest",
+    "fpv.units.ground.GroundLocomotionTest",
+    "fpv.units.ground.GroundStanceTest",
+    "fpv.units.GroundSurfaceAdapterTest",
+    "fpv.units.NavalFactoryNativeTest",
+    "fpv.units.UnitAltitudeModelTest",
+    "fpv.world.World3DTest"
+  ],
+  "stockSteamJava25ProgramResults": [
+    {
+      "program": "fpv.campaign.CampaignLifecycleNativeTest",
+      "exitCode": 0,
+      "seconds": 3.672
+    },
+    {
+      "program": "fpv.combat.AircraftWeaponGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.141
+    },
+    {
+      "program": "fpv.combat.AircraftWeaponNativeTest",
+      "exitCode": 0,
+      "seconds": 1.25
+    },
+    {
+      "program": "fpv.combat.CombatBalanceTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.combat.CombatGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.combat.CompositeDefenseTest",
+      "exitCode": 0,
+      "seconds": 0.109
+    },
+    {
+      "program": "fpv.combat.FlyingGroundAttackNativeTest",
+      "exitCode": 0,
+      "seconds": 1.719
+    },
+    {
+      "program": "fpv.combat.HealingImpactNativeTest",
+      "exitCode": 0,
+      "seconds": 1.218
+    },
+    {
+      "program": "fpv.combat.MechWeaponPitchCodecTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.combat.MechWeaponPitchNativeTest",
+      "exitCode": 0,
+      "seconds": 1.266
+    },
+    {
+      "program": "fpv.combat.MechWeaponPitchTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.combat.NavalWeaponPitchNativeTest",
+      "exitCode": 0,
+      "seconds": 1.25
+    },
+    {
+      "program": "fpv.combat.ProjectileDynamicsTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.combat.WalkerWeaponNativeTest",
+      "exitCode": 0,
+      "seconds": 1.313
+    },
+    {
+      "program": "fpv.combat.WallTargetingNativeTest",
+      "exitCode": 0,
+      "seconds": 1.781
+    },
+    {
+      "program": "fpv.combat.WeaponPolishNativeTest",
+      "exitCode": 0,
+      "seconds": 1.344
+    },
+    {
+      "program": "fpv.construction.A201CampaignChunkTest",
+      "exitCode": 0,
+      "seconds": 1.203
+    },
+    {
+      "program": "fpv.construction.LayerActionsTest",
+      "exitCode": 0,
+      "seconds": 0.156
+    },
+    {
+      "program": "fpv.construction.LayerBaseShieldNativeTest",
+      "exitCode": 0,
+      "seconds": 1.047
+    },
+    {
+      "program": "fpv.construction.LayerBuildingAdapterNativeTest",
+      "exitCode": 0,
+      "seconds": 1.094
+    },
+    {
+      "program": "fpv.construction.LayerCampaignNativeTest",
+      "exitCode": 0,
+      "seconds": 1.14
+    },
+    {
+      "program": "fpv.construction.LayerClientLogicNativeTest",
+      "exitCode": 0,
+      "seconds": 1.125
+    },
+    {
+      "program": "fpv.construction.LayerCombatIntegrationTest",
+      "exitCode": 0,
+      "seconds": 1.375
+    },
+    {
+      "program": "fpv.construction.LayerConfigurationSafetyTest",
+      "exitCode": 0,
+      "seconds": 1.141
+    },
+    {
+      "program": "fpv.construction.LayerConstructionTest",
+      "exitCode": 0,
+      "seconds": 0.406
+    },
+    {
+      "program": "fpv.construction.LayerCoreNativeTest",
+      "exitCode": 0,
+      "seconds": 1.094
+    },
+    {
+      "program": "fpv.construction.LayerCoreRespawnNativeTest",
+      "exitCode": 0,
+      "seconds": 1.125
+    },
+    {
+      "program": "fpv.construction.LayerDefenseNativeTest",
+      "exitCode": 0,
+      "seconds": 1.078
+    },
+    {
+      "program": "fpv.construction.LayerInteractionTest",
+      "exitCode": 0,
+      "seconds": 1.125
+    },
+    {
+      "program": "fpv.construction.LayerLogicBuildNativeTest",
+      "exitCode": 0,
+      "seconds": 1.219
+    },
+    {
+      "program": "fpv.construction.LayerMassDriverNativeTest",
+      "exitCode": 0,
+      "seconds": 1.093
+    },
+    {
+      "program": "fpv.construction.LayerMotionIntegrationTest",
+      "exitCode": 0,
+      "seconds": 1.282
+    },
+    {
+      "program": "fpv.construction.LayerNativeFamiliesTest",
+      "exitCode": 0,
+      "seconds": 1.281
+    },
+    {
+      "program": "fpv.construction.LayerNativeIsolationTest",
+      "exitCode": 0,
+      "seconds": 0.984
+    },
+    {
+      "program": "fpv.construction.LayerNavigationNativeTest",
+      "exitCode": 0,
+      "seconds": 1.5
+    },
+    {
+      "program": "fpv.construction.LayerNavigationTest",
+      "exitCode": 0,
+      "seconds": 0.235
+    },
+    {
+      "program": "fpv.construction.LayerPayloadLogicNativeTest",
+      "exitCode": 0,
+      "seconds": 1.187
+    },
+    {
+      "program": "fpv.construction.LayerPayloadNativeTest",
+      "exitCode": 0,
+      "seconds": 1.172
+    },
+    {
+      "program": "fpv.construction.LayerPowerNetworkTest",
+      "exitCode": 0,
+      "seconds": 1.109
+    },
+    {
+      "program": "fpv.construction.LayerProjectionNativeTest",
+      "exitCode": 0,
+      "seconds": 1.063
+    },
+    {
+      "program": "fpv.construction.LayerRebuildNativeTest",
+      "exitCode": 0,
+      "seconds": 1.156
+    },
+    {
+      "program": "fpv.construction.LayerRebuildQueueTest",
+      "exitCode": 0,
+      "seconds": 0.172
+    },
+    {
+      "program": "fpv.construction.LayerRuntimeNativeTest",
+      "exitCode": 0,
+      "seconds": 1.297
+    },
+    {
+      "program": "fpv.construction.LayerSchematicTest",
+      "exitCode": 0,
+      "seconds": 1.234
+    },
+    {
+      "program": "fpv.construction.LayerStateEnvelopeNativeTest",
+      "exitCode": 0,
+      "seconds": 1.235
+    },
+    {
+      "program": "fpv.construction.LayerStateLimitRuntimeTest",
+      "exitCode": 0,
+      "seconds": 1.218
+    },
+    {
+      "program": "fpv.construction.LayerTargetDummyNativeTest",
+      "exitCode": 0,
+      "seconds": 1.188
+    },
+    {
+      "program": "fpv.construction.LayerTurretControlNativeTest",
+      "exitCode": 0,
+      "seconds": 1.187
+    },
+    {
+      "program": "fpv.construction.LayerTurretNativeTest",
+      "exitCode": 0,
+      "seconds": 1.094
+    },
+    {
+      "program": "fpv.construction.LayerWallMigrationTest",
+      "exitCode": 0,
+      "seconds": 0.906
+    },
+    {
+      "program": "fpv.construction.MouseInteractionTest",
+      "exitCode": 0,
+      "seconds": 1.11
+    },
+    {
+      "program": "fpv.control.CreatorLandingMotionTest",
+      "exitCode": 0,
+      "seconds": 0.297
+    },
+    {
+      "program": "fpv.control.CreatorSaveTest",
+      "exitCode": 0,
+      "seconds": 0.172
+    },
+    {
+      "program": "fpv.control.NativeBoostTest",
+      "exitCode": 0,
+      "seconds": 1.187
+    },
+    {
+      "program": "fpv.defense.ForceAircraftGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.defense.ForceGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.219
+    },
+    {
+      "program": "fpv.defense.ForceProjectorCodecTest",
+      "exitCode": 0,
+      "seconds": 0.203
+    },
+    {
+      "program": "fpv.defense.ProjectionMathTest",
+      "exitCode": 0,
+      "seconds": 0.109
+    },
+    {
+      "program": "fpv.flight.BuildNavigatorTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.flight.FlightControllerTest",
+      "exitCode": 0,
+      "seconds": 0.188
+    },
+    {
+      "program": "fpv.flight.FlightProfileTest",
+      "exitCode": 0,
+      "seconds": 0.14
+    },
+    {
+      "program": "fpv.flight.GroundEyeHeightTest",
+      "exitCode": 0,
+      "seconds": 0.11
+    },
+    {
+      "program": "fpv.flight.ObserverCameraTest",
+      "exitCode": 0,
+      "seconds": 0.156
+    },
+    {
+      "program": "fpv.flight.StabilizedFlightTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.input.ConstructionPauseNativeTest",
+      "exitCode": 0,
+      "seconds": 1.25
+    },
+    {
+      "program": "fpv.input.ConstructionPriorityNativeTest",
+      "exitCode": 0,
+      "seconds": 1.281
+    },
+    {
+      "program": "fpv.input.FloorSurfaceReliefNativeTest",
+      "exitCode": 0,
+      "seconds": 1.25
+    },
+    {
+      "program": "fpv.input.TerrainClassificationNativeTest",
+      "exitCode": 0,
+      "seconds": 1.344
+    },
+    {
+      "program": "fpv.input.TerrainStructureRenderTest",
+      "exitCode": 0,
+      "seconds": 1.188
+    },
+    {
+      "program": "fpv.input.UpperConstructionNativeTest",
+      "exitCode": 0,
+      "seconds": 1.531
+    },
+    {
+      "program": "fpv.input.VolumeClipboardLiquidTest",
+      "exitCode": 0,
+      "seconds": 1.234
+    },
+    {
+      "program": "fpv.input.VolumeClipboardNativeTest",
+      "exitCode": 0,
+      "seconds": 1.563
+    },
+    {
+      "program": "fpv.input.VolumeSelectionNativeTest",
+      "exitCode": 0,
+      "seconds": 1.531
+    },
+    {
+      "program": "fpv.net.A201NetworkBehaviorTest",
+      "exitCode": 0,
+      "seconds": 0.203
+    },
+    {
+      "program": "fpv.net.BrowserMetadataTest",
+      "exitCode": 0,
+      "seconds": 0.172
+    },
+    {
+      "program": "fpv.net.ConnectionLifecycleTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.net.ConnectionNativeHandlersTest",
+      "exitCode": 0,
+      "seconds": 1.719
+    },
+    {
+      "program": "fpv.net.ConstructionPriorityNetworkTest",
+      "exitCode": 0,
+      "seconds": 1.422
+    },
+    {
+      "program": "fpv.net.ContactLedgerTest",
+      "exitCode": 0,
+      "seconds": 0.14
+    },
+    {
+      "program": "fpv.net.LocalPilotPredictionTest",
+      "exitCode": 0,
+      "seconds": 0.141
+    },
+    {
+      "program": "fpv.net.ModFingerprintTest",
+      "exitCode": 0,
+      "seconds": 0.578
+    },
+    {
+      "program": "fpv.net.NetProtocolTest",
+      "exitCode": 0,
+      "seconds": 0.172
+    },
+    {
+      "program": "fpv.net.NetworkDiagnosticSessionTest",
+      "exitCode": 0,
+      "seconds": 0.359
+    },
+    {
+      "program": "fpv.net.NetworkDiagnosticsTest",
+      "exitCode": 0,
+      "seconds": 0.172
+    },
+    {
+      "program": "fpv.net.PoseSnapshotCodecTest",
+      "exitCode": 0,
+      "seconds": 0.234
+    },
+    {
+      "program": "fpv.net.PredictionNativeIntegrationTest",
+      "exitCode": 0,
+      "seconds": 1.532
+    },
+    {
+      "program": "fpv.net.ProjectionCodecTest",
+      "exitCode": 0,
+      "seconds": 0.14
+    },
+    {
+      "program": "fpv.net.SnapshotNativeBatchTest",
+      "exitCode": 0,
+      "seconds": 1.438
+    },
+    {
+      "program": "fpv.net.UpperConstructionNetworkTest",
+      "exitCode": 0,
+      "seconds": 1.484
+    },
+    {
+      "program": "fpv.net.VolumeClipboardNetworkTest",
+      "exitCode": 0,
+      "seconds": 1.453
+    },
+    {
+      "program": "fpv.physics.CollisionResponseTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.physics.HighSpeedFlightTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.physics.ImpactModelTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.physics.RamDamageLimitTest",
+      "exitCode": 0,
+      "seconds": 0.141
+    },
+    {
+      "program": "fpv.physics.SweptCollisionTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.platform.ArcMouseMotionTest",
+      "exitCode": 0,
+      "seconds": 0.109
+    },
+    {
+      "program": "fpv.platform.FlightMouseFactoryTest",
+      "exitCode": 0,
+      "seconds": 0.25
+    },
+    {
+      "program": "fpv.platform.ForeignWindowsInputTest",
+      "exitCode": 0,
+      "seconds": 0.219
+    },
+    {
+      "program": "fpv.platform.HostCompatibilityTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.platform.LinuxSdlMouseCaptureTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.platform.LoadedSdlLibraryTest",
+      "exitCode": 0,
+      "seconds": 0.141
+    },
+    {
+      "program": "fpv.platform.OptionalFlightInputTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.platform.WindowsMouseCaptureTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.FirstPersonRigPoseTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.FortressHullGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.GreenHullNativeTest",
+      "exitCode": 0,
+      "seconds": 1.031
+    },
+    {
+      "program": "fpv.render.GroundModelAlignmentTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.GroundRigGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.203
+    },
+    {
+      "program": "fpv.render.LayeredHullGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.141
+    },
+    {
+      "program": "fpv.render.MiningPresentationNativeTest",
+      "exitCode": 0,
+      "seconds": 1.031
+    },
+    {
+      "program": "fpv.render.NativeLegGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.NavalBodyGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.187
+    },
+    {
+      "program": "fpv.render.NavalHullProfileTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.NavalNativeModelTest",
+      "exitCode": 0,
+      "seconds": 1.016
+    },
+    {
+      "program": "fpv.render.NavalWeaponPoseTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.OptimizedHullGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.141
+    },
+    {
+      "program": "fpv.render.OrganicPropGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.187
+    },
+    {
+      "program": "fpv.render.ProceduralUnitModelProfileTest",
+      "exitCode": 0,
+      "seconds": 0.156
+    },
+    {
+      "program": "fpv.render.ProjectionViewSettingsTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.ReignHullGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.ScepterHullGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.SpriteExtrusionGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.141
+    },
+    {
+      "program": "fpv.render.SupportEffectsCodecTest",
+      "exitCode": 0,
+      "seconds": 0.156
+    },
+    {
+      "program": "fpv.render.ThreatMarkerSymbolsTest",
+      "exitCode": 0,
+      "seconds": 0.141
+    },
+    {
+      "program": "fpv.render.TurretPartPoseTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.UnitThreatTiersNativeTest",
+      "exitCode": 0,
+      "seconds": 0.953
+    },
+    {
+      "program": "fpv.render.UnitTierProgressionTest",
+      "exitCode": 0,
+      "seconds": 0.156
+    },
+    {
+      "program": "fpv.render.VegetationVisualScaleTest",
+      "exitCode": 0,
+      "seconds": 0.141
+    },
+    {
+      "program": "fpv.render.VelaLegGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.VelaMechHullTest",
+      "exitCode": 0,
+      "seconds": 0.172
+    },
+    {
+      "program": "fpv.render.VelaTripodTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    },
+    {
+      "program": "fpv.render.VolumetricBeamGeometryTest",
+      "exitCode": 0,
+      "seconds": 0.14
+    },
+    {
+      "program": "fpv.terrain.TerrainHeightFieldTest",
+      "exitCode": 0,
+      "seconds": 0.157
+    },
+    {
+      "program": "fpv.units.AircraftStructureClearanceTest",
+      "exitCode": 0,
+      "seconds": 1.093
+    },
+    {
+      "program": "fpv.units.ground.GroundLocomotionTest",
+      "exitCode": 0,
+      "seconds": 0.157
+    },
+    {
+      "program": "fpv.units.ground.GroundStanceTest",
+      "exitCode": 0,
+      "seconds": 0.156
+    },
+    {
+      "program": "fpv.units.GroundSurfaceAdapterTest",
+      "exitCode": 0,
+      "seconds": 0.109
+    },
+    {
+      "program": "fpv.units.NavalFactoryNativeTest",
+      "exitCode": 0,
+      "seconds": 1.11
+    },
+    {
+      "program": "fpv.units.UnitAltitudeModelTest",
+      "exitCode": 0,
+      "seconds": 0.14
+    },
+    {
+      "program": "fpv.world.World3DTest",
+      "exitCode": 0,
+      "seconds": 0.125
+    }
+  ],
+  "ownerMapVisualAcceptance": "NOT TESTED",
+  "physicalKeyboardMouseAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "realTwoComputerMultiplayer": "NOT TESTED",
+  "primarySavesAccessed": false,
+  "pushPublishWorkshopUpdate": false
+}

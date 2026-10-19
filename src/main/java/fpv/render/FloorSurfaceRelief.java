@@ -8,9 +8,10 @@ import java.util.function.Predicate;
 
 /** Presentation-only corner sampler. Never used by terrain, collision, picking or save code. */
 public final class FloorSurfaceRelief {
-    public static final float MAX_HEIGHT = .065f;
+    public static final float MAX_HEIGHT = .12f;
     /** Also covers neighbouring chunks when a footprint changes beside a cached chunk. */
     public static final int ANCHOR_RADIUS = 2;
+    public static final float ORE_OFFSET = .006f;
     private final int chunk;
     private final float[] corners;
     private final float[] materials;
@@ -19,7 +20,7 @@ public final class FloorSurfaceRelief {
     public FloorSurfaceRelief(int chunk) {
         if(chunk<4)throw new IllegalArgumentException("Chunk must contain a relief interior");
         this.chunk=chunk;
-        corners=new float[(chunk+1)*(chunk+1)];
+        corners=new float[(chunk*2+1)*(chunk*2+1)];
         materials=new float[(chunk+4)*(chunk+4)];
     }
 
@@ -28,37 +29,48 @@ public final class FloorSurfaceRelief {
         originX=chunkX*chunk;originY=chunkY*chunk;
         for(int y=-2;y<=chunk+1;y++)for(int x=-2;x<=chunk+1;x++)
             materials[(y+2)*(chunk+4)+x+2]=weight(Vars.world.tile(originX+x,originY+y),visible);
-        for(int y=0;y<=chunk;y++)for(int x=0;x<=chunk;x++)
-            corners[y*(chunk+1)+x]=sample(originX+x,originY+y,visible,true);
+        for(int y=0;y<=chunk*2;y++)for(int x=0;x<=chunk*2;x++)
+            corners[y*(chunk*2+1)+x]=sample(originX+x*.5,originY+y*.5,visible,true);
     }
-    public float corner(int x,int y){return corners[(y-originY)*(chunk+1)+x-originX];}
+    public float corner(int x,int y){return node((x-originX)*2,(y-originY)*2);}
+    public float center(int x,int y){return node((x-originX)*2+1,(y-originY)*2+1);}
+    public float shade(int x,int y,boolean center){
+        int nx=(x-originX)*2+(center?1:0),ny=(y-originY)*2+(center?1:0);
+        if(nx==0||ny==0||nx==chunk*2||ny==chunk*2||node(nx,ny)==0)return 1;
+        // Shared half-tile samples provide coherent vertex lighting, including ore overlays.
+        float dx=node(nx+1,ny)-node(nx-1,ny),dy=node(nx,ny+1)-node(nx,ny-1);
+        // Native pixel-art floors have strong baked detail: a restrained physical Lambert term
+        // disappears inside that texture. Amplify only the visual slope contrast, not elevation.
+        return Math.max(.76f,Math.min(1.18f,1+dx*5f+dy*3.4f));
+    }
+    private float node(int x,int y){return corners[y*(chunk*2+1)+x];}
     public int scratchBytes(){return (corners.length+materials.length)*Float.BYTES;}
 
     /** Corner (x,y) is at native (x-.5,y-.5). Shared coordinates produce identical heights. */
-    public float sample(int x,int y,Predicate<Tile> visible) {
+    public float sample(double x,double y,Predicate<Tile> visible) {
         return sample(x,y,visible,false);
     }
-    private float sample(int x,int y,Predicate<Tile> visible,boolean cached) {
+    private float sample(double x,double y,Predicate<Tile> visible,boolean cached) {
         // The far tier stays flat. A smooth two-tile apron joins ANY near/far/fog chunk mix
         // without skirts, extra triangles, camera-dependent mesh rebuilds or T-junctions.
-        int lx=Math.floorMod(x,chunk),ly=Math.floorMod(y,chunk);
-        float apron=smooth(Math.min(Math.min(lx,chunk-lx),Math.min(ly,chunk-ly))*.5f);
+        double lx=x-Math.floor(x/chunk)*chunk,ly=y-Math.floor(y/chunk)*chunk;
+        float apron=smooth((float)(Math.min(Math.min(lx,chunk-lx),Math.min(ly,chunk-ly))*.5));
         if(apron==0)return 0;
-        float material=0;
-        for(int dy=-1;dy<=0;dy++)for(int dx=-1;dx<=0;dx++) {
-            float w=weight(x+dx,y+dy,visible,cached);
-            if(w==0)return 0;
-            material+=w;
-        }
+        int bx=(int)Math.floor(x-.5),by=(int)Math.floor(y-.5);
+        double fx=x-.5-bx,fy=y-.5-by;
+        double material=lerp(lerp(weight(bx,by,visible,cached),weight(bx+1,by,visible,cached),fx),
+            lerp(weight(bx,by+1,visible,cached),weight(bx+1,by+1,visible,cached),fx),fy);
+        if(material==0)return 0;
         float clearance=1;
-        // Distance to the actual fixed tile rectangle, not a random per-tile step.
+        int ix=(int)Math.floor(x),iy=(int)Math.floor(y);
         for(int dy=-2;dy<=1;dy++)for(int dx=-2;dx<=1;dx++) {
-            if(weight(x+dx,y+dy,visible,cached)!=0)continue;
-            int ax=Math.max(0,Math.max(dx,-dx-1)),ay=Math.max(0,Math.max(dy,-dy-1));
-            clearance=Math.min(clearance,smooth((float)Math.sqrt(ax*ax+ay*ay)*.5f));
+            int tx=ix+dx,ty=iy+dy;
+            if(weight(tx,ty,visible,cached)!=0)continue;
+            double ax=Math.max(0,Math.max(tx-x,x-tx-1)),ay=Math.max(0,Math.max(ty-y,y-ty-1));
+            clearance=Math.min(clearance,smooth((float)Math.sqrt(ax*ax+ay*ay)));
         }
         double noise=.72*noise(x*.19,y*.19)+.28*noise(x*.39+37.25,y*.39-19.5);
-        return (float)(MAX_HEIGHT*material*.25*apron*clearance*noise);
+        return (float)(MAX_HEIGHT*material*apron*clearance*noise);
     }
 
     private float weight(int x,int y,Predicate<Tile> visible,boolean cached){

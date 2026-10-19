@@ -41,7 +41,7 @@ public final class FloorSurfaceReliefNativeTest {
                 if(x>0)jump=Math.max(jump,Math.abs(z-r.sample(x-1,y,visible)));
                 if(x%16==0||y%16==0)check(z==0,"detail/coarse/fog chunk border is exactly flat");
             }
-            check(peak>.015f&&jump<.05f,"subtle coherent relief exists without independent tile spikes");
+            check(peak>.08f&&jump<.09f,"subtle coherent relief exists without independent tile spikes");
             for(int cy=0;cy<3;cy++)for(int cx=0;cx<3;cx++){
                 r.prepare(cx,cy,visible);
                 for(int y=0;y<=16;y++)for(int x=0;x<=16;x++)check(r.corner(cx*16+x,cy*16+y)==r.sample(cx*16+x,cy*16+y,visible),"cached corner equals shared global sample across every tile/chunk");
@@ -68,11 +68,11 @@ public final class FloorSurfaceReliefNativeTest {
             world();check(r.sample(7,7,t->t.x!=7||t.y!=7)==0,"hidden floor cannot leave a crack against flat fog");
             var terrain=new TerrainElevation();long mask=terrain.mapFingerprint(),rev=terrain.revision();double physical=terrain.heightAt(7,-7);r.prepare(0,0,visible);
             check(physical==0&&terrain.heightAt(7,-7)==physical&&terrain.mapFingerprint()==mask&&terrain.revision()==rev,"visual sampling never changes physical terrain or classification");
-            check(r.scratchBytes()==2756,"one reused 17x17 height and20x20 material scratch buffer, no per-chunk retained arrays");
+            check(r.scratchBytes()==5956,"one reused33x33 half-tile height and20x20 material scratch buffer, no per-chunk retained arrays");
 
             // Exercise the actual detail path, native UVs, overlay offset, and unchanged coarse tier.
             set(draw,"worldWidth",48);set(draw,"worldHeight",48);
-            Object mesh=build(draw);check((long)get(mesh,"bytes")==16L*16*6*7*4,"missing-atlas detail mesh keeps original six vertices/tile");
+            Object mesh=build(draw);check((long)get(mesh,"bytes")==16L*16*12*7*4,"natural detail uses only four triangles/tile, no general world tessellation");
             float[] fallback=(float[])get(get(draw,"terrain"),"vertices");int count=(int)get(get(draw,"terrain"),"count");float max=0;
             for(int i=1;i<count;i+=7)max=Math.max(max,Math.abs(fallback[i]));check(max>.015,"real renderer fallback vertices are displaced");
             call(mesh,"dispose",new Class[]{});
@@ -81,14 +81,23 @@ public final class FloorSurfaceReliefNativeTest {
             var texture=new TextureStub();var region=new TextureRegion(texture,32,48,32,32);
             call(get(draw,"staticAtlas"),"clear",new Class[]{});((FloorSurfaceRelief)get(draw,"floorRelief")).prepare(0,0,visible);
             call(draw,"floorSurface",new Class[]{Tile.class,TextureRegion.class,float.class,boolean.class},Vars.world.tile(7,7),region,0f,false);
-            float[] v=atlasValues(draw);float[] base=Arrays.copyOf(v,54);
+            float[] v=atlasValues(draw);float[] base=Arrays.copyOf(v,108);
             float u=region.u+.5f/256,vNorth=region.v+.5f/256,vSouth=region.v2-.5f/256;
             check(v[0]==6.5f&&v[2]==-6.5f&&v[7]==u&&v[8]==vSouth,"southwest vertex retains correct native texture orientation and texel inset");
-            check(v[18]==7.5f&&v[20]==-7.5f&&v[26]==vNorth,"north texture edge remains native +Y/render -Z");
-            float offset=(float)fpv.generated.RenderConfig.ATLAS_SURFACE_OFFSET;
+            check(v[36]==7.5f&&v[38]==-7.5f&&v[44]==vNorth,"north texture edge remains native +Y/render -Z");
+            float offset=FloorSurfaceRelief.ORE_OFFSET;
             call(draw,"floorSurface",new Class[]{Tile.class,TextureRegion.class,float.class,boolean.class},Vars.world.tile(7,7),region,offset,true);v=atlasValues(draw);
-            for(int i=0;i<54;i+=9){check(Math.abs(v[54+i+1]-base[i+1]-offset)<1e-7,"ore shares floor geometry with only existing visual separation");check(v[54+i]==base[i]&&v[54+i+2]==base[i+2]&&v[54+i+7]==base[i+7]&&v[54+i+8]==base[i+8],"overlay XY/UV/triangle correspondence");}
-            var data=(Map<?,?>)get(get(draw,"staticAtlas"),"data");check((int)get(data.values().iterator().next(),"count")==108,"one floor plus overlay: unchanged twelve vertices, one atlas batch");
+            for(int i=0;i<108;i+=9){check(Math.abs(v[108+i+1]-base[i+1]-offset)<1e-7,"ore shares floor geometry with only existing visual separation");check(v[108+i]==base[i]&&v[108+i+2]==base[i+2]&&v[108+i+7]==base[i+7]&&v[108+i+8]==base[i+8],"overlay XY/UV/triangle correspondence");}
+            var data=(Map<?,?>)get(get(draw,"staticAtlas"),"data");check((int)get(data.values().iterator().next(),"count")==216,"one floor plus overlay:24 vertices, one atlas batch");
+
+            float brightest=0,darkest=2;
+            for(int i=3;i<108;i+=9){brightest=Math.max(brightest,base[i]);darkest=Math.min(darkest,base[i]);}
+            check(brightest-darkest>.01f,"real textured vertices carry visible slope lighting instead of uniform white");
+            world();for(int[] d:new int[][]{{-1,0},{1,0},{0,-1},{0,1}})Vars.world.tile(7+d[0],7+d[1]).setBlock(Blocks.conveyor,Team.sharded,0);
+            r.prepare(0,0,visible);for(int y=7;y<=8;y++)for(int x=7;x<=8;x++)check(r.corner(x,y)==0,"neighbour foundations retain flat edges in a one-cell gap");
+            check(Math.abs(r.center(7,7))>.003,"open ground between conveyors has real interior relief even with all four corners anchored");
+            Vars.world.tile(7,7).setBlock(Blocks.conveyor,Team.sharded,0);r.prepare(0,0,visible);
+            check(r.center(7,7)==0,"building's own interior remains completely flat");
 
             // Invalidate a structure just across a chunk boundary: apron and anchor neighbours rebuild.
             call(get(draw,"staticAtlas"),"clear",new Class[]{});world();Object left=build(draw);((Map<Integer,Object>)get(draw,"chunks")).put(0,left);Object revision=get(draw,"revision");

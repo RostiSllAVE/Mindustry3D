@@ -118,6 +118,22 @@ final class NativeAtlasMesh {
                 x+width/2,ne,z-depth/2,x-width/2,nw,z-depth/2,shade,shade,shade,false,true);
         }
 
+        /** Four triangles retain a natural cell's interior relief even when its edges are anchored.
+         * Per-vertex slope lighting and UVs are shared by the floor and its ore overlay. */
+        void floorReliefTop(TextureRegion region,float x,float z,float sw,float se,float ne,float nw,float center,
+                            float lsw,float lse,float lne,float lnw,float lc){
+            if(!valid(region))return;
+            Data d=data.computeIfAbsent(region.texture,t->new Data(streaming?capacity*9:4096));
+            if(streaming&&d.count+108>d.values.length)flush(region.texture,d,overflowShader);
+            if(d.count+108>d.values.length)d.values=Arrays.copyOf(d.values,Math.max(d.values.length*2,d.count+108));
+            float du=Math.signum(region.u2-region.u)*.5f/region.texture.width,dv=Math.signum(region.v2-region.v)*.5f/region.texture.height;
+            float u=region.u+du,u2=region.u2-du,v=region.v+dv,v2=region.v2-dv,uc=(u+u2)*.5f,vc=(v+v2)*.5f;
+            d.vertex(x-.5f,sw,z+.5f,lsw,lsw,lsw,0,u,v2);d.vertex(x+.5f,se,z+.5f,lse,lse,lse,0,u2,v2);d.vertex(x,center,z,lc,lc,lc,0,uc,vc);
+            d.vertex(x+.5f,se,z+.5f,lse,lse,lse,0,u2,v2);d.vertex(x+.5f,ne,z-.5f,lne,lne,lne,0,u2,v);d.vertex(x,center,z,lc,lc,lc,0,uc,vc);
+            d.vertex(x+.5f,ne,z-.5f,lne,lne,lne,0,u2,v);d.vertex(x-.5f,nw,z-.5f,lnw,lnw,lnw,0,u,v);d.vertex(x,center,z,lc,lc,lc,0,uc,vc);
+            d.vertex(x-.5f,nw,z-.5f,lnw,lnw,lnw,0,u,v);d.vertex(x-.5f,sw,z+.5f,lsw,lsw,lsw,0,u,v2);d.vertex(x,center,z,lc,lc,lc,0,uc,vc);
+        }
+
         /** Bakes a cached local prop template into the existing texture batch; no per-object GL draw or mesh. */
         void template(TextureRegion region,float[] vertices,float x,float y,float z,float width,float height,float depth,float angle,float sampleU,float sampleV){
             if(!valid(region)||vertices==null)return;

@@ -16,19 +16,21 @@ public class FloorMeshComparison {
    Method build=draw.getClass().getDeclaredMethod("buildChunk",int.class,int.class);build.setAccessible(true);
    Method coarse=draw.getClass().getDeclaredMethod("coarseChunk",int.class,int.class,int.class);coarse.setAccessible(true);
    Object dynamic=get(draw,"dynamic"),stream=get(draw,"streamAtlas");var clear=dynamic.getClass().getDeclaredMethod("clear");clear.setAccessible(true);var clearAtlas=stream.getClass().getDeclaredMethod("clear");clearAtlas.setAccessible(true);
-   double[] times=new double[7],allocs=new double[7],coarseTimes=new double[7];long meshBytes=0;int batches=0;
+   double[] times=new double[7],allocs=new double[7],coarseTimes=new double[7];long meshBytes=0,vertexCount=0;int batches=0;
    for(int pass=-5;pass<7;pass++){
-    long a=allocated(),start=System.nanoTime();long bytes=0;int batch=0;
+    long a=allocated(),start=System.nanoTime();long bytes=0,vertices=0;int batch=0;
     for(int y=0;y<8;y++)for(int x=0;x<8;x++){
-     Object mesh=build.invoke(draw,x,y);bytes+=(long)get(mesh,"bytes");Object atlas=get(mesh,"atlas");batch+=((List<?>)get(atlas,"parts")).size()+(get(mesh,"mesh")==null?0:1);
+     Object mesh=build.invoke(draw,x,y);bytes+=(long)get(mesh,"bytes");Object atlas=get(mesh,"atlas");var parts=(List<?>)get(atlas,"parts");batch+=parts.size()+(get(mesh,"mesh")==null?0:1);
+     if(get(mesh,"mesh") instanceof Mesh plain)vertices+=plain.getNumVertices();
+     for(Object part:parts)vertices+=((Mesh)get(part,"mesh")).getNumVertices();
      Method dispose=mesh.getClass().getDeclaredMethod("dispose");dispose.setAccessible(true);dispose.invoke(mesh);
     }
     double ms=(System.nanoTime()-start)/1e6;long end=allocated();
-    if(pass>=0){times[pass]=ms;allocs[pass]=a<0||end<0?-1:(end-a)/64.0;meshBytes=bytes;batches=batch;}
+    if(pass>=0){times[pass]=ms;allocs[pass]=a<0||end<0?-1:(end-a)/64.0;meshBytes=bytes;vertexCount=vertices;batches=batch;}
     clear.invoke(dynamic);clearAtlas.invoke(stream);start=System.nanoTime();for(int y=0;y<8;y++)for(int x=0;x<8;x++)coarse.invoke(draw,x,y,4);if(pass>=0)coarseTimes[pass]=(System.nanoTime()-start)/1e6;
    }
    Arrays.sort(times);Arrays.sort(allocs);Arrays.sort(coarseTimes);
-   System.out.printf(Locale.ROOT,"MESH,%s,chunks=64,tiles=16384,medianMs=%.6f,minMs=%.6f,maxMs=%.6f,perChunkMs=%.6f,allocatedBytesPerChunk=%.1f,meshBytes=%d,vertices=98304,triangles=32768,materialBatches=%d,coarse64MedianMs=%.6f%n",textured?"atlas":"fallback",times[3],times[0],times[6],times[3]/64,allocs[3],meshBytes,batches,coarseTimes[3]);draw.dispose();
+   System.out.printf(Locale.ROOT,"MESH,%s,chunks=64,tiles=16384,medianMs=%.6f,minMs=%.6f,maxMs=%.6f,perChunkMs=%.6f,allocatedBytesPerChunk=%.1f,meshBytes=%d,vertices=%d,triangles=%d,materialBatches=%d,coarse64MedianMs=%.6f%n",textured?"atlas":"fallback",times[3],times[0],times[6],times[3]/64,allocs[3],meshBytes,vertexCount,vertexCount/3,batches,coarseTimes[3]);draw.dispose();
   }}finally{input.uninstallProjection();renderer.close();runtime.close();altitude.close();}
  }
 }

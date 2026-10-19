@@ -672,7 +672,9 @@ public final class FpvWorldRenderer {
                 }
                 if(tile.overlay()!=mindustry.content.Blocks.air){
                     float height=tile.overlay().wallOre?heightFor(block):0;
-                    floorSurface(tile,NativeRegions.floor(tile.overlay(),tile),height+(float)RenderConfig.ATLAS_SURFACE_OFFSET,true);
+                    float gap=tile.overlay() instanceof mindustry.world.blocks.environment.OreBlock&&!tile.overlay().wallOre
+                        ?FloorSurfaceRelief.ORE_OFFSET:(float)RenderConfig.ATLAS_SURFACE_OFFSET;
+                    floorSurface(tile,NativeRegions.floor(tile.overlay(),tile),height+gap,true);
                 }
             }
         }
@@ -686,15 +688,24 @@ public final class FpvWorldRenderer {
         int x=tile.x,y=tile.y;
         float sw=floorRelief.corner(x,y)+offset,se=floorRelief.corner(x+1,y)+offset;
         float ne=floorRelief.corner(x+1,y+1)+offset,nw=floorRelief.corner(x,y+1)+offset;
-        if(sw==offset&&se==offset&&ne==offset&&nw==offset){
+        float center=floorRelief.center(x,y)+offset;
+        if(sw==offset&&se==offset&&ne==offset&&nw==offset&&center==offset){
             if(NativeAtlasMesh.valid(region))staticAtlas.top(region,x,offset,-y,1,1,0,1,1,1,!overlay&&tile.floor().isLiquid);
             else if(!overlay)terrain.top(x,offset,-y,1,1,color.r,color.g,color.b);
-        }else if(NativeAtlasMesh.valid(region))staticAtlas.terrainTop(region,x,-y,1,1,sw,se,ne,nw,1);
-        else if(!overlay){
-            terrain.reserve(6);
-            terrain.quad(x-.5f,sw,-y+.5f,x+.5f,se,-y+.5f,x+.5f,ne,-y-.5f,x-.5f,nw,-y-.5f,color.r,color.g,color.b);
+        }else{
+            float lsw=floorRelief.shade(x,y,false),lse=floorRelief.shade(x+1,y,false),lne=floorRelief.shade(x+1,y+1,false);
+            float lnw=floorRelief.shade(x,y+1,false),lc=floorRelief.shade(x,y,true);
+            if(NativeAtlasMesh.valid(region))staticAtlas.floorReliefTop(region,x,-y,sw,se,ne,nw,center,lsw,lse,lne,lnw,lc);
+            else if(!overlay){
+                terrain.reserve(12);
+                floorVertex(x-.5f,sw,-y+.5f,lsw);floorVertex(x+.5f,se,-y+.5f,lse);floorVertex(x,center,-y,lc);
+                floorVertex(x+.5f,se,-y+.5f,lse);floorVertex(x+.5f,ne,-y-.5f,lne);floorVertex(x,center,-y,lc);
+                floorVertex(x+.5f,ne,-y-.5f,lne);floorVertex(x-.5f,nw,-y-.5f,lnw);floorVertex(x,center,-y,lc);
+                floorVertex(x-.5f,nw,-y-.5f,lnw);floorVertex(x-.5f,sw,-y+.5f,lsw);floorVertex(x,center,-y,lc);
+            }
         }
     }
+    private void floorVertex(float x,float y,float z,float light){terrain.vertex(x,y,z,color.r*light,color.g*light,color.b*light);}
 
     private void coarseChunk(int cx,int cy,int stride){
         int xEnd=Math.min(worldWidth,(cx+1)*CHUNK),yEnd=Math.min(worldHeight,(cy+1)*CHUNK);
