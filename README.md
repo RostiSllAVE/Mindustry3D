@@ -253,3 +253,5 @@ or proprietary Liftoff resources are included in the prepared assets.
 [A2-09a volumetric structure selection](docs/alpha-v2/A2-09a-VOLUME-SELECTION.md) adds a local read-only XYZ volume in Tab Build Mode (F4, LMB drag, wheel for Z). No copying/pasting or construction commands are added. See the [owner test](docs/alpha-v2/A2-09a-MANUAL-TEST.md); physical visual acceptance is pending.
 
 [A2-09b volumetric copy/paste](docs/alpha-v2/A2-09b-REPORT.md) extends F4 selection with a session-only multi-floor clipboard, native-texture ghosts, wheel Z offset and quarter-turn rotation. Confirmations queue normal-cost, server-validated construction; see the [owner procedure](docs/alpha-v2/A2-09b-MANUAL-TEST.md). Physical multiplayer/Linux acceptance is pending.
+
+[A2-09c upper construction reliability](docs/alpha-v2/A2-09c-REPORT.md) repairs blocked-job starvation and sandbox paste timing, and gives manual upper survival work shared builder-speed progress. F3/priority are retained; see the [owner test](docs/alpha-v2/A2-09c-MANUAL-TEST.md). Intermittent manual-delay and physical multiplayer acceptance remain pending.

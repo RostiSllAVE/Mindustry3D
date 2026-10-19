@@ -27,6 +27,8 @@ public final class LayerRuntime implements AutoCloseable {
     private static final int FORMAT=5,MAX_BYTES=16*1024*1024,MAX_FALLING=32;
     private final World3DAdapter physical;
     private final LayerCatalog catalog=new LayerCatalog();
+    private final ConstructionTimings timings=new ConstructionTimings();
+    public ConstructionTimings timings(){return timings;}
     private final LayerPasteQueue pastes=new LayerPasteQueue(this);
     private final ConstructionPriority priority=new ConstructionPriority(this);
     public ConstructionPriority priority(){return priority;}
@@ -167,8 +169,18 @@ public final class LayerRuntime implements AutoCloseable {
     public LayerActions.Result requestLink(long from,long to,LayerVerticalTransfers.Kind kind){return submit(LayerActions.Action.link(from,to,kind,false));}
     public LayerActions.Result requestUnlink(long from,long to,LayerVerticalTransfers.Kind kind){return submit(LayerActions.Action.link(from,to,kind,true));}
     public LayerActions.Result submit(LayerActions.Action action){
-        return lastResult=Vars.net!=null&&Vars.net.client()?network.submitConstruction(action):apply(Vars.player,action);
+        return lastResult=Vars.net!=null&&Vars.net.client()?network.submitConstruction(action):acceptConstruction(Vars.player,action);
     }
+    /** Untrusted player command entry. PLACE completion itself remains a game-thread internal operation. */
+    public LayerActions.Result acceptConstruction(Player player,LayerActions.Action action){
+        if(Vars.net.client())return LayerActions.Result.rejected("Server authority required");
+        long started=timings.start();
+        try{if(action!=null&&action.op()==LayerActions.Op.PLACE)return pastes.enqueueManual(player,action);
+            return apply(player,action);
+        }finally{if(action!=null)timings.admission(action,started);}
+    }
+    public static boolean instantConstruction(){return Vars.state.rules.instantBuild||Vars.state.rules.infiniteResources;}
+    LayerActions.Result previewWork(Player player,LayerActions.Action action,boolean filters){return validate(player,action,filters,grid,solver,false);}
     public LayerActions.Result preview(Player player,LayerActions.Action action){return validate(player,action,false);}
     /** Read-only gate for native Z0 build queues; the native server still validates and executes each plan. */
     public LayerActions.Result previewGroundRemoval(Player player,Building building){
@@ -223,7 +235,7 @@ public final class LayerRuntime implements AutoCloseable {
                 rollbackPayment(player,paid);
                 return LayerActions.Result.rejected("Placement changed; try again");
             }
-            purchases.put(component.id(),paid);
+            purchases.put(component.id(),paid);timings.commit(component);
             rebuilds.removeAt(component.x(),component.y(),component.layer(),component.kind());
             return LayerActions.Result.ok(component.id());
         }
@@ -551,6 +563,7 @@ public final class LayerRuntime implements AutoCloseable {
         return new StructuralSolver.Foundation(Integer.toUnsignedLong(build.id)+1,team,Math.min(physical.surfaceHeight(x,y),planeHeight(1)),support.span(),support.capacity());
     }
     public void reset(){
+        timings.clear();
         priority.clear();turretControls.clear();pastes.clear();destructionQueue.clear();stateLimitWarnings.clear();LayerClientLogicPresentation.clear();double spacing=1.4;int max=LayerCatalog.boundedInt("fpv-layer-max",64,1,512);
         connectorMaxGap=LayerCatalog.boundedInt("fpv-vertical-max-gap",16,1,64);grid=new LayerWorld(new LayerCoordinates(spacing,max));rebuilds=new LayerRebuildQueue(grid.coordinates());logicActors.clear();newSolver();purchases.clear();connectorPurchases.clear();falling.clear();warnings.clear();time=0;nextChunk=1;fallRevision++;compositionRevision++;invalidateCache();remoteFree=false;replicationFailure=null;
     }
@@ -646,7 +659,7 @@ public final class LayerRuntime implements AutoCloseable {
         });
         cachedGridRevision=grid.revision();cachedFallRevision=fallRevision;cachedRebuildRevision=rebuilds.revision();cachedFree=free;cachedPowerRevision=nativeBuildings.powerRevision();replicationFailure=null;return cachedSnapshot;
     }
-    public void applyReplication(byte[] bytes){if(!Vars.net.client())return;try{restore(bytes,true);}catch(IOException bad){throw new IllegalArgumentException("Invalid layer snapshot",bad);}}
+    public void applyReplication(byte[] bytes){if(!Vars.net.client())return;long started=timings.start();try{restore(bytes,true);}catch(IOException bad){throw new IllegalArgumentException("Invalid layer snapshot",bad);}finally{timings.replicaApplied(started);}}
     void restore(byte[] bytes,boolean remote)throws IOException{
         if(bytes==null||bytes.length>MAX_BYTES)throw new IOException("Layer snapshot size");
         try(var in=new DataInputStream(new ByteArrayInputStream(bytes))){

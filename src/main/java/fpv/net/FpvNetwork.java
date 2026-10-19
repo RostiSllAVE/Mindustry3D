@@ -275,7 +275,7 @@ public final class FpvNetwork implements AutoCloseable {
     }
     public LayerActions.Result submitConstruction(LayerActions.Action action){
         if(construction==null)return LayerActions.Result.rejected("Construction is unavailable");
-        if(!Vars.net.client())return construction.apply(Vars.player,action);
+        if(!Vars.net.client())return construction.acceptConstruction(Vars.player,action);
         if(!allowed())return LayerActions.Result.rejected(connection.message());
         byte[] bytes=constructionPacket(action);
         if(bytes.length>fpv.construction.LayerConfiguration.MAX_BYTES+1024)return LayerActions.Result.rejected("Construction request is too large");
@@ -293,7 +293,7 @@ public final class FpvNetwork implements AutoCloseable {
             NetProtocol.read(bytes,in->{if(in.readInt()!=CONSTRUCTION_MAGIC||in.readUnsignedByte()!=1)throw new IOException("Construction header");
                 long requestEpoch=in.readLong(),request=in.readLong();LayerActions.Action action=LayerActions.read(in);
                 if(in.available()!=0||requestEpoch!=epoch||request<0||request<=peer.lastConstructionSequence)throw new IOException("Stale construction request");
-                peer.lastConstructionSequence=request;LayerActions.Result result=construction.apply(player,action);
+                peer.lastConstructionSequence=request;LayerActions.Result result=construction.acceptConstruction(player,action);
                 if(player.con!=null){byte[] reply=NetProtocol.bytes(out->{out.writeInt(CONSTRUCTION_MAGIC);out.writeByte(2);out.writeLong(epoch);out.writeLong(request);LayerActions.writeResult(out,result);});Call.clientBinaryPacketReliable(player.con,CONSTRUCTION_PACKET,reply);diagnostic.data.packet(true,true,reply.length);}
                 return null;});
         }catch(IllegalArgumentException invalid){rejectedPackets++;}

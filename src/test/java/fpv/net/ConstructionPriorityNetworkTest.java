@@ -47,7 +47,7 @@ public final class ConstructionPriorityNetworkTest {
             check(f.layers.pastes().targets(Vars.player).equals(List.of(t)),"client receives read-only upper blueprint view through existing atomic chunk application");
             byte[] grid=f.layers.replication();f.layers.applyReplication(grid);check(f.layers.pastes().targets(Vars.player).equals(List.of(t)),"ordinary layered-world replication does not erase the independent transient view");
             check(f.layers.grid().components().isEmpty()&&Vars.player.unit().plans.isEmpty(),"receiving blueprint metadata creates no operational buildings, costs or native plans");
-            byte[] malformed=Arrays.copyOf(ConstructionPlanCodec.encode(List.of(t)),17);try{f.layers.pastes().applyReplication(malformed);throw new AssertionError("bad view accepted");}catch(IllegalArgumentException expected){check(f.layers.pastes().targets(Vars.player).equals(List.of(t)),"malformed view cannot partially replace accepted owner state");}
+            byte[] goodView=ConstructionPlanCodec.encode(List.of(t));byte[] malformed=Arrays.copyOf(goodView,goodView.length+1);try{f.layers.pastes().applyReplication(malformed);throw new AssertionError("bad view accepted");}catch(IllegalArgumentException expected){check(f.layers.pastes().targets(Vars.player).equals(List.of(t)),"malformed view cannot partially replace accepted owner state");}
             f.world();check(f.layers.pastes().targets(Vars.player).isEmpty()&&!f.net.allowed(),"world reset clears owner view and readiness");
         }
         System.out.println("ConstructionPriorityNetworkTest: "+checks+" checks PASS; native/mod handlers and private reliable snapshots; real sockets/two computers NOT TESTED.");

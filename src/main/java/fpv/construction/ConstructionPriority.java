@@ -65,10 +65,10 @@ public final class ConstructionPriority {
             var f=e.getValue();var t=f.target;
             if(t.layer()>0){if(runtime.pastes().contains(e.getKey(),t)){suspended.put(f.unit,f.unit.updateBuilding());f.unit.updateBuilding(false);}}
         }
-        runtime.pastes().suspendGroundRange();
+        runtime.pastes().suspendGroundRange();runtime.pastes().observeNativeBuilders();
     }
     /** Restore the user's F3 flag before upper work, snapshots, menus or any next frame. */
-    public void afterNative(){for(var e:suspended.entrySet())e.getKey().updateBuilding(e.getValue());suspended.clear();runtime.pastes().restoreGroundRange();}
+    public void afterNative(){for(var e:suspended.entrySet())e.getKey().updateBuilding(e.getValue());suspended.clear();runtime.pastes().restoreGroundRange();runtime.pastes().finishNativeBuilders();}
     public boolean allowsUpper(Player player,Unit unit,BuildPlan plan,int layer){
         var f=focused.get(player);if(f==null)return true;
         if(!owner(player,f)){focused.remove(player);return true;}

@@ -115,15 +115,16 @@ public final class ConstructionPriorityNativeTest {
         var override=new BuildPlan(26,22,0,Blocks.conveyor);unit.addBuild(override,false);runtime.priority().beforeNative();runtime.priority().afterNative();
         check(unit.plans.first()==override&&runtime.priority().target(Vars.player)==null,"later vanilla queue reordering or a native blocked-plan skip takes precedence; no persistent re-pin in 2D");
         unit.clearBuilding();runtime.priority().beforeNative();runtime.priority().afterNative();check(unit.plans.isEmpty(),"explicit native queue clear never resurrects a prioritized plan");
-        controls.setLayer(4);controls.setFree(true);input.block=Blocks.conveyor;int before=core.items.get(Items.copper);click(32,20,false);
-        var ordinary=runtime.grid().at(32,20,4,LayerComponent.Kind.BLOCK);
-        check(ordinary!=null&&ordinary.blockName().equals("conveyor")&&runtime.priority().target(Vars.player)==null,"ordinary placement with a selected tool takes precedence over an unfinished blueprint unless Alt is held");
-        check(core.items.get(Items.copper)==before-Blocks.conveyor.requirements[0].amount&&runtime.pastes().pending(Vars.player)==1,"ordinary held placement charges once and does not remove pending requests as a priority side effect");input.block=null;
+        controls.setLayer(4);controls.setFree(true);input.block=Blocks.conveyor;int before=core.items.get(Items.copper);Vars.state.rules.instantBuild=true;click(32,20,false);
+        check(runtime.grid().at(32,20,4,LayerComponent.Kind.BLOCK)==null&&runtime.priority().target(Vars.player)==null&&core.items.get(Items.copper)==before,"selected tool does not select priority or overwrite an existing queued footprint");
+        click(34,20,false);var ordinary=runtime.grid().at(34,20,4,LayerComponent.Kind.BLOCK);
+        check(ordinary!=null&&ordinary.blockName().equals("conveyor")&&runtime.priority().target(Vars.player)==null,"ordinary placement on a free footprint still uses the selected tool");
+        check(core.items.get(Items.copper)==before-Blocks.conveyor.requirements[0].amount&&runtime.pastes().pending(Vars.player)==1,"ordinary held placement charges once and does not remove pending requests as a priority side effect");input.block=null;Vars.state.rules.instantBuild=false;
         runtime.reset();check(runtime.priority().target(Vars.player)==null&&runtime.pastes().targets(Vars.player).isEmpty(),"world transition clears transient focus and pending views");
     }
     static void codec(){
         var list=List.of(target(30,30,2,Blocks.duo),target(32,32,3,Blocks.graphitePress));byte[] bytes=ConstructionPlanCodec.encode(list);check(ConstructionPlanCodec.decode(bytes).equals(list),"owner-private pending view roundtrips exact layer/block/rotation/identity");
-        byte[] tail=Arrays.copyOf(bytes,bytes.length+1);reject(()->ConstructionPlanCodec.decode(tail));byte[] bad=bytes.clone();bad[0]=2;reject(()->ConstructionPlanCodec.decode(bad));reject(()->ConstructionPlanCodec.decode(new byte[]{1,16,1}));
+        byte[] tail=Arrays.copyOf(bytes,bytes.length+1);reject(()->ConstructionPlanCodec.decode(tail));byte[] bad=bytes.clone();bad[0]=99;reject(()->ConstructionPlanCodec.decode(bad));reject(()->ConstructionPlanCodec.decode(new byte[]{1,16,1}));
         var action=LayerActions.Action.prioritize(list.get(0));check(fpv.net.NetProtocol.read(fpv.net.NetProtocol.bytes(out->LayerActions.write(out,action)),LayerActions::read).equals(action),"priority uses existing bounded reliable construction envelope");
     }
     static void reject(Runnable r){try{r.run();throw new AssertionError("malformed pending view accepted");}catch(IllegalArgumentException expected){checks++;}}

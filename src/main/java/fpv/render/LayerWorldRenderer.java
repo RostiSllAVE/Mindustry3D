@@ -217,6 +217,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
             chunks.put(entry.getKey(),new Chunk(signature,builder.upload(),new LayerCoordinates.Bounds(minX,minY,minZ,maxX,maxY,maxZ)));meshBuilds++;
         }
         revision=world.geometryRevision();groundChanges=Vars.world.tileChanges;
+        for(var c:world.components())if(visibleIds.contains(c.id()))runtime.timings().renderReady(c);
     }
     private boolean embeddedSlab(LayerWorld world,LayerComponent c){
         if(c.kind()!=LayerComponent.Kind.PLATFORM)return false;
@@ -352,7 +353,11 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 if(p.unitId()!=Vars.player.unit().id||p.layer()>worldMaxLayer()||runtime.grid().at(p.x(),p.y(),p.layer(),p.platform()?LayerComponent.Kind.PLATFORM:LayerComponent.Kind.BLOCK)!=null)continue;
                 if(Vars.state.rules.fog&&Vars.state.rules.staticFog&&!Vars.fogControl.isDiscovered(Vars.player.team(),p.x(),p.y()))continue;
                 var b=p.bounds(runtime);if(!camera.frustum.containsBounds((float)b.centerX(),(float)b.centerZ(),(float)-b.centerY(),(float)p.size()*.5f,(float)(b.maxZ()-b.minZ())*.5f,(float)p.size()*.5f))continue;
-                double z=b.maxZ()+.012,w=.025;float x0=(float)b.minX(),y0=(float)b.minY(),x1=(float)b.maxX(),y1=(float)b.maxY();
+                double progress=runtime.pastes().progress(Vars.player,p);
+                double z=b.maxZ()+.012,w=.025;
+                // Authoritative, quantized progress; this never implies an operational building.
+                if(progress>0)rect((float)b.minX(),(float)b.minY(),(float)(b.minX()+(b.maxX()-b.minX())*progress),(float)(b.minY()+.08),(float)(z+.008),.3f,1,.45f,.95f);
+                float x0=(float)b.minX(),y0=(float)b.minY(),x1=(float)b.maxX(),y1=(float)b.maxY();
                 rect(x0,y0,x1,(float)(y0+w),(float)z,.38f,.82f,1,.7f);rect(x0,(float)(y1-w),x1,y1,(float)z,.38f,.82f,1,.7f);
                 rect(x0,y0,(float)(x0+w),y1,(float)z,.38f,.82f,1,.7f);rect((float)(x1-w),y0,x1,y1,(float)z,.38f,.82f,1,.7f);
                 if(p.platform())constructionVisuals.ghost(Core.atlas.white(),b.centerX(),b.centerY(),b.minZ(),1,LayerCoordinates.PLATFORM_THICKNESS,0,true,.25f);
