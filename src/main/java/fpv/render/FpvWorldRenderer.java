@@ -76,13 +76,13 @@ public final class FpvWorldRenderer {
         "void main(){gl_FragColor=vec4(v_color.rgb*mix(u_ambient,1.0,v_color.a),1.0);}\n";
     private static final String ATLAS_VERTEX =
         "attribute vec3 a_position;attribute vec4 a_color;attribute vec2 a_texCoord0;" +
-        "uniform mat4 u_combined;uniform vec3 u_offset;varying vec4 v_color;varying vec2 v_uv;varying vec3 v_pos;" +
-        "void main(){v_pos=a_position+u_offset;v_color=a_color;v_uv=a_texCoord0;gl_Position=u_combined*vec4(v_pos,1.0);}";
+        "uniform mat4 u_combined;uniform vec3 u_offset;uniform float u_time;uniform float u_waves;varying vec4 v_color;varying vec2 v_uv;varying vec3 v_pos;" +
+        "void main(){v_pos=a_position+u_offset;if(a_color.a>2.0001&&u_waves>0.5)v_pos.y+=u_waves*(a_color.a-2.0)*0.025*(0.65*sin(v_pos.x*0.73+v_pos.z*0.41+u_time*0.9)+0.35*sin(v_pos.x*(-0.37)+v_pos.z*0.83-u_time*0.63));v_color=a_color;v_uv=a_texCoord0;gl_Position=u_combined*vec4(v_pos,1.0);}";
     private static final String ATLAS_FRAGMENT =
-        "uniform sampler2D u_texture;uniform float u_ambient;uniform float u_time;uniform vec2 u_water;uniform float u_cutoff;" +
+        "uniform sampler2D u_texture;uniform float u_ambient;uniform float u_time;uniform vec2 u_water;uniform float u_waves;uniform float u_cutoff;" +
         "varying vec4 v_color;varying vec2 v_uv;varying vec3 v_pos;" +
         "void main(){vec4 t=texture2D(u_texture,v_uv);if(t.a<u_cutoff)discard;float light=1.0;" +
-        "if(v_color.a>0.5)light+=u_water.x*sin(v_pos.x*2.4+v_pos.z*1.7+u_time*u_water.y)*sin(v_pos.z*3.1-u_time*u_water.y);" +
+        "if(v_color.a>2.0001&&u_waves>0.5)light+=u_waves*(v_color.a-2.0)*u_water.x*sin(v_pos.x*2.4+v_pos.z*1.7+u_time*u_water.y)*sin(v_pos.z*3.1-u_time*u_water.y);" +
         "gl_FragColor=vec4(t.rgb*v_color.rgb*light*u_ambient,1.0);}";
 
     private final LinkedHashMap<Integer, ChunkMesh> chunks = new LinkedHashMap<>(64, .75f, true);
@@ -479,6 +479,7 @@ public final class FpvWorldRenderer {
             atlasShader.setUniformi("u_texture",0);
             atlasShader.setUniformf("u_ambient",environment.ambient());
             atlasShader.setUniformf("u_time",Time.time/60f);
+            atlasShader.setUniformf("u_waves",Core.settings.getBool(LiquidSurfaceVisual.WAVES_SETTING,true)?1:0);
             atlasShader.setUniformf("u_water",(float)RenderConfig.WATER_RIPPLE_STRENGTH,(float)RenderConfig.WATER_RIPPLE_SPEED);
             atlasShader.setUniformf("u_cutoff",(float)RenderConfig.ATLAS_ALPHA_CUTOFF);
             streamAtlas.overflowShader=atlasShader;
@@ -690,6 +691,11 @@ public final class FpvWorldRenderer {
     /** Only cached presentation vertices move; native XYZ/picking/physical terrain remain untouched. */
     private void floorSurface(Tile tile,TextureRegion region,float offset,boolean overlay){
         int x=tile.x,y=tile.y;
+        if(tile.floor().isLiquid){
+            if(!overlay)liquidSurface(tile,region,staticAtlas,true);
+            else if(NativeAtlasMesh.valid(region))staticAtlas.liquidTop(region,x,y,true,offset);
+            return;
+        }
         float sw=floorRelief.corner(x,y)+offset,se=floorRelief.corner(x+1,y)+offset;
         float ne=floorRelief.corner(x+1,y+1)+offset,nw=floorRelief.corner(x,y+1)+offset;
         float center=floorRelief.center(x,y)+offset;
@@ -720,6 +726,25 @@ public final class FpvWorldRenderer {
             boolean known=!staticFogEnabled || (visibility!=null && visibility.known[(y-cy*CHUNK)/stride*visibility.side+(x-cx*CHUNK)/stride]);
             if(!known){dynamic.top(centerX,0,centerZ,width,depth,(float)RenderConfig.UNDISCOVERED_R,(float)RenderConfig.UNDISCOVERED_G,(float)RenderConfig.UNDISCOVERED_B);continue;}
             Tile sample=Vars.world.tile(x+width/2,y+depth/2);
+            boolean liquidCell=false;
+            for(int yy=y;yy<y+depth&&!liquidCell;yy++)for(int xx=x;xx<x+width;xx++)if(Vars.world.tile(xx,yy).floor().isLiquid){liquidCell=true;break;}
+            if(liquidCell){
+                if(LiquidSurfaceVisual.coarse(sample,x,y,width,depth)){
+                    TextureRegion liquid=NativeRegions.floor(sample.floor(),sample);
+                    if(NativeAtlasMesh.valid(liquid))streamAtlas.top(liquid,centerX,-LiquidSurfaceVisual.DEPTH,centerZ,width,depth,0,1,1,1,false);
+                    else{color.set(sample.floor().mapColor);dynamic.top(centerX,-LiquidSurfaceVisual.DEPTH,centerZ,width,depth,color.r,color.g,color.b);}
+                }else for(int yy=y;yy<y+depth;yy++)for(int xx=x;xx<x+width;xx++){
+                    Tile piece=Vars.world.tile(xx,yy);
+                    if(elevation.naturalWall(piece))terrainTile(piece,streamAtlas,dynamic);
+                    else if(piece.floor().isLiquid){liquidSurface(piece,NativeRegions.floor(piece.floor(),piece),streamAtlas,false);coarseOre(piece);}
+                    else{streamAtlas.top(NativeRegions.floor(piece.floor(),piece),xx,0,-yy,1,1,0,1,1,1,false);coarseOre(piece);}
+                    if(elevation.staticArtificial(piece))coarseStaticStructure(piece.x+piece.y*worldWidth);
+                    else if(!elevation.naturalWall(piece)&&piece.build==null&&(piece.block().solid||fpv.world.NaturalProps.supported(piece.block()))){
+                        if(!organicProps.append(piece,streamAtlas,piece.x,-piece.y,piece.block().size,heightFor(piece.block())))texturedWall(piece,streamAtlas,dynamic,piece.x,-piece.y,piece.block().size,heightFor(piece.block()),false);
+                    }
+                }
+                continue;
+            }
             // Industrial/map-authored static walls have no Building and are not in the native building pass.
             // Emit their actual footprints, including mixed cliff cells; never enlarge one sample to LOD stride.
             elevation.eachStaticArtificial(x,y,width,depth,coarseStaticStructure);
@@ -748,10 +773,27 @@ public final class FpvWorldRenderer {
         }
     }
 
+    /** Original atlas and opaque pass; lower only presentation geometry. */
+    private void liquidSurface(Tile tile,TextureRegion region,NativeAtlasMesh.Builder batch,boolean waves){
+        if(NativeAtlasMesh.valid(region)){batch.liquidTop(region,tile.x,tile.y,waves);return;}
+        color.set(tile.floor().mapColor);float x=tile.x,z=-tile.y,c=LiquidSurfaceVisual.center(tile);
+        float sw=LiquidSurfaceVisual.corner(tile.x,tile.y),se=LiquidSurfaceVisual.corner(tile.x+1,tile.y),ne=LiquidSurfaceVisual.corner(tile.x+1,tile.y+1),nw=LiquidSurfaceVisual.corner(tile.x,tile.y+1);
+        terrainFallbackLiquid(x,z,sw,se,ne,nw,c,batch==staticAtlas?terrain:dynamic);
+    }
+    private void terrainFallbackLiquid(float x,float z,float sw,float se,float ne,float nw,float c,Geometry g){
+        g.reserve(12);
+        g.vertex(x-.5f,sw,z+.5f,color.r,color.g,color.b);g.vertex(x+.5f,se,z+.5f,color.r,color.g,color.b);g.vertex(x,c,z,color.r,color.g,color.b);
+        g.vertex(x+.5f,se,z+.5f,color.r,color.g,color.b);g.vertex(x+.5f,ne,z-.5f,color.r,color.g,color.b);g.vertex(x,c,z,color.r,color.g,color.b);
+        g.vertex(x+.5f,ne,z-.5f,color.r,color.g,color.b);g.vertex(x-.5f,nw,z-.5f,color.r,color.g,color.b);g.vertex(x,c,z,color.r,color.g,color.b);
+        g.vertex(x-.5f,nw,z-.5f,color.r,color.g,color.b);g.vertex(x-.5f,sw,z+.5f,color.r,color.g,color.b);g.vertex(x,c,z,color.r,color.g,color.b);
+    }
+
     /** Far-tier representative retains native ore art without rebuilding raised geometry per frame. */
     private void coarseOre(Tile tile){
-        if(tile.overlay() instanceof mindustry.world.blocks.environment.OreBlock&&!tile.overlay().wallOre)
+        if(tile.overlay() instanceof mindustry.world.blocks.environment.OreBlock&&!tile.overlay().wallOre){
+            if(tile.floor().isLiquid){streamAtlas.liquidTop(NativeRegions.floor(tile.overlay(),tile),tile.x,tile.y,false,FloorSurfaceRelief.ORE_OFFSET);return;}
             streamAtlas.top(NativeRegions.floor(tile.overlay(),tile),tile.x,FloorSurfaceRelief.ORE_OFFSET,-tile.y,1,1,0,1,1,1,false);
+        }
     }
 
     private void coarseStaticStructure(int index){

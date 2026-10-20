@@ -134,6 +134,29 @@ final class NativeAtlasMesh {
             d.vertex(x-.5f,nw,z-.5f,lnw,lnw,lnw,0,u,v);d.vertex(x-.5f,sw,z+.5f,lsw,lsw,lsw,0,u,v2);d.vertex(x,center,z,lc,lc,lc,0,uc,vc);
         }
 
+        /** Static liquid fan; alpha 2..3 is an opaque material/wave weight, never transparency. */
+        void liquidTop(TextureRegion region,int x,int y,boolean waves){liquidTop(region,x,y,waves,0);}
+        void liquidTop(TextureRegion region,int x,int y,boolean waves,float offset){
+            if(!valid(region))return;
+            Data d=data.get(region.texture);if(d==null){d=new Data(streaming?capacity*9:4096);data.put(region.texture,d);}
+            if(streaming&&d.count+108>d.values.length)flush(region.texture,d,overflowShader);
+            if(d.count+108>d.values.length)d.values=Arrays.copyOf(d.values,Math.max(d.values.length*2,d.count+108));
+            var tile=mindustry.Vars.world.tile(x,y);
+            float sw=LiquidSurfaceVisual.corner(x,y),se=LiquidSurfaceVisual.corner(x+1,y),ne=LiquidSurfaceVisual.corner(x+1,y+1),nw=LiquidSurfaceVisual.corner(x,y+1),c=LiquidSurfaceVisual.center(tile);
+            sw+=offset;se+=offset;ne+=offset;nw+=offset;c+=offset;
+            float asw=2+(waves?LiquidSurfaceVisual.cornerMotion(x,y):0),ase=2+(waves?LiquidSurfaceVisual.cornerMotion(x+1,y):0);
+            float ane=2+(waves?LiquidSurfaceVisual.cornerMotion(x+1,y+1):0),anw=2+(waves?LiquidSurfaceVisual.cornerMotion(x,y+1):0),ac=2+(waves?LiquidSurfaceVisual.centerMotion(tile):0);
+            float du=.5f/region.texture.width,dv=.5f/region.texture.height,u=region.u+du,u2=region.u2-du,v=region.v+dv,v2=region.v2-dv;
+            liquidVertex(d,x-.5f,sw,-y+.5f,asw,u,v2);liquidVertex(d,x+.5f,se,-y+.5f,ase,u2,v2);liquidVertex(d,x,c,-y,ac,(u+u2)*.5f,(v+v2)*.5f);
+            liquidVertex(d,x+.5f,se,-y+.5f,ase,u2,v2);liquidVertex(d,x+.5f,ne,-y-.5f,ane,u2,v);liquidVertex(d,x,c,-y,ac,(u+u2)*.5f,(v+v2)*.5f);
+            liquidVertex(d,x+.5f,ne,-y-.5f,ane,u2,v);liquidVertex(d,x-.5f,nw,-y-.5f,anw,u,v);liquidVertex(d,x,c,-y,ac,(u+u2)*.5f,(v+v2)*.5f);
+            liquidVertex(d,x-.5f,nw,-y-.5f,anw,u,v);liquidVertex(d,x-.5f,sw,-y+.5f,asw,u,v2);liquidVertex(d,x,c,-y,ac,(u+u2)*.5f,(v+v2)*.5f);
+        }
+        private static void liquidVertex(Data d,float x,float y,float z,float material,float u,float v){
+            float shore=1+.045f*(1+Math.min(0,y)/LiquidSurfaceVisual.DEPTH);
+            d.vertex(x,y,z,shore,shore,shore,material,u,v);
+        }
+
         /** Low roof + side skirt, no hidden bottom. Each cached outline lies inside one actual
          * planar floor triangle, so its roof cannot cut through the displaced floor. */
         void orePatch(TextureRegion region,OreDepositGeometry.Patch patch,int x,int y,FloorSurfaceRelief floor,float height,float taper,int seed){

@@ -1,0 +1,13 @@
+# A2-13 — Owner checks
+
+Keep the accepted A2-12 JAR and a backed-up/disposable save. This is a local diagnostic for Mindustry160.7; no extra Java installation or developer tools are required for import. Use **Fullscreen** to avoid the previously confirmed windowed presentation issue.
+
+1. **Import and inspect water.** Mods → Import Mod → select `local/a2-13/test-kit/mindustry-fpv-a2-13-diagnostics.jar`, confirm replacement and restart. Press F5 on a shoreline map. From low FPV and overhead views inspect shallow/deep/sand/tainted water, a large ocean, narrow river, isolated pool, beach, mountain edge and artificial wall. Expect a small lowered basin, restrained shore highlight and gentle coherent waves, with no open gaps. Check tar/oil, slag, cryofluid and arkycite where available: their native colours should remain distinct. Compare the kit's unedited low/top screenshots if useful.
+2. **Check boats and existing features.** Observe/control Risso, a medium ship such as Minke/Sei, and Omura/Navanax while moving, turning and approaching shore. Hulls should sit partly in the visible water; their handling, camera and real weapons must remain unchanged. Inspect water under elevated platforms and an occupied pump/foundation. Check nearby relief and ore, mine/drill normally, use Tab/F3/Alt-click construction priority and existing 3D selection/copy-paste. Save/reload and change campaign sector, checking shore geometry and existing layered structures.
+3. **Compare fallback and performance.** Settings → FPV flight → **Animated 3D liquid waves (disable for lower-end GPUs)**, defaultON. Toggle OFF/ON near boats and shores; OFF should stop geometric ripples and matching visual bobbing, retaining lower water/shore shapes. Compare the same map/camera/settings with A2-12, especially large oceans and intricate coasts. Report FPS, stutter, cracks, hovering/sunken ships or texture artifacts. Repeat on Linux if available, naming GPU and X11/Wayland. Physical Linux/laptop performance and independent multiplayer testing remain pending.
+
+No new keybinding is added. Wave animation is cosmetic, uses the local Arc clock and is not synchronized as multiplayer gameplay state. Quiet strips near detailed chunk edges and static distant waves are intentional. Water remains opaque; there is no underwater refraction, new water physics, digging or flooding. Visual terrain/water does not move authoritative building coordinates, hitboxes, camera or projectile origins.
+
+Candidate SHA-256: `9fdb08bafa98e88ff82b619dd368c3ccad295967a070bf8d03c9012078981861`.
+
+The existing diagnostic metadata version is retained; identify this JAR by filename/checksum. Do not upload or update Workshop automatically. Physical visual acceptance remains the owner's decision.

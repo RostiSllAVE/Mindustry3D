@@ -27,6 +27,7 @@ public final class NavalUnitRenderer implements AutoCloseable {
         var profile=profile(unit);var model=profile.body();
         boolean afloat=!unit.isFlying()&&unit.floorOn().isLiquid;
         float line=(float)profile.waterline(y,halfHeight,surface,afloat);
+        line+=(float)LiquidSurfaceVisual.navalOffset(y-halfHeight,surface,afloat,x,z,arc.util.Time.time/60f,arc.Core.settings.getBool(LiquidSurfaceVisual.WAVES_SETTING,true));
         if(!extrusion.renderNavalProfile(unit,x,line,z,yaw+profile.rotationOffset(),pitch,roll,camera,ambient,profile))return false;
         hullDraws++;
         SpriteExtrusionGeometry.basis(yaw,pitch,roll,basis);

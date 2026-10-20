@@ -69,7 +69,7 @@ public final class OreDepositNativeTest {
             check(drill.canMine(tile)==mineBefore&&drill.getDrop(tile)==drop&&drill.getDrillTime(drop)==drillTime,"native drill eligibility, resource and production time unchanged");
             check(terrain.heightAt(7,-7)==physical&&physical==0&&terrain.mapFingerprint()==mask,"raised ore and deeper visual ground do not enter physical terrain");
             tile.setBlock(Blocks.conveyor,Team.sharded,0);long raised=deposits.raisedTiles();mesh=build(draw);check(deposits.raisedTiles()==raised,"occupied foundations suppress raised mineral fragments");dispose(mesh);tile.setAir();
-            tile.setFloor(Blocks.water.asFloor());raised=deposits.raisedTiles();mesh=build(draw);check(deposits.raisedTiles()==raised&&data(draw).length==54,"liquid ore retains flat native overlay without rocks/waves");dispose(mesh);tile.setFloor(Blocks.stone.asFloor());
+            tile.setFloor(Blocks.water.asFloor());raised=deposits.raisedTiles();mesh=build(draw);check(deposits.raisedTiles()==raised&&data(draw).length==108,"liquid ore follows the lowered liquid fan without raised mineral rocks");dispose(mesh);tile.setFloor(Blocks.stone.asFloor());
             var unknown=new OreBlock("unknown-native-ore",Items.copper);unknown.variantRegions=new TextureRegion[]{region};tile.setOverlay(unknown);raised=deposits.raisedTiles();mesh=build(draw);check(deposits.raisedTiles()==raised&&data(draw).length==108,"unsupported modded OreBlock remains visible as conforming native overlay");dispose(mesh);
             tile.setOverlay(Blocks.oreLead);Vars.world.tile(15,7).setOverlay(Blocks.oreCopper);mesh=build(draw);check(data(draw).length>216,"isolated ore and chunk-edge ore both produce geometry");dispose(mesh);
 

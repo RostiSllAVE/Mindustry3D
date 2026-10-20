@@ -54,6 +54,11 @@ public final class CampaignLifecycleNativeTest {
             h=h*31+Float.floatToIntBits(relief.sample(x,y,t->true));
         return h;
     }
+    private static long visualLiquids(){
+        long h=1;for(int y=0;y<Vars.world.height();y+=3)for(int x=0;x<Vars.world.width();x+=3)
+            h=h*31+Float.floatToIntBits(fpv.render.LiquidSurfaceVisual.height(x,-y,12.5f,true));
+        return h;
+    }
     private static byte[] hash(Fi file)throws Exception{return MessageDigest.getInstance("SHA-256").digest(file.readBytes());}
     private static Tile site(){
         var core=Vars.player.team().core();
@@ -107,7 +112,7 @@ public final class CampaignLifecycleNativeTest {
             var creator=CreatorSaveSmokeChecks.prepare(runtime.network.creatorFlight(),runtime.altitudes);
             Unit aircraft=UnitTypes.flare.create(Vars.player.team());aircraft.set(site.worldx(),site.worldy());aircraft.add();aircraft.damage(7);
             int aircraftId=aircraft.id;float aircraftHealth=aircraft.health;
-            long visualFloors=visualFloors();
+            long visualFloors=visualFloors(),visualLiquids=visualLiquids();
             var saved=Vars.saveDirectory.child("serpulo-with-upper.msav");SaveIO.save(saved);byte[] first= saved.readBytes();
             check(SaveIO.isSaveValid(saved),"full native save includes entities and all FPV custom chunks");
             SaveIO.load(saved,Vars.world.makeSectorContext(SectorPresets.groundZero.sector));Vars.state.set(GameState.State.playing);
@@ -119,6 +124,7 @@ public final class CampaignLifecycleNativeTest {
             check(Vars.state.rules.defaultTeam.core().items.get(Items.copper)==copper,"load does not pay for construction twice or duplicate resources");
             check(tiles()==nativeTiles&&runtime.terrain.mapFingerprint()==terrain,"tiles and derived terrain reproduce exactly after full reload");
             check(visualFloors()==visualFloors,"visual-only floor relief reproduces after real full disk SaveIO with no additional save chunk");
+            check(visualLiquids()==visualLiquids,"visual liquid surface/wave phase reproduces after full SaveIO without new state");
             Unit restoredAircraft=Groups.unit.getByID(aircraftId);
             check(restoredAircraft!=null&&restoredAircraft.type==UnitTypes.flare&&restoredAircraft.health==aircraftHealth&&restoredAircraft.x==site.worldx()&&restoredAircraft.y==site.worldy(),"native aircraft identity/XY/HP survive sector save reload");
             var aircraftBody=runtime.altitudes.unitState(restoredAircraft);
