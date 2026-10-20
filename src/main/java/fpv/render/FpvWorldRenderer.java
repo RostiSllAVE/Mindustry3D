@@ -30,6 +30,7 @@ import fpv.generated.CrashConfig;
 import arc.util.Buffers;
 import arc.util.Time;
 import fpv.generated.RenderConfig;
+import fpv.generated.RuntimeConfig;
 import mindustry.Vars;
 import mindustry.entities.units.BuildPlan;
 import mindustry.gen.Building;
@@ -225,6 +226,7 @@ public final class FpvWorldRenderer {
     private double cpuMilliseconds;
 
     public FpvWorldRenderer() {
+        environment.setTerrain(elevation);
         organicProps.setObstacles(t->!t.block().solid?0:elevation.naturalWall(t)?elevation.heightAt(t.x,-t.y):heightFor(t.block()));
     }
     public EnvironmentRenderer environment() { return environment; }
@@ -268,6 +270,7 @@ public final class FpvWorldRenderer {
 
     /** Invalidates cached geometry after a world or tile change; resources rebuild lazily. */
     public void invalidate() {
+        environment.invalidate();
         organicProps.invalidate();
         blockAnimations.clear();
         turretModels.clear();
@@ -427,6 +430,7 @@ public final class FpvWorldRenderer {
     public void invalidate(Tile tile) {
         if (tile == null) { invalidate(); return; }
         updatePlacedBuilding(tile);
+        environment.invalidate(tile);
         elevation.invalidate(tile);
         int radius = Math.max(1, tile.block().size) + Math.max(FloorSurfaceRelief.ANCHOR_RADIUS,VegetationInstances.NEIGHBOUR_RADIUS);
         invalidatePresentationArea(tile.x,tile.y,radius);
@@ -1253,7 +1257,8 @@ public final class FpvWorldRenderer {
         Ray ray = camera.getPickRay(screenX, screenY);
         // Far clip is forward-axis distance, while this traversal uses distance along the ray.
         float forward=ray.direction.dot(camera.direction);
-        float end=camera.far/Math.max(.001f,forward);
+        float mapFar=Math.max((float)RuntimeConfig.FAR_CLIP,environment.mapFarPlane(camera));
+        float end=Math.min(camera.far,mapFar)/Math.max(.001f,forward);
         float ground = ray.direction.y < -.000001f ? -ray.origin.y / ray.direction.y : Float.POSITIVE_INFINITY;
         PickResult result = null;
         if (ground >= 0 && ground <= end) result = resultAt(ray, ground);

@@ -1,0 +1,330 @@
+{
+  "task": "A2-15a",
+  "baselineCommit": "d22d028e2931c7f96ba1a7c04829477fa9811147",
+  "branch": "main",
+  "finalJarSha256": "6a6c73ef35f646f84790100b1a4118c5fce28ee915b0f0bd916d3561bea52d87",
+  "payloadIdentity": "payload1-23f7e2036f7bda7eecad546abcc95ddc10c2123fddf961c13d5f9c747a8c09d8",
+  "testsJava17": 147,
+  "testsSteam25": 147,
+  "nativeHorizonChecksPerRuntime": 260,
+  "geometryChecksPerRuntime": 466349,
+  "freshRecompiledClassesByteIdentical": 913,
+  "existingClassesUnchanged": 1006,
+  "java17Steam25ProfileGeometryFingerprintsEqual": true,
+  "jarFolderFingerprintBothRuntimes": "PASS",
+  "priorAlphaFilesPreserved": 2065,
+  "previousDiagnosticAssetsPreserved": 54,
+  "actualSteamGl": {
+    "baselineFrames": 1080,
+    "finalFrames": 1080,
+    "pairedFrames": 1200,
+    "glErrors": 0,
+    "nativeSaveLoad": "PASS disposable mixed scene",
+    "labOverlay": "Only fpv/SmokeHarness.class; delivered JAR is unmodified"
+  },
+  "performance": {
+    "method": "Identical compiled probe, native64/512 maps, ocean/mixed borders, MockGL real Mesh uploads. Shared original terrain prebuilt and excluded.3 warmup/7 timed cold background rebuilds:median/min/max; first cold includes JIT. Allocation optional (-1 unavailable on stripped Steam runtime). Separate10000 cache-hit calls. No concurrent regressions or game processes; not GPU/FPS.",
+    "baseline": "d22d028e2931c7f96ba1a7c04829477fa9811147",
+    "data": {
+      "java17": {
+        "before": [
+          "HORIZON,64,ocean,medianMs=0.435000,minMs=0.372300,maxMs=0.499700,coldMs=3.540800,allocatedBytes=382608,meshBytes=129024,vertices=4608,triangles=1536,materialBatches=1,cacheHitMs=0.000000,profileFingerprint=0,geometryFingerprint=0",
+          "HORIZON,64,mixed,medianMs=0.249000,minMs=0.158200,maxMs=0.509100,coldMs=0.490100,allocatedBytes=382608,meshBytes=129024,vertices=4608,triangles=1536,materialBatches=1,cacheHitMs=0.000000,profileFingerprint=0,geometryFingerprint=0",
+          "HORIZON,512,ocean,medianMs=0.101100,minMs=0.075100,maxMs=0.214500,coldMs=0.138400,allocatedBytes=382608,meshBytes=129024,vertices=4608,triangles=1536,materialBatches=1,cacheHitMs=0.000000,profileFingerprint=0,geometryFingerprint=0",
+          "HORIZON,512,mixed,medianMs=0.151200,minMs=0.079400,maxMs=0.244600,coldMs=0.127600,allocatedBytes=382608,meshBytes=129024,vertices=4608,triangles=1536,materialBatches=1,cacheHitMs=0.000000,profileFingerprint=0,geometryFingerprint=0"
+        ],
+        "after": [
+          "HORIZON,64,ocean,medianMs=1.386200,minMs=1.027000,maxMs=2.478300,coldMs=15.483200,allocatedBytes=754304,meshBytes=138240,vertices=3840,triangles=1280,materialBatches=2,cacheHitMs=0.000631,profileFingerprint=3479485272184183432,geometryFingerprint=1031993261423920401",
+          "HORIZON,64,mixed,medianMs=1.407200,minMs=1.200200,maxMs=1.503700,coldMs=3.980000,allocatedBytes=761456,meshBytes=142992,vertices=3972,triangles=1324,materialBatches=2,cacheHitMs=0.000305,profileFingerprint=2381727897214222152,geometryFingerprint=-8615824825796669355",
+          "HORIZON,512,ocean,medianMs=4.419800,minMs=3.181600,maxMs=5.494000,coldMs=6.083500,allocatedBytes=5696448,meshBytes=1105920,vertices=30720,triangles=10240,materialBatches=2,cacheHitMs=0.000216,profileFingerprint=-8877382776418020344,geometryFingerprint=-9050801625650830191",
+          "HORIZON,512,mixed,medianMs=4.387100,minMs=3.420100,maxMs=8.739800,coldMs=4.744500,allocatedBytes=5747104,meshBytes=1143504,vertices=31764,triangles=10588,materialBatches=2,cacheHitMs=0.000104,profileFingerprint=652362568165429192,geometryFingerprint=-6842856814605795906"
+        ]
+      },
+      "steam25": {
+        "before": [
+          "HORIZON,64,ocean,medianMs=0.409200,minMs=0.407600,maxMs=0.466200,coldMs=3.524400,allocatedBytes=-1,meshBytes=129024,vertices=4608,triangles=1536,materialBatches=1,cacheHitMs=0.000000,profileFingerprint=0,geometryFingerprint=0",
+          "HORIZON,64,mixed,medianMs=0.139600,minMs=0.105700,maxMs=0.212700,coldMs=0.457800,allocatedBytes=-1,meshBytes=129024,vertices=4608,triangles=1536,materialBatches=1,cacheHitMs=0.000000,profileFingerprint=0,geometryFingerprint=0",
+          "HORIZON,512,ocean,medianMs=0.140900,minMs=0.122800,maxMs=0.237800,coldMs=0.344100,allocatedBytes=-1,meshBytes=129024,vertices=4608,triangles=1536,materialBatches=1,cacheHitMs=0.000000,profileFingerprint=0,geometryFingerprint=0",
+          "HORIZON,512,mixed,medianMs=0.130400,minMs=0.103000,maxMs=0.149700,coldMs=0.249100,allocatedBytes=-1,meshBytes=129024,vertices=4608,triangles=1536,materialBatches=1,cacheHitMs=0.000000,profileFingerprint=0,geometryFingerprint=0"
+        ],
+        "after": [
+          "HORIZON,64,ocean,medianMs=1.259900,minMs=1.133900,maxMs=1.906500,coldMs=14.165400,allocatedBytes=-1,meshBytes=138240,vertices=3840,triangles=1280,materialBatches=2,cacheHitMs=0.000664,profileFingerprint=3479485272184183432,geometryFingerprint=1031993261423920401",
+          "HORIZON,64,mixed,medianMs=1.371200,minMs=1.236900,maxMs=1.762500,coldMs=4.364200,allocatedBytes=-1,meshBytes=142992,vertices=3972,triangles=1324,materialBatches=2,cacheHitMs=0.000302,profileFingerprint=2381727897214222152,geometryFingerprint=-8615824825796669355",
+          "HORIZON,512,ocean,medianMs=3.844000,minMs=3.772800,maxMs=4.870700,coldMs=4.859700,allocatedBytes=-1,meshBytes=1105920,vertices=30720,triangles=10240,materialBatches=2,cacheHitMs=0.000114,profileFingerprint=-8877382776418020344,geometryFingerprint=-9050801625650830191",
+          "HORIZON,512,mixed,medianMs=2.710000,minMs=2.403500,maxMs=9.840100,coldMs=4.376400,allocatedBytes=-1,meshBytes=1143504,vertices=31764,triangles=10588,materialBatches=2,cacheHitMs=0.000172,profileFingerprint=652362568165429192,geometryFingerprint=-6842856814605795906"
+        ]
+      }
+    }
+  },
+  "pairedActualGpu": [
+    {
+      "scene": "ocean",
+      "legacyCpuMs": 1.7634383928571424,
+      "autoCpuMs": 1.7291589285714295,
+      "legacyGpuMs": 1.070912,
+      "autoGpuMs": 0.8119109818181818,
+      "legacyGpuSamples": 112,
+      "autoGpuSamples": 110,
+      "cpuSamplesPerMode": 112,
+      "stableGeometryAfterToggle": true
+    },
+    {
+      "scene": "desert",
+      "legacyCpuMs": 1.7994383928571438,
+      "autoCpuMs": 1.8181553571428573,
+      "legacyGpuMs": 0.9935268571428572,
+      "autoGpuMs": 0.7252318558558558,
+      "legacyGpuSamples": 112,
+      "autoGpuSamples": 111,
+      "cpuSamplesPerMode": 112,
+      "stableGeometryAfterToggle": true
+    },
+    {
+      "scene": "mixed",
+      "legacyCpuMs": 1.8043035714285716,
+      "autoCpuMs": 1.6655714285714278,
+      "legacyGpuMs": 0.9766125714285715,
+      "autoGpuMs": 0.9984837818181819,
+      "legacyGpuSamples": 112,
+      "autoGpuSamples": 110,
+      "cpuSamplesPerMode": 112,
+      "stableGeometryAfterToggle": true
+    }
+  ],
+  "separateProcessActualGpu": {
+    "baseline": [
+      {
+        "scene": "ocean",
+        "cpuMs": 2.460639999999999,
+        "gpuMs": 1.7060881355932203,
+        "gpuSamples": 59,
+        "background": null,
+        "retainedWorldMeshBytes": 5308416
+      },
+      {
+        "scene": "mountains",
+        "cpuMs": 2.4871700000000003,
+        "gpuMs": 1.2632341694915254,
+        "gpuSamples": 59,
+        "background": null,
+        "retainedWorldMeshBytes": 2773224
+      },
+      {
+        "scene": "forest",
+        "cpuMs": 2.024988333333333,
+        "gpuMs": 4.84874413559322,
+        "gpuSamples": 59,
+        "background": null,
+        "retainedWorldMeshBytes": 16089192
+      },
+      {
+        "scene": "desert",
+        "cpuMs": 2.36791,
+        "gpuMs": 0.6663115932203391,
+        "gpuSamples": 59,
+        "background": null,
+        "retainedWorldMeshBytes": 2652264
+      },
+      {
+        "scene": "ice",
+        "cpuMs": 2.4161833333333336,
+        "gpuMs": 1.1611118644067797,
+        "gpuSamples": 59,
+        "background": null,
+        "retainedWorldMeshBytes": 2652264
+      },
+      {
+        "scene": "mixed",
+        "cpuMs": 2.038981666666667,
+        "gpuMs": 1.7558823050847459,
+        "gpuSamples": 59,
+        "background": null,
+        "retainedWorldMeshBytes": 5914728
+      },
+      {
+        "scene": "artificial",
+        "cpuMs": 2.202566666666667,
+        "gpuMs": 0.6746424406779661,
+        "gpuSamples": 59,
+        "background": null,
+        "retainedWorldMeshBytes": 2788776
+      },
+      {
+        "scene": "space",
+        "cpuMs": 2.0189033333333333,
+        "gpuMs": 1.159168,
+        "gpuSamples": 59,
+        "background": null,
+        "retainedWorldMeshBytes": 1327104
+      },
+      {
+        "scene": "unknown",
+        "cpuMs": 2.0105483333333334,
+        "gpuMs": 1.1223734237288137,
+        "gpuSamples": 59,
+        "background": null,
+        "retainedWorldMeshBytes": 1327104
+      }
+    ],
+    "final": [
+      {
+        "scene": "ocean",
+        "cpuMs": 2.524433333333333,
+        "gpuMs": 2.564842305084746,
+        "gpuSamples": 59,
+        "background": {
+          "analyses": 1,
+          "builds": 1,
+          "vertices": 4800,
+          "meshBytes": 172800,
+          "fingerprint": -4223896166175156511,
+          "analysisMs": 30.2906,
+          "generationMs": 6.4279
+        },
+        "retainedWorldMeshBytes": 5308416
+      },
+      {
+        "scene": "mountains",
+        "cpuMs": 2.2765299999999997,
+        "gpuMs": 1.6697795254237289,
+        "gpuSamples": 59,
+        "background": {
+          "analyses": 2,
+          "builds": 2,
+          "vertices": 4800,
+          "meshBytes": 172800,
+          "fingerprint": 4408267007128620675,
+          "analysisMs": 1.9541,
+          "generationMs": 1.5995
+        },
+        "retainedWorldMeshBytes": 2773224
+      },
+      {
+        "scene": "forest",
+        "cpuMs": 2.4937916666666666,
+        "gpuMs": 4.739523254237287,
+        "gpuSamples": 59,
+        "background": {
+          "analyses": 3,
+          "builds": 3,
+          "vertices": 5472,
+          "meshBytes": 196992,
+          "fingerprint": -5487695403688837863,
+          "analysisMs": 2.845,
+          "generationMs": 2.9096
+        },
+        "retainedWorldMeshBytes": 16089192
+      },
+      {
+        "scene": "desert",
+        "cpuMs": 2.4554566666666657,
+        "gpuMs": 1.6630801355932203,
+        "gpuSamples": 59,
+        "background": {
+          "analyses": 4,
+          "builds": 4,
+          "vertices": 4800,
+          "meshBytes": 172800,
+          "fingerprint": 3914999310793404849,
+          "analysisMs": 0.8833,
+          "generationMs": 0.9586
+        },
+        "retainedWorldMeshBytes": 2652264
+      },
+      {
+        "scene": "ice",
+        "cpuMs": 2.138301666666666,
+        "gpuMs": 1.163628474576271,
+        "gpuSamples": 59,
+        "background": {
+          "analyses": 5,
+          "builds": 5,
+          "vertices": 4800,
+          "meshBytes": 172800,
+          "fingerprint": -2740520305165512085,
+          "analysisMs": 0.9368,
+          "generationMs": 0.7573
+        },
+        "retainedWorldMeshBytes": 2652264
+      },
+      {
+        "scene": "mixed",
+        "cpuMs": 1.9048850000000006,
+        "gpuMs": 1.2935029152542374,
+        "gpuSamples": 59,
+        "background": {
+          "analyses": 7,
+          "builds": 7,
+          "vertices": 4932,
+          "meshBytes": 177552,
+          "fingerprint": -6710121137518854350,
+          "analysisMs": 0.6642,
+          "generationMs": 0.6505
+        },
+        "retainedWorldMeshBytes": 5914728
+      },
+      {
+        "scene": "artificial",
+        "cpuMs": 1.9477316666666669,
+        "gpuMs": 0.6723341016949153,
+        "gpuSamples": 59,
+        "background": {
+          "analyses": 8,
+          "builds": 8,
+          "vertices": 4800,
+          "meshBytes": 172800,
+          "fingerprint": 6917172538812070309,
+          "analysisMs": 0.9614,
+          "generationMs": 0.7627
+        },
+        "retainedWorldMeshBytes": 2788776
+      },
+      {
+        "scene": "space",
+        "cpuMs": 1.9943316666666666,
+        "gpuMs": 1.1288645423728814,
+        "gpuSamples": 59,
+        "background": {
+          "analyses": 9,
+          "builds": 9,
+          "vertices": 0,
+          "meshBytes": 0,
+          "fingerprint": 17,
+          "analysisMs": 0.84,
+          "generationMs": 0.3108
+        },
+        "retainedWorldMeshBytes": 1327104
+      },
+      {
+        "scene": "unknown",
+        "cpuMs": 1.3607233333333335,
+        "gpuMs": 1.2334513898305084,
+        "gpuSamples": 59,
+        "background": {
+          "analyses": 10,
+          "builds": 10,
+          "vertices": 4800,
+          "meshBytes": 172800,
+          "fingerprint": -4098306833153387063,
+          "analysisMs": 0.6057,
+          "generationMs": 0.5644
+        },
+        "retainedWorldMeshBytes": 1327104
+      }
+    ]
+  },
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "independentMultiplayerAcceptance": "NOT TESTED",
+  "limitations": [
+    "High-overhead native texture-detail rectangle and broad biome material fans can remain visible.",
+    "Forest proxies are sparse and simplified.",
+    "Initial atlas/rebuild hitch possible; no low-end Linux or high-view performance certification.",
+    "Unknown/modded materials can fall back to neutral colour.",
+    "New gallery daylight only; night owner review pending."
+  ],
+  "gameplayPhysicsProtocolSaveFormatsChanged": false,
+  "primarySavesModified": false,
+  "publishedArtifactsModified": false,
+  "pushedPublishedWorkshopUpdated": false
+}

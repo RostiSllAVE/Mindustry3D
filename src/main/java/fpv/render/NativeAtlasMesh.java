@@ -40,6 +40,15 @@ final class NativeAtlasMesh {
         void clear() { for (Data d : data.values()) d.count = 0; }
         void forget(Texture texture){data.remove(texture);Mesh mesh=streamMeshes.remove(texture);if(mesh!=null)mesh.dispose();}
         void dispose() { for (Mesh m : streamMeshes.values()) m.dispose(); streamMeshes.clear(); data.clear(); }
+        /** Border collar: per-corner RGB and liquid weight meet the coloured far ring exactly. */
+        void horizonFace(TextureRegion region,float[] a,float[] b,float[] c,float[] e){
+            if(!valid(region))return;
+            Data d=data.get(region.texture);if(d==null){d=new Data(4096);data.put(region.texture,d);}
+            if(d.count+54>d.values.length)d.values=Arrays.copyOf(d.values,Math.max(d.values.length*2,d.count+54));
+            float u=region.u+.5f/region.texture.width,v=region.v+.5f/region.texture.height,us=region.u2-.5f/region.texture.width-u,vs=region.v2-.5f/region.texture.height-v;
+            horizonVertex(d,a,u,v,us,vs);horizonVertex(d,b,u,v,us,vs);horizonVertex(d,c,u,v,us,vs);horizonVertex(d,a,u,v,us,vs);horizonVertex(d,c,u,v,us,vs);horizonVertex(d,e,u,v,us,vs);
+        }
+        private void horizonVertex(Data d,float[] p,float u,float v,float us,float vs){d.vertex(p[0],p[1],p[2],p[3],p[4],p[5],p[6],u+p[7]*us,v+p[8]*vs);}
 
         NativeAtlasMesh upload() {
             NativeAtlasMesh result = new NativeAtlasMesh();

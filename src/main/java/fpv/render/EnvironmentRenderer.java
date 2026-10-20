@@ -84,6 +84,12 @@ public final class EnvironmentRenderer {
     private Shader skyShader, landShader;
     private ScreenQuad quad;
     private Mesh mountains;
+    private final AutomaticHorizon automatic=new AutomaticHorizon();
+    public AutomaticHorizon automaticHorizon(){return automatic;}
+    public void setTerrain(fpv.terrain.TerrainElevation terrain){automatic.setTerrain(terrain);}
+    public void invalidate(){automatic.invalidate();}
+    public void invalidate(mindustry.world.Tile tile){automatic.invalidate(tile);}
+    public boolean automaticEnabled(){return Core.settings.getBool(AutomaticHorizon.SETTING,true);}
     private Object cachedTiles;
     private int cachedWidth, cachedHeight, cachedPlanet = -1;
     private float day = 1f, illumination = 1f, hour = 12f;
@@ -150,9 +156,15 @@ public final class EnvironmentRenderer {
         skyShader.setUniformf("u_starThreshold",(float)EnvironmentConfig.STAR_THRESHOLD);
         quad.render(skyShader);
         Gl.enable(Gl.depthTest);Gl.depthMask(true);
-        if(cachedTiles!=Vars.world.tiles||cachedWidth!=Vars.world.width()||cachedHeight!=Vars.world.height()||cachedPlanet!=planet().id)rebuildMountains();
-        landShader.bind();landShader.setUniformMatrix4("u_combined",camera.combined.val);landShader.setUniformf("u_ambient",illumination);
-        if(mountains!=null)mountains.render(landShader,Gl.triangles);
+        if(automaticEnabled()){
+            if(mountains!=null){mountains.dispose();mountains=null;}
+            automatic.render(camera,illumination,skyColor,seconds);
+        }else{
+            if(automatic.profile()!=null)automatic.clear();
+            if(mountains==null||cachedTiles!=Vars.world.tiles||cachedWidth!=Vars.world.width()||cachedHeight!=Vars.world.height()||cachedPlanet!=planet().id)rebuildMountains();
+            landShader.bind();landShader.setUniformMatrix4("u_combined",camera.combined.val);landShader.setUniformf("u_ambient",illumination);
+            if(mountains!=null)mountains.render(landShader,Gl.triangles);
+        }
     }
 
     private void rebuildMountains(){
@@ -196,7 +208,16 @@ public final class EnvironmentRenderer {
         double diagonal=Math.hypot(Vars.world.width(),Vars.world.height());
         double dx=camera.position.x-(Vars.world.width()-1)*.5,dz=camera.position.z+(Vars.world.height()-1)*.5;
         double centerDistance=Math.sqrt(dx*dx+camera.position.y*(double)camera.position.y+dz*dz);
-        return (float)Math.max(farPlane(),centerDistance+diagonal*EnvironmentConfig.BACKGROUND_BOUND_DIAGONAL+EnvironmentConfig.FAR_MARGIN);
+        double bound=diagonal*EnvironmentConfig.BACKGROUND_BOUND_DIAGONAL;
+        if(automaticEnabled())bound=Math.max(bound,HorizonGeometry.boundRadius(Vars.world.width(),Vars.world.height()));
+        return (float)Math.max(farPlane(),centerDistance+bound+EnvironmentConfig.FAR_MARGIN);
+    }
+    /** Original map range for pilot sight/picking; decorative reach must not change aim convergence. */
+    public float mapFarPlane(Camera3D camera){
+        double diagonal=Math.hypot(Vars.world.width(),Vars.world.height());
+        double dx=camera.position.x-(Vars.world.width()-1)*.5,dz=camera.position.z+(Vars.world.height()-1)*.5;
+        double distance=Math.sqrt(dx*dx+camera.position.y*(double)camera.position.y+dz*dz);
+        return (float)Math.max(farPlane(),distance+diagonal*EnvironmentConfig.BACKGROUND_BOUND_DIAGONAL+EnvironmentConfig.FAR_MARGIN);
     }
     public double seconds(){return seconds;}
     public float dayAmount(){return day;}
@@ -209,5 +230,5 @@ public final class EnvironmentRenderer {
         if(Float.isFinite(phase)&&(phase<0||phase>1))throw new IllegalArgumentException("phase must be0..1");
         previewPhase=phase;
     }
-    public void dispose(){if(disposed)return;disposed=true;if(skyShader!=null)skyShader.dispose();if(landShader!=null)landShader.dispose();if(quad!=null)quad.dispose();if(mountains!=null)mountains.dispose();}
+    public void dispose(){if(disposed)return;disposed=true;automatic.dispose();if(skyShader!=null)skyShader.dispose();if(landShader!=null)landShader.dispose();if(quad!=null)quad.dispose();if(mountains!=null)mountains.dispose();}
 }
