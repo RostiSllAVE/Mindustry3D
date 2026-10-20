@@ -134,6 +134,37 @@ final class NativeAtlasMesh {
             d.vertex(x-.5f,nw,z-.5f,lnw,lnw,lnw,0,u,v);d.vertex(x-.5f,sw,z+.5f,lsw,lsw,lsw,0,u,v2);d.vertex(x,center,z,lc,lc,lc,0,uc,vc);
         }
 
+        /** Low roof + side skirt, no hidden bottom. Each cached outline lies inside one actual
+         * planar floor triangle, so its roof cannot cut through the displaced floor. */
+        void orePatch(TextureRegion region,OreDepositGeometry.Patch patch,int x,int y,FloorSurfaceRelief floor,float height,float taper,int seed){
+            int n=patch.points(),needed=n*9*9;
+            Data d=data.get(region.texture);
+            if(d==null){d=new Data(streaming?capacity*9:4096);data.put(region.texture,d);}
+            if(streaming&&d.count+needed>d.values.length)flush(region.texture,d,overflowShader);
+            if(d.count+needed>d.values.length)d.values=Arrays.copyOf(d.values,Math.max(d.values.length*2,d.count+needed));
+            float[] uv=patch.uv();float cu=0,cv=0;for(int i=0;i<n;i++){cu+=uv[i*2];cv+=uv[i*2+1];}cu/=n;cv/=n;
+            int ridge=Math.floorMod(seed,n);float lean=.10f+((seed>>>24)&7)*.02f;
+            float pu=cu+(uv[ridge*2]-cu)*lean,pv=cv+(uv[ridge*2+1]-cv)*lean;
+            float gu=cu+(pu-cu)*taper,gv=cv+(pv-cv)*taper;
+            float cx=x+gu-.5f,cz=-y+gv-.5f,cy=floor.surface(x,y,gu,gv)+height+FloorSurfaceRelief.ORE_OFFSET;
+            float bottom=floor.minimum(x,y)-.005f;
+            float du=Math.signum(region.u2-region.u)*.5f/region.texture.width,dv=Math.signum(region.v2-region.v)*.5f/region.texture.height;
+            float u=region.u+du,v=region.v+dv,us=region.u2-du-u,vs=region.v2-dv-v;
+            float lc=floor.surfaceShade(x,y,cu,cv),side=lc*.88f;
+            for(int i=0;i<n;i++){
+                int j=(i+1)%n;float au=uv[2*i],av=uv[2*i+1],bu=uv[2*j],bv=uv[2*j+1];
+                float ta=cu+(au-cu)*taper,va=cv+(av-cv)*taper,tb=cu+(bu-cu)*taper,vb=cv+(bv-cv)*taper;
+                float ax=x+ta-.5f,az=-y+va-.5f,bx=x+tb-.5f,bz=-y+vb-.5f;
+                float ay=floor.surface(x,y,ta,va)+height*.76f+FloorSurfaceRelief.ORE_OFFSET;
+                float by=floor.surface(x,y,tb,vb)+height*.76f+FloorSurfaceRelief.ORE_OFFSET;
+                float la=floor.surfaceShade(x,y,ta,va),lb=floor.surfaceShade(x,y,tb,vb);
+                d.vertex(ax,ay,az,la,la,la,0,u+au*us,v+av*vs);d.vertex(bx,by,bz,lb,lb,lb,0,u+bu*us,v+bv*vs);d.vertex(cx,cy,cz,lc,lc,lc,0,u+pu*us,v+pv*vs);
+                float su=u+patch.sideU()*us,sv=v+patch.sideV()*vs;
+                d.vertex(x+au-.5f,bottom,-y+av-.5f,side,side,side,0,su,sv);d.vertex(x+bu-.5f,bottom,-y+bv-.5f,side,side,side,0,su,sv);d.vertex(bx,by,bz,side,side,side,0,su,sv);
+                d.vertex(x+au-.5f,bottom,-y+av-.5f,side,side,side,0,su,sv);d.vertex(bx,by,bz,side,side,side,0,su,sv);d.vertex(ax,ay,az,side,side,side,0,su,sv);
+            }
+        }
+
         /** Bakes a cached local prop template into the existing texture batch; no per-object GL draw or mesh. */
         void template(TextureRegion region,float[] vertices,float x,float y,float z,float width,float height,float depth,float angle,float sampleU,float sampleV){
             if(!valid(region)||vertices==null)return;

@@ -41,10 +41,18 @@ public final class FloorSurfaceReliefNativeTest {
                 if(x>0)jump=Math.max(jump,Math.abs(z-r.sample(x-1,y,visible)));
                 if(x%16==0||y%16==0)check(z==0,"detail/coarse/fog chunk border is exactly flat");
             }
-            check(peak>.08f&&jump<.09f,"subtle coherent relief exists without independent tile spikes");
+            check(peak>.23f&&jump<.20f,"subtle coherent relief exists without independent tile spikes");
             for(int cy=0;cy<3;cy++)for(int cx=0;cx<3;cx++){
                 r.prepare(cx,cy,visible);
                 for(int y=0;y<=16;y++)for(int x=0;x<=16;x++)check(r.corner(cx*16+x,cy*16+y)==r.sample(cx*16+x,cy*16+y,visible),"cached corner equals shared global sample across every tile/chunk");
+            }
+            r.prepare(0,0,visible);
+            for(int y=1;y<16;y++)for(int x=1;x<16;x++){
+                float dx=(r.sample(x+.5,y,visible)-r.sample(x-.5,y,visible))*(.12f/FloorSurfaceRelief.MAX_HEIGHT);
+                float dy=(r.sample(x,y+.5,visible)-r.sample(x,y-.5,visible))*(.12f/FloorSurfaceRelief.MAX_HEIGHT);
+                float oldShade=Math.max(.76f,Math.min(1.18f,1+dx*5+dy*3.4f));
+                check(Math.abs(r.shade(x,y,false)-1)<=Math.abs(oldShade-1)+1e-6,"owner depth increase never amplifies old slope contrast");
+                check(r.surface(x,y,0,1)==r.corner(x,y)&&r.surface(x,y,.5f,.5f)==r.center(x,y),"ore surface interpolation shares exact floor anchors");
             }
             check(reliefHash(new FloorSurfaceRelief(16))==h&&mapHash()==original,"independent client instance regenerates same visual field without writing tiles");
             float stone=r.sample(7,7,visible);

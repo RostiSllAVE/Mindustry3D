@@ -105,6 +105,7 @@ public final class FpvWorldRenderer {
     private final NativeAtlasMesh.Builder staticAtlas = new NativeAtlasMesh.Builder(false);
     private final NativeAtlasMesh.Builder streamAtlas = new NativeAtlasMesh.Builder(true);
     private final OrganicPropRenderer organicProps=new OrganicPropRenderer();
+    private final OreDepositRenderer oreDeposits=new OreDepositRenderer();
     private final UnitThreatMarkerRenderer threatMarkers=new UnitThreatMarkerRenderer();
     private final LayerWorldRenderer constructionRenderer=new LayerWorldRenderer();
     private final ConstructionVisualRenderer constructionVisuals=new ConstructionVisualRenderer();
@@ -599,7 +600,8 @@ public final class FpvWorldRenderer {
         }
         visibleChunks.sort(Comparator.comparingDouble(c->c.distance2));
         // Conservative worst-case chunk byte estimate prevents selected visible chunks exceeding the budget.
-        int detailLimit=Math.max(1,Math.min(MAX_CACHED_CHUNKS,(int)(RenderConfig.DETAIL_CACHE_BYTES/(CHUNK*CHUNK*48L*9*4))));
+        int detailVertices=Math.max(48,24+OreDepositGeometry.MAX_ADDED_VERTICES);
+        int detailLimit=Math.max(1,Math.min(MAX_CACHED_CHUNKS,(int)(RenderConfig.DETAIL_CACHE_BYTES/(CHUNK*CHUNK*(long)detailVertices*9*4))));
         for(Candidate c:visibleChunks)if(pinnedChunks.size()<detailLimit&&c.distance2<DETAIL_DISTANCE*DETAIL_DISTANCE)pinnedChunks.add(key(c.x,c.y));
         int uploads=(int)RenderConfig.DETAIL_UPLOADS_PER_FRAME;
         int stride=(int)RenderConfig.OVERVIEW_MIN_STRIDE;
@@ -674,7 +676,9 @@ public final class FpvWorldRenderer {
                     float height=tile.overlay().wallOre?heightFor(block):0;
                     float gap=tile.overlay() instanceof mindustry.world.blocks.environment.OreBlock&&!tile.overlay().wallOre
                         ?FloorSurfaceRelief.ORE_OFFSET:(float)RenderConfig.ATLAS_SURFACE_OFFSET;
-                    floorSurface(tile,NativeRegions.floor(tile.overlay(),tile),height+gap,true);
+                    TextureRegion overlay=NativeRegions.floor(tile.overlay(),tile);
+                    floorSurface(tile,overlay,height+gap,true);
+                    oreDeposits.append(tile,overlay,staticAtlas,floorRelief);
                 }
             }
         }
@@ -726,18 +730,28 @@ public final class FpvWorldRenderer {
                 for(int yy=y;yy<y+depth;yy++)for(int xx=x;xx<x+width;xx++){
                     Tile piece=Vars.world.tile(xx,yy);
                     if(elevation.naturalWall(piece))terrainTile(piece,streamAtlas,dynamic);
-                    else streamAtlas.top(NativeRegions.floor(piece.floor(),piece),xx,0,-yy,1,1,0,1,1,1,piece.floor().isLiquid);
+                    else{
+                        streamAtlas.top(NativeRegions.floor(piece.floor(),piece),xx,0,-yy,1,1,0,1,1,1,piece.floor().isLiquid);
+                        coarseOre(piece);
+                    }
                 }
                 continue;
             }
             TextureRegion floor=NativeRegions.floor(sample.floor(),sample);
             if(NativeAtlasMesh.valid(floor))streamAtlas.top(floor,centerX,0,centerZ,width,depth,0,1,1,1,sample.floor().isLiquid);
             else{color.set(sample.floor().mapColor);dynamic.top(centerX,0,centerZ,width,depth,color.r,color.g,color.b);}
+            coarseOre(sample);
             if(sample.build==null&&!elevation.staticArtificial(sample)&&(sample.block().solid||fpv.world.NaturalProps.supported(sample.block()))){
                 if(!organicProps.append(sample,streamAtlas,sample.x,-sample.y,sample.block().size,heightFor(sample.block())))
                     texturedWall(sample,streamAtlas,dynamic,centerX,centerZ,Math.min(width,depth),heightFor(sample.block()),false);
             }
         }
+    }
+
+    /** Far-tier representative retains native ore art without rebuilding raised geometry per frame. */
+    private void coarseOre(Tile tile){
+        if(tile.overlay() instanceof mindustry.world.blocks.environment.OreBlock&&!tile.overlay().wallOre)
+            streamAtlas.top(NativeRegions.floor(tile.overlay(),tile),tile.x,FloorSurfaceRelief.ORE_OFFSET,-tile.y,1,1,0,1,1,1,false);
     }
 
     private void coarseStaticStructure(int index){
@@ -1276,7 +1290,7 @@ public final class FpvWorldRenderer {
         placedBuildings.clear(); submittedBuildings.clear(); submittedBridges.clear(); submittedUnits.clear();submittedUnitBodies.clear();placedWorldTiles = null;
         buildingFrameCompleted = false;
         combatVisuals.clear();
-        organicProps.clear();
+        organicProps.clear();oreDeposits.clear();
         clearChunks();
         if (shader != null) shader.dispose();
         if (atlasShader != null) atlasShader.dispose();

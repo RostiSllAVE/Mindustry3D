@@ -8,7 +8,8 @@ import java.util.function.Predicate;
 
 /** Presentation-only corner sampler. Never used by terrain, collision, picking or save code. */
 public final class FloorSurfaceRelief {
-    public static final float MAX_HEIGHT = .12f;
+    /** Owner-requested deeper presentation; physical terrain remains untouched. */
+    public static final float MAX_HEIGHT = .30f;
     /** Also covers neighbouring chunks when a footprint changes beside a cached chunk. */
     public static final int ANCHOR_RADIUS = 2;
     public static final float ORE_OFFSET = .006f;
@@ -16,6 +17,9 @@ public final class FloorSurfaceRelief {
     private final float[] corners;
     private final float[] materials;
     private int originX, originY;
+    private int surfaceX=Integer.MIN_VALUE,surfaceY;
+    private float sw,se,ne,nw,mc,lsw,lse,lne,lnw,lc;
+    private boolean surfaceLit;
 
     public FloorSurfaceRelief(int chunk) {
         if(chunk<4)throw new IllegalArgumentException("Chunk must contain a relief interior");
@@ -27,6 +31,7 @@ public final class FloorSurfaceRelief {
     /** Reused scratch data, evaluated only when the existing detailed mesh is rebuilt. */
     public void prepare(int chunkX,int chunkY,Predicate<Tile> visible) {
         originX=chunkX*chunk;originY=chunkY*chunk;
+        surfaceX=Integer.MIN_VALUE;
         for(int y=-2;y<=chunk+1;y++)for(int x=-2;x<=chunk+1;x++)
             materials[(y+2)*(chunk+4)+x+2]=weight(Vars.world.tile(originX+x,originY+y),visible);
         for(int y=0;y<=chunk*2;y++)for(int x=0;x<=chunk*2;x++)
@@ -38,11 +43,32 @@ public final class FloorSurfaceRelief {
         int nx=(x-originX)*2+(center?1:0),ny=(y-originY)*2+(center?1:0);
         if(nx==0||ny==0||nx==chunk*2||ny==chunk*2||node(nx,ny)==0)return 1;
         // Shared half-tile samples provide coherent vertex lighting, including ore overlays.
-        float dx=node(nx+1,ny)-node(nx-1,ny),dy=node(nx,ny+1)-node(nx,ny-1);
-        // Native pixel-art floors have strong baked detail: a restrained physical Lambert term
-        // disappears inside that texture. Amplify only the visual slope contrast, not elevation.
-        return Math.max(.76f,Math.min(1.18f,1+dx*5f+dy*3.4f));
+        // Decouple contrast from depth. Increasing relief must not darken overhead views.
+        float dx=(node(nx+1,ny)-node(nx-1,ny))*(.12f/MAX_HEIGHT);
+        float dy=(node(nx,ny+1)-node(nx,ny-1))*(.12f/MAX_HEIGHT);
+        return Math.max(.86f,Math.min(1.10f,1+dx*2.75f+dy*1.87f));
     }
+    /** Exact barycentric interpolation of the four triangles actually baked by floorReliefTop.
+     * u/v follow the original sprite (v=0 is native north/render -Z). Not a physics query. */
+    public float surface(int x,int y,float u,float v){
+        surfaceTile(x,y);return interpolate(sw,se,ne,nw,mc,u,v);
+    }
+    public float surfaceShade(int x,int y,float u,float v){
+        surfaceTile(x,y);
+        if(!surfaceLit){lsw=shade(x,y,false);lse=shade(x+1,y,false);lne=shade(x+1,y+1,false);lnw=shade(x,y+1,false);lc=shade(x,y,true);surfaceLit=true;}
+        return interpolate(lsw,lse,lne,lnw,lc,u,v);
+    }
+    private void surfaceTile(int x,int y){
+        if(surfaceX==x&&surfaceY==y)return;
+        surfaceX=x;surfaceY=y;sw=corner(x,y);se=corner(x+1,y);ne=corner(x+1,y+1);nw=corner(x,y+1);mc=center(x,y);surfaceLit=false;
+    }
+    private static float interpolate(float sw,float se,float ne,float nw,float c,float u,float v){
+        if(v>=u&&v>=1-u)return sw*(v-u)+se*(u+v-1)+c*(2*(1-v));
+        if(v<=u&&v<=1-u)return nw*(1-u-v)+ne*(u-v)+c*(2*v);
+        if(u>=v&&u>=1-v)return se*(u+v-1)+ne*(u-v)+c*(2*(1-u));
+        return sw*(v-u)+nw*(1-u-v)+c*(2*u);
+    }
+    public float minimum(int x,int y){surfaceTile(x,y);return Math.min(mc,Math.min(Math.min(sw,se),Math.min(nw,ne)));}
     private float node(int x,int y){return corners[y*(chunk*2+1)+x];}
     public int scratchBytes(){return (corners.length+materials.length)*Float.BYTES;}
 
