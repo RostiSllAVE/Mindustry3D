@@ -30,6 +30,15 @@ public final class BorderBiomeProfile {
         centers=new double[sections.size()];for(int i=0;i<centers.length;i++)centers[i]=(sections.get(i).start+sections.get(i).end)/2;
     }
     public List<Section> sections(){return sections;}
+    /** Copy presentation metadata only; preserve original samples for sides without an override. */
+    public BorderBiomeProfile withSides(Map<Side,Cell> overrides){
+        var output=new ArrayList<Section>();var cores=new ArrayList<Sample>();
+        for(int i=0;i<sections.size();i++){var section=sections.get(i);Cell c=overrides.get(section.side);
+            if(c==null){output.add(section);cores.add(readableSection(i));continue;}
+            var sample=new Sample();sample.weights[c.material.ordinal()]=1;sample.r=c.r;sample.g=c.g;sample.b=c.b;sample.tr=c.tr;sample.tg=c.tg;sample.tb=c.tb;sample.form=c.form;
+            output.add(new Section(section.side,section.start,section.end,sample));cores.add(sample);
+        }return new BorderBiomeProfile(width,height,strip,output,cores,visitedTiles);
+    }
     public static BorderBiomeProfile analyze(Source source,int requestedStrip){
         int w=source.width(),h=source.height();if(w<1||h<1)throw new IllegalArgumentException("Nonempty native map required");
         int strip=Math.max(2,Math.min(16,requestedStrip));var result=new ArrayList<Section>();var readable=new ArrayList<Sample>();long visited=0;double offset=0;

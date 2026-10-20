@@ -270,6 +270,7 @@ public final class FpvWorldRenderer {
 
     /** Invalidates cached geometry after a world or tile change; resources rebuild lazily. */
     public void invalidate() {
+        LiquidBedVisual.clear();
         environment.invalidate();
         organicProps.invalidate();
         blockAnimations.clear();
@@ -429,6 +430,7 @@ public final class FpvWorldRenderer {
     /** More precise optional event hook. Multiblock footprints can cross a chunk boundary. */
     public void invalidate(Tile tile) {
         if (tile == null) { invalidate(); return; }
+        LiquidBedVisual.invalidate(tile);
         updatePlacedBuilding(tile);
         environment.invalidate(tile);
         elevation.invalidate(tile);
@@ -772,7 +774,7 @@ public final class FpvWorldRenderer {
             if(liquidCell){
                 if(LiquidSurfaceVisual.coarse(sample,x,y,width,depth)){
                     TextureRegion liquid=NativeRegions.floor(sample.floor(),sample);
-                    if(NativeAtlasMesh.valid(liquid)){streamAtlas.top(liquid,centerX,-(float)fpv.environment.LiquidBody.depth(sample.floor()),centerZ,width,depth,0,Math.max(.65f,1-(float)fpv.environment.LiquidBody.depth(sample.floor())*.12f),Math.max(.65f,1-(float)fpv.environment.LiquidBody.depth(sample.floor())*.12f),Math.max(.65f,1-(float)fpv.environment.LiquidBody.depth(sample.floor())*.12f),false);deferLiquid(x,y,width,depth,1);}
+                    if(NativeAtlasMesh.valid(liquid)){float bed=LiquidBedVisual.depth(sample),shade=Math.max(.65f,1-bed*.12f);streamAtlas.top(liquid,centerX,-bed,centerZ,width,depth,0,shade,shade,shade,false);deferLiquid(x,y,width,depth,1);}
                     else{color.set(sample.floor().mapColor);dynamic.top(centerX,-LiquidSurfaceVisual.DEPTH,centerZ,width,depth,color.r,color.g,color.b);}
                 }else for(int yy=y;yy<y+depth;yy++)for(int xx=x;xx<x+width;xx++){
                     Tile piece=Vars.world.tile(xx,yy);
@@ -852,7 +854,7 @@ public final class FpvWorldRenderer {
 
     private boolean chunkVisible(int cx,int cy){
         float h=Math.max(Math.max(6,vegetationHeight),elevation.maxHeight());
-        float low=Math.min(-FloorSurfaceRelief.MAX_HEIGHT,-(float)fpv.environment.LiquidBody.MAX_DEPTH);
+        float low=Math.min(-FloorSurfaceRelief.MAX_HEIGHT,-LiquidBedVisual.DEEP_DEPTH);
         return camera.frustum.containsBounds(cx*CHUNK+(CHUNK-1)*.5f,(h+low)/2,-cy*CHUNK-(CHUNK-1)*.5f,CHUNK*.5f+vegetationPadding,(h-low)/2,CHUNK*.5f+vegetationPadding);
     }
 

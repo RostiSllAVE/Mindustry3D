@@ -16,8 +16,13 @@ public final class HorizonLandscape {
     private final BorderBiomeProfile.Sample[] land;
     private final double[] runLength;
     private final BorderBiomeProfile.Sample sample=new BorderBiomeProfile.Sample();
+    private final java.util.function.DoubleUnaryOperator waterBed;
     public HorizonLandscape(BorderBiomeProfile profile,HorizonComposition composition){
+        this(profile,composition,s->Double.NaN);
+    }
+    public HorizonLandscape(BorderBiomeProfile profile,HorizonComposition composition,java.util.function.DoubleUnaryOperator waterBed){
         this.profile=profile;this.composition=composition==null?HorizonComposition.EMPTY:composition;
+        this.waterBed=waterBed;
         int n=profile.sections().size();land=new BorderBiomeProfile.Sample[n];runLength=new double[n];
         for(int i=0;i<n;i++){
             double length=0;int count=0;
@@ -67,14 +72,15 @@ public final class HorizonLandscape {
         // Water has its own identity. Never paint a dry ridge using a separately warped shader mask.
         if(sample.weight(OCEAN)>.5f){out.waterR=sample.r;out.waterG=sample.g;out.waterB=sample.b;}
         else{out.waterR=.27f;out.waterG=.36f;out.waterB=.66f;}
-        double depthMax=ocean?16:4,depth=.6+(depthMax-.6)*smooth(4,ocean?700:Math.max(60,close),distance);
+        double edge=waterBed.applyAsDouble(along),start=Double.isFinite(edge)?Math.max(.01,SEA-edge):.6;
+        double depthMax=ocean?64:8,depth=start+(Math.max(start,depthMax)-start)*smooth(0,ocean?1200:Math.max(60,close),distance);
         double shore=smooth(0,.30,Math.max(0,out.coast));
         out.depth=(float)(depth*shore);
         if(out.coast>=0)out.height=SEA-out.depth;
         else{
             double h=landHeight(material,x,z,distance,along);
-            double edge=smooth(0,out.style==Coast.ROCKY?.16:.60,-out.coast);
-            out.height=(float)(SEA+(Math.max(0,h)-SEA)*edge);out.depth=0;
+            double shoreEdge=smooth(0,out.style==Coast.ROCKY?.16:.60,-out.coast);
+            out.height=(float)(SEA+(Math.max(0,h)-SEA)*shoreEdge);out.depth=0;
         }
         if(composition.volcanicScars()&&material.weight(VOLCANIC)>.5&&distance>32&&noise(x*.045,z*.045)>.25){out.r*=.62f;out.g*=.45f;out.b*=.42f;}
     }

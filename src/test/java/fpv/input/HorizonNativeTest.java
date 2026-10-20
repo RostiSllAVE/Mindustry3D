@@ -18,7 +18,8 @@ public final class HorizonNativeTest {
         Blocks.sand.region=Blocks.water.region=region;Blocks.sand.variantRegions=Blocks.water.variantRegions=new TextureRegion[]{region};
         horizon.setTerrain(terrain);long before=mapHash();horizon.ensure();
         var boundary=AutomaticHorizon.class.getDeclaredMethod("boundaryHeight",double.class);boundary.setAccessible(true);
-        var geometry=HorizonGeometry.build(horizon.profile(),s->{try{return((Number)boundary.invoke(horizon,s)).doubleValue();}catch(Exception e){throw new AssertionError(e);}},horizon.composition());
+        var waterBed=AutomaticHorizon.class.getDeclaredMethod("waterBedHeight",double.class);waterBed.setAccessible(true);
+        var geometry=HorizonGeometry.build(horizon.profile(),s->{try{return((Number)boundary.invoke(horizon,s)).doubleValue();}catch(Exception e){throw new AssertionError(e);}},horizon.composition(),s->{try{return((Number)waterBed.invoke(horizon,s)).doubleValue();}catch(Exception e){throw new AssertionError(e);}});
         var collar=get(horizon,"collar");var parts=(List<?>)get(collar,"parts");int tested=0;
         for(double s:geometry.positions){if(s==Math.floor(s))continue;float[] target=new float[HorizonGeometry.STRIDE];geometry.row(s,0,target);boolean found=false;
             for(var part:parts){var mesh=(Mesh)get(part,"mesh");var data=mesh.getVerticesBuffer();

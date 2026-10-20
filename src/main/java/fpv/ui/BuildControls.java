@@ -26,6 +26,7 @@ public final class BuildControls implements AutoCloseable {
             panel.background(Tex.pane);
             panel.defaults().width(260).pad(4);
             panel.add("[accent]BUILD / precision flight").left().row();
+            panel.button("Background settings",BackgroundSettings::open).height(30).row();
             if(layers!=null){
                 panel.button(layers.constructionLabel(),layers::toggleConstruction).update(button->button.setText(layers.constructionLabel())).height(30).row();
                 panel.add("Pause retains plans. RMB cancels the tool.\nClear building removes queued requests.").fontScale(.7f).left().row();

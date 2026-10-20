@@ -158,7 +158,7 @@ final class NativeAtlasMesh {
             sw+=offset;se+=offset;ne+=offset;nw+=offset;c+=offset;
             float asw=2+(waves?LiquidSurfaceVisual.cornerMotion(x,y):0),ase=2+(waves?LiquidSurfaceVisual.cornerMotion(x+1,y):0);
             float ane=2+(waves?LiquidSurfaceVisual.cornerMotion(x+1,y+1):0),anw=2+(waves?LiquidSurfaceVisual.cornerMotion(x,y+1):0),ac=2+(waves?LiquidSurfaceVisual.centerMotion(tile):0);
-            if(bottom){sw=(float)fpv.environment.LiquidBody.visualBedCorner(x,y);se=(float)fpv.environment.LiquidBody.visualBedCorner(x+1,y);ne=(float)fpv.environment.LiquidBody.visualBedCorner(x+1,y+1);nw=(float)fpv.environment.LiquidBody.visualBedCorner(x,y+1);c=fpv.environment.LiquidBody.open(tile)?-(float)fpv.environment.LiquidBody.depth(tile.floor()):0;asw=ase=ane=anw=ac=0;}
+            if(bottom){sw=LiquidBedVisual.corner(x,y);se=LiquidBedVisual.corner(x+1,y);ne=LiquidBedVisual.corner(x+1,y+1);nw=LiquidBedVisual.corner(x,y+1);c=LiquidSurfaceVisual.open(tile)?-LiquidBedVisual.depth(tile):0;asw=ase=ane=anw=ac=0;}
             else{float k=10+2*fpv.environment.LiquidBody.kind(tile.floor());asw=k+asw-2;ase=k+ase-2;ane=k+ane-2;anw=k+anw-2;ac=k+ac-2;}
             float du=.5f/region.texture.width,dv=.5f/region.texture.height,u=region.u+du,u2=region.u2-du,v=region.v+dv,v2=region.v2-dv;
             liquidVertex(d,x-.5f,sw,-y+.5f,asw,u,v2);liquidVertex(d,x+.5f,se,-y+.5f,ase,u2,v2);liquidVertex(d,x,c,-y,ac,(u+u2)*.5f,(v+v2)*.5f);

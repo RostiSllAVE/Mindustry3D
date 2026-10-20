@@ -31,7 +31,10 @@ public final class HorizonGeometry {
     }
     public static HorizonGeometry build(BorderBiomeProfile p,DoubleUnaryOperator seam){return build(p,seam,HorizonComposition.EMPTY);}
     public static HorizonGeometry build(BorderBiomeProfile p,DoubleUnaryOperator seam,HorizonComposition composition){
-        double outer=outerDistance(p.width,p.height);var landscape=new HorizonLandscape(p,composition);
+        return build(p,seam,composition,s->Double.NaN);
+    }
+    public static HorizonGeometry build(BorderBiomeProfile p,DoubleUnaryOperator seam,HorizonComposition composition,DoubleUnaryOperator waterBed){
+        double outer=outerDistance(p.width,p.height);var landscape=new HorizonLandscape(p,composition,waterBed);
         var bands=new ArrayList<Double>();bands.add((double)COLLAR);bands.add(12d);
         for(double d=24;d<outer;d*=1.75)bands.add(d);bands.add(outer);
         double[] distances=bands.stream().mapToDouble(Double::doubleValue).toArray();

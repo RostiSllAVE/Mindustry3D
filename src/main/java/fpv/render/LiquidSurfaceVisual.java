@@ -23,16 +23,16 @@ public final class LiquidSurfaceVisual {
     }
     /** Shared corner belongs to four native tiles. Land/structures pin it to physical Z0. */
     public static float corner(int x,int y){
-        return open(Vars.world.tile(x-1,y-1))&&open(Vars.world.tile(x,y-1))
-            &&open(Vars.world.tile(x-1,y))&&open(Vars.world.tile(x,y))?-DEPTH:0;
+        return open(LiquidBedVisual.edgeTile(x-1,y-1))&&open(LiquidBedVisual.edgeTile(x,y-1))
+            &&open(LiquidBedVisual.edgeTile(x-1,y))&&open(LiquidBedVisual.edgeTile(x,y))?-DEPTH:0;
     }
     public static float center(Tile t){return open(t)?-DEPTH:0;}
     public static float cornerMotion(int x,int y){
         if(corner(x,y)==0)return 0;
-        int kind=fpv.environment.LiquidBody.kind(Vars.world.tile(x-1,y-1).floor());
-        if(fpv.environment.LiquidBody.kind(Vars.world.tile(x,y-1).floor())!=kind||fpv.environment.LiquidBody.kind(Vars.world.tile(x-1,y).floor())!=kind||fpv.environment.LiquidBody.kind(Vars.world.tile(x,y).floor())!=kind)return 0;
-        float a=motion(Vars.world.tile(x-1,y-1).floor()),b=motion(Vars.world.tile(x,y-1).floor());
-        float c=motion(Vars.world.tile(x-1,y).floor()),d=motion(Vars.world.tile(x,y).floor());
+        int kind=fpv.environment.LiquidBody.kind(LiquidBedVisual.edgeTile(x-1,y-1).floor());
+        if(fpv.environment.LiquidBody.kind(LiquidBedVisual.edgeTile(x,y-1).floor())!=kind||fpv.environment.LiquidBody.kind(LiquidBedVisual.edgeTile(x-1,y).floor())!=kind||fpv.environment.LiquidBody.kind(LiquidBedVisual.edgeTile(x,y).floor())!=kind)return 0;
+        float a=motion(LiquidBedVisual.edgeTile(x-1,y-1).floor()),b=motion(LiquidBedVisual.edgeTile(x,y-1).floor());
+        float c=motion(LiquidBedVisual.edgeTile(x-1,y).floor()),d=motion(LiquidBedVisual.edgeTile(x,y).floor());
         return Math.min(Math.min(a,b),Math.min(c,d))*apron(x-.5f,-y+.5f);
     }
     public static float centerMotion(Tile t){
@@ -71,7 +71,7 @@ public final class LiquidSurfaceVisual {
         for(int yy=y-1;yy<=y+depth;yy++)for(int xx=x-1;xx<=x+width;xx++){
             Tile t=Vars.world.tile(xx,yy);if(!open(t)||t.floor()!=sample.floor()||t.overlay()!=Blocks.air)return false;
         }
-        return true;
+        return LiquidBedVisual.flat(x,y,width,depth);
     }
     public static double navalOffset(double support,double physicalSurface,boolean afloat,float x,float z,float seconds,boolean waves){
         return afloat&&Math.abs(support-physicalSurface)<.10?height(x,z,seconds,waves):0;

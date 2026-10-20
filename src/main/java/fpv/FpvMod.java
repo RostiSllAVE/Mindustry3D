@@ -319,7 +319,7 @@ public final class FpvMod extends Mod {
         Core.bundle.getProperties().put("setting.fpv-rate-scale.name","Custom: angular rate multiplier");
         Core.bundle.getProperties().put("setting.fpv-ram-strength.name","Impact damage strength");
         Core.bundle.getProperties().put("setting.fpv-water-waves.name","Animated 3D liquid waves (disable for lower-end GPUs)");
-        Core.bundle.getProperties().put("setting.fpv-auto-horizon.name","Automatic biome horizon (OFF: legacy mountains)");
+        Core.bundle.getProperties().put("setting.fpv-auto-horizon.name","Background scenery system (OFF: legacy mountains)");
         Core.bundle.getProperties().put("setting.fpv-threat-markers.name","Show Unit Threat Markers");
         Core.bundle.getProperties().put("setting.fpv-net-diagnostics.name","Record multiplayer diagnostics (local, opt-in)");
         Core.bundle.getProperties().put("setting.fpv-client-prediction.name","Local pilot prediction (multiplayer presentation)");
@@ -330,6 +330,7 @@ public final class FpvMod extends Mod {
             table.checkPref("fpv-threat-markers",true);
             table.checkPref("fpv-water-waves",true);
             table.checkPref("fpv-auto-horizon",true);
+            table.button("Background settings",fpv.ui.BackgroundSettings::open).height(42).row();
             table.sliderPref("fpv-wall-view-distance",100,20,2000,10,i->i+" tiles (visual only)");
             table.sliderPref("fpv-wall-fade-start",80,0,1990,10,i->i+" tiles (limited by visibility)");
             table.add("Multiplayer: flight physics/speed belong to the host.\nCamera, mode and mouse settings remain local.").wrap().width(460).row();

@@ -25,7 +25,7 @@ public final class EnvironmentRenderer {
         uniform vec3 u_forward, u_right, u_up, u_sun, u_planet;
         uniform vec3 u_planetColor, u_atmosphere;
         uniform vec2 u_fov;
-        uniform float u_day, u_seconds, u_radius, u_starGrid, u_starThreshold;
+        uniform float u_day, u_seconds, u_radius, u_starGrid, u_starThreshold,u_void;
         float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
         float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
         float fbm(vec2 p){return .54*noise(p)+.27*noise(p*2.03+13.2)+.13*noise(p*4.07+31.8)+.06*noise(p*8.13+7.1);}
@@ -73,7 +73,7 @@ public final class EnvironmentRenderer {
                     col=body*illumination+u_planetColor*pow(1.0-n.z,5.0)*.5;
                 }
             }
-            gl_FragColor=vec4(col,1.0);
+            gl_FragColor=vec4(mix(col,vec3(0.0),u_void),1.0);
         }
         """;
     private static final String LAND_VERTEX = "attribute vec3 a_position;attribute vec4 a_color;uniform mat4 u_combined;varying vec4 v_color;void main(){v_color=a_color;gl_Position=u_combined*vec4(a_position,1.0);}";
@@ -150,7 +150,8 @@ public final class EnvironmentRenderer {
         skyShader.setUniformf("u_atmosphere",atmosphere.r,atmosphere.g,atmosphere.b);
         float fy=(float)Math.tan(camera.fov*Mathf.degRad*.5f);
         skyShader.setUniformf("u_fov",fy*Core.graphics.getWidth()/Core.graphics.getHeight(),fy);
-        skyShader.setUniformf("u_day",day);skyShader.setUniformf("u_seconds",(float)(seconds%100000));
+        var style=fpv.background.BackgroundProfiles.current();
+        skyShader.setUniformf("u_day",style.all(fpv.background.BackgroundPreset.SPACE)?0:day);skyShader.setUniformf("u_void",style.all(fpv.background.BackgroundPreset.VOID)?1:0);skyShader.setUniformf("u_seconds",(float)(seconds%100000));
         skyShader.setUniformf("u_radius",(float)EnvironmentConfig.PLANET_ANGULAR_RADIUS);
         skyShader.setUniformf("u_starGrid",(float)EnvironmentConfig.STAR_GRID);
         skyShader.setUniformf("u_starThreshold",(float)EnvironmentConfig.STAR_THRESHOLD);

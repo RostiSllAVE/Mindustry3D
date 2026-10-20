@@ -18,6 +18,7 @@ public final class AutomaticHorizon {
     private BorderBiomeProfile profile;
     private Object tiles,content,atlas;
     private long policy=Long.MIN_VALUE;
+    private long styleRevision=Long.MIN_VALUE;
     private int strip,planet=-1;
     private boolean dirty=true;
     private Shader farShader,nearShader;
@@ -83,11 +84,13 @@ public final class AutomaticHorizon {
     public void ensure(){
         int wanted=Math.max(2,Math.min(16,Core.settings.getInt(STRIP_SETTING,8)));int p=Vars.state.getPlanet()==null?-1:Vars.state.getPlanet().id;
         long current=terrain.classification().revision();
-        if(!dirty&&tiles==Vars.world.tiles&&content==Vars.content&&atlas==Core.atlas&&strip==wanted&&policy==current&&planet==p)return;
+        long style=fpv.background.BackgroundProfiles.revision();
+        if(!dirty&&tiles==Vars.world.tiles&&content==Vars.content&&atlas==Core.atlas&&strip==wanted&&policy==current&&planet==p&&styleRevision==style)return;
         clear();terrain.ensureWorld();tiles=Vars.world.tiles;content=Vars.content;atlas=Core.atlas;strip=wanted;policy=current;planet=p;
         if(paletteAtlas!=Core.atlas){palette.clear();paletteAtlas=Core.atlas;if(detailTexture!=null)detailTexture.dispose();detailTexture=null;}
-        long started=System.nanoTime();profile=BorderBiomeProfile.analyze(new BorderBiomeProfile.Source(){public int width(){return Vars.world.width();}public int height(){return Vars.world.height();}public BorderBiomeProfile.Cell cell(int x,int y){return coloured(Vars.world.tile(x,y));}},strip);composition=HorizonComposition.analyze(terrain);analysisMs=(System.nanoTime()-started)/1e6;analyses++;
-        started=System.nanoTime();HorizonGeometry geometry=HorizonGeometry.build(profile,this::boundaryHeight,composition);
+        styleRevision=style;
+        long started=System.nanoTime();profile=fpv.background.BackgroundProfiles.current().profile(BorderBiomeProfile.analyze(new BorderBiomeProfile.Source(){public int width(){return Vars.world.width();}public int height(){return Vars.world.height();}public BorderBiomeProfile.Cell cell(int x,int y){return coloured(Vars.world.tile(x,y));}},strip));composition=HorizonComposition.analyze(terrain);analysisMs=(System.nanoTime()-started)/1e6;analyses++;
+        started=System.nanoTime();HorizonGeometry geometry=HorizonGeometry.build(profile,this::boundaryHeight,composition,this::waterBedHeight);
         if(geometry.vertices.length>0){far=new Mesh(true,geometry.vertices.length/HorizonGeometry.STRIDE,0,VertexAttribute.position3,new VertexAttribute(4,"a_color"),new VertexAttribute(2,"a_meta"),new VertexAttribute(2,"a_material"),new VertexAttribute(3,"a_normal"),new VertexAttribute(1,"a_coast"));far.setVertices(geometry.vertices);}
         var batch=new HorizonCollarMesh.Builder();
         for(int i=0;i<geometry.seamPositions.length-1;i++){
@@ -95,20 +98,12 @@ public final class AutomaticHorizon {
             var region=terrain.naturalWall(tile)?NativeRegions.wall(tile.block(),tile):NativeRegions.floor(tile.floor(),tile);
             if(!NativeAtlasMesh.valid(region))region=Core.atlas.white();
             var pa=HorizonGeometry.point(profile,s,0);var pb=HorizonGeometry.point(profile,end,0);geometry.row(s,0,a);geometry.row(end,0,b);
+            if(a[6]>.995f&&b[6]>.995f)continue;
             float ha=edgeHeight(tile,s),hb=edgeHeight(tile,end);boolean water=LiquidSurfaceVisual.open(tile)&&tile.floor().liquidDrop==mindustry.content.Liquids.water;
             // Split the native tile's collar at every fractional outer-row knot, too.
             // All three meshes share identical d4/d12 edge polylines rather than T-junctions.
-            System.arraycopy(a,0,na,0,HorizonGeometry.STRIDE);System.arraycopy(b,0,nb,0,HorizonGeometry.STRIDE);na[0]=pa.x();na[1]=ha;na[2]=pa.z();nb[0]=pb.x();nb[1]=hb;nb[2]=pb.z();na[7]=nb[7]=0;na[8]=nb[8]=0;
-            batch.face(region,na,nb,b,a);
-            if(water){
-                float[] wa=a.clone(),wb=b.clone(),wna=na.clone(),wnb=nb.clone();
-                wa[1]=wb[1]=HorizonLandscape.SEA;wa[7]=wb[7]=wna[7]=wnb[7]=1;wna[14]=wnb[14]=1;
-                var surface=new HorizonLandscape.Surface();var landscape=geometry.landscape;
-                landscape.sample(s,4,a[0],a[2],surface);wa[3]=surface.waterR;wa[4]=surface.waterG;wa[5]=surface.waterB;
-                landscape.sample(end,4,b[0],b[2],surface);wb[3]=surface.waterR;wb[4]=surface.waterG;wb[5]=surface.waterB;
-                wna[3]=wnb[3]=tile.floor().mapColor.r;wna[4]=wnb[4]=tile.floor().mapColor.g;wna[5]=wnb[5]=tile.floor().mapColor.b;
-                waterCollar(batch,region,new float[][]{wna,wnb,wb,wa});
-            }
+            System.arraycopy(a,0,na,0,HorizonGeometry.STRIDE);System.arraycopy(b,0,nb,0,HorizonGeometry.STRIDE);na[0]=pa.x();na[1]=ha;na[2]=pa.z();nb[0]=pb.x();nb[1]=hb;nb[2]=pb.z();na[7]=nb[7]=0;na[8]=nb[8]=0;na[14]=nb[14]=water?1:-1;
+            coastalCollar(batch,region,new float[][]{na,nb,b,a},geometry,s,end,tile,water);
             // A geological/open step is an intentional native cliff; close the external wedge only.
             if(s==Math.floor(s)){Tile previous=edgeTile(s-.5);float old=edgeHeight(previous,s);
                 if(Math.abs(old-ha)>.0001f){float[] step=na.clone();step[1]=old;batch.face(region,step,na,a,a);}}
@@ -147,15 +142,36 @@ public final class AutomaticHorizon {
         if(tile==null)return 0;
         var point=HorizonGeometry.point(profile,s,0);int cx=Math.round(point.x()+.5f),cy=Math.round(-point.z()+.5f);
         if(terrain.naturalWall(tile))return terrain.vertexHeight(cx,cy);
-        if(tile.floor().isLiquid)return LiquidSurfaceVisual.corner(cx,cy);
+        if(tile.floor().isLiquid)return LiquidBedVisual.corner(cx,cy);
         return relief.sample(cx,cy,t->true);
     }
     private double boundaryHeight(double s){double start=Math.floor(s),t=s-start,a=boundaryVertexHeight(start);return t==0?a:a+(boundaryVertexHeight(start+1)-a)*t;}
     private float boundaryVertexHeight(double s){return Math.max(edgeVertexHeight(edgeTile(s-.5),s),edgeVertexHeight(edgeTile(s+.5),s));}
-    private void waterCollar(HorizonCollarMesh.Builder batch,arc.graphics.g2d.TextureRegion region,float[][] points){
-        var polygon=new java.util.ArrayList<float[]>();float[] previous=points[points.length-1];boolean old=previous[14]>=0;
-        for(float[] v:points){boolean in=v[14]>=0;if(in!=old){float t=previous[14]/(previous[14]-v[14]);float[] join=new float[HorizonGeometry.STRIDE];for(int i=0;i<join.length;i++)join[i]=previous[i]+(v[i]-previous[i])*t;join[1]=HorizonLandscape.SEA;join[14]=0;polygon.add(join);}if(in)polygon.add(v);previous=v;old=in;}
-        for(int i=1;i+1<polygon.size();i++)batch.triangle(region,polygon.get(0),polygon.get(i),polygon.get(i+1));
+    private double waterBedHeight(double s){
+        Tile tile=edgeTile(s+.00001);if(!LiquidSurfaceVisual.open(tile)||tile.floor().liquidDrop!=mindustry.content.Liquids.water)return Double.NaN;
+        return edgeHeight(tile,s);
+    }
+    private void coastalCollar(HorizonCollarMesh.Builder batch,arc.graphics.g2d.TextureRegion region,float[][] points,HorizonGeometry geometry,double start,double end,Tile tile,boolean nativeWater){
+        for(int[] index:new int[][]{{0,1,2},{0,2,3}})for(boolean wet:new boolean[]{false,true}){
+            float[][] triangle={points[index[0]],points[index[1]],points[index[2]]};var polygon=clipCollar(triangle,wet);
+            for(int i=1;i+1<polygon.size();i++)batch.triangle(region,polygon.get(0),polygon.get(i),polygon.get(i+1));
+            if(!wet)continue;
+            var surface=new HorizonLandscape.Surface();
+            for(int j=0;j<polygon.size();j++){float[] vertex=polygon.get(j);
+                boolean first=Math.abs(vertex[0]-points[0][0])<.00001&&Math.abs(vertex[2]-points[0][2])<.00001;
+                boolean second=Math.abs(vertex[0]-points[1][0])<.00001&&Math.abs(vertex[2]-points[1][2])<.00001;
+                vertex=vertex.clone();
+                if(nativeWater&&(first||second)){double along=first?start:end;var p=HorizonGeometry.point(profile,along,0);vertex[1]=LiquidSurfaceVisual.corner(Math.round(p.x()+.5f),Math.round(-p.z()+.5f));vertex[3]=tile.floor().mapColor.r;vertex[4]=tile.floor().mapColor.g;vertex[5]=tile.floor().mapColor.b;}
+                else{vertex[1]=HorizonLandscape.SEA;geometry.landscape.sample((start+end)*.5,4,vertex[0],vertex[2],surface);vertex[3]=surface.waterR;vertex[4]=surface.waterG;vertex[5]=surface.waterB;}
+                vertex[7]=1;polygon.set(j,vertex);
+            }
+            for(int i=1;i+1<polygon.size();i++)batch.triangle(region,polygon.get(0),polygon.get(i),polygon.get(i+1));
+        }
+    }
+    private java.util.ArrayList<float[]> clipCollar(float[][] triangle,boolean wet){
+        var polygon=new java.util.ArrayList<float[]>(4);float[] previous=triangle[triangle.length-1];boolean old=wet?previous[14]>=0:previous[14]<=0;
+        for(float[] v:triangle){boolean in=wet?v[14]>=0:v[14]<=0;if(in!=old){float t=previous[14]/(previous[14]-v[14]);float[] join=new float[HorizonGeometry.STRIDE];for(int i=0;i<join.length;i++)join[i]=previous[i]+(v[i]-previous[i])*t;join[1]=HorizonLandscape.SEA;join[8]=join[14]=0;polygon.add(join);}if(in)polygon.add(v);previous=v;old=in;}
+        return polygon;
     }
     public void render(Camera3D camera,float ambient,Color sky,double seconds){
         ensure();if(detailTexture==null)detailTexture=HorizonDetailTexture.create();
