@@ -12,6 +12,13 @@ public final class OrganicPropRenderer {
     private final IdentityHashMap<TextureRegion,Material> samples=new IdentityHashMap<>();
     private Object atlas;
     private long submissions;
+    private final VegetationInstances instances=new VegetationInstances();
+    private java.util.function.ToDoubleFunction<Tile> obstacles=t->t.block().solid?fpv.net.HeadlessGeometry.heightFor(t.block()):0;
+    public VegetationInstances instances(){return instances;}
+    public void setObstacles(java.util.function.ToDoubleFunction<Tile> value){obstacles=value;instances.clear();}
+    public void setStructures(fpv.construction.LayerWorld value){instances.structures(value);}
+    public void invalidate(){instances.clear();}
+    public void invalidate(int x,int y,int radius){instances.invalidate(x,y,radius);}
     public long submissions(){return submissions;}
     boolean append(Tile tile,NativeAtlasMesh.Builder batch,float x,float z,float width,float height){
         var kind=NaturalProps.kind(tile.block());if(kind==null)return false;
@@ -22,15 +29,22 @@ public final class OrganicPropRenderer {
         if(material==null){material=new Material(region);samples.put(region,material);}
         // Vegetation alone grows visually around its native tile/base anchor; physical queries
         // still use original dimensions. The same cached templates and atlas chunks are reused.
-        float angle=(seed&1023)*(360f/1024f),scale=.91f+((seed>>>10)&31)*(.09f/31f);
-        float visualWidth=VegetationVisualScale.dimension(kind,width*scale),visualHeight=VegetationVisualScale.dimension(kind,height);
-        batch.template(region,material.template(kind,seed&7),x,0,z,visualWidth,visualHeight,visualWidth,angle,material.center[0],material.center[1]);
+        var form=VegetationInstances.form(tile.block());
+        if(form!=null){
+            var pose=instances.get(tile,width,height,obstacles);
+            batch.template(region,material.vegetation(pose.form(),pose.variant()),x+pose.dx(),0,z+pose.dz(),pose.width(),pose.height(),pose.depth(),pose.yaw(),material.center[0],material.center[1],pose.leanX(),pose.leanZ());
+        }else{
+            // Keep non-vegetation rocks byte-for-byte on the original transform/material path.
+            float angle=(seed&1023)*(360f/1024f),scale=.91f+((seed>>>10)&31)*(.09f/31f);
+            batch.template(region,material.template(kind,seed&7),x,0,z,width*scale,height,width*scale,angle,material.center[0],material.center[1]);
+        }
         submissions++;return true;
     }
     /** Sparse tree art is color data for closed surfaces, not an alpha cookie punched through every face. */
     private static final class Material{
         final float[] center=new float[2],opaque;
         final float[][] templates=new float[NaturalProps.Kind.values().length*8][];
+        final float[][] flora=new float[VegetationInstances.Form.values().length*8][];
         Material(TextureRegion region){
             if(region instanceof AtlasRegion ar){
                 var pix=Core.atlas.getPixmap(ar);int count=0;
@@ -50,14 +64,21 @@ public final class OrganicPropRenderer {
         }
         float[] template(NaturalProps.Kind kind,int variant){
             int slot=kind.ordinal()*8+variant;float[] value=templates[slot];if(value!=null)return value;
-            value=OrganicPropGeometry.template(kind,variant).clone();
+            return templates[slot]=sample(OrganicPropGeometry.template(kind,variant));
+        }
+        float[] vegetation(VegetationInstances.Form form,int variant){
+            int slot=form.ordinal()*8+variant;var value=flora[slot];
+            return value!=null?value:(flora[slot]=sample(OrganicPropGeometry.vegetation(form,variant)));
+        }
+        float[] sample(float[] source){
+            float[] value=source.clone();
             for(int i=0;i<value.length;i+=18){
                 float u=(value[i+3]+value[i+9]+value[i+15])/3,v=(value[i+4]+value[i+10]+value[i+16])/3;
                 int near=nearest(u<0?.5f:u,v<0?.5f:v);
                 for(int j=0;j<3;j++){value[i+j*6+3]=opaque[near];value[i+j*6+4]=opaque[near+1];}
             }
-            return templates[slot]=value;
+            return value;
         }
     }
-    public void clear(){samples.clear();atlas=null;}
+    public void clear(){samples.clear();atlas=null;instances.clear();}
 }

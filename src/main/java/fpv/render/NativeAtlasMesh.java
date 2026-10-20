@@ -195,6 +195,9 @@ final class NativeAtlasMesh {
 
         /** Bakes a cached local prop template into the existing texture batch; no per-object GL draw or mesh. */
         void template(TextureRegion region,float[] vertices,float x,float y,float z,float width,float height,float depth,float angle,float sampleU,float sampleV){
+            template(region,vertices,x,y,z,width,height,depth,angle,sampleU,sampleV,0,0);
+        }
+        void template(TextureRegion region,float[] vertices,float x,float y,float z,float width,float height,float depth,float angle,float sampleU,float sampleV,float leanX,float leanZ){
             if(!valid(region)||vertices==null)return;
             Data d=data.computeIfAbsent(region.texture,t->new Data(streaming?capacity*9:4096));
             float c=Mathf.cosDeg(angle),s=Mathf.sinDeg(angle);
@@ -205,7 +208,8 @@ final class NativeAtlasMesh {
                 if(d.count+9>d.values.length)d.values=Arrays.copyOf(d.values,Math.max(d.values.length*2,d.count+9));
                 float lx=vertices[i]*width,lz=vertices[i+2]*depth,shade=vertices[i+5];
                 float tu=vertices[i+3]<0?sampleU:vertices[i+3],tv=vertices[i+4]<0?sampleV:vertices[i+4];
-                d.vertex(x+lx*c-lz*s,y+vertices[i+1]*height,z+lx*s+lz*c,shade,shade,shade,0,u+tu*us,v+tv*vs);
+                float growth=vertices[i+1]*vertices[i+1];
+                d.vertex(x+lx*c-lz*s+leanX*growth,y+vertices[i+1]*height,z+lx*s+lz*c+leanZ*growth,shade,shade,shade,0,u+tu*us,v+tv*vs);
             }
         }
 

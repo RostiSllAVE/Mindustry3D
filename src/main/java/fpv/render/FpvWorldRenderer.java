@@ -113,7 +113,23 @@ public final class FpvWorldRenderer {
     public ConstructionVisualRenderer.Stats constructionVisualStats(){return constructionVisuals.stats();}
     public LayerWorldRenderer constructionRenderer(){return constructionRenderer;}
     private fpv.construction.LayerRuntime constructionRuntime;
-    public void setConstruction(fpv.construction.LayerRuntime value){constructionRuntime=value;constructionRenderer.setRuntime(value);supportEffects.setConstruction(value);}
+    private fpv.construction.LayerWorld vegetationStructures;
+    private final fpv.construction.LayerWorld.ChangeListener vegetationStructureChange=(before,after)->{
+        if(before!=null&&after!=null&&before.x()==after.x()&&before.y()==after.y()&&before.layer()==after.layer()
+            &&before.size()==after.size()&&before.height()==after.height()&&before.kind()==after.kind())return;
+        if(before!=null)invalidateVegetationStructure(before);if(after!=null)invalidateVegetationStructure(after);
+    };
+    public void setConstruction(fpv.construction.LayerRuntime value){
+        constructionRuntime=value;constructionRenderer.setRuntime(value);supportEffects.setConstruction(value);
+        syncVegetationStructures();
+    }
+    private void syncVegetationStructures(){
+        var next=constructionRuntime==null?null:constructionRuntime.grid();if(next==vegetationStructures)return;
+        if(vegetationStructures!=null)vegetationStructures.removeListener(vegetationStructureChange);
+        vegetationStructures=next;organicProps.setStructures(next);revision++;
+        if(next!=null)next.addListener(vegetationStructureChange);
+    }
+    private void invalidateVegetationStructure(fpv.construction.LayerComponent c){invalidatePresentationArea(c.x(),c.y(),c.size()+VegetationInstances.NEIGHBOUR_RADIUS);}
     public UnitThreatMarkerRenderer threatMarkers(){return threatMarkers;}
     private Object vegetationContent;
     private float vegetationHeight,vegetationPadding;
@@ -208,7 +224,9 @@ public final class FpvWorldRenderer {
     private int detailedChunks, coarseChunks;
     private double cpuMilliseconds;
 
-    public FpvWorldRenderer() {}
+    public FpvWorldRenderer() {
+        organicProps.setObstacles(t->!t.block().solid?0:elevation.naturalWall(t)?elevation.heightAt(t.x,-t.y):heightFor(t.block()));
+    }
     public EnvironmentRenderer environment() { return environment; }
     public TerrainElevation terrain(){return elevation;}
     public void setUnitAltitudes(UnitAltitudeSystem value){unitAltitudes=value;constructionRenderer.setUnitAltitudes(value);}
@@ -250,6 +268,7 @@ public final class FpvWorldRenderer {
 
     /** Invalidates cached geometry after a world or tile change; resources rebuild lazily. */
     public void invalidate() {
+        organicProps.invalidate();
         blockAnimations.clear();
         turretModels.clear();
         miningVisuals.clear();
@@ -409,9 +428,13 @@ public final class FpvWorldRenderer {
         if (tile == null) { invalidate(); return; }
         updatePlacedBuilding(tile);
         elevation.invalidate(tile);
-        int radius = Math.max(1, tile.block().size) + FloorSurfaceRelief.ANCHOR_RADIUS;
-        for (int x = Math.max(0, tile.x - radius) / CHUNK; x <= (tile.x + radius) / CHUNK; x++) {
-            for (int y = Math.max(0, tile.y - radius) / CHUNK; y <= (tile.y + radius) / CHUNK; y++) {
+        int radius = Math.max(1, tile.block().size) + Math.max(FloorSurfaceRelief.ANCHOR_RADIUS,VegetationInstances.NEIGHBOUR_RADIUS);
+        invalidatePresentationArea(tile.x,tile.y,radius);
+    }
+    private void invalidatePresentationArea(int tx,int ty,int radius){
+        organicProps.invalidate(tx,ty,radius);
+        for (int x = Math.max(0, tx - radius) / CHUNK; x <= (tx + radius) / CHUNK; x++) {
+            for (int y = Math.max(0, ty - radius) / CHUNK; y <= (ty + radius) / CHUNK; y++) {
                 ChunkMesh cached = chunks.get(key(x, y));
                 if (cached != null) cached.revision = -1;
                 coarseFog.remove(key(x, y));
@@ -571,11 +594,12 @@ public final class FpvWorldRenderer {
     }
 
     private void syncWorld() {
+        syncVegetationStructures();
         if(vegetationContent!=Vars.content){
             vegetationContent=Vars.content;vegetationHeight=vegetationPadding=0;
             for(Block block:Vars.content.blocks())if(VegetationVisualScale.scale(block)>1){
-                vegetationHeight=Math.max(vegetationHeight,VegetationVisualScale.height(block,heightFor(block)));
-                vegetationPadding=Math.max(vegetationPadding,VegetationVisualScale.extentPadding(block));
+                vegetationHeight=Math.max(vegetationHeight,VegetationVisualScale.height(block,heightFor(block))*VegetationInstances.MAX_HEIGHT_SCALE);
+                vegetationPadding=Math.max(vegetationPadding,VegetationVisualScale.extentPadding(block)*VegetationInstances.MAX_WIDTH_SCALE+VegetationInstances.MAX_OFFSET+2*VegetationInstances.MAX_LEAN);
             }
         }
         elevation.ensureWorld();
@@ -1343,6 +1367,7 @@ public final class FpvWorldRenderer {
     }
 
     public void dispose() {
+        if(vegetationStructures!=null)vegetationStructures.removeListener(vegetationStructureChange);
         firstPersonRig.close();aircraftWeapons.close();
         miningVisuals.clear();
         constructionVisuals.close();buildBeams.clear();

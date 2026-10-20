@@ -7,11 +7,36 @@ import java.util.Arrays;
 public final class OrganicPropGeometry {
     public static final int STRIDE=6; // XYZ, UV, face shade
     private static final float[][][] CACHE=new float[Kind.values().length][8][];
+    private static final float[][][] FLORA=new float[VegetationInstances.Form.values().length][8][];
     private OrganicPropGeometry(){}
     public static float[] template(Kind kind,int variant){
         if(kind==null)throw new IllegalArgumentException("Natural prop kind required");
         int v=Math.floorMod(variant,8);float[] cached=CACHE[kind.ordinal()][v];
         if(cached==null)CACHE[kind.ordinal()][v]=cached=create(kind,v);return cached;
+    }
+    /** Specialized flora stays a render profile, never a new native content classification. */
+    public static float[] vegetation(VegetationInstances.Form form,int variant){
+        int v=Math.floorMod(variant,8);var cache=FLORA[form.ordinal()];if(cache[v]!=null)return cache[v];
+        Kind original=switch(form){case PINE->Kind.PINE;case LEAF->Kind.LEAF_TREE;case DEAD->Kind.DEAD_TREE;case SHRUB->Kind.BUSH;default->null;};
+        if(original!=null)return cache[v]=template(original,v);
+        Builder b=new Builder();double a=v*.39;
+        switch(form){
+            case SPORE->{for(int i=0;i<3;i++){double x=(i-1)*.25,z=Math.sin(i*2.7+a)*.14,h=.65+(i%2)*.16;
+                b.frustum(x,0,z,x,h,z,.045,.025,5,a,.52);b.rounded(x,h,z,.21,.18,.22,6,3,v+i,1);}}
+            case FROND->{for(int i=0;i<3;i++){double x=(i-1)*.22,z=Math.sin(i+a)*.10;
+                b.frustum(x,0,z,x*.7,.56,z,.035,.025,4,a,.72);
+                b.frustum(x*.7,.56,z,x+.08*Math.sin(a+i),.96-Math.abs(i-1)*.14,z-.06,.025,.004,4,a,1);
+                for(int j=0;j<2;j++)b.frustum(x*.8,.28+j*.2,z,x+(j==0?-.16:.16),.50+j*.2,z+.08,.022,.003,4,a,.94);}}
+            case CORAL->{b.frustum(0,0,0,0,.55,0,.10,.065,6,a,.70);
+                for(int i=0;i<5;i++){double angle=a+i*2.4,x=Math.cos(angle)*.34,z=Math.sin(angle)*.34,h=.65+(i%3)*.13;
+                    b.frustum(0,.25,0,x,h-.18,z,.05,.035,5,angle,.94);
+                    b.frustum(x,h-.18,z,x*.97,h,z*.97,.035,.015,5,angle,1.04);}}
+            case DIAMOND->{for(int i=0;i<3;i++){double x=(i-1)*.26,z=Math.sin(a+i*2)*.10,h=i==1?1:.72;
+                b.frustum(x,0,z,x,.45*h,z,.045,.18,4,a,.84);
+                b.frustum(x,.45*h,z,x,h,z,.18,0,4,a,1.04);}}
+            default->throw new IllegalArgumentException("Special vegetation profile required");
+        }
+        return cache[v]=Arrays.copyOf(b.values,b.count);
     }
     private static float[] create(Kind kind,int variant){
         Builder b=new Builder();b.flat=kind==Kind.DEAD_TREE;double angle=variant*Math.PI*.173;
