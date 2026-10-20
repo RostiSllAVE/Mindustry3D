@@ -1,0 +1,964 @@
+{
+  "task": "A2-15a.1",
+  "baselineCommit": "41c03cf091bed55954dede10c525cce9c8c2d6b2",
+  "branch": "main",
+  "finalJarSha256": "0faa4ce86c98ac4b3595fee072eb516ada9d5da252877193481291ca933aa333",
+  "payloadIdentity": "payload1-9d51cee8e7096e80bd4ea523d0fd238be0930882fb46b6181bb75ad49b306716",
+  "java17ProgramsPassed": 147,
+  "steam25ProgramsPassed": 147,
+  "nativeChecksPerRuntime": 1796,
+  "geometryChecksPerRuntime": 1008039,
+  "sourceCorrespondence": {
+    "status": "PASS",
+    "freshRecompiledRuntimeClassesByteIdentical": 917,
+    "packagedResourcesMatch": true,
+    "frozenSourceInputsMatch": true,
+    "jarSha256": "0faa4ce86c98ac4b3595fee072eb516ada9d5da252877193481291ca933aa333"
+  },
+  "artifactAudit": {
+    "jarSha256": "0faa4ce86c98ac4b3595fee072eb516ada9d5da252877193481291ca933aa333",
+    "payloadIdentity": "payload1-9d51cee8e7096e80bd4ea523d0fd238be0930882fb46b6181bb75ad49b306716",
+    "changedExistingEntriesFromA215a": [
+      "fpv/render/AutomaticHorizon$1.class",
+      "fpv/render/AutomaticHorizon.class",
+      "fpv/render/HorizonGeometry$Builder.class",
+      "fpv/render/HorizonGeometry.class"
+    ],
+    "newEntries": [
+      "fpv/render/HorizonCollarMesh$Builder.class",
+      "fpv/render/HorizonCollarMesh$Part.class",
+      "fpv/render/HorizonCollarMesh.class",
+      "fpv/render/HorizonDetailTexture.class"
+    ],
+    "unchangedExistingRuntimeClasses": 1034,
+    "maxClassMajor": 61,
+    "licensesAndJnaUnchanged": true,
+    "alphaFilesPreserved": 2065,
+    "diagnosticAssetsPreserved": [
+      "mindustry-fpv-a2-02-diagnostics.jar",
+      "mindustry-fpv-a2-02-corresponding-source.zip",
+      "mindustry-fpv-a2-02-test-kit.zip",
+      "mindustry-fpv-a2-03-diagnostics.jar",
+      "mindustry-fpv-a2-03-corresponding-source.zip",
+      "mindustry-fpv-a2-03-test-kit.zip",
+      "mindustry-fpv-a2-04-diagnostics.jar",
+      "mindustry-fpv-a2-04-corresponding-source.zip",
+      "mindustry-fpv-a2-04-test-kit.zip",
+      "mindustry-fpv-a2-05-diagnostics.jar",
+      "mindustry-fpv-a2-05-corresponding-source.zip",
+      "mindustry-fpv-a2-05-test-kit.zip",
+      "mindustry-fpv-a2-06-diagnostics.jar",
+      "mindustry-fpv-a2-06-corresponding-source.zip",
+      "mindustry-fpv-a2-06-test-kit.zip",
+      "mindustry-fpv-a2-07-diagnostics.jar",
+      "mindustry-fpv-a2-07-corresponding-source.zip",
+      "mindustry-fpv-a2-07-test-kit.zip",
+      "mindustry-fpv-a2-08a-diagnostics.jar",
+      "mindustry-fpv-a2-08a-corresponding-source.zip",
+      "mindustry-fpv-a2-08a-test-kit.zip",
+      "mindustry-fpv-a2-08b-diagnostics.jar",
+      "mindustry-fpv-a2-08b-corresponding-source.zip",
+      "mindustry-fpv-a2-08b-test-kit.zip",
+      "mindustry-fpv-a2-09a-diagnostics.jar",
+      "mindustry-fpv-a2-09a-corresponding-source.zip",
+      "mindustry-fpv-a2-09a-test-kit.zip",
+      "mindustry-fpv-a2-09b-diagnostics.jar",
+      "mindustry-fpv-a2-09b-corresponding-source.zip",
+      "mindustry-fpv-a2-09b-test-kit.zip",
+      "mindustry-fpv-a2-09c-diagnostics.jar",
+      "mindustry-fpv-a2-09c-corresponding-source.zip",
+      "mindustry-fpv-a2-09c-test-kit.zip",
+      "mindustry-fpv-a2-10-diagnostics.jar",
+      "mindustry-fpv-a2-10-corresponding-source.zip",
+      "mindustry-fpv-a2-10-test-kit.zip",
+      "mindustry-fpv-a2-11-diagnostics.jar",
+      "mindustry-fpv-a2-11-corresponding-source.zip",
+      "mindustry-fpv-a2-11-test-kit.zip",
+      "mindustry-fpv-a2-11-visibility-diagnostics.jar",
+      "mindustry-fpv-a2-11-visibility-corresponding-source.zip",
+      "mindustry-fpv-a2-11-visibility-test-kit.zip",
+      "mindustry-fpv-a2-12-diagnostics.jar",
+      "mindustry-fpv-a2-12-corresponding-source.zip",
+      "mindustry-fpv-a2-12-test-kit.zip",
+      "mindustry-fpv-a2-13-diagnostics.jar",
+      "mindustry-fpv-a2-13-corresponding-source.zip",
+      "mindustry-fpv-a2-13-test-kit.zip",
+      "mindustry-fpv-a2-13b-diagnostics.jar",
+      "mindustry-fpv-a2-13b-corresponding-source.zip",
+      "mindustry-fpv-a2-13b-test-kit.zip",
+      "mindustry-fpv-a2-14-diagnostics.jar",
+      "mindustry-fpv-a2-14-corresponding-source.zip",
+      "mindustry-fpv-a2-14-test-kit.zip",
+      "mindustry-fpv-a2-15a-diagnostics.jar",
+      "mindustry-fpv-a2-15a-corresponding-source.zip",
+      "mindustry-fpv-a2-15a-test-kit.zip"
+    ]
+  },
+  "preparationPerformance": {
+    "method": "Identical compiled probe, native64/512 maps, ocean/mixed borders, MockGL real Mesh uploads. Shared original terrain prebuilt and excluded.3 warmup/7 timed cold background rebuilds:median/min/max; first cold includes JIT. Allocation optional (-1 unavailable on stripped Steam runtime). Separate10000 cache-hit calls. No concurrent regressions or game processes; not GPU/FPS.",
+    "baseline": "41c03cf091bed55954dede10c525cce9c8c2d6b2",
+    "data": {
+      "java17": {
+        "before": [
+          "HORIZON,64,ocean,medianMs=1.906000,minMs=1.434400,maxMs=2.556600,coldMs=16.992600,allocatedBytes=754304,meshBytes=138240,vertices=3840,triangles=1280,materialBatches=2,cacheHitMs=0.000699,profileFingerprint=3479485272184183432,geometryFingerprint=1031993261423920401",
+          "HORIZON,64,mixed,medianMs=1.522600,minMs=1.128000,maxMs=1.779700,coldMs=5.114700,allocatedBytes=761456,meshBytes=142992,vertices=3972,triangles=1324,materialBatches=2,cacheHitMs=0.000553,profileFingerprint=2381727897214222152,geometryFingerprint=-8615824825796669355",
+          "HORIZON,512,ocean,medianMs=4.753100,minMs=3.647600,maxMs=5.736700,coldMs=5.722300,allocatedBytes=5696448,meshBytes=1105920,vertices=30720,triangles=10240,materialBatches=2,cacheHitMs=0.000141,profileFingerprint=-8877382776418020344,geometryFingerprint=-9050801625650830191",
+          "HORIZON,512,mixed,medianMs=4.524400,minMs=3.868600,maxMs=10.306400,coldMs=6.763100,allocatedBytes=5648800,meshBytes=1143504,vertices=31764,triangles=10588,materialBatches=2,cacheHitMs=0.000164,profileFingerprint=652362568165429192,geometryFingerprint=-6842856814605795906"
+        ],
+        "after": [
+          "HORIZON,64,ocean,medianMs=2.777400,minMs=2.116100,maxMs=3.457900,coldMs=28.965800,allocatedBytes=1637576,meshBytes=359424,vertices=6528,triangles=2176,materialBatches=2,cacheHitMs=0.000898,profileFingerprint=3479485272184183432,geometryFingerprint=-1345395307867322879",
+          "HORIZON,64,mixed,medianMs=2.700100,minMs=1.827800,maxMs=7.414900,coldMs=8.129400,allocatedBytes=1677592,meshBytes=380208,vertices=6900,triangles=2300,materialBatches=2,cacheHitMs=0.000419,profileFingerprint=2381727897214222152,geometryFingerprint=7647702386714508727",
+          "HORIZON,512,ocean,medianMs=7.735200,minMs=6.799800,maxMs=8.435500,coldMs=16.090100,allocatedBytes=9727672,meshBytes=2101248,vertices=38400,triangles=12800,materialBatches=2,cacheHitMs=0.000164,profileFingerprint=-8877382776418020344,geometryFingerprint=9182482921990317225",
+          "HORIZON,512,mixed,medianMs=6.673500,minMs=6.147500,maxMs=7.677300,coldMs=8.330800,allocatedBytes=9911248,meshBytes=2198640,vertices=40140,triangles=13380,materialBatches=2,cacheHitMs=0.000195,profileFingerprint=652362568165429192,geometryFingerprint=1090028014531093200"
+        ]
+      },
+      "steam25": {
+        "before": [
+          "HORIZON,64,ocean,medianMs=1.605400,minMs=1.282600,maxMs=2.144200,coldMs=17.472400,allocatedBytes=-1,meshBytes=138240,vertices=3840,triangles=1280,materialBatches=2,cacheHitMs=0.000890,profileFingerprint=3479485272184183432,geometryFingerprint=1031993261423920401",
+          "HORIZON,64,mixed,medianMs=1.564300,minMs=1.386100,maxMs=2.162400,coldMs=4.285700,allocatedBytes=-1,meshBytes=142992,vertices=3972,triangles=1324,materialBatches=2,cacheHitMs=0.000516,profileFingerprint=2381727897214222152,geometryFingerprint=-8615824825796669355",
+          "HORIZON,512,ocean,medianMs=4.690600,minMs=4.097400,maxMs=5.443400,coldMs=5.627700,allocatedBytes=-1,meshBytes=1105920,vertices=30720,triangles=10240,materialBatches=2,cacheHitMs=0.000235,profileFingerprint=-8877382776418020344,geometryFingerprint=-9050801625650830191",
+          "HORIZON,512,mixed,medianMs=4.810300,minMs=4.079900,maxMs=10.531400,coldMs=5.604700,allocatedBytes=-1,meshBytes=1143504,vertices=31764,triangles=10588,materialBatches=2,cacheHitMs=0.000171,profileFingerprint=652362568165429192,geometryFingerprint=-6842856814605795906"
+        ],
+        "after": [
+          "HORIZON,64,ocean,medianMs=2.649900,minMs=1.940700,maxMs=6.873800,coldMs=34.278800,allocatedBytes=-1,meshBytes=359424,vertices=6528,triangles=2176,materialBatches=2,cacheHitMs=0.000820,profileFingerprint=3479485272184183432,geometryFingerprint=-1345395307867322879",
+          "HORIZON,64,mixed,medianMs=2.227500,minMs=1.948900,maxMs=3.219400,coldMs=5.591600,allocatedBytes=-1,meshBytes=380208,vertices=6900,triangles=2300,materialBatches=2,cacheHitMs=0.000381,profileFingerprint=2381727897214222152,geometryFingerprint=7647702386714508727",
+          "HORIZON,512,ocean,medianMs=7.218300,minMs=6.171400,maxMs=9.233300,coldMs=8.489600,allocatedBytes=-1,meshBytes=2101248,vertices=38400,triangles=12800,materialBatches=2,cacheHitMs=0.000188,profileFingerprint=-8877382776418020344,geometryFingerprint=9182482921990317225",
+          "HORIZON,512,mixed,medianMs=6.040100,minMs=5.378000,maxMs=7.370200,coldMs=5.674500,allocatedBytes=-1,meshBytes=2198640,vertices=40140,triangles=13380,materialBatches=2,cacheHitMs=0.000316,profileFingerprint=652362568165429192,geometryFingerprint=1090028014531093200"
+        ]
+      }
+    }
+  },
+  "actualSteamGraphics": {
+    "baseline": [
+      {
+        "scene": "desert",
+        "view": "low",
+        "cpuMs": 2.8009499999999994,
+        "gpuMs": 0.6449985084745763,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 1,
+          "analyses": 1,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 31.4011,
+          "generationMs": 7.8681
+        },
+        "worldMeshBytes": 221184
+      },
+      {
+        "scene": "desert",
+        "view": "oblique",
+        "cpuMs": 3.435293333333334,
+        "gpuMs": 0.8008200677966102,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 1,
+          "analyses": 1,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 31.4011,
+          "generationMs": 7.8681
+        },
+        "worldMeshBytes": 663552
+      },
+      {
+        "scene": "desert",
+        "view": "high",
+        "cpuMs": 3.770181666666667,
+        "gpuMs": 2.6823593220338986,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 1,
+          "analyses": 1,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 31.4011,
+          "generationMs": 7.8681
+        },
+        "worldMeshBytes": 1989144
+      },
+      {
+        "scene": "desert",
+        "view": "overhead",
+        "cpuMs": 4.134126666666666,
+        "gpuMs": 0.9117244745762711,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 1,
+          "analyses": 1,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 31.4011,
+          "generationMs": 7.8681
+        },
+        "worldMeshBytes": 2652264
+      },
+      {
+        "scene": "ocean",
+        "view": "low",
+        "cpuMs": 3.8040916666666655,
+        "gpuMs": 0.9205412881355932,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 2,
+          "analyses": 2,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 1.0686,
+          "generationMs": 2.8589
+        },
+        "worldMeshBytes": 442368
+      },
+      {
+        "scene": "ocean",
+        "view": "oblique",
+        "cpuMs": 3.9846149999999994,
+        "gpuMs": 0.9407956610169491,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 2,
+          "analyses": 2,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 1.0686,
+          "generationMs": 2.8589
+        },
+        "worldMeshBytes": 1327104
+      },
+      {
+        "scene": "ocean",
+        "view": "high",
+        "cpuMs": 3.37156,
+        "gpuMs": 18.65445098305085,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 2,
+          "analyses": 2,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 1.0686,
+          "generationMs": 2.8589
+        },
+        "worldMeshBytes": 3981312
+      },
+      {
+        "scene": "ocean",
+        "view": "overhead",
+        "cpuMs": 3.960308333333333,
+        "gpuMs": 2.087484745762712,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 2,
+          "analyses": 2,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 1.0686,
+          "generationMs": 2.8589
+        },
+        "worldMeshBytes": 5308416
+      },
+      {
+        "scene": "snowymountains",
+        "view": "low",
+        "cpuMs": 3.4207033333333334,
+        "gpuMs": 0.7605890169491526,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 3,
+          "analyses": 3,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 2.7049,
+          "generationMs": 1.5409
+        },
+        "worldMeshBytes": 0
+      },
+      {
+        "scene": "snowymountains",
+        "view": "oblique",
+        "cpuMs": 3.798031666666668,
+        "gpuMs": 0.8064607457627119,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 3,
+          "analyses": 3,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 2.7049,
+          "generationMs": 1.5409
+        },
+        "worldMeshBytes": 711936
+      },
+      {
+        "scene": "snowymountains",
+        "view": "high",
+        "cpuMs": 3.128883333333334,
+        "gpuMs": 10.128626983050847,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 3,
+          "analyses": 3,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 2.7049,
+          "generationMs": 1.5409
+        },
+        "worldMeshBytes": 2089368
+      },
+      {
+        "scene": "snowymountains",
+        "view": "overhead",
+        "cpuMs": 2.662865000000001,
+        "gpuMs": 0.3495311186440678,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 3,
+          "analyses": 3,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 2.7049,
+          "generationMs": 1.5409
+        },
+        "worldMeshBytes": 2776680
+      },
+      {
+        "scene": "forest",
+        "view": "low",
+        "cpuMs": 4.055516666666666,
+        "gpuMs": 0.9141022372881356,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 4,
+          "analyses": 4,
+          "meshBytes": 196992,
+          "vertices": 5472,
+          "analysisMs": 2.8533,
+          "generationMs": 2.6085
+        },
+        "worldMeshBytes": 1714176
+      },
+      {
+        "scene": "forest",
+        "view": "oblique",
+        "cpuMs": 4.195164999999999,
+        "gpuMs": 1.192734372881356,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 4,
+          "analyses": 4,
+          "meshBytes": 196992,
+          "vertices": 5472,
+          "analysisMs": 2.8533,
+          "generationMs": 2.6085
+        },
+        "worldMeshBytes": 5889024
+      },
+      {
+        "scene": "forest",
+        "view": "high",
+        "cpuMs": 3.320138333333334,
+        "gpuMs": 1.7111387118644068,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 4,
+          "analyses": 4,
+          "meshBytes": 196992,
+          "vertices": 5472,
+          "analysisMs": 2.8533,
+          "generationMs": 2.6085
+        },
+        "worldMeshBytes": 12813336
+      },
+      {
+        "scene": "forest",
+        "view": "overhead",
+        "cpuMs": 3.4712450000000006,
+        "gpuMs": 0.9610673898305085,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 4,
+          "analyses": 4,
+          "meshBytes": 196992,
+          "vertices": 5472,
+          "analysisMs": 2.8533,
+          "generationMs": 2.6085
+        },
+        "worldMeshBytes": 16089192
+      },
+      {
+        "scene": "mixed",
+        "view": "low",
+        "cpuMs": 3.2627100000000007,
+        "gpuMs": 0.7235341016949152,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 5,
+          "analyses": 5,
+          "meshBytes": 177552,
+          "vertices": 4932,
+          "analysisMs": 1.3631,
+          "generationMs": 1.2627
+        },
+        "worldMeshBytes": 331776
+      },
+      {
+        "scene": "mixed",
+        "view": "oblique",
+        "cpuMs": 2.951188333333333,
+        "gpuMs": 0.5230904406779661,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 5,
+          "analyses": 5,
+          "meshBytes": 177552,
+          "vertices": 4932,
+          "analysisMs": 1.3631,
+          "generationMs": 1.2627
+        },
+        "worldMeshBytes": 1418688
+      },
+      {
+        "scene": "mixed",
+        "view": "high",
+        "cpuMs": 2.993798333333335,
+        "gpuMs": 14.20411227118644,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 5,
+          "analyses": 5,
+          "meshBytes": 177552,
+          "vertices": 4932,
+          "analysisMs": 1.3631,
+          "generationMs": 1.2627
+        },
+        "worldMeshBytes": 5232600
+      },
+      {
+        "scene": "mixed",
+        "view": "overhead",
+        "cpuMs": 3.4367849999999995,
+        "gpuMs": 1.1796132881355932,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 5,
+          "analyses": 5,
+          "meshBytes": 177552,
+          "vertices": 4932,
+          "analysisMs": 1.3631,
+          "generationMs": 1.2627
+        },
+        "worldMeshBytes": 5914728
+      },
+      {
+        "scene": "rock",
+        "view": "low",
+        "cpuMs": 3.103675,
+        "gpuMs": 0.5595205423728813,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 7,
+          "analyses": 7,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 1.1816,
+          "generationMs": 1.4549
+        },
+        "worldMeshBytes": 0
+      },
+      {
+        "scene": "rock",
+        "view": "oblique",
+        "cpuMs": 2.5317200000000004,
+        "gpuMs": 0.16439538983050847,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 7,
+          "analyses": 7,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 1.1816,
+          "generationMs": 1.4549
+        },
+        "worldMeshBytes": 711936
+      },
+      {
+        "scene": "rock",
+        "view": "high",
+        "cpuMs": 1.971208333333333,
+        "gpuMs": 7.781393355932203,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 7,
+          "analyses": 7,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 1.1816,
+          "generationMs": 1.4549
+        },
+        "worldMeshBytes": 2089368
+      },
+      {
+        "scene": "rock",
+        "view": "overhead",
+        "cpuMs": 2.997078333333333,
+        "gpuMs": 0.672681220338983,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 7,
+          "analyses": 7,
+          "meshBytes": 172800,
+          "vertices": 4800,
+          "analysisMs": 1.1816,
+          "generationMs": 1.4549
+        },
+        "worldMeshBytes": 2776680
+      }
+    ],
+    "verified": [
+      {
+        "scene": "desert",
+        "view": "low",
+        "cpuMs": 1.7619566666666668,
+        "gpuMs": 0.06180447457627119,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 1,
+          "analyses": 1,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 34.337,
+          "generationMs": 15.5951
+        },
+        "worldMeshBytes": 221184
+      },
+      {
+        "scene": "desert",
+        "view": "oblique",
+        "cpuMs": 1.8081250000000002,
+        "gpuMs": 0.07459579661016949,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 1,
+          "analyses": 1,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 34.337,
+          "generationMs": 15.5951
+        },
+        "worldMeshBytes": 663552
+      },
+      {
+        "scene": "desert",
+        "view": "high",
+        "cpuMs": 2.1591316666666662,
+        "gpuMs": 1.169807186440678,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 1,
+          "analyses": 1,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 34.337,
+          "generationMs": 15.5951
+        },
+        "worldMeshBytes": 1989144
+      },
+      {
+        "scene": "desert",
+        "view": "overhead",
+        "cpuMs": 2.47636,
+        "gpuMs": 0.08700528813559322,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 1,
+          "analyses": 1,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 34.337,
+          "generationMs": 15.5951
+        },
+        "worldMeshBytes": 2652264
+      },
+      {
+        "scene": "ocean",
+        "view": "low",
+        "cpuMs": 1.7530016666666666,
+        "gpuMs": 0.06636908474576271,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 2,
+          "analyses": 2,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 1.4326,
+          "generationMs": 3.5636
+        },
+        "worldMeshBytes": 442368
+      },
+      {
+        "scene": "ocean",
+        "view": "oblique",
+        "cpuMs": 1.596751666666667,
+        "gpuMs": 0.0750991186440678,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 2,
+          "analyses": 2,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 1.4326,
+          "generationMs": 3.5636
+        },
+        "worldMeshBytes": 1327104
+      },
+      {
+        "scene": "ocean",
+        "view": "high",
+        "cpuMs": 2.625355000000001,
+        "gpuMs": 17.889922169491527,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 2,
+          "analyses": 2,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 1.4326,
+          "generationMs": 3.5636
+        },
+        "worldMeshBytes": 3981312
+      },
+      {
+        "scene": "ocean",
+        "view": "overhead",
+        "cpuMs": 2.2312049999999997,
+        "gpuMs": 1.006557288135593,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 2,
+          "analyses": 2,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 1.4326,
+          "generationMs": 3.5636
+        },
+        "worldMeshBytes": 5308416
+      },
+      {
+        "scene": "snowymountains",
+        "view": "low",
+        "cpuMs": 1.6039283333333332,
+        "gpuMs": 0.06704596610169491,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 3,
+          "analyses": 3,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 1.9942,
+          "generationMs": 2.4335
+        },
+        "worldMeshBytes": 0
+      },
+      {
+        "scene": "snowymountains",
+        "view": "oblique",
+        "cpuMs": 1.470011666666667,
+        "gpuMs": 0.07506440677966102,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 3,
+          "analyses": 3,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 1.9942,
+          "generationMs": 2.4335
+        },
+        "worldMeshBytes": 711936
+      },
+      {
+        "scene": "snowymountains",
+        "view": "high",
+        "cpuMs": 2.673815,
+        "gpuMs": 8.99394820338983,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 3,
+          "analyses": 3,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 1.9942,
+          "generationMs": 2.4335
+        },
+        "worldMeshBytes": 2089368
+      },
+      {
+        "scene": "snowymountains",
+        "view": "overhead",
+        "cpuMs": 2.2934416666666673,
+        "gpuMs": 0.0895913220338983,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 3,
+          "analyses": 3,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 1.9942,
+          "generationMs": 2.4335
+        },
+        "worldMeshBytes": 2776680
+      },
+      {
+        "scene": "forest",
+        "view": "low",
+        "cpuMs": 2.0941199999999998,
+        "gpuMs": 0.0883937627118644,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 4,
+          "analyses": 4,
+          "meshBytes": 525888,
+          "vertices": 9528,
+          "analysisMs": 2.6598,
+          "generationMs": 4.2157
+        },
+        "worldMeshBytes": 1714176
+      },
+      {
+        "scene": "forest",
+        "view": "oblique",
+        "cpuMs": 1.9899266666666662,
+        "gpuMs": 0.09615186440677966,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 4,
+          "analyses": 4,
+          "meshBytes": 525888,
+          "vertices": 9528,
+          "analysisMs": 2.6598,
+          "generationMs": 4.2157
+        },
+        "worldMeshBytes": 5889024
+      },
+      {
+        "scene": "forest",
+        "view": "high",
+        "cpuMs": 2.3013766666666657,
+        "gpuMs": 1.2121556610169493,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 4,
+          "analyses": 4,
+          "meshBytes": 525888,
+          "vertices": 9528,
+          "analysisMs": 2.6598,
+          "generationMs": 4.2157
+        },
+        "worldMeshBytes": 12813336
+      },
+      {
+        "scene": "forest",
+        "view": "overhead",
+        "cpuMs": 2.0144683333333337,
+        "gpuMs": 0.19376162711864406,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 4,
+          "analyses": 4,
+          "meshBytes": 525888,
+          "vertices": 9528,
+          "analysisMs": 2.6598,
+          "generationMs": 4.2157
+        },
+        "worldMeshBytes": 16089192
+      },
+      {
+        "scene": "mixed",
+        "view": "low",
+        "cpuMs": 1.7691649999999999,
+        "gpuMs": 0.0672542372881356,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 5,
+          "analyses": 5,
+          "meshBytes": 472080,
+          "vertices": 8568,
+          "analysisMs": 0.9506,
+          "generationMs": 2.6607
+        },
+        "worldMeshBytes": 331776
+      },
+      {
+        "scene": "mixed",
+        "view": "oblique",
+        "cpuMs": 1.7860650000000002,
+        "gpuMs": 0.0750817627118644,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 5,
+          "analyses": 5,
+          "meshBytes": 472080,
+          "vertices": 8568,
+          "analysisMs": 0.9506,
+          "generationMs": 2.6607
+        },
+        "worldMeshBytes": 1418688
+      },
+      {
+        "scene": "mixed",
+        "view": "high",
+        "cpuMs": 2.8947833333333333,
+        "gpuMs": 13.751296,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 5,
+          "analyses": 5,
+          "meshBytes": 472080,
+          "vertices": 8568,
+          "analysisMs": 0.9506,
+          "generationMs": 2.6607
+        },
+        "worldMeshBytes": 5232600
+      },
+      {
+        "scene": "mixed",
+        "view": "overhead",
+        "cpuMs": 2.097818333333333,
+        "gpuMs": 0.6318600677966102,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 5,
+          "analyses": 5,
+          "meshBytes": 472080,
+          "vertices": 8568,
+          "analysisMs": 0.9506,
+          "generationMs": 2.6607
+        },
+        "worldMeshBytes": 5914728
+      },
+      {
+        "scene": "rock",
+        "view": "low",
+        "cpuMs": 2.03387,
+        "gpuMs": 0.06706332203389831,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 7,
+          "analyses": 7,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 0.876,
+          "generationMs": 1.7857
+        },
+        "worldMeshBytes": 0
+      },
+      {
+        "scene": "rock",
+        "view": "oblique",
+        "cpuMs": 1.8022783333333332,
+        "gpuMs": 0.07515118644067796,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 7,
+          "analyses": 7,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 0.876,
+          "generationMs": 1.7857
+        },
+        "worldMeshBytes": 711936
+      },
+      {
+        "scene": "rock",
+        "view": "high",
+        "cpuMs": 2.8098233333333327,
+        "gpuMs": 7.3313019661016945,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 7,
+          "analyses": 7,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 0.876,
+          "generationMs": 1.7857
+        },
+        "worldMeshBytes": 2089368
+      },
+      {
+        "scene": "rock",
+        "view": "overhead",
+        "cpuMs": 2.0335883333333338,
+        "gpuMs": 0.08844583050847458,
+        "gpuSamples": 59,
+        "cpuSamples": 60,
+        "background": {
+          "builds": 7,
+          "analyses": 7,
+          "meshBytes": 449280,
+          "vertices": 8160,
+          "analysisMs": 0.876,
+          "generationMs": 1.7857
+        },
+        "worldMeshBytes": 2776680
+      }
+    ],
+    "framesEach": 2160,
+    "glErrors": 0,
+    "hostTextureStateUnchanged": true,
+    "nativeSaveLoad": "PASS disposable profile"
+  },
+  "physicsNetworkingSaveFormatsChanged": false,
+  "primarySavesModified": false,
+  "publishedArtifactsModified": false,
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "independentMultiplayerAcceptance": "NOT TESTED",
+  "pushedPublishedWorkshopUpdated": false
+}
