@@ -1,0 +1,2567 @@
+{
+  "task": "A2-15a.2",
+  "baselineCommit": "73796485c4a71b4c56a0a506f7d1cef72d496d8e",
+  "branch": "main",
+  "finalJarSha256": "0141d90fdb636cfe11612d207aaf76d54dc300d738411107fbe8343600ef9fd6",
+  "payloadIdentity": "payload1-a7ca2233fa43e23686b2c38af8bfae2f382fc56595598ee365dd07482ac598ef",
+  "testsPerRuntime": 151,
+  "stockSteam25Failures": 0,
+  "nativeChecksPerRuntime": 1802,
+  "geometryChecksPerRuntime": 1143622,
+  "newChecksPerRuntime": {
+    "readableProfile": 17589,
+    "landscape": 10072,
+    "composition": 41012,
+    "features": 272844
+  },
+  "actualSteamGlFramesPerBuild": 2592,
+  "actualSteamGlViewsPerBuild": 36,
+  "glErrors": 0,
+  "realNativeSaveLoad": "PASS disposable mixed scene",
+  "sourceFreshRecompiledClasses": 929,
+  "unchangedExistingRuntimeClasses": 1031,
+  "previousAlphaFilesPreserved": 2065,
+  "previousDiagnosticAssetsPreserved": 60,
+  "physicalWindowsAcceptance": false,
+  "physicalLinuxAcceptance": false,
+  "independentMultiplayerAcceptance": false,
+  "nativeMapStateUnchanged": true,
+  "hostAtlasStateUnchanged": true,
+  "sourceBinaryCorrespondence": "PASS",
+  "jarFolderFingerprint": "PASS Java17 and Steam25",
+  "performance": {
+    "preparation": {
+      "method": "Identical compiled probe, native64/512 maps, ocean/mixed borders, MockGL real Mesh uploads. Shared original terrain prebuilt and excluded.3 warmup/7 timed cold background rebuilds:median/min/max; first cold includes JIT. Allocation optional (-1 unavailable on stripped Steam runtime). Separate10000 cache-hit calls. No concurrent regressions or game processes; not GPU/FPS.",
+      "baseline": "73796485c4a71b4c56a0a506f7d1cef72d496d8e",
+      "data": {
+        "java17": {
+          "before": [
+            "HORIZON,64,ocean,medianMs=2.433000,minMs=2.079600,maxMs=4.576000,coldMs=25.273100,allocatedBytes=1637720,meshBytes=359424,vertices=6528,triangles=2176,materialBatches=2,cacheHitMs=0.000673,profileFingerprint=3479485272184183432,geometryFingerprint=-1345395307867322879",
+            "HORIZON,64,mixed,medianMs=2.197300,minMs=1.458900,maxMs=6.534500,coldMs=5.136300,allocatedBytes=1677592,meshBytes=380208,vertices=6900,triangles=2300,materialBatches=2,cacheHitMs=0.000299,profileFingerprint=2381727897214222152,geometryFingerprint=7647702386714508727",
+            "HORIZON,512,ocean,medianMs=6.038700,minMs=5.887400,maxMs=6.283100,coldMs=13.992100,allocatedBytes=9727672,meshBytes=2101248,vertices=38400,triangles=12800,materialBatches=2,cacheHitMs=0.000119,profileFingerprint=-8877382776418020344,geometryFingerprint=9182482921990317225",
+            "HORIZON,512,mixed,medianMs=4.715600,minMs=4.476000,maxMs=5.480000,coldMs=10.745100,allocatedBytes=9796928,meshBytes=2198640,vertices=40140,triangles=13380,materialBatches=2,cacheHitMs=0.000178,profileFingerprint=652362568165429192,geometryFingerprint=1090028014531093200"
+          ],
+          "after": [
+            "HORIZON,64,ocean,medianMs=5.177900,minMs=3.256900,maxMs=7.815300,coldMs=33.134600,allocatedBytes=4884720,meshBytes=807936,vertices=13056,triangles=4352,materialBatches=2,cacheHitMs=0.000723,profileFingerprint=5766886013841201800,geometryFingerprint=3030913625262087045",
+            "HORIZON,64,mixed,medianMs=3.435200,minMs=2.595500,maxMs=4.351700,coldMs=14.634500,allocatedBytes=3998864,meshBytes=676044,vertices=10989,triangles=3663,materialBatches=2,cacheHitMs=0.000260,profileFingerprint=-7152692331162763448,geometryFingerprint=4521891211547155627",
+            "HORIZON,512,ocean,medianMs=15.236100,minMs=12.523000,maxMs=21.606200,coldMs=20.234100,allocatedBytes=34014432,meshBytes=4804608,vertices=76800,triangles=25600,materialBatches=2,cacheHitMs=0.000218,profileFingerprint=-1536845349746715640,geometryFingerprint=-6729289771620359627",
+            "HORIZON,512,mixed,medianMs=14.687400,minMs=10.157800,maxMs=17.011700,coldMs=13.292400,allocatedBytes=24984144,meshBytes=3288444,vertices=52737,triangles=17579,materialBatches=2,cacheHitMs=0.000114,profileFingerprint=1252892752557313992,geometryFingerprint=5284667243168576532"
+          ]
+        },
+        "steam25": {
+          "before": [
+            "HORIZON,64,ocean,medianMs=2.467100,minMs=2.083000,maxMs=5.253900,coldMs=25.016300,allocatedBytes=-1,meshBytes=359424,vertices=6528,triangles=2176,materialBatches=2,cacheHitMs=0.000904,profileFingerprint=3479485272184183432,geometryFingerprint=-1345395307867322879",
+            "HORIZON,64,mixed,medianMs=2.210700,minMs=1.915700,maxMs=2.661100,coldMs=5.937200,allocatedBytes=-1,meshBytes=380208,vertices=6900,triangles=2300,materialBatches=2,cacheHitMs=0.000326,profileFingerprint=2381727897214222152,geometryFingerprint=7647702386714508727",
+            "HORIZON,512,ocean,medianMs=6.156200,minMs=5.687600,maxMs=6.769800,coldMs=8.886900,allocatedBytes=-1,meshBytes=2101248,vertices=38400,triangles=12800,materialBatches=2,cacheHitMs=0.000121,profileFingerprint=-8877382776418020344,geometryFingerprint=9182482921990317225",
+            "HORIZON,512,mixed,medianMs=4.857000,minMs=4.587900,maxMs=5.325200,coldMs=6.975300,allocatedBytes=-1,meshBytes=2198640,vertices=40140,triangles=13380,materialBatches=2,cacheHitMs=0.000352,profileFingerprint=652362568165429192,geometryFingerprint=1090028014531093200"
+          ],
+          "after": [
+            "HORIZON,64,ocean,medianMs=4.589300,minMs=4.307900,maxMs=5.122600,coldMs=32.314300,allocatedBytes=-1,meshBytes=807936,vertices=13056,triangles=4352,materialBatches=2,cacheHitMs=0.000676,profileFingerprint=5766886013841201800,geometryFingerprint=3030913625262087045",
+            "HORIZON,64,mixed,medianMs=3.555000,minMs=3.129400,maxMs=5.268900,coldMs=14.437500,allocatedBytes=-1,meshBytes=676044,vertices=10989,triangles=3663,materialBatches=2,cacheHitMs=0.000282,profileFingerprint=-7152692331162763448,geometryFingerprint=4521891211547155627",
+            "HORIZON,512,ocean,medianMs=15.466600,minMs=12.217200,maxMs=19.620000,coldMs=23.793900,allocatedBytes=-1,meshBytes=4804608,vertices=76800,triangles=25600,materialBatches=2,cacheHitMs=0.000125,profileFingerprint=-1536845349746715640,geometryFingerprint=-6729289771620359627",
+            "HORIZON,512,mixed,medianMs=11.556900,minMs=9.213900,maxMs=14.528300,coldMs=20.314800,allocatedBytes=-1,meshBytes=3288444,vertices=52737,triangles=17579,materialBatches=2,cacheHitMs=0.000103,profileFingerprint=1252892752557313992,geometryFingerprint=5284667243168576532"
+          ]
+        }
+      }
+    },
+    "graphics": {
+      "scope": "Actual stock Steam25 SDL renderer; sequential process runs at 960x600/30FPS cap. CPU submission and asynchronous GPU duration are not uncapped FPS or physical gameplay acceptance. Screenshot frames excluded from timing. Night and below-surface background views included; no controller immersion/tint acceptance.",
+      "beforeResult": {
+        "status": "PASS",
+        "frames": 2592,
+        "views": 36,
+        "glErrors": 0,
+        "hostTextureStateUnchanged": true,
+        "mapAndEntityStateUnchanged": true,
+        "scope": "Stock Steam25 SDL; identical scripted six-map/day-night/high/native-submerged/outside-background-submerged camera fixture; not physical controls, immersion tint, Linux or multiplayer acceptance"
+      },
+      "afterResult": {
+        "status": "PASS",
+        "frames": 2592,
+        "views": 36,
+        "glErrors": 0,
+        "hostTextureStateUnchanged": true,
+        "mapAndEntityStateUnchanged": true,
+        "scope": "Stock Steam25 SDL; identical scripted six-map/day-night/high/native-submerged/outside-background-submerged camera fixture; not physical controls, immersion tint, Linux or multiplayer acceptance"
+      },
+      "beforeArtifact": {
+        "originalJarSha256": "0faa4ce86c98ac4b3595fee072eb516ada9d5da252877193481291ca933aa333",
+        "onlyReplacedClass": "fpv/SmokeHarness.class",
+        "replacementSha256": "d7a952b6075b0aa21b6328f72e7f113bb458fce846144256a765528267685507",
+        "scope": "Identical compiled six-map coastal/hot/industrial camera, atlas-state, CPU and async GPU probe; isolated profile. Delivered JAR retains normal entry."
+      },
+      "afterArtifact": {
+        "originalJarSha256": "0141d90fdb636cfe11612d207aaf76d54dc300d738411107fbe8343600ef9fd6",
+        "onlyReplacedClass": "fpv/SmokeHarness.class",
+        "replacementSha256": "d7a952b6075b0aa21b6328f72e7f113bb458fce846144256a765528267685507",
+        "scope": "Identical compiled six-map coastal/hot/industrial camera, atlas-state, CPU and async GPU probe; isolated profile. Delivered JAR retains normal entry."
+      },
+      "views": [
+        {
+          "scene": "desertcoast",
+          "view": "low",
+          "beforeCpuMs": 1.4339255319148938,
+          "afterCpuMs": 1.8947893617021279,
+          "beforeGpuMs": 0.794624,
+          "afterGpuMs": 0.7640632888888889,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 31.8112,
+            "generationMs": 14.6739
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 36.6297,
+            "generationMs": 19.8554,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "oblique",
+          "beforeCpuMs": 2.3179978723404244,
+          "afterCpuMs": 2.2761106382978724,
+          "beforeGpuMs": 14.837077333333333,
+          "afterGpuMs": 15.487732869565217,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 46,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 31.8112,
+            "generationMs": 14.6739
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 36.6297,
+            "generationMs": 19.8554,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "high",
+          "beforeCpuMs": 3.0309978723404254,
+          "afterCpuMs": 2.9268574468085107,
+          "beforeGpuMs": 27.888951652173915,
+          "afterGpuMs": 28.112829217391305,
+          "beforeGpuSamples": 46,
+          "afterGpuSamples": 46,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 31.8112,
+            "generationMs": 14.6739
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 36.6297,
+            "generationMs": 19.8554,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "overhead",
+          "beforeCpuMs": 1.7790063829787237,
+          "afterCpuMs": 1.8431106382978732,
+          "beforeGpuMs": 1.7710421333333333,
+          "afterGpuMs": 2.0307968,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 31.8112,
+            "generationMs": 14.6739
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 36.6297,
+            "generationMs": 19.8554,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "night",
+          "beforeCpuMs": 1.5725382978723395,
+          "afterCpuMs": 1.181240425531915,
+          "beforeGpuMs": 0.7948515555555555,
+          "afterGpuMs": 0.7994709333333333,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 31.8112,
+            "generationMs": 14.6739
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 36.6297,
+            "generationMs": 19.8554,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "submerged",
+          "beforeCpuMs": 1.3532893617021275,
+          "afterCpuMs": 1.2621404255319146,
+          "beforeGpuMs": 0.7945329777777779,
+          "afterGpuMs": 0.8401806222222222,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 31.8112,
+            "generationMs": 14.6739
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 36.6297,
+            "generationMs": 19.8554,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "submerged-background",
+          "beforeCpuMs": 1.6670553191489368,
+          "afterCpuMs": 1.224995744680851,
+          "beforeGpuMs": 0.8579527111111112,
+          "afterGpuMs": 0.8566784000000001,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 31.8112,
+            "generationMs": 14.6739
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 36.6297,
+            "generationMs": 19.8554,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "low",
+          "beforeCpuMs": 1.7697553191489355,
+          "afterCpuMs": 1.5010872340425534,
+          "beforeGpuMs": 0.8095165217391305,
+          "afterGpuMs": 0.8371768888888889,
+          "beforeGpuSamples": 46,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.9683,
+            "generationMs": 2.7992
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.5856,
+            "generationMs": 4.0416,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "oblique",
+          "beforeCpuMs": 2.7718851063829777,
+          "afterCpuMs": 2.231193617021276,
+          "beforeGpuMs": 14.8752384,
+          "afterGpuMs": 15.149147022222223,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.9683,
+            "generationMs": 2.7992
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.5856,
+            "generationMs": 4.0416,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "high",
+          "beforeCpuMs": 2.3477489361702135,
+          "afterCpuMs": 2.218474468085106,
+          "beforeGpuMs": 27.958205217391306,
+          "afterGpuMs": 16.632149333333334,
+          "beforeGpuSamples": 46,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.9683,
+            "generationMs": 2.7992
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.5856,
+            "generationMs": 4.0416,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "overhead",
+          "beforeCpuMs": 1.709353191489362,
+          "afterCpuMs": 1.6225553191489357,
+          "beforeGpuMs": 1.092152888888889,
+          "afterGpuMs": 2.215822222222222,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.9683,
+            "generationMs": 2.7992
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.5856,
+            "generationMs": 4.0416,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "night",
+          "beforeCpuMs": 1.0638659574468086,
+          "afterCpuMs": 1.3373425531914893,
+          "beforeGpuMs": 0.8083456,
+          "afterGpuMs": 0.8124643555555555,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.9683,
+            "generationMs": 2.7992
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.5856,
+            "generationMs": 4.0416,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "submerged",
+          "beforeCpuMs": 1.1605638297872345,
+          "afterCpuMs": 1.2926702127659573,
+          "beforeGpuMs": 0.8077539555555555,
+          "afterGpuMs": 0.815468088888889,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.9683,
+            "generationMs": 2.7992
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.5856,
+            "generationMs": 4.0416,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "submerged-background",
+          "beforeCpuMs": 1.1163851063829784,
+          "afterCpuMs": 1.3176574468085105,
+          "beforeGpuMs": 0.8688753777777777,
+          "afterGpuMs": 0.8671914666666667,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.9683,
+            "generationMs": 2.7992
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.5856,
+            "generationMs": 4.0416,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "forest",
+          "view": "low",
+          "beforeCpuMs": 1.3461914893617022,
+          "afterCpuMs": 1.051736170212766,
+          "beforeGpuMs": 0.8168106666666666,
+          "afterGpuMs": 0.6833038222222222,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 531936,
+            "vertices": 9636,
+            "analysisMs": 111.4303,
+            "generationMs": 4.1743
+          },
+          "afterBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "analysisMs": 124.2239,
+            "generationMs": 2.9711,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "forest",
+          "view": "oblique",
+          "beforeCpuMs": 1.9382404255319143,
+          "afterCpuMs": 2.055755319148936,
+          "beforeGpuMs": 15.326822400000001,
+          "afterGpuMs": 30.06762097777778,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 531936,
+            "vertices": 9636,
+            "analysisMs": 111.4303,
+            "generationMs": 4.1743
+          },
+          "afterBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "analysisMs": 124.2239,
+            "generationMs": 2.9711,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "forest",
+          "view": "high",
+          "beforeCpuMs": 3.096391489361701,
+          "afterCpuMs": 2.8859489361702133,
+          "beforeGpuMs": 27.620441043478262,
+          "afterGpuMs": 27.268407652173913,
+          "beforeGpuSamples": 46,
+          "afterGpuSamples": 46,
+          "beforeBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 531936,
+            "vertices": 9636,
+            "analysisMs": 111.4303,
+            "generationMs": 4.1743
+          },
+          "afterBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "analysisMs": 124.2239,
+            "generationMs": 2.9711,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "forest",
+          "view": "overhead",
+          "beforeCpuMs": 1.5440468085106387,
+          "afterCpuMs": 1.5083893617021273,
+          "beforeGpuMs": 3.281874488888889,
+          "afterGpuMs": 3.592487822222222,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 531936,
+            "vertices": 9636,
+            "analysisMs": 111.4303,
+            "generationMs": 4.1743
+          },
+          "afterBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "analysisMs": 124.2239,
+            "generationMs": 2.9711,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "forest",
+          "view": "night",
+          "beforeCpuMs": 1.6956340425531917,
+          "afterCpuMs": 1.4452425531914896,
+          "beforeGpuMs": 0.8153998222222222,
+          "afterGpuMs": 0.6833720888888889,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 531936,
+            "vertices": 9636,
+            "analysisMs": 111.4303,
+            "generationMs": 4.1743
+          },
+          "afterBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "analysisMs": 124.2239,
+            "generationMs": 2.9711,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "low",
+          "beforeCpuMs": 1.8109659574468084,
+          "afterCpuMs": 1.7299085106382979,
+          "beforeGpuMs": 1.0053176888888888,
+          "afterGpuMs": 0.9211448888888889,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 2.971,
+            "generationMs": 8.3354
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 3.1216,
+            "generationMs": 2.941,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "oblique",
+          "beforeCpuMs": 1.486970212765957,
+          "afterCpuMs": 2.2912595744680857,
+          "beforeGpuMs": 4.858151822222222,
+          "afterGpuMs": 6.535714133333334,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 2.971,
+            "generationMs": 8.3354
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 3.1216,
+            "generationMs": 2.941,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "high",
+          "beforeCpuMs": 2.1948382978723404,
+          "afterCpuMs": 2.4366170212765956,
+          "beforeGpuMs": 14.70295608888889,
+          "afterGpuMs": 15.0812672,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 2.971,
+            "generationMs": 8.3354
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 3.1216,
+            "generationMs": 2.941,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "overhead",
+          "beforeCpuMs": 2.077772340425532,
+          "afterCpuMs": 1.5558446808510635,
+          "beforeGpuMs": 1.1263317333333334,
+          "afterGpuMs": 0.8612522666666668,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 2.971,
+            "generationMs": 8.3354
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 3.1216,
+            "generationMs": 2.941,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "night",
+          "beforeCpuMs": 1.8212808510638299,
+          "afterCpuMs": 1.658263829787234,
+          "beforeGpuMs": 1.004703288888889,
+          "afterGpuMs": 0.9202574222222222,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 2.971,
+            "generationMs": 8.3354
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 3.1216,
+            "generationMs": 2.941,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "submerged",
+          "beforeCpuMs": 2.075948936170213,
+          "afterCpuMs": 1.7932829787234046,
+          "beforeGpuMs": 0.830099911111111,
+          "afterGpuMs": 0.8252074666666667,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 2.971,
+            "generationMs": 8.3354
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 3.1216,
+            "generationMs": 2.941,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "submerged-background",
+          "beforeCpuMs": 1.162068085106383,
+          "afterCpuMs": 1.59298085106383,
+          "beforeGpuMs": 0.8822101333333333,
+          "afterGpuMs": 0.8677831111111112,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 2.971,
+            "generationMs": 8.3354
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 3.1216,
+            "generationMs": 2.941,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "lava",
+          "view": "low",
+          "beforeCpuMs": 1.8873914893617019,
+          "afterCpuMs": 1.4419148936170212,
+          "beforeGpuMs": 0.8086869333333333,
+          "afterGpuMs": 0.6877050434782609,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 46,
+          "beforeBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 0.9323,
+            "generationMs": 1.6609
+          },
+          "afterBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 543408,
+            "vertices": 8796,
+            "analysisMs": 2.6745,
+            "generationMs": 1.9174,
+            "islands": 0,
+            "outcrops": 8,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "lava",
+          "view": "oblique",
+          "beforeCpuMs": 1.7251531914893614,
+          "afterCpuMs": 1.689402127659574,
+          "beforeGpuMs": 5.2783104000000005,
+          "afterGpuMs": 5.508733155555555,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 0.9323,
+            "generationMs": 1.6609
+          },
+          "afterBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 543408,
+            "vertices": 8796,
+            "analysisMs": 2.6745,
+            "generationMs": 1.9174,
+            "islands": 0,
+            "outcrops": 8,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "lava",
+          "view": "high",
+          "beforeCpuMs": 1.9780978723404252,
+          "afterCpuMs": 2.1655553191489365,
+          "beforeGpuMs": 8.277447111111112,
+          "afterGpuMs": 8.699744711111112,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 0.9323,
+            "generationMs": 1.6609
+          },
+          "afterBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 543408,
+            "vertices": 8796,
+            "analysisMs": 2.6745,
+            "generationMs": 1.9174,
+            "islands": 0,
+            "outcrops": 8,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "lava",
+          "view": "overhead",
+          "beforeCpuMs": 2.1009851063829785,
+          "afterCpuMs": 1.7065489361702129,
+          "beforeGpuMs": 1.0722645333333334,
+          "afterGpuMs": 0.7746446222222223,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 0.9323,
+            "generationMs": 1.6609
+          },
+          "afterBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 543408,
+            "vertices": 8796,
+            "analysisMs": 2.6745,
+            "generationMs": 1.9174,
+            "islands": 0,
+            "outcrops": 8,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "lava",
+          "view": "night",
+          "beforeCpuMs": 1.9026042553191482,
+          "afterCpuMs": 1.3409574468085108,
+          "beforeGpuMs": 0.8080952888888889,
+          "afterGpuMs": 0.6891975111111112,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 0.9323,
+            "generationMs": 1.6609
+          },
+          "afterBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 543408,
+            "vertices": 8796,
+            "analysisMs": 2.6745,
+            "generationMs": 1.9174,
+            "islands": 0,
+            "outcrops": 8,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "industrial",
+          "view": "low",
+          "beforeCpuMs": 1.6142063829787234,
+          "afterCpuMs": 1.685695744680851,
+          "beforeGpuMs": 2.2090638222222223,
+          "afterGpuMs": 1.3695658666666668,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 449280,
+            "vertices": 8160,
+            "analysisMs": 0.8584,
+            "generationMs": 1.4324
+          },
+          "afterBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 515760,
+            "vertices": 8340,
+            "analysisMs": 2.8012,
+            "generationMs": 3.2463,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 6,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "industrial",
+          "view": "oblique",
+          "beforeCpuMs": 3.187861702127659,
+          "afterCpuMs": 2.0412617021276596,
+          "beforeGpuMs": 1.6551936,
+          "afterGpuMs": 1.6960170666666667,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 449280,
+            "vertices": 8160,
+            "analysisMs": 0.8584,
+            "generationMs": 1.4324
+          },
+          "afterBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 515760,
+            "vertices": 8340,
+            "analysisMs": 2.8012,
+            "generationMs": 3.2463,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 6,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "industrial",
+          "view": "high",
+          "beforeCpuMs": 3.0463148936170215,
+          "afterCpuMs": 2.5025170212765957,
+          "beforeGpuMs": 2.724363377777778,
+          "afterGpuMs": 2.6829710222222225,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 449280,
+            "vertices": 8160,
+            "analysisMs": 0.8584,
+            "generationMs": 1.4324
+          },
+          "afterBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 515760,
+            "vertices": 8340,
+            "analysisMs": 2.8012,
+            "generationMs": 3.2463,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 6,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "industrial",
+          "view": "overhead",
+          "beforeCpuMs": 2.726389361702128,
+          "afterCpuMs": 2.4165872340425536,
+          "beforeGpuMs": 1.2654592,
+          "afterGpuMs": 1.2403143111111112,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 449280,
+            "vertices": 8160,
+            "analysisMs": 0.8584,
+            "generationMs": 1.4324
+          },
+          "afterBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 515760,
+            "vertices": 8340,
+            "analysisMs": 2.8012,
+            "generationMs": 3.2463,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 6,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "industrial",
+          "view": "night",
+          "beforeCpuMs": 2.101874468085107,
+          "afterCpuMs": 1.5117787234042555,
+          "beforeGpuMs": 1.4621809777777777,
+          "afterGpuMs": 0.7198947555555556,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 449280,
+            "vertices": 8160,
+            "analysisMs": 0.8584,
+            "generationMs": 1.4324
+          },
+          "afterBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 515760,
+            "vertices": 8340,
+            "analysisMs": 2.8012,
+            "generationMs": 3.2463,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 6,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        }
+      ]
+    },
+    "graphicsReverseRepeat": {
+      "scope": "Actual stock Steam25 SDL renderer; sequential process runs at 960x600/30FPS cap. CPU submission and asynchronous GPU duration are not uncapped FPS or physical gameplay acceptance. Screenshot frames excluded from timing. Night and below-surface background views included; no controller immersion/tint acceptance.",
+      "beforeResult": {
+        "status": "PASS",
+        "frames": 2592,
+        "views": 36,
+        "glErrors": 0,
+        "hostTextureStateUnchanged": true,
+        "mapAndEntityStateUnchanged": true,
+        "scope": "Stock Steam25 SDL; identical scripted six-map/day-night/high/native-submerged/outside-background-submerged camera fixture; not physical controls, immersion tint, Linux or multiplayer acceptance"
+      },
+      "afterResult": {
+        "status": "PASS",
+        "frames": 2592,
+        "views": 36,
+        "glErrors": 0,
+        "hostTextureStateUnchanged": true,
+        "mapAndEntityStateUnchanged": true,
+        "scope": "Stock Steam25 SDL; identical scripted six-map/day-night/high/native-submerged/outside-background-submerged camera fixture; not physical controls, immersion tint, Linux or multiplayer acceptance"
+      },
+      "beforeArtifact": {
+        "originalJarSha256": "0faa4ce86c98ac4b3595fee072eb516ada9d5da252877193481291ca933aa333",
+        "onlyReplacedClass": "fpv/SmokeHarness.class",
+        "replacementSha256": "d7a952b6075b0aa21b6328f72e7f113bb458fce846144256a765528267685507",
+        "scope": "Identical compiled six-map coastal/hot/industrial camera, atlas-state, CPU and async GPU probe; isolated profile. Delivered JAR retains normal entry."
+      },
+      "afterArtifact": {
+        "originalJarSha256": "b681f92de0aece0f4fd82ca9bf412a5db11afe1818779b57a3ce2e378c1b093f",
+        "onlyReplacedClass": "fpv/SmokeHarness.class",
+        "replacementSha256": "d7a952b6075b0aa21b6328f72e7f113bb458fce846144256a765528267685507",
+        "scope": "Identical compiled six-map coastal/hot/industrial camera, atlas-state, CPU and async GPU probe; isolated profile. Delivered JAR retains normal entry."
+      },
+      "views": [
+        {
+          "scene": "desertcoast",
+          "view": "low",
+          "beforeCpuMs": 1.7123765957446813,
+          "afterCpuMs": 1.9179914893617023,
+          "beforeGpuMs": 0.7888361739130435,
+          "afterGpuMs": 0.8063332173913044,
+          "beforeGpuSamples": 46,
+          "afterGpuSamples": 46,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 29.9726,
+            "generationMs": 15.5403
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 33.3834,
+            "generationMs": 19.0847,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "oblique",
+          "beforeCpuMs": 2.2964808510638304,
+          "afterCpuMs": 2.183402127659574,
+          "beforeGpuMs": 15.062129777777779,
+          "afterGpuMs": 15.281425066666666,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 29.9726,
+            "generationMs": 15.5403
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 33.3834,
+            "generationMs": 19.0847,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "high",
+          "beforeCpuMs": 3.2240234042553193,
+          "afterCpuMs": 2.952295744680852,
+          "beforeGpuMs": 25.955350755555557,
+          "afterGpuMs": 27.15685843478261,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 46,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 29.9726,
+            "generationMs": 15.5403
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 33.3834,
+            "generationMs": 19.0847,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "overhead",
+          "beforeCpuMs": 2.1403680851063824,
+          "afterCpuMs": 2.1399255319148933,
+          "beforeGpuMs": 1.1106986666666667,
+          "afterGpuMs": 0.9769187555555556,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 29.9726,
+            "generationMs": 15.5403
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 33.3834,
+            "generationMs": 19.0847,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "night",
+          "beforeCpuMs": 1.3911978723404257,
+          "afterCpuMs": 1.5573851063829784,
+          "beforeGpuMs": 0.7943281777777778,
+          "afterGpuMs": 0.8084821333333333,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 29.9726,
+            "generationMs": 15.5403
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 33.3834,
+            "generationMs": 19.0847,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "submerged",
+          "beforeCpuMs": 1.2864425531914891,
+          "afterCpuMs": 1.3155234042553192,
+          "beforeGpuMs": 0.7943964444444445,
+          "afterGpuMs": 0.8162190222222222,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 29.9726,
+            "generationMs": 15.5403
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 33.3834,
+            "generationMs": 19.0847,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "desertcoast",
+          "view": "submerged-background",
+          "beforeCpuMs": 1.1868765957446805,
+          "afterCpuMs": 1.3687893617021276,
+          "beforeGpuMs": 0.8554723555555556,
+          "afterGpuMs": 0.8555633777777777,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 451152,
+            "vertices": 8196,
+            "analysisMs": 29.9726,
+            "generationMs": 15.5403
+          },
+          "afterBackground": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 978024,
+            "vertices": 15864,
+            "analysisMs": 33.3834,
+            "generationMs": 19.0847,
+            "islands": 7,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "low",
+          "beforeCpuMs": 1.5933914893617016,
+          "afterCpuMs": 1.7645127659574462,
+          "beforeGpuMs": 0.8084138666666667,
+          "afterGpuMs": 0.8189269333333333,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.5442,
+            "generationMs": 2.7461
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.7332,
+            "generationMs": 3.6915,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "oblique",
+          "beforeCpuMs": 2.486280851063829,
+          "afterCpuMs": 2.3099297872340423,
+          "beforeGpuMs": 14.942003199999998,
+          "afterGpuMs": 15.266793244444445,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.5442,
+            "generationMs": 2.7461
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.7332,
+            "generationMs": 3.6915,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "high",
+          "beforeCpuMs": 2.2427936170212774,
+          "afterCpuMs": 1.916555319148936,
+          "beforeGpuMs": 29.00115911111111,
+          "afterGpuMs": 16.524288,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.5442,
+            "generationMs": 2.7461
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.7332,
+            "generationMs": 3.6915,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "overhead",
+          "beforeCpuMs": 2.138427659574467,
+          "afterCpuMs": 1.712848936170213,
+          "beforeGpuMs": 1.0919025777777778,
+          "afterGpuMs": 0.9456071111111112,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.5442,
+            "generationMs": 2.7461
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.7332,
+            "generationMs": 3.6915,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "night",
+          "beforeCpuMs": 2.000897872340426,
+          "afterCpuMs": 1.8376276595744674,
+          "beforeGpuMs": 0.8094606222222223,
+          "afterGpuMs": 0.8207473777777777,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.5442,
+            "generationMs": 2.7461
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.7332,
+            "generationMs": 3.6915,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "submerged",
+          "beforeCpuMs": 1.896374468085106,
+          "afterCpuMs": 1.787904255319149,
+          "beforeGpuMs": 0.8095744,
+          "afterGpuMs": 0.8186311111111111,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.5442,
+            "generationMs": 2.7461
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.7332,
+            "generationMs": 3.6915,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "watermountain",
+          "view": "submerged-background",
+          "beforeCpuMs": 1.7751680851063827,
+          "afterCpuMs": 1.2984744680851064,
+          "beforeGpuMs": 0.8707640888888889,
+          "afterGpuMs": 0.8941340444444444,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.5442,
+            "generationMs": 2.7461
+          },
+          "afterBackground": {
+            "builds": 2,
+            "analyses": 2,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "analysisMs": 2.7332,
+            "generationMs": 3.6915,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "forest",
+          "view": "low",
+          "beforeCpuMs": 1.668444680851064,
+          "afterCpuMs": 1.2368148936170213,
+          "beforeGpuMs": 0.8427292444444444,
+          "afterGpuMs": 0.6839409777777778,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 531936,
+            "vertices": 9636,
+            "analysisMs": 107.7198,
+            "generationMs": 3.3081
+          },
+          "afterBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "analysisMs": 111.1284,
+            "generationMs": 3.7208,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "forest",
+          "view": "oblique",
+          "beforeCpuMs": 2.9007680851063826,
+          "afterCpuMs": 1.8434340425531917,
+          "beforeGpuMs": 29.167593739130435,
+          "afterGpuMs": 30.222267733333336,
+          "beforeGpuSamples": 46,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 531936,
+            "vertices": 9636,
+            "analysisMs": 107.7198,
+            "generationMs": 3.3081
+          },
+          "afterBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "analysisMs": 111.1284,
+            "generationMs": 3.7208,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "forest",
+          "view": "high",
+          "beforeCpuMs": 2.8100531914893616,
+          "afterCpuMs": 2.1483340425531923,
+          "beforeGpuMs": 26.89153113043478,
+          "afterGpuMs": 28.723600695652177,
+          "beforeGpuSamples": 46,
+          "afterGpuSamples": 46,
+          "beforeBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 531936,
+            "vertices": 9636,
+            "analysisMs": 107.7198,
+            "generationMs": 3.3081
+          },
+          "afterBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "analysisMs": 111.1284,
+            "generationMs": 3.7208,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "forest",
+          "view": "overhead",
+          "beforeCpuMs": 2.1406000000000005,
+          "afterCpuMs": 1.8544127659574468,
+          "beforeGpuMs": 3.3220607999999996,
+          "afterGpuMs": 3.0027776,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 531936,
+            "vertices": 9636,
+            "analysisMs": 107.7198,
+            "generationMs": 3.3081
+          },
+          "afterBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "analysisMs": 111.1284,
+            "generationMs": 3.7208,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "forest",
+          "view": "night",
+          "beforeCpuMs": 1.9682978723404256,
+          "afterCpuMs": 1.1907999999999999,
+          "beforeGpuMs": 0.8159459555555555,
+          "afterGpuMs": 0.6833948444444444,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 531936,
+            "vertices": 9636,
+            "analysisMs": 107.7198,
+            "generationMs": 3.3081
+          },
+          "afterBackground": {
+            "builds": 3,
+            "analyses": 3,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "analysisMs": 111.1284,
+            "generationMs": 3.7208,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "low",
+          "beforeCpuMs": 1.9575212765957444,
+          "afterCpuMs": 1.516204255319149,
+          "beforeGpuMs": 1.0040433777777777,
+          "afterGpuMs": 0.9321585777777778,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 1.4863,
+            "generationMs": 1.7039
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 2.8938,
+            "generationMs": 3.3344,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "oblique",
+          "beforeCpuMs": 2.3646978723404266,
+          "afterCpuMs": 2.4990829787234037,
+          "beforeGpuMs": 4.573707377777778,
+          "afterGpuMs": 4.5220295111111115,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 1.4863,
+            "generationMs": 1.7039
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 2.8938,
+            "generationMs": 3.3344,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "high",
+          "beforeCpuMs": 2.3447574468085106,
+          "afterCpuMs": 2.9731872340425523,
+          "beforeGpuMs": 15.073598577777776,
+          "afterGpuMs": 14.982010434782609,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 46,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 1.4863,
+            "generationMs": 1.7039
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 2.8938,
+            "generationMs": 3.3344,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "overhead",
+          "beforeCpuMs": 1.5315489361702133,
+          "afterCpuMs": 1.812623404255319,
+          "beforeGpuMs": 1.1508394666666666,
+          "afterGpuMs": 0.8621624888888888,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 1.4863,
+            "generationMs": 1.7039
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 2.8938,
+            "generationMs": 3.3344,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "night",
+          "beforeCpuMs": 1.8852617021276592,
+          "afterCpuMs": 1.7412787234042555,
+          "beforeGpuMs": 1.0053176888888888,
+          "afterGpuMs": 0.9232384,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 1.4863,
+            "generationMs": 1.7039
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 2.8938,
+            "generationMs": 3.3344,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "submerged",
+          "beforeCpuMs": 1.8164446808510635,
+          "afterCpuMs": 1.5598638297872338,
+          "beforeGpuMs": 0.8303502222222222,
+          "afterGpuMs": 0.8292352,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 1.4863,
+            "generationMs": 1.7039
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 2.8938,
+            "generationMs": 3.3344,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "mixed",
+          "view": "submerged-background",
+          "beforeCpuMs": 1.6635404255319153,
+          "afterCpuMs": 1.0586787234042558,
+          "beforeGpuMs": 0.8822556444444445,
+          "afterGpuMs": 0.8676010666666667,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 473904,
+            "vertices": 8628,
+            "analysisMs": 1.4863,
+            "generationMs": 1.7039
+          },
+          "afterBackground": {
+            "builds": 4,
+            "analyses": 4,
+            "meshBytes": 765492,
+            "vertices": 12387,
+            "analysisMs": 2.8938,
+            "generationMs": 3.3344,
+            "islands": 0,
+            "outcrops": 5,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "lava",
+          "view": "low",
+          "beforeCpuMs": 1.9451148936170215,
+          "afterCpuMs": 1.6224638297872334,
+          "beforeGpuMs": 0.8082090666666667,
+          "afterGpuMs": 0.688128,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.1459,
+            "generationMs": 1.6015
+          },
+          "afterBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 543408,
+            "vertices": 8796,
+            "analysisMs": 3.0706,
+            "generationMs": 2.3941,
+            "islands": 0,
+            "outcrops": 8,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "lava",
+          "view": "oblique",
+          "beforeCpuMs": 1.5676702127659567,
+          "afterCpuMs": 2.294853191489362,
+          "beforeGpuMs": 5.499153066666667,
+          "afterGpuMs": 5.373155555555556,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.1459,
+            "generationMs": 1.6015
+          },
+          "afterBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 543408,
+            "vertices": 8796,
+            "analysisMs": 3.0706,
+            "generationMs": 2.3941,
+            "islands": 0,
+            "outcrops": 8,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "lava",
+          "view": "high",
+          "beforeCpuMs": 2.1886404255319145,
+          "afterCpuMs": 1.8565021276595748,
+          "beforeGpuMs": 7.493768533333333,
+          "afterGpuMs": 8.696331377777778,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.1459,
+            "generationMs": 1.6015
+          },
+          "afterBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 543408,
+            "vertices": 8796,
+            "analysisMs": 3.0706,
+            "generationMs": 2.3941,
+            "islands": 0,
+            "outcrops": 8,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "lava",
+          "view": "overhead",
+          "beforeCpuMs": 1.9356212765957443,
+          "afterCpuMs": 2.2988021276595743,
+          "beforeGpuMs": 1.0981376,
+          "afterGpuMs": 0.7743488000000001,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.1459,
+            "generationMs": 1.6015
+          },
+          "afterBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 543408,
+            "vertices": 8796,
+            "analysisMs": 3.0706,
+            "generationMs": 2.3941,
+            "islands": 0,
+            "outcrops": 8,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "lava",
+          "view": "night",
+          "beforeCpuMs": 1.6512531914893618,
+          "afterCpuMs": 1.7364148936170212,
+          "beforeGpuMs": 0.8083683555555555,
+          "afterGpuMs": 0.6897208888888888,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 449904,
+            "vertices": 8172,
+            "analysisMs": 1.1459,
+            "generationMs": 1.6015
+          },
+          "afterBackground": {
+            "builds": 6,
+            "analyses": 6,
+            "meshBytes": 543408,
+            "vertices": 8796,
+            "analysisMs": 3.0706,
+            "generationMs": 2.3941,
+            "islands": 0,
+            "outcrops": 8,
+            "structures": 0,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "industrial",
+          "view": "low",
+          "beforeCpuMs": 2.027689361702127,
+          "afterCpuMs": 1.4742468085106384,
+          "beforeGpuMs": 1.5104455111111112,
+          "afterGpuMs": 1.3925262222222223,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 449280,
+            "vertices": 8160,
+            "analysisMs": 1.2476,
+            "generationMs": 1.4248
+          },
+          "afterBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 515760,
+            "vertices": 8340,
+            "analysisMs": 2.261,
+            "generationMs": 2.114,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 6,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "industrial",
+          "view": "oblique",
+          "beforeCpuMs": 2.8370085106382974,
+          "afterCpuMs": 3.2002617021276594,
+          "beforeGpuMs": 1.7058019555555557,
+          "afterGpuMs": 1.5575950222222223,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 449280,
+            "vertices": 8160,
+            "analysisMs": 1.2476,
+            "generationMs": 1.4248
+          },
+          "afterBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 515760,
+            "vertices": 8340,
+            "analysisMs": 2.261,
+            "generationMs": 2.114,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 6,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "industrial",
+          "view": "high",
+          "beforeCpuMs": 3.358146808510638,
+          "afterCpuMs": 3.022812765957447,
+          "beforeGpuMs": 1.8436323555555556,
+          "afterGpuMs": 2.642352355555556,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 449280,
+            "vertices": 8160,
+            "analysisMs": 1.2476,
+            "generationMs": 1.4248
+          },
+          "afterBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 515760,
+            "vertices": 8340,
+            "analysisMs": 2.261,
+            "generationMs": 2.114,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 6,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "industrial",
+          "view": "overhead",
+          "beforeCpuMs": 3.2289659574468077,
+          "afterCpuMs": 3.394553191489362,
+          "beforeGpuMs": 1.240359822222222,
+          "afterGpuMs": 1.239608888888889,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 449280,
+            "vertices": 8160,
+            "analysisMs": 1.2476,
+            "generationMs": 1.4248
+          },
+          "afterBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 515760,
+            "vertices": 8340,
+            "analysisMs": 2.261,
+            "generationMs": 2.114,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 6,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        },
+        {
+          "scene": "industrial",
+          "view": "night",
+          "beforeCpuMs": 1.4305574468085105,
+          "afterCpuMs": 2.0738148936170218,
+          "beforeGpuMs": 1.4972928,
+          "afterGpuMs": 0.7200312888888889,
+          "beforeGpuSamples": 45,
+          "afterGpuSamples": 45,
+          "beforeBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 449280,
+            "vertices": 8160,
+            "analysisMs": 1.2476,
+            "generationMs": 1.4248
+          },
+          "afterBackground": {
+            "builds": 7,
+            "analyses": 7,
+            "meshBytes": 515760,
+            "vertices": 8340,
+            "analysisMs": 2.261,
+            "generationMs": 2.114,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 6,
+            "compositionSamples": 4096
+          },
+          "worldMeshBytesUnchanged": true
+        }
+      ]
+    },
+    "isolatedBackground": {
+      "method": "Stock Steam25 SDL 960x600; GPU query surrounds only EnvironmentRenderer.renderBackground into owned depth FBO; environment.update, FBO bind/clear, blit, native world rendering, screenshots and swap excluded. Available asynchronous results only. Not FPS or physical gameplay acceptance.",
+      "baselineResult": {
+        "status": "PASS",
+        "frames": 720,
+        "cases": 4,
+        "warmupFramesPerCase": 60,
+        "measuredFramesPerCase": 120,
+        "glErrors": 0,
+        "hostTextureStateUnchanged": true,
+        "mapAndEntityStateUnchanged": true,
+        "scope": "Stock Steam25 SDL 960x600; GPU query surrounds only EnvironmentRenderer.renderBackground into owned depth FBO; environment.update, FBO bind/clear, blit, native world rendering, screenshots and swap excluded. Available asynchronous results only. Not FPS or physical gameplay acceptance."
+      },
+      "candidateResult": {
+        "status": "PASS",
+        "frames": 720,
+        "cases": 4,
+        "warmupFramesPerCase": 60,
+        "measuredFramesPerCase": 120,
+        "glErrors": 0,
+        "hostTextureStateUnchanged": true,
+        "mapAndEntityStateUnchanged": true,
+        "scope": "Stock Steam25 SDL 960x600; GPU query surrounds only EnvironmentRenderer.renderBackground into owned depth FBO; environment.update, FBO bind/clear, blit, native world rendering, screenshots and swap excluded. Available asynchronous results only. Not FPS or physical gameplay acceptance."
+      },
+      "baselineArtifact": {
+        "originalJarSha256": "0faa4ce86c98ac4b3595fee072eb516ada9d5da252877193481291ca933aa333",
+        "onlyReplacedClass": "fpv/SmokeHarness.class",
+        "replacementSha256": "b92d4d6d6472f23f7f4a8fe4c55a9a34e42ae5b9b5993860b5a903dc564e5198",
+        "scope": "Identical narrow background-only CPU/asynchronous GPU query into owned depth FBO. Native full-world rendering and FBO blit excluded. Isolated profile; delivered JAR retains normal entry."
+      },
+      "candidateArtifact": {
+        "originalJarSha256": "0141d90fdb636cfe11612d207aaf76d54dc300d738411107fbe8343600ef9fd6",
+        "onlyReplacedClass": "fpv/SmokeHarness.class",
+        "replacementSha256": "b92d4d6d6472f23f7f4a8fe4c55a9a34e42ae5b9b5993860b5a903dc564e5198",
+        "scope": "Identical narrow background-only CPU/asynchronous GPU query into owned depth FBO. Native full-world rendering and FBO blit excluded. Isolated profile; delivered JAR retains normal entry."
+      },
+      "before": [
+        {
+          "scene": "forest",
+          "view": "oblique",
+          "cpuMeanMs": 0.05393499999999999,
+          "cpuMaxMs": 0.3586,
+          "cpuSamples": 120,
+          "gpuMeanMs": 0.6311571525423729,
+          "gpuMaxMs": 0.633856,
+          "gpuSamples": 118,
+          "background": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 531936,
+            "vertices": 9636
+          }
+        },
+        {
+          "scene": "forest",
+          "view": "high",
+          "cpuMeanMs": 0.0257525,
+          "cpuMaxMs": 0.1641,
+          "cpuSamples": 120,
+          "gpuMeanMs": 0.8493385762711865,
+          "gpuMaxMs": 0.851968,
+          "gpuSamples": 118,
+          "background": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 531936,
+            "vertices": 9636
+          }
+        },
+        {
+          "scene": "watermountain",
+          "view": "oblique",
+          "cpuMeanMs": 0.03267750000000001,
+          "cpuMaxMs": 0.1167,
+          "cpuSamples": 120,
+          "gpuMeanMs": 0.6157190508474576,
+          "gpuMaxMs": 0.618496,
+          "gpuSamples": 118,
+          "background": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 449904,
+            "vertices": 8172
+          }
+        },
+        {
+          "scene": "watermountain",
+          "view": "high",
+          "cpuMeanMs": 0.02685,
+          "cpuMaxMs": 0.0821,
+          "cpuSamples": 120,
+          "gpuMeanMs": 0.8403048135593221,
+          "gpuMaxMs": 0.841728,
+          "gpuSamples": 118,
+          "background": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 449904,
+            "vertices": 8172
+          }
+        }
+      ],
+      "after": [
+        {
+          "scene": "forest",
+          "view": "oblique",
+          "cpuMeanMs": 0.056367500000000015,
+          "cpuMaxMs": 0.3004,
+          "cpuSamples": 120,
+          "gpuMeanMs": 0.4740859661016949,
+          "gpuMaxMs": 0.478208,
+          "gpuSamples": 118,
+          "background": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          }
+        },
+        {
+          "scene": "forest",
+          "view": "high",
+          "cpuMeanMs": 0.030270000000000002,
+          "cpuMaxMs": 0.4133,
+          "cpuSamples": 120,
+          "gpuMeanMs": 0.5520054237288136,
+          "gpuMaxMs": 0.557056,
+          "gpuSamples": 118,
+          "background": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 677760,
+            "vertices": 11040,
+            "islands": 0,
+            "outcrops": 0,
+            "structures": 0,
+            "compositionSamples": 4096
+          }
+        },
+        {
+          "scene": "watermountain",
+          "view": "oblique",
+          "cpuMeanMs": 0.032085,
+          "cpuMaxMs": 0.2087,
+          "cpuSamples": 120,
+          "gpuMeanMs": 0.5687018305084746,
+          "gpuMaxMs": 0.570368,
+          "gpuSamples": 118,
+          "background": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          }
+        },
+        {
+          "scene": "watermountain",
+          "view": "high",
+          "cpuMeanMs": 0.03431083333333334,
+          "cpuMaxMs": 0.436,
+          "cpuSamples": 120,
+          "gpuMeanMs": 0.7266494915254237,
+          "gpuMaxMs": 1.922048,
+          "gpuSamples": 118,
+          "background": {
+            "builds": 1,
+            "analyses": 1,
+            "meshBytes": 938928,
+            "vertices": 15234,
+            "islands": 6,
+            "outcrops": 6,
+            "structures": 0,
+            "compositionSamples": 4096
+          }
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "Higher one-time rebuild cost and water mesh memory",
+    "Native bed-edge underwater triangles unchanged",
+    "Extreme high-altitude native/detail border remains discernible",
+    "Heuristic biome/composition snapshot, no neighboring-sector data",
+    "Physical Windows/Linux/two-computer acceptance pending"
+  ],
+  "publishedArtifactsModified": false,
+  "pushPublishWorkshopUpdate": false,
+  "repeatGlFramesPerBuild": 2592,
+  "repeatCandidateIsFinalJar": false,
+  "isolatedBackgroundFramesPerBuild": 720
+}

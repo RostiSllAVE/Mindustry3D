@@ -21,23 +21,27 @@ public final class BorderBiomeProfile {
     }
     public record Section(Side side,double start,double end,Sample value){}
     private final List<Section> sections;
+    private final Sample[] readable;
     private final double[] centers;
     public final int width,height,strip;public final long visitedTiles;
     public final double perimeter;
-    private BorderBiomeProfile(int width,int height,int strip,List<Section> sections,long visited){
-        this.width=width;this.height=height;this.strip=strip;this.sections=List.copyOf(sections);visitedTiles=visited;perimeter=2d*(width+height);
+    private BorderBiomeProfile(int width,int height,int strip,List<Section> sections,List<Sample> readable,long visited){
+        this.width=width;this.height=height;this.strip=strip;this.sections=List.copyOf(sections);this.readable=readable.toArray(Sample[]::new);visitedTiles=visited;perimeter=2d*(width+height);
         centers=new double[sections.size()];for(int i=0;i<centers.length;i++)centers[i]=(sections.get(i).start+sections.get(i).end)/2;
     }
     public List<Section> sections(){return sections;}
     public static BorderBiomeProfile analyze(Source source,int requestedStrip){
         int w=source.width(),h=source.height();if(w<1||h<1)throw new IllegalArgumentException("Nonempty native map required");
-        int strip=Math.max(2,Math.min(16,requestedStrip));var result=new ArrayList<Section>();long visited=0;double offset=0;
+        int strip=Math.max(2,Math.min(16,requestedStrip));var result=new ArrayList<Section>();var readable=new ArrayList<Sample>();long visited=0;double offset=0;
         for(Side side:Side.values()){
             int length=side==Side.SOUTH||side==Side.NORTH?w:h,depth=Math.min(strip,side==Side.SOUTH||side==Side.NORTH?h:w);
             int count=Math.min(MAX_SECTIONS_PER_SIDE,Math.max(1,(length+7)/8));
             for(int section=0;section<count;section++){
                 int start=section*length/count,end=(section+1)*length/count;Sample out=new Sample();
-                float total=0,mountains=0,water=0,flora=0,linksRock=0,linksWater=0;int[] forms=new int[VegetationInstances.Form.values().length];
+                float total=0,mountains=0,water=0,openWater=0,flora=0,linksRock=0,linksWater=0;int[] forms=new int[VegetationInstances.Form.values().length];
+                // Keep distinct native palettes. A wall over a water floor contributes stone,
+                // never blue; vegetation contributes its supporting ground, not canopy colour.
+                float[][] materials=new float[Biome.values().length][4];
                 Cell[] previous=new Cell[end-start];
                 for(int d=0;d<depth;d++){
                     Cell last=null;float weight=1-d/(float)(depth*2);
@@ -46,6 +50,9 @@ public final class BorderBiomeProfile {
                         switch(side){case NORTH->{x=w-1-s;y=h-1-d;}case EAST->{x=w-1-d;y=s;}case WEST->{x=d;y=h-1-s;}default->{}}
                         Cell c=source.cell(x,y);visited++;if(c==null)c=new Cell(Biome.UNKNOWN,.36f,.36f,.42f,false,false,0,.15f,.26f,.16f,0);
                         total+=weight;out.weights[c.material.ordinal()]+=weight;mountains+=c.mountain?weight:0;water+=c.water?weight:0;flora+=c.vegetation*weight;
+                        if(c.water&&!c.mountain)openWater+=weight;
+                        addMaterial(materials,c.mountain?Biome.MOUNTAINS:c.material,c,weight);
+                        if(c.vegetation>0&&!c.mountain&&c.material!=Biome.SPACE&&c.material!=Biome.FOREST)addMaterial(materials,Biome.FOREST,c,c.vegetation*weight);
                         out.r+=c.r*weight;out.g+=c.g*weight;out.b+=c.b*weight;
                         if(c.vegetation>0){out.tr+=c.tr*c.vegetation*weight;out.tg+=c.tg*c.vegetation*weight;out.tb+=c.tb*c.vegetation*weight;forms[Math.floorMod(c.form,forms.length)]++;}
                         Cell above=previous[s-start];
@@ -65,10 +72,51 @@ public final class BorderBiomeProfile {
                 if(flora>0){out.tr/=flora;out.tg/=flora;out.tb/=flora;}else{out.tr=.15f;out.tg=.26f;out.tb=.16f;}
                 for(int i=1;i<forms.length;i++)if(forms[i]>forms[out.form])out.form=i;
                 result.add(new Section(side,offset+start,offset+end,out));
+                Biome chosen=rockFraction>=.5f?Biome.MOUNTAINS:openWater/total>=.65f&&rockFraction<.35f?Biome.OCEAN:out.dominant();
+                // Sparse rock on a coherent sea remains a coastal feature; a majority
+                // geological footprint remains land even when its native floor is water.
+                Sample core=new Sample();copy(out,core);Arrays.fill(core.weights,0);core.weights[chosen.ordinal()]=1;
+                float[] palette=materials[chosen.ordinal()];
+                if(palette[3]>0){core.r=palette[0]/palette[3];core.g=palette[1]/palette[3];core.b=palette[2]/palette[3];}
+                readable.add(core);
             }
             offset+=length;
         }
-        return new BorderBiomeProfile(w,h,strip,result,visited);
+        return new BorderBiomeProfile(w,h,strip,result,readable,visited);
+    }
+    private static void addMaterial(float[][] materials,Biome biome,Cell cell,float weight){
+        float[] p=materials[biome.ordinal()];p[0]+=cell.r*weight;p[1]+=cell.g*weight;p[2]+=cell.b*weight;p[3]+=weight;
+    }
+    /** The actual cyclic section footprint, not the closest section centre. */
+    public int sectionIndex(double position){
+        double p=wrap(position);int low=0,high=sections.size()-1;
+        while(low<=high){int mid=(low+high)>>>1;if(sections.get(mid).start<=p)low=mid+1;else high=mid-1;}
+        return Math.max(0,high);
+    }
+    public Biome readableBiome(int sectionIndex){return readable[Math.floorMod(sectionIndex,readable.length)].dominant();}
+    /** Defensive copy: callers may reuse or modify it without changing this cached profile. */
+    public Sample readableSection(int sectionIndex){Sample out=new Sample();copy(readable[Math.floorMod(sectionIndex,readable.length)],out);return out;}
+    /** Categorical material cores, with a ten-percent transition centred on each real boundary.
+     * Unlike legacy sample(), this never washes an entire section into its neighbours.
+     * Reuses the supplied sample and performs no per-query allocation. */
+    public void sampleReadable(double position,Sample out){
+        double p=wrap(position);int at=sectionIndex(p),previous=(at+readable.length-1)%readable.length,next=(at+1)%readable.length;
+        Section current=sections.get(at);double length=current.end-current.start;
+        Section before=sections.get(previous),after=sections.get(next);
+        double startBand=.05*Math.min(length,before.end-before.start),endBand=.05*Math.min(length,after.end-after.start);
+        double fromStart=p-current.start,toEnd=current.end-p;
+        if(fromStart<startBand){blend(readable[previous],readable[at],(float)(.5+.5*fromStart/startBand),out);return;}
+        if(toEnd<endBand){blend(readable[at],readable[next],(float)(.5-.5*toEnd/endBand),out);return;}
+        copy(readable[at],out);
+    }
+    private double wrap(double position){return Double.isFinite(position)?position-Math.floor(position/perimeter)*perimeter:0;}
+    private static void copy(Sample source,Sample target){
+        System.arraycopy(source.weights,0,target.weights,0,source.weights.length);target.r=source.r;target.g=source.g;target.b=source.b;
+        target.tr=source.tr;target.tg=source.tg;target.tb=source.tb;target.form=source.form;
+    }
+    private static void blend(Sample a,Sample b,float t,Sample out){
+        t=t*t*(3-2*t);for(int i=0;i<out.weights.length;i++)out.weights[i]=lerp(a.weights[i],b.weights[i],t);
+        out.r=lerp(a.r,b.r,t);out.g=lerp(a.g,b.g,t);out.b=lerp(a.b,b.b,t);out.tr=lerp(a.tr,b.tr,t);out.tg=lerp(a.tg,b.tg,t);out.tb=lerp(a.tb,b.tb,t);out.form=t<.5?a.form:b.form;
     }
     /** Shared interpolation at corners and along transitions; no side owns an independent corner. */
     public void sample(double position,Sample out){
@@ -80,7 +128,7 @@ public final class BorderBiomeProfile {
         for(int i=0;i<out.weights.length;i++)out.weights[i]=x.weights[i]+(y.weights[i]-x.weights[i])*t;
         out.r=lerp(x.r,y.r,t);out.g=lerp(x.g,y.g,t);out.b=lerp(x.b,y.b,t);out.tr=lerp(x.tr,y.tr,t);out.tg=lerp(x.tg,y.tg,t);out.tb=lerp(x.tb,y.tb,t);out.form=t<.5?x.form:y.form;
     }
-    public long fingerprint(){long hash=((width*31L+height)*31+strip);for(var s:sections){for(float f:s.value.weights)hash=hash*31+Float.floatToIntBits(f);for(float f:new float[]{s.value.r,s.value.g,s.value.b,s.value.tr,s.value.tg,s.value.tb})hash=hash*31+Float.floatToIntBits(f);hash=hash*31+s.value.form;}return hash;}
+    public long fingerprint(){long hash=((width*31L+height)*31+strip);for(var s:sections){for(float f:s.value.weights)hash=hash*31+Float.floatToIntBits(f);for(float f:new float[]{s.value.r,s.value.g,s.value.b,s.value.tr,s.value.tg,s.value.tb})hash=hash*31+Float.floatToIntBits(f);hash=hash*31+s.value.form;}for(var s:readable){for(float f:s.weights)hash=hash*31+Float.floatToIntBits(f);hash=hash*31+Float.floatToIntBits(s.r);hash=hash*31+Float.floatToIntBits(s.g);hash=hash*31+Float.floatToIntBits(s.b);}return hash;}
     private static float lerp(float a,float b,float t){return a+(b-a)*t;}
     public static Source nativeSource(TerrainElevation terrain){return new Source(){
         public int width(){return Vars.world.width();}public int height(){return Vars.world.height();}

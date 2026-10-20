@@ -13,6 +13,22 @@ public final class HorizonNativeTest {
     static BorderBiomeProfile profile(){return BorderBiomeProfile.analyze(BorderBiomeProfile.nativeSource(terrain),8);}
     static void dominant(BorderBiomeProfile.Biome wanted){for(var s:profile().sections())check(s.value().dominant()==wanted,"native dominant "+wanted+": "+s.value().dominant());}
     static long mapHash(){long h=17;for(var t:Vars.world.tiles)h=h*31+t.blockID()*71L+t.floorID()*17L+t.overlayID();return h;}
+    static void fractionalCollar(TextureRegion region,AutomaticHorizon horizon)throws Exception{
+        world(64,48,Blocks.sand);for(var t:Vars.world.tiles)if(t.x>=32)t.setFloor(Blocks.water.asFloor());
+        Blocks.sand.region=Blocks.water.region=region;Blocks.sand.variantRegions=Blocks.water.variantRegions=new TextureRegion[]{region};
+        horizon.setTerrain(terrain);long before=mapHash();horizon.ensure();
+        var boundary=AutomaticHorizon.class.getDeclaredMethod("boundaryHeight",double.class);boundary.setAccessible(true);
+        var geometry=HorizonGeometry.build(horizon.profile(),s->{try{return((Number)boundary.invoke(horizon,s)).doubleValue();}catch(Exception e){throw new AssertionError(e);}},horizon.composition());
+        var collar=get(horizon,"collar");var parts=(List<?>)get(collar,"parts");int tested=0;
+        for(double s:geometry.positions){if(s==Math.floor(s))continue;float[] target=new float[HorizonGeometry.STRIDE];geometry.row(s,0,target);boolean found=false;
+            for(var part:parts){var mesh=(Mesh)get(part,"mesh");var data=mesh.getVerticesBuffer();
+                for(int at=0;at<mesh.getNumVertices()*17;at+=17)if(data.get(at+6)<.5f&&Math.abs(data.get(at)-target[0])<.0001f&&Math.abs(data.get(at+1)-target[1])<.0001f&&Math.abs(data.get(at+2)-target[2])<.0001f){found=true;break;}
+                if(found)break;
+            }
+            check(found,"d4 native collar contains exact fractional coarse/fine endpoint: "+s);tested++;
+        }
+        check(tested>=4,"native beach fixture exercises fractional d4 coastline joins");check(mapHash()==before,"fractional visual seam generation never alters native map");
+    }
     public static void main(String[] args)throws Exception{init();try{
         world(48,32,Blocks.water);dominant(OCEAN);
         world(48,32,Blocks.stone);for(var t:Vars.world.tiles)t.setBlock(Blocks.stoneWall);dominant(MOUNTAINS);
@@ -33,13 +49,13 @@ public final class HorizonNativeTest {
         var minFilter=tex.getMinFilter();var magFilter=tex.getMagFilter();var wrapU=tex.getUWrap();var wrapV=tex.getVWrap();
         var horizon=new AutomaticHorizon();horizon.setTerrain(terrain);long before=mapHash();int units=mindustry.gen.Groups.unit.size();horizon.ensure();long count=horizon.stats().builds();
         check(tex.getMinFilter()==minFilter&&tex.getMagFilter()==magFilter&&tex.getUWrap()==wrapU&&tex.getVWrap()==wrapV,"host atlas sampling state unchanged");
-        var profileTexture=(Texture)get(horizon,"profileTexture");check(profileTexture.width==512&&profileTexture.height==2&&profileTexture.getUWrap()==Texture.TextureWrap.repeat&&profileTexture.getVWrap()==Texture.TextureWrap.clampToEdge,"bounded cyclic per-fragment biome data uses its own texture");
+        check(horizon.composition().sampledCells()>0&&horizon.composition().sampledCells()<=4096,"map context is bounded and cached with the shared CPU landscape");
         var materialClass=Class.forName("fpv.render.HorizonDetailTexture");var create=materialClass.getDeclaredMethod("create");create.setAccessible(true);var detail=(Texture)create.invoke(null);
         check(detail.width==32&&detail.height==32&&detail.getMinFilter()==Texture.TextureFilter.mipMapLinearLinear&&detail.getUWrap()==Texture.TextureWrap.repeat,"world detail has own mipmapped repeat sampling");detail.dispose();
         check(tex.getMinFilter()==minFilter&&tex.getUWrap()==wrapU,"detail creation never changes host atlas filtering or wrap");
         for(int i=0;i<100;i++){Vars.state.tick++;horizon.ensure();}check(horizon.stats().builds()==count,"unchanged frames have no rescan/regeneration");check(mapHash()==before&&units==mindustry.gen.Groups.unit.size(),"no native tiles/entities changed");
         var collar=get(horizon,"collar");var parts=(List<?>)get(collar,"parts");check(parts.size()==1,"single atlas batch");var mesh=(Mesh)get(parts.get(0),"mesh");var data=mesh.getVerticesBuffer();
-        for(int at=0;at<mesh.getNumVertices()*13;at+=13){
+        for(int at=0;at<mesh.getNumVertices()*17;at+=17){
             check(data.get(at+7)==region.u+.5f/64&&data.get(at+8)==region.v+.5f/64,"atlas repeat rectangle keeps minimum half texel inset");
             check(data.get(at+9)==region.u2-.5f/64&&data.get(at+10)==region.v2-.5f/64,"atlas repeat rectangle keeps maximum half texel inset");
         }
@@ -49,7 +65,8 @@ public final class HorizonNativeTest {
         var old=Vars.world.tiles;world(32,32,Blocks.stone);horizon.setTerrain(terrain);horizon.ensure();check(horizon.stats().builds()==++count&&Vars.world.tiles!=old,"world identity/lifecycle rebuild");
         var env=new EnvironmentRenderer();env.setTerrain(terrain);var camera=new arc.graphics.g3d.Camera3D();camera.position.set(16,720,-16);Core.settings.put(AutomaticHorizon.SETTING,false);float legacy=env.farPlane(camera),range=env.mapFarPlane(camera);Core.settings.put(AutomaticHorizon.SETTING,true);
         check(Math.abs(legacy-range)<.001,"legacy map/pilot range preserved");check(env.farPlane(camera)>legacy+1000&&env.mapFarPlane(camera)==range,"decorative far reach is separate from pilot range");
-        var latestProfile=(Texture)get(horizon,"profileTexture");horizon.clear();check(horizon.stats().meshBytes()==0&&horizon.profile()==null&&latestProfile.isDisposed(),"old meshes/profile references and GPU profile data released");horizon.dispose();env.dispose();
+        fractionalCollar(region,horizon);
+        horizon.clear();check(horizon.stats().meshBytes()==0&&horizon.profile()==null&&horizon.composition().sampledCells()==0,"old meshes/profile/context references released");horizon.dispose();env.dispose();
         System.out.println("HorizonNativeTest: "+checks+" native biome/region/seam/cache/scope/lifecycle checks PASS; actual visual acceptance separate");
     }finally{input.uninstallProjection();renderer.close();runtime.close();altitude.close();}}
 }
