@@ -57,6 +57,18 @@ public final class HorizonDistantFeatures {
                 occupied.add(new Site(point.x(),point.z(),radius));structures++;
             }
         }
+        if(landscape.custom()){
+            for(var material:new fpv.background.BackgroundPaint.Material[]{fpv.background.BackgroundPaint.Material.ROCK,fpv.background.BackgroundPaint.Material.SAND,fpv.background.BackgroundPaint.Material.WASTELAND,fpv.background.BackgroundPaint.Material.VOLCANIC})for(var site:landscape.paint().detailSites(material,12)){
+                if(outcrops>=MAX_OUTCROPS)break;float x=site.x(),z=-site.y(),radius=(float)(3+3*site.rank());var pos=position(geometry,x,z);landscape.sample(pos.along,pos.distance,x,z,surface);
+                if(surface.space>.05f||surface.coast>=-.7f||!available(geometry,occupied,x,z,radius*1.15f))continue;
+                if(outcrop(mesh,geometry,x,z,radius,(float)(4+6*site.rank()),(float)(site.rank()*Math.PI*2),surface,seed,outcrops)){occupied.add(new Site(x,z,radius*1.15f));outcrops++;}
+            }
+            for(var site:landscape.paint().detailSites(fpv.background.BackgroundPaint.Material.INDUSTRIAL,24)){
+                if(structures>=MAX_STRUCTURES)break;float x=site.x(),z=-site.y(),length=(float)(12+12*site.rank()),width=4,radius=(float)Math.hypot(length,width);var pos=position(geometry,x,z);landscape.sample(pos.along,pos.distance,x,z,surface);
+                if(surface.space>.05f||surface.coast>=-.7f||!available(geometry,occupied,x,z,radius*1.15f))continue;
+                if(structure(mesh,geometry,x,z,length,width,2.5f,site.rank()>.5)){occupied.add(new Site(x,z,radius*1.15f));structures++;}
+            }
+        }
         return new Result(Arrays.copyOf(mesh.data,mesh.count),islands,outcrops,structures);
     }
 

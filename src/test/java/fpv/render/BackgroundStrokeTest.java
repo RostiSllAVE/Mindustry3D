@@ -1,0 +1,20 @@
+package fpv.render;
+import fpv.background.*;
+public final class BackgroundStrokeTest {
+    static int checks;static void check(boolean ok,String why){checks++;if(!ok)throw new AssertionError(why);}
+    static double actual(BackgroundPaint p,double x,double y,double base){var s=new BackgroundPaint.Sample();p.sample(x,y,s);return base*(1-s.heightCoverage)+s.height*s.heightCoverage;}
+    public static void main(String[] args){
+        var p=new BackgroundPaint(96,64);double x=p.xs[28],y=p.ys[44];p.stroke(BackgroundPaint.Brush.RAISE,50,.7,.25,12,(a,b)->20).line(x,y,x,y);check(Math.abs(actual(p,x,y,20)-23)<.001,"raise uses actual base and strength");
+        var stroke=p.stroke(BackgroundPaint.Brush.LOWER,50,.7,.5,8,(a,b)->20);stroke.line(x,y,x,y);long once=p.fingerprint();for(int i=0;i<100;i++)stroke.line(x,y,x,y);check(p.fingerprint()==once,"holding/repeated pointer events never amplify one gesture");check(Math.abs(actual(p,x,y,20)-19)<.001,"lower decreases actual terrain");
+        p.stroke(BackgroundPaint.Brush.FLATTEN,50,.7,1,7,(a,b)->20).line(x,y,x,y);check(Math.abs(actual(p,x,y,20)-7)<.001,"flatten specified height");
+        p.node(28,44,0,0,80,1);p.stroke(BackgroundPaint.Brush.SMOOTH,50,.7,1,0,(a,b)->20).line(x,y,x,y);check(actual(p,x,y,20)>7&&actual(p,x,y,20)<80,"smooth reduces a spike using immutable neighbouring poses");
+        var whole=new BackgroundPaint(96,64);var split=whole.copy();whole.stroke(BackgroundPaint.Brush.FOREST,24,.6,.35,0,(a,b)->0).line(-180,30,-30,30);var s=split.stroke(BackgroundPaint.Brush.FOREST,24,.6,.35,0,(a,b)->0);for(int i=0;i<30;i++)s.line(-180+i*5,30,-175+i*5,30);
+        for(int yy=0;yy<BackgroundPaint.NODES;yy++)for(int xx=0;xx<BackgroundPaint.NODES;xx++){check(Math.abs(whole.coverage(xx,yy)-split.coverage(xx,yy))<.00001,"event-rate independent continuous gesture");if(!whole.editable(xx,yy))check(whole.coverage(xx,yy)==0&&p.heightCoverage(xx,yy)==0,"all native nodes protected");}
+        p=new BackgroundPaint(96,64);p.line(x,y,x,y,50,.8,BackgroundPaint.Brush.ISLAND,14);p.stroke(BackgroundPaint.Brush.FOREST,50,.8,.25,0,(a,b)->0).line(x,y,x,y);var sample=new BackgroundPaint.Sample();p.sample(x,y,sample);check(sample.weights[BackgroundPaint.Material.FOREST.ordinal()]>.24&&sample.weights[BackgroundPaint.Material.SAND.ordinal()]>.74&&sample.coverage>.99,"strength blends materials without holes in island coast");check(Math.abs(actual(p,x,y,0)-14)<.001,"material brush preserves height");
+        var old=p.copy();p.stroke(BackgroundPaint.Brush.ERASE,50,.8,.5,0,(a,b)->0).line(x,y,x,y);check(p.coverage(28,44)==old.coverage(28,44)*.5f,"local eraser has adjustable strength");
+        var stable=p.copy();p.stroke(BackgroundPaint.Brush.RAISE,50,.8,0,240,(a,b)->0).line(x,y,x,y);check(p.same(stable),"zero strength is a no-op");
+        var style=new BackgroundStyle();style.mode=BackgroundStyle.Mode.CUSTOM;style.paint=p;var profile=BorderBiomeProfile.analyze(new BorderBiomeProfile.Source(){public int width(){return 96;}public int height(){return 64;}public BorderBiomeProfile.Cell cell(int a,int b){return BackgroundPreset.OCEAN.cell();}},8);
+        for(var brush:new BackgroundPaint.Brush[]{BackgroundPaint.Brush.OCEAN,BackgroundPaint.Brush.LAKE,BackgroundPaint.Brush.SHALLOW}){p.clear();p.stroke(brush,90,.8,1,0,(a,b)->0).line(-300,30,-300,30);var field=new HorizonLandscape(profile,HorizonComposition.EMPTY,a->Double.NaN,style);var at=HorizonGeometry.coordinates(profile,-300,-30);var surface=new HorizonLandscape.Surface();field.sample(at.along(),at.distance(),-300,-30,surface);check(surface.coast>.9&&surface.height<HorizonLandscape.SEA,"water never becomes raised terrain");if(brush==BackgroundPaint.Brush.SHALLOW)check(surface.depth<=.8f,"shallow water separate bounded depth");else if(brush==BackgroundPaint.Brush.LAKE)check(surface.depth<=4,"lake depth");else check(surface.depth>4,"ocean deepens independently");}
+        System.out.println("BackgroundStrokeTest: "+checks+" gesture/strength/base-height/sculpt/smooth/protection/material/water checks PASS");
+    }
+}

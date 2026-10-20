@@ -12,20 +12,23 @@ public final class BackgroundPaint {
         SAND("Sand",BackgroundPreset.DESERT,0),ROCK("Rock",BackgroundPreset.WASTELAND,0),SNOW("Snow / Ice",BackgroundPreset.ICE,0),
         WASTELAND("Wasteland",BackgroundPreset.WASTELAND,0),VOLCANIC("Volcanic",BackgroundPreset.VOLCANIC,0),
         OCEAN("Ocean",BackgroundPreset.OCEAN,0),LAKE("Lake / shallow water",BackgroundPreset.OCEAN,0),BEACH("Coast / beach",BackgroundPreset.DESERT,0),
-        MOUNTAINS("Mountains",BackgroundPreset.MOUNTAINS,0),SPACE("Space",BackgroundPreset.SPACE,0),VOID("Void",BackgroundPreset.VOID,0);
+        MOUNTAINS("Mountains",BackgroundPreset.MOUNTAINS,0),SPACE("Space",BackgroundPreset.SPACE,0),VOID("Void",BackgroundPreset.VOID,0),
+        SHALLOW("Shallow water",BackgroundPreset.OCEAN,0),INDUSTRIAL("Industrial",BackgroundPreset.WASTELAND,0);
         public final String label;public final BackgroundPreset preset;public final float forest;
         Material(String label,BackgroundPreset preset,float forest){this.label=label;this.preset=preset;this.forest=forest;}
-        public boolean water(){return this==OCEAN||this==LAKE;}
+        public boolean water(){return this==OCEAN||this==LAKE||this==SHALLOW;}
     }
     public enum Brush {
         FOREST("Forest",Material.FOREST,0),GRASS("Grass / vegetation",Material.GRASS,0),SAND("Desert / sand",Material.SAND,0),ROCK("Rock",Material.ROCK,0),
         SNOW("Snow / ice",Material.SNOW,0),WASTELAND("Wasteland",Material.WASTELAND,0),VOLCANIC("Volcanic",Material.VOLCANIC,0),
         OCEAN("Ocean",Material.OCEAN,0),LAKE("Lake / shallow water",Material.LAKE,0),BEACH("Coast / beach",Material.BEACH,.35f),
         HILLS("Hills",null,12),MOUNTAINS("Mountain ridge",Material.MOUNTAINS,80),VALLEY("Lower terrain / valley",null,0),ISLAND("Island / landmass",Material.SAND,10),
-        SPACE("Space",Material.SPACE,0),VOID("Void / empty",Material.VOID,0),ERASE("Restore Auto / base",Material.AUTO,0);
+        SPACE("Space",Material.SPACE,0),VOID("Void / empty",Material.VOID,0),ERASE("Restore Auto / base",Material.AUTO,0),
+        SHALLOW("Shallow water",Material.SHALLOW,0),INDUSTRIAL("Industrial motifs",Material.INDUSTRIAL,0),
+        RAISE("Raise terrain",null,8),LOWER("Lower terrain",null,8),SMOOTH("Smooth locally",null,0),FLATTEN("Flatten to height",null,12);
         public final String label;public final Material material;public final float defaultHeight;
         Brush(String label,Material material,float height){this.label=label;this.material=material;defaultHeight=height;}
-        public boolean shape(){return this==HILLS||this==MOUNTAINS||this==VALLEY||this==ISLAND||this==BEACH;}
+        public boolean shape(){return this==HILLS||this==MOUNTAINS||this==VALLEY||this==ISLAND||this==BEACH||this==RAISE||this==LOWER||this==SMOOTH||this==FLATTEN;}
     }
     public static final Material[] MATERIALS=Material.values();
     public static final class Sample {
@@ -36,6 +39,8 @@ public final class BackgroundPaint {
     public final double outer;
     public final double[] xs,ys;
     private final byte[] material=new byte[COUNT];
+    private final byte[] secondary=new byte[COUNT];
+    private final float[] mix=new float[COUNT];
     private final float[] coverage=new float[COUNT],heights=new float[COUNT],heightCoverage=new float[COUNT];
     private long revision;
     public BackgroundPaint(int width,int height){
@@ -55,10 +60,10 @@ public final class BackgroundPaint {
     public BackgroundPaint copy(){var p=new BackgroundPaint(width,height);p.copyFrom(this);return p;}
     public void copyFrom(BackgroundPaint p){
         if(width!=p.width||height!=p.height)throw new IllegalArgumentException("Paint dimensions differ");
-        System.arraycopy(p.material,0,material,0,COUNT);System.arraycopy(p.coverage,0,coverage,0,COUNT);System.arraycopy(p.heights,0,heights,0,COUNT);System.arraycopy(p.heightCoverage,0,heightCoverage,0,COUNT);revision++;
+        System.arraycopy(p.material,0,material,0,COUNT);System.arraycopy(p.secondary,0,secondary,0,COUNT);System.arraycopy(p.mix,0,mix,0,COUNT);System.arraycopy(p.coverage,0,coverage,0,COUNT);System.arraycopy(p.heights,0,heights,0,COUNT);System.arraycopy(p.heightCoverage,0,heightCoverage,0,COUNT);revision++;
     }
-    public void clear(){Arrays.fill(material,(byte)0);Arrays.fill(coverage,0);Arrays.fill(heights,0);Arrays.fill(heightCoverage,0);revision++;}
-    public boolean same(BackgroundPaint p){return width==p.width&&height==p.height&&Arrays.equals(material,p.material)&&Arrays.equals(coverage,p.coverage)&&Arrays.equals(heights,p.heights)&&Arrays.equals(heightCoverage,p.heightCoverage);}
+    public void clear(){Arrays.fill(material,(byte)0);Arrays.fill(secondary,(byte)0);Arrays.fill(mix,0);Arrays.fill(coverage,0);Arrays.fill(heights,0);Arrays.fill(heightCoverage,0);revision++;}
+    public boolean same(BackgroundPaint p){return width==p.width&&height==p.height&&Arrays.equals(material,p.material)&&Arrays.equals(secondary,p.secondary)&&Arrays.equals(mix,p.mix)&&Arrays.equals(coverage,p.coverage)&&Arrays.equals(heights,p.heights)&&Arrays.equals(heightCoverage,p.heightCoverage);}
     public void line(double ax,double ay,double bx,double by,double radius,double hardness,Brush brush,double height){
         if(brush==null||!Double.isFinite(ax+ay+bx+by+radius+hardness+height)||Math.max(Math.max(Math.abs(ax),Math.abs(ay)),Math.max(Math.abs(bx),Math.abs(by)))>1e7||radius<2||radius>1024)throw new IllegalArgumentException("Finite bounded brush required");
         int steps=Math.max(1,Math.min(512,(int)Math.ceil(Math.hypot(bx-ax,by-ay)/Math.max(1,radius*.22))));
@@ -75,7 +80,7 @@ public final class BackgroundPaint {
             if(selected!=null){byte id=(byte)selected.ordinal();
                 // Repainting a biome must not cut holes in an existing landmass at the brush rim.
                 // One material per node is intentionally bounded; weak edges retain the old material.
-                if(material[at]==id||coverage[at]<.5f||w>=.5f)material[at]=id;
+                if(material[at]==id||coverage[at]<.5f||w>=.5f){material[at]=id;secondary[at]=0;mix[at]=0;}
                 coverage[at]=Math.max(coverage[at],w);
                 if(selected.water()&&material[at]==id){heights[at]=heightCoverage[at]=0;}
             }
@@ -91,28 +96,66 @@ public final class BackgroundPaint {
         if(out.coverage>0)for(int i=1;i<out.weights.length;i++)out.weights[i]/=out.coverage;
         if(out.heightCoverage>0)out.height/=out.heightCoverage;
     }
-    private void add(Sample out,int at,float w){float c=coverage[at]*w;if(material[at]>0){out.coverage+=c;out.weights[material[at]]+=c;}float h=heightCoverage[at]*w;out.heightCoverage+=h;out.height+=heights[at]*h;}
+    private void add(Sample out,int at,float w){float c=coverage[at]*w;if(material[at]>0){out.coverage+=c;out.weights[material[at]]+=c*(1-mix[at]);if(secondary[at]>0)out.weights[secondary[at]]+=c*mix[at];}float h=heightCoverage[at]*w;out.heightCoverage+=h;out.height+=heights[at]*h;}
     public Material material(int x,int y){return MATERIALS[material[y*NODES+x]];}
     public float coverage(int x,int y){return coverage[y*NODES+x];}
     public float height(int x,int y){return heights[y*NODES+x];}
     public float heightCoverage(int x,int y){return heightCoverage[y*NODES+x];}
+    public int secondary(int x,int y){return secondary[y*NODES+x];}public float mix(int x,int y){return mix[y*NODES+x];}
     /** Versioned local codec entry point, validates the protected region and all numeric bounds. */
     public void node(int x,int y,int id,float alpha,float h,float heightAlpha){
         if(x<0||x>=NODES||y<0||y>=NODES||id<0||id>=MATERIALS.length||!Float.isFinite(alpha+h+heightAlpha)||alpha<0||alpha>1||heightAlpha<0||heightAlpha>1||h<0||h>MAX_HEIGHT||(!editable(x,y)&&(alpha!=0||heightAlpha!=0)))throw new IllegalArgumentException("Invalid paint node");
-        int at=y*NODES+x;material[at]=(byte)id;coverage[at]=alpha;heights[at]=h;heightCoverage[at]=heightAlpha;
+        int at=y*NODES+x;material[at]=(byte)id;coverage[at]=alpha;heights[at]=h;heightCoverage[at]=heightAlpha;secondary[at]=0;mix[at]=0;
     }
-    public long fingerprint(){long h=width*31L+height;for(int i=0;i<COUNT;i++){h=h*31+material[i];h=h*31+Float.floatToIntBits(coverage[i]);h=h*31+Float.floatToIntBits(heights[i]);h=h*31+Float.floatToIntBits(heightCoverage[i]);}return h;}
-    public int bytes(){return COUNT*13;}
+    public void blendNode(int x,int y,int id,float amount){if(id<0||id>=MATERIALS.length||!Float.isFinite(amount)||amount<0||amount>1||(!editable(x,y)&&amount!=0)||id==0&&amount!=0)throw new IllegalArgumentException("Invalid blended material");int at=y*NODES+x;secondary[at]=(byte)id;mix[at]=amount;}
+    public long fingerprint(){long h=width*31L+height;for(int i=0;i<COUNT;i++){h=h*31+material[i];h=h*31+Float.floatToIntBits(coverage[i]);h=h*31+Float.floatToIntBits(heights[i]);h=h*31+Float.floatToIntBits(heightCoverage[i]);h=h*31+secondary[i];h=h*31+Float.floatToIntBits(mix[i]);}return h;}
+    public int bytes(){return COUNT*18;}
     public record TreeSite(float x,float y,double rank){}
+    public java.util.List<TreeSite> detailSites(Material desired,int limit){
+        var found=new java.util.ArrayList<TreeSite>();for(int y=0;y<NODES;y++)for(int x=0;x<NODES;x++){int at=y*NODES+x;float amount=(material[at]==desired.ordinal()?1-mix[at]:0)+(secondary[at]==desired.ordinal()?mix[at]:0);if(coverage[at]*amount>.6f)found.add(new TreeSite((float)xs[x],(float)ys[y],HorizonGeometry.hash(x+117,y+height)));}
+        found.sort(java.util.Comparator.comparingDouble(TreeSite::rank));return found.subList(0,Math.min(Math.max(0,Math.min(24,limit)),found.size()));
+    }
     /** Reservoir of painted forest nodes; small patches cannot disappear between random candidates. */
     public java.util.List<TreeSite> treeSites(int limit){
         limit=Math.max(0,Math.min(128,limit));var sites=new java.util.PriorityQueue<TreeSite>(java.util.Comparator.comparingDouble(TreeSite::rank).reversed());
         if(limit==0)return java.util.List.of();
-        for(int y=0;y<NODES;y++)for(int x=0;x<NODES;x++){int at=y*NODES+x;if(coverage[at]<.7f||MATERIALS[material[at]].forest<.25f)continue;
+        for(int y=0;y<NODES;y++)for(int x=0;x<NODES;x++){int at=y*NODES+x;if(coverage[at]<.7f||MATERIALS[material[at]].forest*(1-mix[at])+MATERIALS[secondary[at]].forest*mix[at]<.12f)continue;
             double rank=HorizonGeometry.hash(x+width,y+height);if(sites.size()==limit&&rank>=sites.peek().rank)continue;
             if(sites.size()==limit)sites.poll();
             double dx=(xs[Math.min(NODES-1,x+1)]-xs[Math.max(0,x-1)])*.3,dy=(ys[Math.min(NODES-1,y+1)]-ys[Math.max(0,y-1)])*.3;
             sites.add(new TreeSite((float)(xs[x]+(HorizonGeometry.hash(x+17,y+91)-.5)*dx),(float)(ys[y]+(HorizonGeometry.hash(x+83,y+13)-.5)*dy),rank));
         }var result=new java.util.ArrayList<>(sites);result.sort(java.util.Comparator.comparingDouble(TreeSite::rank));return result;
+    }
+
+    /** One snapshot and maximum influence per gesture: event frequency cannot amplify a stroke. */
+    public Stroke stroke(Brush brush,double radius,double hardness,double strength,double height,java.util.function.DoubleBinaryOperator baseHeight){return new Stroke(brush,radius,hardness,strength,height,baseHeight);}
+    public final class Stroke {
+        private final BackgroundPaint before=copy();private final float[] influence=new float[COUNT];
+        private final Brush brush;private final double radius,hardness,strength,target;private final java.util.function.DoubleBinaryOperator base;
+        private Stroke(Brush brush,double radius,double hardness,double strength,double height,java.util.function.DoubleBinaryOperator base){
+            if(brush==null||base==null||!Double.isFinite(radius+hardness+strength+height)||radius<2||radius>1024||strength<0||strength>1)throw new IllegalArgumentException("Finite bounded stroke required");
+            this.brush=brush;this.radius=radius;this.hardness=Math.max(0,Math.min(.98,hardness));this.strength=strength;target=Math.max(0,Math.min(MAX_HEIGHT,Math.min(radius*.8,height)));this.base=base;
+        }
+        public void line(double ax,double ay,double bx,double by){
+            if(!Double.isFinite(ax+ay+bx+by)||Math.max(Math.max(Math.abs(ax),Math.abs(ay)),Math.max(Math.abs(bx),Math.abs(by)))>1e7)throw new IllegalArgumentException("Finite stroke coordinates required");
+            // Distance to the whole segment avoids gaps, and avoids hundreds of repeated stamp passes.
+            double dx=bx-ax,dy=by-ay,length=dx*dx+dy*dy;
+            int minX=lower(xs,Math.min(ax,bx)-radius),maxX=Math.min(NODES-1,lower(xs,Math.max(ax,bx)+radius)+1),minY=lower(ys,Math.min(ay,by)-radius),maxY=Math.min(NODES-1,lower(ys,Math.max(ay,by)+radius)+1);
+            for(int y=minY;y<=maxY;y++)for(int x=minX;x<=maxX;x++)if(editable(x,y)){
+                double t=length==0?0:Math.max(0,Math.min(1,((xs[x]-ax)*dx+(ys[y]-ay)*dy)/length));double d=Math.hypot(xs[x]-ax-dx*t,ys[y]-ay-dy*t)/radius;if(d>=1)continue;
+                float w=(float)Math.max(0,Math.min(1,(1-d)/(1-hardness)));w=w*w*(3-2*w)*(float)strength;int at=y*NODES+x;if(w<=influence[at])continue;influence[at]=w;
+                if(brush==Brush.ERASE){coverage[at]=before.coverage[at]*(1-w);heightCoverage[at]=before.heightCoverage[at]*(1-w);continue;}
+                if(brush.material!=null){int id=brush.material.ordinal(),previous=before.mix[at]>.5f?before.secondary[at]:before.material[at];float old=before.coverage[at],alpha=old+(1-old)*w;
+                    coverage[at]=alpha;material[at]=(byte)(previous==0?id:previous);secondary[at]=(byte)id;mix[at]=previous==0?0:w/Math.max(.00001f,alpha);
+                    if(brush.material.water()){heightCoverage[at]=before.heightCoverage[at]*(1-w);}
+                }
+                if(brush.shape()){double h=sourceHeight(x,y),next=target;
+                    if(brush==Brush.RAISE)next=Math.min(radius*1.5,h+target);else if(brush==Brush.LOWER)next=Math.max(0,h-target);
+                    else if(brush==Brush.SMOOTH){double sum=0;int count=0;for(int yy=Math.max(0,y-1);yy<=Math.min(NODES-1,y+1);yy++)for(int xx=Math.max(0,x-1);xx<=Math.min(NODES-1,x+1);xx++){sum+=sourceHeight(xx,yy);count++;}next=sum/count;}
+                    float old=before.heightCoverage[at],alpha=old+(1-old)*w;heightCoverage[at]=alpha;heights[at]=(float)Math.max(0,Math.min(MAX_HEIGHT,(before.heights[at]*old*(1-w)+next*w)/Math.max(.00001f,alpha)));
+                }
+            }revision++;
+        }
+        private double sourceHeight(int x,int y){int at=y*NODES+x;double h=base.applyAsDouble(xs[x],ys[y]);if(!Double.isFinite(h))h=0;return Math.max(0,Math.min(MAX_HEIGHT,h*(1-before.heightCoverage[at])+before.heights[at]*before.heightCoverage[at]));}
     }
 }

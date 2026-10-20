@@ -96,7 +96,7 @@ public final class HorizonGeometry {
             double seed=(composition.seed()&65535)*.0001;double s=(i+.15+.7*hash(i+(int)(composition.seed()&8191),81))*p.perimeter/candidates;
             double distance=12+(landscape.custom()?outer*.72:200)*Math.pow(hash(i+(int)(composition.seed()&8191),117),1.7);landscape.sample(s,distance,point(p,s,distance).x,point(p,s,distance).z,surface);
             Point pt=point(p,s,distance);double density=.35+.65*(noise(pt.x*.07,pt.z*.07)+1)*.5;
-            if(surface.coast>-.7f||surface.space>.1f||surface.forest<.25f||hash(i,73)>surface.forest*density)continue;
+            if(surface.coast>-.7f||surface.space>.1f||surface.forest<(landscape.custom()?.1f:.25f)||hash(i,73)>surface.forest*density)continue;
             int r=0;while(r<distances.length-2&&distances[r+1]<distance)r++;
             geometry.row(s,r,a);geometry.row(s,r+1,c);float t=(float)((distance-distances[r])/(distances[r+1]-distances[r]));
             float size=(float)((8+10*hash(i,13))*(landscape.custom()?1-.2*distance/outer:1-.002*distance));
@@ -115,7 +115,7 @@ public final class HorizonGeometry {
         if(landscape.custom())for(var site:landscape.paint().treeSites(128)){
             if(trees>=384)break;float x=site.x(),z=-site.y();var pos=HorizonDistantFeatures.position(geometry,x,z);
             if(pos.distance()<12||pos.distance()>outer*.75)continue;
-            landscape.sample(pos.along(),pos.distance(),x,z,surface);if(surface.coast>-.7f||surface.forest<.25f||surface.space>.1f)continue;
+            landscape.sample(pos.along(),pos.distance(),x,z,surface);if(surface.coast>-.7f||surface.forest<.1f||surface.space>.1f)continue;
             float size=(float)(8+8*site.rank());b.tree(x,geometry.surfaceHeight(pos.along(),pos.distance(),x,z)-.01f,z,size,surface.form,surface.tr,surface.tg,surface.tb,(float)(site.rank()*Math.PI*2),.8f);trees++;
         }
         var features=HorizonDistantFeatures.build(geometry);b.append(features.vertices());

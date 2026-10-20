@@ -20,10 +20,10 @@ public final class BackgroundPaintTest {
         p.line(48,150,48,150,80,.9,BackgroundPaint.Brush.ERASE,0);p.sample(48,150,sample);check(sample.coverage==0&&sample.heightCoverage==0,"eraser restores base rather than placing blocks");
         p.line(-100,32,-100,32,40,.8,BackgroundPaint.Brush.MOUNTAINS,1000);p.sample(-100,32,sample);check(sample.height<=BackgroundPaint.MAX_HEIGHT,"height clamp");
         var history=new BackgroundPaintHistory(p);for(int i=0;i<40;i++){history.begin();p.clear();p.line(-100,32,-100,32,40,.8,BackgroundPaint.Brush.ISLAND,i+1);history.end();}
-        check(history.undoCount()==32&&history.maxBytes()<4_000_000,"bounded history and memory");var newest=p.copy();check(history.undo()&&!p.same(newest)&&history.redo()&&p.same(newest),"undo/redo exactly restore stroke data");
+        check(history.undoCount()==32&&history.maxBytes()<5_000_000,"bounded history and memory");var newest=p.copy();check(history.undo()&&!p.same(newest)&&history.redo()&&p.same(newest),"undo/redo exactly restore stroke data");
         history.undo();history.begin();p.clear();history.end();check(history.redoCount()==0,"new action discards redo branch");
         rejected(()->p.line(0,0,1,1,0,.5,BackgroundPaint.Brush.FOREST,0));rejected(()->p.line(0,0,Double.NaN,1,30,.5,BackgroundPaint.Brush.FOREST,0));rejected(()->p.node(40,40,1,1,20,1));rejected(()->p.node(0,0,999,1,0,0));
-        check(p.bytes()==BackgroundPaint.COUNT*13,"bounded serialized numeric payload size");
+        check(p.bytes()==BackgroundPaint.COUNT*18,"bounded serialized numeric payload size");
         System.out.println("BackgroundPaintTest: "+checks+" world axes/read-only map/drag/height/material/eraser/undo/redo/bounds checks PASS");
     }
 }

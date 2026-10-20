@@ -113,15 +113,17 @@ public final class HorizonLandscape {
         out.forest+=(forest-out.forest)*coverage;out.sand+=(sand-out.sand)*coverage;out.ice+=(ice-out.ice)*coverage;
         if(land>0){r/=land;g/=land;b/=land;out.r+=(r-out.r)*coverage;out.g+=(g-out.g)*coverage;out.b+=(b-out.b)*coverage;
             for(int i=0;i<paintBiome.weights.length;i++)paintBiome.weights[i]/=land;
-            var cell=paintCells[dominant];out.form=cell.form();out.tr=cell.tr();out.tg=cell.tg();out.tb=cell.tb();out.style=style(paintBiome);
+            var cell=paintCells[dominant];out.form=dominant==fpv.background.BackgroundPaint.Material.GRASS.ordinal()?VegetationInstances.Form.SHRUB.ordinal():cell.form();out.tr=cell.tr();out.tg=cell.tg();out.tb=cell.tb();out.style=style(paintBiome);
         }
         if(water>0){var blue=paintCells[fpv.background.BackgroundPaint.Material.OCEAN.ordinal()];out.waterR+=(blue.r()-out.waterR)*coverage;out.waterG+=(blue.g()-out.waterG)*coverage;out.waterB+=(blue.b()-out.waterB)*coverage;}
         if(out.coast>=0){boolean lake=paintSample.weights[fpv.background.BackgroundPaint.Material.LAKE.ordinal()]>.5f;out.ocean=!lake;
-            out.depth=(float)(waterDepth(along,distance,!lake,80)*smooth(0,.30,out.coast));if(lake)out.depth=Math.min(4,out.depth);out.height=SEA-out.depth;
+            out.depth=(float)(waterDepth(along,distance,!lake,80)*smooth(0,.30,out.coast));if(lake)out.depth=Math.min(4,out.depth);if(paintSample.weights[fpv.background.BackgroundPaint.Material.SHALLOW.ordinal()]>.5f)out.depth=Math.min(.8f,out.depth);out.height=SEA-out.depth;
         }else{
             double h=Math.max(0,previousHeight);if(land>0)h+=(landHeight(paintBiome,x,z,distance,along)-h)*coverage;
             if(paintSample.heightCoverage>0)h+=(paintSample.height-h)*paintSample.heightCoverage;
-            out.height=(float)(SEA+(Math.max(0,Math.min(fpv.background.BackgroundPaint.MAX_HEIGHT,h))-SEA)*smooth(0,out.style==Coast.ROCKY?.16:.60,-out.coast));out.depth=0;
+            // Custom height cannot form a giant wall immediately at the native border.
+            double safe=Math.max(0,previousHeight)+Math.max(0,distance-4)*.65;
+            out.height=(float)(SEA+(Math.max(0,Math.min(safe,Math.min(fpv.background.BackgroundPaint.MAX_HEIGHT,h)))-SEA)*smooth(0,1,-out.coast));out.depth=0;
         }
     }
     private static Coast style(BorderBiomeProfile.Sample s){if(s.weight(DESERT)>.5)return Coast.BEACH;if(s.weight(FOREST)>.5)return Coast.GREEN;if(s.weight(ICE)>.5)return Coast.ICE;return Coast.ROCKY;}
