@@ -13,6 +13,7 @@ public final class BackgroundSettings {
         dialog.cont.add("Local visual scenery only. The playable map and server rules do not change.").wrap().row();
         dialog.cont.table(modes->{for(var mode:BackgroundStyle.Mode.values())modes.button(mode.name(),()->{var style=BackgroundProfiles.current().copy();if(mode==BackgroundStyle.Mode.CUSTOM)style.customBaseManual=style.mode==BackgroundStyle.Mode.MANUAL||style.mode==BackgroundStyle.Mode.CUSTOM&&style.customBaseManual;style.mode=mode;BackgroundProfiles.apply(style);}).width(160).height(42);}).row();
         dialog.cont.label(()->"Background Mode: "+BackgroundProfiles.current().mode).row();
+        dialog.cont.label(BackgroundProfiles::status).wrap().fontScale(.75f).row();
         dialog.cont.button("Whole-world preset",()->choose(false,p->{var style=BackgroundProfiles.current().copy();style.whole=p;BackgroundProfiles.apply(style);})).update(b->b.setText("Whole world: "+BackgroundProfiles.current().whole.label)).height(42).row();
         for(var side:BorderBiomeProfile.Side.values())dialog.cont.button(side.name(),()->choose(true,p->{var style=BackgroundProfiles.current().copy();if(p==null)style.sides.remove(side);else style.sides.put(side,p);BackgroundProfiles.apply(style);})).update(b->b.setText(side.name()+": "+(BackgroundProfiles.current().sides.containsKey(side)?BackgroundProfiles.current().side(side).label:"Inherit whole world"))).height(38).row();
         dialog.cont.button("Open Background Editor",BackgroundEditor::open).height(44).disabled(b->!mindustry.Vars.state.isGame()).row();

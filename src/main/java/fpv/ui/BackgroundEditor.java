@@ -14,6 +14,7 @@ import mindustry.ui.dialogs.BaseDialog;
 /** Modal, client-local world painter. Its input never reaches native construction controls. */
 public final class BackgroundEditor extends BaseDialog {
     private final Object world=Vars.world.tiles;
+    private final long profileContext=BackgroundProfiles.context();
     private final BackgroundStyle working;
     private final BackgroundPaint paint;
     private final BackgroundPaintHistory history;
@@ -41,18 +42,18 @@ public final class BackgroundEditor extends BaseDialog {
         buttons.defaults().height(42).pad(3);
         buttons.button("Undo",this::undo).disabled(b->history.undoCount()==0);buttons.button("Redo",this::redo).disabled(b->history.redoCount()==0);
         buttons.button("Clear paint",()->{history.begin();paint.clear();history.end();status="Custom paint cleared; base remains. Preview / Apply to show.";});
-        buttons.button("Reset to Auto",()->{working.mode=BackgroundStyle.Mode.AUTO;BackgroundProfiles.apply(working);status="Auto applied. Paint is retained for Custom.";});
+        buttons.button("Reset to Auto",()->{working.mode=BackgroundStyle.Mode.AUTO;BackgroundProfiles.apply(working);status="Auto applied; paint retained. "+BackgroundProfiles.status();});
         buttons.button("Preview",this::preview).get().name="fpv-background-preview";
         buttons.button("Apply",this::apply).get().name="fpv-background-apply";
         buttons.button("Close",this::hide);addCloseListener();
-        hidden(()->{BackgroundProfiles.revertPreview();canvas.close();});
+        hidden(()->{BackgroundProfiles.revertPreview(profileContext);canvas.close();});
         keyDown(key->{if(Core.input.ctrl()&&key==KeyCode.z){if(Core.input.shift())redo();else undo();}else if(Core.input.ctrl()&&key==KeyCode.y)redo();});
     }
-    private boolean validWorld(){return world==Vars.world.tiles&&Vars.state.isGame();}
+    private boolean validWorld(){return world==Vars.world.tiles&&Vars.state.isGame()&&profileContext==BackgroundProfiles.context();}
     private void undo(){canvas.finishStroke();history.undo();status="Undone (staged).";}
     private void redo(){canvas.finishStroke();history.redo();status="Redone (staged).";}
     public void preview(){if(!validWorld()){hide();return;}working.mode=BackgroundStyle.Mode.CUSTOM;BackgroundProfiles.preview(working);status="Preview active. Apply saves; Close discards this preview.";}
-    public void apply(){if(!validWorld()){hide();return;}working.mode=BackgroundStyle.Mode.CUSTOM;BackgroundProfiles.apply(working);status="Custom background applied. Further strokes remain staged.";}
+    public void apply(){if(!validWorld()){hide();return;}working.mode=BackgroundStyle.Mode.CUSTOM;BackgroundProfiles.apply(working);status=BackgroundProfiles.status()+" Further strokes remain staged.";}
     /** Diagnostic access to the same UI model; no separate test-only painter implementation. */
     public BackgroundPaint paint(){return paint;}public BackgroundPaintHistory history(){return history;}
     private final class Canvas extends Element implements AutoCloseable {

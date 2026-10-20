@@ -14,7 +14,7 @@ public final class BackgroundPresetNativeTest {
             for(var s:horizon.profile().sections())check(s.value().dominant()==BorderBiomeProfile.Biome.OCEAN,"manual sea overrides sand background only");
             check(Vars.world.tile(24,24).floor()==Blocks.sand,"native floor stays sand");
             BackgroundProfiles.apply(auto);horizon.ensure();check(horizon.stats().fingerprint()==old,"revert Auto exactly restores cached procedural appearance");
-            Core.settings.put(BackgroundProfiles.PREFIX+"mode",999);Core.settings.put(BackgroundProfiles.PREFIX+"whole",999);Core.settings.put(BackgroundProfiles.PREFIX+"north",999);check(BackgroundProfiles.current().mode==BackgroundStyle.Mode.AUTO,"unknown mode safely falls back to Auto");check(BackgroundProfiles.current().whole==BackgroundPreset.OCEAN&&!BackgroundProfiles.current().sides.containsKey(BorderBiomeProfile.Side.NORTH),"invalid preset fallback");
+            Vars.state.set(mindustry.core.GameState.State.menu);Core.settings.put(BackgroundProfiles.PREFIX+"mode",999);Core.settings.put(BackgroundProfiles.PREFIX+"whole",999);Core.settings.put(BackgroundProfiles.PREFIX+"north",999);check(BackgroundProfiles.current().mode==BackgroundStyle.Mode.AUTO,"unknown default mode safely falls back to Auto");check(BackgroundProfiles.current().whole==BackgroundPreset.OCEAN&&!BackgroundProfiles.current().sides.containsKey(BorderBiomeProfile.Side.NORTH),"invalid default preset fallback");
             horizon.dispose();System.out.println("BackgroundPresetNativeTest: "+checks+" native cache/live settings/Auto restoration/scope checks PASS");
         }finally{input.uninstallProjection();renderer.close();runtime.close();altitude.close();}
     }
