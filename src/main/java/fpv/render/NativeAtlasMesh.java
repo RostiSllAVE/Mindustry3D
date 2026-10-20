@@ -34,6 +34,7 @@ final class NativeAtlasMesh {
         private final int capacity = (int)RenderConfig.ATLAS_STREAM_VERTICES;
         Shader overflowShader;
         boolean profileWalls;
+        private float liquidR,liquidG,liquidB;
         int streamMeshCount(){return streamMeshes.size();}
         Builder(boolean streaming) { this.streaming = streaming; }
         void clear() { for (Data d : data.values()) d.count = 0; }
@@ -136,25 +137,29 @@ final class NativeAtlasMesh {
 
         /** Static liquid fan; alpha 2..3 is an opaque material/wave weight, never transparency. */
         void liquidTop(TextureRegion region,int x,int y,boolean waves){liquidTop(region,x,y,waves,0);}
-        void liquidTop(TextureRegion region,int x,int y,boolean waves,float offset){
+        void liquidTop(TextureRegion region,int x,int y,boolean waves,float offset){liquidLayer(region,x,y,waves,offset,false);}
+        void liquidBottom(TextureRegion region,int x,int y){liquidLayer(region,x,y,false,0,true);}
+        private void liquidLayer(TextureRegion region,int x,int y,boolean waves,float offset,boolean bottom){
             if(!valid(region))return;
             Data d=data.get(region.texture);if(d==null){d=new Data(streaming?capacity*9:4096);data.put(region.texture,d);}
             if(streaming&&d.count+108>d.values.length)flush(region.texture,d,overflowShader);
             if(d.count+108>d.values.length)d.values=Arrays.copyOf(d.values,Math.max(d.values.length*2,d.count+108));
-            var tile=mindustry.Vars.world.tile(x,y);
+            var tile=mindustry.Vars.world.tile(x,y);liquidR=tile.floor().mapColor.r;liquidG=tile.floor().mapColor.g;liquidB=tile.floor().mapColor.b;
             float sw=LiquidSurfaceVisual.corner(x,y),se=LiquidSurfaceVisual.corner(x+1,y),ne=LiquidSurfaceVisual.corner(x+1,y+1),nw=LiquidSurfaceVisual.corner(x,y+1),c=LiquidSurfaceVisual.center(tile);
             sw+=offset;se+=offset;ne+=offset;nw+=offset;c+=offset;
             float asw=2+(waves?LiquidSurfaceVisual.cornerMotion(x,y):0),ase=2+(waves?LiquidSurfaceVisual.cornerMotion(x+1,y):0);
             float ane=2+(waves?LiquidSurfaceVisual.cornerMotion(x+1,y+1):0),anw=2+(waves?LiquidSurfaceVisual.cornerMotion(x,y+1):0),ac=2+(waves?LiquidSurfaceVisual.centerMotion(tile):0);
+            if(bottom){sw=(float)fpv.environment.LiquidBody.visualBedCorner(x,y);se=(float)fpv.environment.LiquidBody.visualBedCorner(x+1,y);ne=(float)fpv.environment.LiquidBody.visualBedCorner(x+1,y+1);nw=(float)fpv.environment.LiquidBody.visualBedCorner(x,y+1);c=fpv.environment.LiquidBody.open(tile)?-(float)fpv.environment.LiquidBody.depth(tile.floor()):0;asw=ase=ane=anw=ac=0;}
+            else{float k=10+2*fpv.environment.LiquidBody.kind(tile.floor());asw=k+asw-2;ase=k+ase-2;ane=k+ane-2;anw=k+anw-2;ac=k+ac-2;}
             float du=.5f/region.texture.width,dv=.5f/region.texture.height,u=region.u+du,u2=region.u2-du,v=region.v+dv,v2=region.v2-dv;
             liquidVertex(d,x-.5f,sw,-y+.5f,asw,u,v2);liquidVertex(d,x+.5f,se,-y+.5f,ase,u2,v2);liquidVertex(d,x,c,-y,ac,(u+u2)*.5f,(v+v2)*.5f);
             liquidVertex(d,x+.5f,se,-y+.5f,ase,u2,v2);liquidVertex(d,x+.5f,ne,-y-.5f,ane,u2,v);liquidVertex(d,x,c,-y,ac,(u+u2)*.5f,(v+v2)*.5f);
             liquidVertex(d,x+.5f,ne,-y-.5f,ane,u2,v);liquidVertex(d,x-.5f,nw,-y-.5f,anw,u,v);liquidVertex(d,x,c,-y,ac,(u+u2)*.5f,(v+v2)*.5f);
             liquidVertex(d,x-.5f,nw,-y-.5f,anw,u,v);liquidVertex(d,x-.5f,sw,-y+.5f,asw,u,v2);liquidVertex(d,x,c,-y,ac,(u+u2)*.5f,(v+v2)*.5f);
         }
-        private static void liquidVertex(Data d,float x,float y,float z,float material,float u,float v){
-            float shore=1+.045f*(1+Math.min(0,y)/LiquidSurfaceVisual.DEPTH);
-            d.vertex(x,y,z,shore,shore,shore,material,u,v);
+        private void liquidVertex(Data d,float x,float y,float z,float material,float u,float v){
+            float shore=material==0?Math.max(.65f,1+y*.12f):1;
+            d.vertex(x,y,z,material==0?shore:liquidR,material==0?shore:liquidG,material==0?shore:liquidB,material,u,v);
         }
 
         /** Low roof + side skirt, no hidden bottom. Each cached outline lies inside one actual

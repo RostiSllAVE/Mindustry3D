@@ -40,7 +40,7 @@ public final class LiquidSurfaceNativeTest {
             Vars.world.tile(8,8).setFloor(Blocks.water.asFloor());
             for(int y=2;y<46;y++)for(int x=2;x<46;x++){
                 near(LiquidSurfaceVisual.corner(x,y),-.16f,"continuous open ocean");
-                for(float time:new float[]{0,3,60}){float h=LiquidSurfaceVisual.height(x-.5f,-y+.5f,time,true);check(h>=-.18501&&h<=-.13499,"small bounded waves below physical ground");near(h,LiquidSurfaceVisual.height(x-.5f,-y+.5f,time,true),"deterministic phase");}
+                for(float time:new float[]{0,3,60}){float h=LiquidSurfaceVisual.height(x-.5f,-y+.5f,time,true);check(h>=-.28001&&h<=-.03999,"small bounded waves below physical ground");near(h,LiquidSurfaceVisual.height(x-.5f,-y+.5f,time,true),"deterministic phase");}
             }
             check(Math.abs(LiquidSurfaceVisual.height(7,-7,0,true)-LiquidSurfaceVisual.height(7,-7,3,true))>.001,"real surface height animates");
             near(LiquidSurfaceVisual.height(7,-7,3,false),-.16f,"disabled-wave level");
@@ -54,7 +54,7 @@ public final class LiquidSurfaceNativeTest {
             Vars.world.tile(5,5).setFloor(Blocks.stone.asFloor());check(!LiquidSurfaceVisual.coarse(Vars.world.tile(8,8),6,6,4,4),"coarse halo detects nearby shore");Vars.world.tile(5,5).setFloor(Blocks.water.asFloor());
             call(renderer,"floorSurface",new Class[]{Tile.class,TextureRegion.class,float.class,boolean.class},Vars.world.tile(8,8),region,0f,false);
             float[] first=data(renderer,"staticAtlas");check(first.length==108,"one cached four-triangle liquid fan");
-            for(int i=0;i<first.length;i+=9){check(first[i+1]<0&&first[i+1]>=-.16f,"actual lowered mesh");check(first[i+6]>=2&&first[i+6]<=3,"opaque liquid material/wave weight");}
+            for(int i=0;i<first.length;i+=9){check(first[i+1]<0&&first[i+1]>=-1.8f,"actual lowered mesh");check(first[i+6]==0,"opaque bed material, separate animated surface");}
             call(get(renderer,"staticAtlas"),"clear",new Class[]{});call(renderer,"floorSurface",new Class[]{Tile.class,TextureRegion.class,float.class,boolean.class},Vars.world.tile(8,8),region,0f,false);check(Arrays.equals(first,data(renderer,"staticAtlas")),"time does not regenerate or alter CPU mesh");
             for(var type:NavalHullProfile.types()){
                 var p=NavalHullProfile.forType(type);double line=p.waterline(.2,.2,0,true);
@@ -70,7 +70,9 @@ public final class LiquidSurfaceNativeTest {
             call(renderer,"coarseChunk",new Class[]{int.class,int.class,int.class},0,0,4);
             check((int)get(get(renderer,"dynamic"),"count")>=36*7,"actual mixed-liquid coarse pass retains artificial wall with linear tile index");
             Vars.world.tile(10,10).setAir();
-            near(LiquidSurfaceVisual.WAVE_HEIGHT,.025f,"documented bounded wave amplitude");
+            var submerged=new arc.graphics.g3d.Camera3D();submerged.resize(800,600);submerged.near=.02f;submerged.far=20;submerged.position.set(8,-1.0f,-8);submerged.up.set(0,0,-1);submerged.lookAt(8,-1.8f,-8);submerged.update();set(renderer,"camera",submerged);
+            var visible=renderer.getClass().getDeclaredMethod("chunkVisible",int.class,int.class);visible.setAccessible(true);check((boolean)visible.invoke(renderer,0,0),"deep bed remains inside chunk culling bounds when looking down underwater");
+            near(LiquidSurfaceVisual.WAVE_HEIGHT,.12f,"documented bounded wave amplitude");
             System.out.println("LiquidSurfaceNativeTest: "+checks+" checks PASS; actual native liquids/meshes/coasts/seams/fallback/ten naval profiles; physical gameplay NOT TESTED.");
         }finally{renderer.dispose();input.uninstallProjection();ConstructionPriorityNativeTest.renderer.close();runtime.close();altitude.close();}
     }

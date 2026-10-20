@@ -8,7 +8,7 @@ import mindustry.world.blocks.environment.Floor;
 /** Presentation only. Never use these levels for physics, picking, navigation or weapon origins. */
 public final class LiquidSurfaceVisual {
     public static final String WAVES_SETTING="fpv-water-waves";
-    public static final float DEPTH=.16f, WAVE_HEIGHT=.025f;
+    public static final float DEPTH=.16f, WAVE_HEIGHT=.12f;
     private static final float CHUNK=(float)fpv.generated.RenderConfig.CHUNK_TILES;
     private LiquidSurfaceVisual(){}
     public static boolean open(Tile t){return t!=null&&t.floor().isLiquid&&t.block()==Blocks.air;}
@@ -29,6 +29,8 @@ public final class LiquidSurfaceVisual {
     public static float center(Tile t){return open(t)?-DEPTH:0;}
     public static float cornerMotion(int x,int y){
         if(corner(x,y)==0)return 0;
+        int kind=fpv.environment.LiquidBody.kind(Vars.world.tile(x-1,y-1).floor());
+        if(fpv.environment.LiquidBody.kind(Vars.world.tile(x,y-1).floor())!=kind||fpv.environment.LiquidBody.kind(Vars.world.tile(x-1,y).floor())!=kind||fpv.environment.LiquidBody.kind(Vars.world.tile(x,y).floor())!=kind)return 0;
         float a=motion(Vars.world.tile(x-1,y-1).floor()),b=motion(Vars.world.tile(x,y-1).floor());
         float c=motion(Vars.world.tile(x-1,y).floor()),d=motion(Vars.world.tile(x,y).floor());
         return Math.min(Math.min(a,b),Math.min(c,d))*apron(x-.5f,-y+.5f);
@@ -47,7 +49,7 @@ public final class LiquidSurfaceVisual {
     private static float mod(float n,float d){return n-(float)Math.floor(n/d)*d;}
     /** Same phase as the GLSL vertex shader; world coordinates, simulation seconds. */
     public static float wave(float x,float z,float seconds){
-        return (float)(WAVE_HEIGHT*(.65*Math.sin(x*.73+z*.41+seconds*.9)+.35*Math.sin(x*-.37+z*.83-seconds*.63)));
+        return (float)(WAVE_HEIGHT*(.75+.25*Math.sin(x*.11+z*.09))*(.65*Math.sin(x*.73+z*.41+seconds*.9)+.35*Math.sin(x*-.37+z*.83-seconds*.63)));
     }
     public static float interpolate(float sw,float se,float ne,float nw,float c,float u,float v){
         if(v>=u&&v>=1-u)return sw*(v-u)+se*(u+v-1)+c*2*(1-v);

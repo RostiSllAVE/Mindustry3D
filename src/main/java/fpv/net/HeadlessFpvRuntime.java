@@ -26,6 +26,7 @@ public final class HeadlessFpvRuntime implements AutoCloseable {
     public final AltitudeSeparation separation=new AltitudeSeparation(Vars.unitPhysics,world::unitState,()->Vars.net.server());
     public final fpv.construction.LayerRuntime construction=new fpv.construction.LayerRuntime(world);
     public final fpv.construction.LayerPhysicalQueries layerQueries=new fpv.construction.LayerPhysicalQueries(construction::grid,construction::damage,construction::building);
+    public final fpv.environment.LiquidExposureSystem liquidExposure=new fpv.environment.LiquidExposureSystem(world::unitState);
     private boolean closed;
     private fpv.world.WorldCoordinates.Point networkAim(mindustry.gen.Unit unit){return network==null?null:network.aim(unit);}
     public void install(){
@@ -38,7 +39,7 @@ public final class HeadlessFpvRuntime implements AutoCloseable {
         forceProjectors.setUpperBuildings(()->construction.nativeBuildings().entries(),()->construction.grid().geometryRevision());
         projectedWalls.setCoveredPredicate(b->construction.grid().columnsCovered(b.tile.x,b.tile.y,b.block.size));
         combat.setProjectedDefense(new fpv.combat.CompositeDefense(projectedWalls,forceProjectors,construction.baseShields(),layerQueries));
-        world.setUnitBarrier(forceProjectors.combine(projectedWalls::sweepUnit));altitudes.setAircraftBarrier(world::traceUnitBarrier);altitudes.setGroundSupport(new fpv.defense.LegTraversal(world,()->projectedWalls.settings().legStepMultiplier()));
+        world.setUnitBarrier(forceProjectors.combine(projectedWalls::sweepUnit));altitudes.setLiquidExposure(liquidExposure);altitudes.setAircraftBarrier(world::traceUnitBarrier);altitudes.setGroundSupport(new fpv.defense.LegTraversal(world,()->projectedWalls.settings().legStepMultiplier()));
         altitudes.setAircraftStructures(construction::grid,world::surfaceHeight);
         var ground=new fpv.units.ground.GroundFamilyLocomotion(world);
         ground.setProjectedObstacle(projectedWalls::topAt);
@@ -47,7 +48,7 @@ public final class HeadlessFpvRuntime implements AutoCloseable {
         factorySpawns.install();
         network.registerProjection(projectedWalls);network.registerForceProjectors(forceProjectors);combat.install();separation.install();
         Events.run(Trigger.update,()->{if(!closed){fpv.combat.CombatSettings.apply(combat);combat.syncActive();separation.syncActive();}});
-        Events.run(Trigger.afterGameUpdate,()->{if(!closed){double dt=Math.max(0,Math.min(.1,Time.delta/60));construction.update(dt);combat.update(dt);explosions.update(dt);projectedWalls.update(dt);forceProjectors.update(dt);}});
+        Events.run(Trigger.afterGameUpdate,()->{if(!closed){double dt=Math.max(0,Math.min(.1,Time.delta/60));construction.update(dt);combat.update(dt);explosions.update(dt);projectedWalls.update(dt);forceProjectors.update(dt);liquidExposure.update(dt);}});
         Events.on(WorldLoadEvent.class,e->{terrain.invalidate();altitudes.clear();combat.clear();explosions.clear();projectedWalls.clear();forceProjectors.clear();});
         Events.on(ResetEvent.class,e->{altitudes.clear();combat.clear();explosions.clear();projectedWalls.clear();forceProjectors.clear();});
         Events.on(TileChangeEvent.class,e->{terrain.invalidate(e.tile);projectedWalls.invalidate(e.tile);forceProjectors.invalidate(e.tile);});

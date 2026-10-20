@@ -77,7 +77,7 @@ public final class FpvWorldRenderer {
     private static final String ATLAS_VERTEX =
         "attribute vec3 a_position;attribute vec4 a_color;attribute vec2 a_texCoord0;" +
         "uniform mat4 u_combined;uniform vec3 u_offset;uniform float u_time;uniform float u_waves;varying vec4 v_color;varying vec2 v_uv;varying vec3 v_pos;" +
-        "void main(){v_pos=a_position+u_offset;if(a_color.a>2.0001&&u_waves>0.5)v_pos.y+=u_waves*(a_color.a-2.0)*0.025*(0.65*sin(v_pos.x*0.73+v_pos.z*0.41+u_time*0.9)+0.35*sin(v_pos.x*(-0.37)+v_pos.z*0.83-u_time*0.63));v_color=a_color;v_uv=a_texCoord0;gl_Position=u_combined*vec4(v_pos,1.0);}";
+        "void main(){v_pos=a_position+u_offset;if(a_color.a>2.0001&&a_color.a<4.0&&u_waves>0.5)v_pos.y+=u_waves*(a_color.a-2.0)*0.025*(0.65*sin(v_pos.x*0.73+v_pos.z*0.41+u_time*0.9)+0.35*sin(v_pos.x*(-0.37)+v_pos.z*0.83-u_time*0.63));v_color=a_color;v_uv=a_texCoord0;gl_Position=u_combined*vec4(v_pos,1.0);}";
     private static final String ATLAS_FRAGMENT =
         "uniform sampler2D u_texture;uniform float u_ambient;uniform float u_time;uniform vec2 u_water;uniform float u_waves;uniform float u_cutoff;" +
         "varying vec4 v_color;varying vec2 v_uv;varying vec3 v_pos;" +
@@ -187,6 +187,11 @@ public final class FpvWorldRenderer {
     private final IntBuffer savedViewport = Buffers.newIntBuffer(4);
     private Shader shader;
     private Shader atlasShader;
+    private Shader liquidShader;
+    private final LiquidImmersionEffect liquidImmersion=new LiquidImmersionEffect();
+    private final NativeAtlasMesh.Builder liquidStatic=new NativeAtlasMesh.Builder(false),liquidStream=new NativeAtlasMesh.Builder(true);
+    private final ArrayList<ChunkMesh> visibleLiquidChunks=new ArrayList<>();
+    private final arc.struct.IntSeq deferredLiquid=new arc.struct.IntSeq();
     private Mesh dynamicMesh;
     private FrameBuffer sceneBuffer;
     private Object worldTiles;
@@ -427,6 +432,7 @@ public final class FpvWorldRenderer {
         if (shader == null) {
             shader = new Shader(VERTEX, FRAGMENT);
             atlasShader = new Shader(ATLAS_VERTEX, ATLAS_FRAGMENT);
+            liquidShader=new Shader(LiquidSurfaceShaders.VERTEX,LiquidSurfaceShaders.FRAGMENT);
             dynamicMesh = new Mesh(false, dynamic.maxVertices, 0, VertexAttribute.position3, COLOR);
         }
         Draw.flush();
@@ -437,6 +443,7 @@ public final class FpvWorldRenderer {
         boolean depthWrite = Gl.getInt(Gl.depthWritemask) != 0;
         int depthFunction = Gl.getInt(Gl.depthFunc), oldProgram = Gl.getInt(Gl.currentProgram);
         int oldActiveTexture = Gl.getInt(Gl.activeTexture);
+        int blendSrc=Gl.getInt(Gl.blendSrcRgb),blendDst=Gl.getInt(Gl.blendDstRgb),blendSrcA=Gl.getInt(Gl.blendSrcAlpha),blendDstA=Gl.getInt(Gl.blendDstAlpha),blendEq=Gl.getInt(Gl.blendEquationRgb),blendEqA=Gl.getInt(Gl.blendEquationAlpha);
         Gl.activeTexture(Gl.texture0);
         int oldTexture0 = Gl.getInt(Gl.textureBinding2d);
         savedClearColor.clear();
@@ -482,6 +489,8 @@ public final class FpvWorldRenderer {
             atlasShader.setUniformf("u_waves",Core.settings.getBool(LiquidSurfaceVisual.WAVES_SETTING,true)?1:0);
             atlasShader.setUniformf("u_water",(float)RenderConfig.WATER_RIPPLE_STRENGTH,(float)RenderConfig.WATER_RIPPLE_SPEED);
             atlasShader.setUniformf("u_cutoff",(float)RenderConfig.ATLAS_ALPHA_CUTOFF);
+            liquidShader.bind();liquidShader.setUniformMatrix4("u_combined",camera.combined.val);liquidShader.setUniformi("u_texture",0);liquidShader.setUniformf("u_camera",camera.position);liquidShader.setUniformf("u_time",Time.time/60f);liquidShader.setUniformf("u_waves",Core.settings.getBool(LiquidSurfaceVisual.WAVES_SETTING,true)?1:0);liquidShader.setUniformf("u_ambient",environment.ambient());
+            liquidStream.overflowShader=liquidShader;liquidStream.clear();visibleLiquidChunks.clear();deferredLiquid.clear();
             streamAtlas.overflowShader=atlasShader;
             streamAtlas.clear();
             dynamic.clear();
@@ -516,6 +525,9 @@ public final class FpvWorldRenderer {
             flushDynamic();
             streamAtlas.drawAndClear(atlasShader);
             CameraPerformanceProfile.end(Part.VFX,profiled);
+            Gl.enable(Gl.blend);Gl.blendEquation(Gl.funcAdd);Gl.blendFunc(Gl.srcAlpha,Gl.oneMinusSrcAlpha);Gl.depthMask(false);
+            for(ChunkMesh liquidChunk:visibleLiquidChunks)if(liquidChunk.liquid!=null)liquidChunk.liquid.draw(liquidShader);
+            renderDeferredLiquid();liquidStream.drawAndClear(liquidShader);Gl.depthMask(true);Gl.disable(Gl.blend);
             profiled=CameraPerformanceProfile.start();
             projectedWalls.render(camera,projectedDefense,sceneBuffer);
             CameraPerformanceProfile.end(Part.PROJECTIONS,profiled);
@@ -537,7 +549,7 @@ public final class FpvWorldRenderer {
             Gl.viewport(savedViewport.get(0), savedViewport.get(1), savedViewport.get(2), savedViewport.get(3));
             Gl.disable(Gl.depthTest);
             Gl.depthMask(false);
-            sceneBuffer.blit(Shaders.screenspace);
+            sceneBuffer.blit(liquidImmersion.update(camera));
             buildingFrameCompleted = true;
         } finally {
             if (bufferBegun) sceneBuffer.end();
@@ -545,7 +557,7 @@ public final class FpvWorldRenderer {
             Gl.depthMask(depthWrite);
             Gl.depthFunc(depthFunction);
             enabled(Gl.depthTest, depth);
-            enabled(Gl.blend, blend);
+            enabled(Gl.blend, blend);Gl.blendFuncSeparate(blendSrc,blendDst,blendSrcA,blendDstA);Gl.blendEquationSeparate(blendEq,blendEqA);
             enabled(Gl.cullFace, cull);
             enabled(Gl.scissorTest, scissor);
             enabled(Gl.stencilTest, stencil);
@@ -630,6 +642,7 @@ public final class FpvWorldRenderer {
                 shader.bind();
                 if(chunk.mesh!=null)chunk.mesh.render(shader,Gl.triangles);
                 if(chunk.atlas!=null)chunk.atlas.draw(atlasShader);
+                visibleLiquidChunks.add(chunk);
             }else{
                 coarseChunks++;
                 // Reusable streaming buffers give full-map coverage without a far-chunk allocation/eviction loop.
@@ -650,7 +663,7 @@ public final class FpvWorldRenderer {
     }
 
     private ChunkMesh buildChunk(int cx, int cy) {
-        terrain.clear();staticAtlas.clear();
+        terrain.clear();staticAtlas.clear();liquidStatic.clear();
         floorRelief.prepare(cx,cy,floorVisible);
         for (int y = cy * CHUNK; y < Math.min(worldHeight, (cy + 1) * CHUNK); y++) {
             for (int x = cx * CHUNK; x < Math.min(worldWidth, (cx + 1) * CHUNK); x++) {
@@ -685,7 +698,7 @@ public final class FpvWorldRenderer {
         }
         Mesh mesh=null;
         if(terrain.count>0){mesh=new Mesh(true,terrain.count/7,0,VertexAttribute.position3,COLOR);mesh.setVertices(terrain.vertices,0,terrain.count);}
-        return new ChunkMesh(mesh,staticAtlas.upload(),revision,(long)terrain.count*4,discoveryHash(cx,cy));
+        return new ChunkMesh(mesh,staticAtlas.upload(),liquidStatic.upload(),revision,(long)terrain.count*4,discoveryHash(cx,cy));
     }
 
     /** Only cached presentation vertices move; native XYZ/picking/physical terrain remain untouched. */
@@ -693,7 +706,7 @@ public final class FpvWorldRenderer {
         int x=tile.x,y=tile.y;
         if(tile.floor().isLiquid){
             if(!overlay)liquidSurface(tile,region,staticAtlas,true);
-            else if(NativeAtlasMesh.valid(region))staticAtlas.liquidTop(region,x,y,true,offset);
+            else if(NativeAtlasMesh.valid(region))liquidStatic.liquidTop(region,x,y,true,offset);
             return;
         }
         float sw=floorRelief.corner(x,y)+offset,se=floorRelief.corner(x+1,y)+offset;
@@ -731,7 +744,7 @@ public final class FpvWorldRenderer {
             if(liquidCell){
                 if(LiquidSurfaceVisual.coarse(sample,x,y,width,depth)){
                     TextureRegion liquid=NativeRegions.floor(sample.floor(),sample);
-                    if(NativeAtlasMesh.valid(liquid))streamAtlas.top(liquid,centerX,-LiquidSurfaceVisual.DEPTH,centerZ,width,depth,0,1,1,1,false);
+                    if(NativeAtlasMesh.valid(liquid)){streamAtlas.top(liquid,centerX,-(float)fpv.environment.LiquidBody.depth(sample.floor()),centerZ,width,depth,0,Math.max(.65f,1-(float)fpv.environment.LiquidBody.depth(sample.floor())*.12f),Math.max(.65f,1-(float)fpv.environment.LiquidBody.depth(sample.floor())*.12f),Math.max(.65f,1-(float)fpv.environment.LiquidBody.depth(sample.floor())*.12f),false);deferLiquid(x,y,width,depth,1);}
                     else{color.set(sample.floor().mapColor);dynamic.top(centerX,-LiquidSurfaceVisual.DEPTH,centerZ,width,depth,color.r,color.g,color.b);}
                 }else for(int yy=y;yy<y+depth;yy++)for(int xx=x;xx<x+width;xx++){
                     Tile piece=Vars.world.tile(xx,yy);
@@ -775,10 +788,18 @@ public final class FpvWorldRenderer {
 
     /** Original atlas and opaque pass; lower only presentation geometry. */
     private void liquidSurface(Tile tile,TextureRegion region,NativeAtlasMesh.Builder batch,boolean waves){
-        if(NativeAtlasMesh.valid(region)){batch.liquidTop(region,tile.x,tile.y,waves);return;}
+        if(NativeAtlasMesh.valid(region)){batch.liquidBottom(region,tile.x,tile.y);if(batch==staticAtlas)liquidStatic.liquidTop(region,tile.x,tile.y,waves);else deferLiquid(tile.x,tile.y,1,1,0);return;}
         color.set(tile.floor().mapColor);float x=tile.x,z=-tile.y,c=LiquidSurfaceVisual.center(tile);
         float sw=LiquidSurfaceVisual.corner(tile.x,tile.y),se=LiquidSurfaceVisual.corner(tile.x+1,tile.y),ne=LiquidSurfaceVisual.corner(tile.x+1,tile.y+1),nw=LiquidSurfaceVisual.corner(tile.x,tile.y+1);
         terrainFallbackLiquid(x,z,sw,se,ne,nw,c,batch==staticAtlas?terrain:dynamic);
+    }
+    private void deferLiquid(int x,int y,int w,int d,int mode){deferredLiquid.add(x,y,w,d);deferredLiquid.add(mode);}
+    private void renderDeferredLiquid(){
+        for(int i=0;i<deferredLiquid.size;i+=5){int x=deferredLiquid.get(i),y=deferredLiquid.get(i+1),w=deferredLiquid.get(i+2),d=deferredLiquid.get(i+3),mode=deferredLiquid.get(i+4);Tile tile=Vars.world.tile(x+w/2,y+d/2);
+            TextureRegion r=NativeRegions.floor(mode==2?tile.overlay():tile.floor(),tile);
+            if(mode!=1)liquidStream.liquidTop(r,x,y,false,mode==2?FloorSurfaceRelief.ORE_OFFSET:0);
+            else liquidStream.projectionFace(r,x-.5f,-LiquidSurfaceVisual.DEPTH,-y+.5f,x+w-.5f,-LiquidSurfaceVisual.DEPTH,-y+.5f,x+w-.5f,-LiquidSurfaceVisual.DEPTH,-y-d+.5f,x-.5f,-LiquidSurfaceVisual.DEPTH,-y-d+.5f,tile.floor().mapColor.r,tile.floor().mapColor.g,tile.floor().mapColor.b,10+2*fpv.environment.LiquidBody.kind(tile.floor()));
+        }
     }
     private void terrainFallbackLiquid(float x,float z,float sw,float se,float ne,float nw,float c,Geometry g){
         g.reserve(12);
@@ -791,7 +812,7 @@ public final class FpvWorldRenderer {
     /** Far-tier representative retains native ore art without rebuilding raised geometry per frame. */
     private void coarseOre(Tile tile){
         if(tile.overlay() instanceof mindustry.world.blocks.environment.OreBlock&&!tile.overlay().wallOre){
-            if(tile.floor().isLiquid){streamAtlas.liquidTop(NativeRegions.floor(tile.overlay(),tile),tile.x,tile.y,false,FloorSurfaceRelief.ORE_OFFSET);return;}
+            if(tile.floor().isLiquid){deferLiquid(tile.x,tile.y,1,1,2);return;}
             streamAtlas.top(NativeRegions.floor(tile.overlay(),tile),tile.x,FloorSurfaceRelief.ORE_OFFSET,-tile.y,1,1,0,1,1,1,false);
         }
     }
@@ -803,7 +824,7 @@ public final class FpvWorldRenderer {
 
     private boolean chunkVisible(int cx,int cy){
         float h=Math.max(Math.max(6,vegetationHeight),elevation.maxHeight());
-        float low=-FloorSurfaceRelief.MAX_HEIGHT;
+        float low=Math.min(-FloorSurfaceRelief.MAX_HEIGHT,-(float)fpv.environment.LiquidBody.MAX_DEPTH);
         return camera.frustum.containsBounds(cx*CHUNK+(CHUNK-1)*.5f,(h+low)/2,-cy*CHUNK-(CHUNK-1)*.5f,CHUNK*.5f+vegetationPadding,(h-low)/2,CHUNK*.5f+vegetationPadding);
     }
 
@@ -1338,7 +1359,7 @@ public final class FpvWorldRenderer {
         if (atlasShader != null) atlasShader.dispose();
         if (dynamicMesh != null) dynamicMesh.dispose();
         if (sceneBuffer != null) sceneBuffer.dispose();
-        staticAtlas.dispose();streamAtlas.dispose();environment.dispose();extrusion.dispose();groundFamily.close();naval.close();forceFields.dispose();projectedWalls.dispose();forceProjectorRenderer.dispose();supportEffects.clear();
+        liquidStatic.dispose();liquidStream.dispose();liquidImmersion.close();if(liquidShader!=null)liquidShader.dispose();staticAtlas.dispose();streamAtlas.dispose();environment.dispose();extrusion.dispose();groundFamily.close();naval.close();forceFields.dispose();projectedWalls.dispose();forceProjectorRenderer.dispose();supportEffects.clear();
     }
 
     private void clearChunks() {
@@ -1353,14 +1374,17 @@ public final class FpvWorldRenderer {
 
     private static final class ChunkMesh {
         final Mesh mesh;
-        final NativeAtlasMesh atlas;
+        final NativeAtlasMesh atlas,liquid;
         final long bytes,fogHash;
         long fogChecked=Time.millis();
         long revision;
         ChunkMesh(Mesh mesh,NativeAtlasMesh atlas,long revision,long colorBytes,long fogHash) {
-            this.mesh=mesh;this.atlas=atlas;this.revision=revision;this.bytes=colorBytes+atlas.bytes;this.fogHash=fogHash;
+            this(mesh,atlas,null,revision,colorBytes,fogHash);
         }
-        void dispose() { if (mesh != null) mesh.dispose();if(atlas!=null)atlas.dispose(); }
+        ChunkMesh(Mesh mesh,NativeAtlasMesh atlas,NativeAtlasMesh liquid,long revision,long colorBytes,long fogHash){
+            this.mesh=mesh;this.atlas=atlas;this.liquid=liquid;this.revision=revision;this.bytes=colorBytes+atlas.bytes+(liquid==null?0:liquid.bytes);this.fogHash=fogHash;
+        }
+        void dispose() { if (mesh != null) mesh.dispose();if(atlas!=null)atlas.dispose();if(liquid!=null)liquid.dispose(); }
     }
     private record Candidate(int x,int y,float distance2){}
 

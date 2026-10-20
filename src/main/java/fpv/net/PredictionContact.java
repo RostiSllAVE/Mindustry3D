@@ -29,7 +29,7 @@ final class PredictionContact implements LocalPilotPrediction.Contact {
         this.unit=unit;this.kind=kind;
         double r=Math.max(.22,Math.min(CrashConfig.MAX_COLLIDER_RADIUS_TILES,body.radius()));
         double h=Math.max(.12,Math.min(CrashConfig.MAX_COLLIDER_HALF_HEIGHT,body.halfHeight()));
-        if(terrain==null||r!=radius||h!=halfHeight){radius=r;halfHeight=h;terrain=new SweptCollision((x,z)->world.surfaceHeight(x,-z),r,h,CrashConfig.SWEEP_STEP_TILES);}
+        if(terrain==null||r!=radius||h!=halfHeight){radius=r;halfHeight=h;terrain=new SweptCollision((x,z)->fpv.environment.LiquidBody.flightFloor(this.unit,x,z,world.surfaceHeight(x,-z)),r,h,CrashConfig.SWEEP_STEP_TILES);}
     }
     public void afterStep(FlightController.State s,double x,double y,double z,double seconds,double elapsed){
         if(unit==null||terrain==null)return;

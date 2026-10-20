@@ -94,6 +94,7 @@ public final class FpvMod extends Mod {
     NetworkControls smokeBoostControls; // isolated real-frame fixture only; null throughout ordinary gameplay
     final RammingCollision buildObstacles=new RammingCollision(world3d);
     final RadialExplosion explosions=new RadialExplosion(world3d);
+    final fpv.environment.LiquidExposureSystem liquidExposure=new fpv.environment.LiquidExposureSystem(world3d::unitState);
     final CrashSystem crashes=new CrashSystem(renderer3d::surfaceHeight,explosions,flightProfile.metersPerTile);
     private final FlightController.StepObserver flightCollision=(state,ox,oy,oz,seconds,elapsed)->collide(ox,oy,oz,seconds,true,elapsed);
     FpvDesktopInput input;
@@ -151,6 +152,7 @@ public final class FpvMod extends Mod {
             combat.setProjectedDefense(new fpv.combat.CompositeDefense(projectedWalls,forceProjectors));
             world3d.setUnitBarrier(forceProjectors.combine(projectedWalls::sweepUnit));
             unitAltitudes.setAircraftBarrier(world3d::traceUnitBarrier);
+            unitAltitudes.setLiquidExposure(liquidExposure);
             unitAltitudes.setAircraftStructures(()->world3d.construction()==null?null:world3d.construction().grid(),world3d::surfaceHeight);
             unitAltitudes.setGroundSupport(new fpv.defense.LegTraversal(world3d,()->projectedWalls.settings().legStepMultiplier()));
             if(!Boolean.getBoolean("fpv.wallProfile")){
@@ -215,6 +217,7 @@ public final class FpvMod extends Mod {
                     combat.update(arc.util.Time.delta/60.0);
                     projectedWalls.update(arc.util.Time.delta/60.0);
                     forceProjectors.update(arc.util.Time.delta/60.0);
+                    liquidExposure.update(arc.util.Time.delta/60.0);
                 }
                 if(enabled&&ready&&!Vars.player.dead()){
                     if(onlineFlight())network.copyLocalFlight(flight);
@@ -921,7 +924,7 @@ public final class FpvMod extends Mod {
             double t=Math.max(0,contact.time()-1e-6);s.x=ox+(s.x-ox)*t;s.y=oy+(s.y-oy)*t;s.z=oz+(s.z-oz)*t;
             s.vx=s.vy=s.vz=0;
         }
-        new SweptCollision(renderer3d::surfaceHeight,radius,halfHeight,CrashConfig.SWEEP_STEP_TILES).resolve(s,ox,oy,oz);
+        new SweptCollision((x,z)->fpv.environment.LiquidBody.flightFloor(Vars.player.unit(),x,z,renderer3d.surfaceHeight(x,z)),radius,halfHeight,CrashConfig.SWEEP_STEP_TILES).resolve(s,ox,oy,oz);
         s.y=Math.min(s.y,Math.max(RuntimeConfig.MAX_HEIGHT,renderer3d.terrain().maxHeight()+RuntimeConfig.START_HEIGHT));
         if(Vars.state.isPaused()){
             unit.move((float)(s.x*Vars.tilesize-unit.x),(float)(-s.z*Vars.tilesize-unit.y));

@@ -51,7 +51,7 @@ public final class CrashSystem {
     private final IntMap<TargetImpulses> targetImpulses=new IntMap<>();
     private SweptCollision.Impact lastImpact=SweptCollision.Impact.NONE;
     public CrashSystem(DoubleBinaryOperator surface,RadialExplosion effects,double metersPerTile){
-        this.surface=surface;collision=new SweptCollision(surface,radius,halfHeight,CrashConfig.SWEEP_STEP_TILES);
+        this.surface=(x,z)->fpv.environment.LiquidBody.flightFloor(tracked,x,z,surface.applyAsDouble(x,z));collision=new SweptCollision(this.surface,radius,halfHeight,CrashConfig.SWEEP_STEP_TILES);
         this.effects=effects;this.metersPerTile=metersPerTile;
     }
     public void setWorld(World3DAdapter value){world=value;bodies=value==null?null:new RammingCollision(value,this::predictTarget);targetImpulses.clear();}

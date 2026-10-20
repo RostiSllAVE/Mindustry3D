@@ -22,6 +22,8 @@ import mindustry.gen.Unit;
  * Call after the native entity update, using the actual scaled simulation seconds (zero on pause).
  */
 public final class UnitAltitudeSystem implements AutoCloseable {
+    private fpv.environment.LiquidExposureSystem liquidExposure;
+    public void setLiquidExposure(fpv.environment.LiquidExposureSystem v){liquidExposure=v;}
     private final DoubleBinaryOperator terrain;
     private final Supplier<Unit> excludedPlayer;
     private final ToDoubleFunction<Unit> meshHalfDepth;
@@ -284,6 +286,12 @@ public final class UnitAltitudeSystem implements AutoCloseable {
                 // a slab or jump up by the cruise clearance as the leading wing crosses its edge.
                 // Their top is a smooth target; the actual swept hull enforces hard clearance.
                 ahead=Math.max(ahead,aircraftStructures.ahead());
+            }
+            if(unit.isFlying()&&liquidExposure!=null){
+                double safe=liquidExposure.clearance(unit,x,-z,tracked.pose.height(),vx,-vz,previousHalfHeight);ahead=Math.max(ahead,safe);
+                // Native XY intent resumes next AI tick; retain the last safe position while climbing.
+                // Task/player poses are excluded by clearance(), so attacks and piloting never brake here.
+                if(safe>tracked.pose.height()+.05&&tracked.hasPosition){x=tracked.x;z=tracked.z;unit.set((float)(x*Vars.tilesize),(float)(-z*Vars.tilesize));unit.vel.setZero();vx=vz=0;}
             }
             if(unit.isFlying())model.updateFlight(tracked.pose,simulationSeconds,floor,ahead,vx,vz,unit.rotation,
                 unit.type.flying&&!unit.type.omniMovement&&unit.hasWeapons()&&unit.controller() instanceof mindustry.entities.units.AIController);

@@ -635,7 +635,7 @@ public final class FpvNetwork implements AutoCloseable {
         void build(double dt){var s=flight.state();double x=s.x,y=s.y,z=s.z;builder.step(s,dt,controls.forward(),controls.right(),controls.climb(),controls.turn(),Math.max(0,Math.min(60,Core.settings.getInt("fpv-build-speed",12))));bound();
             var body=body();var hit=obstacles.first(unit,x,-z,y,s.x,-s.z,s.y,s.vx,-s.vz,s.vy,body.radius(),body.halfHeight(),0);
             if(hit!=null){double t=Math.max(0,hit.time()-1e-6);s.x=x+(s.x-x)*t;s.y=y+(s.y-y)*t;s.z=z+(s.z-z)*t;s.vx=s.vy=s.vz=0;}
-            new SweptCollision(surface,body.radius(),body.halfHeight(),CrashConfig.SWEEP_STEP_TILES).resolve(s,x,y,z);
+            new SweptCollision((sx,sz)->fpv.environment.LiquidBody.flightFloor(unit,sx,sz,surface.applyAsDouble(sx,sz)),body.radius(),body.halfHeight(),CrashConfig.SWEEP_STEP_TILES).resolve(s,x,y,z);
         }
         void release(){creator.release(unit);boost.release(unit);altitudes.setGroundStanceControl(unit,false,0,0);motion.release(unit,flight.state());if(unit.id==unitId&&!unit.dead)unit.snapInterpolation();crash.reset();}
     }
