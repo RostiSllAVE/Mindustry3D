@@ -10,4 +10,10 @@ The native deep-water **visual** bed now descends smoothly from normal water tow
 
 Validation: 15 relevant programs PASS on Java17 and stock Steam25. Actual stock SDL fixture: 336 frames, seven views, zero GL errors, unchanged native map/entities, and the settings dialog opens modally. This is scripted validation, not physical mouse/gameplay or Linux acceptance. An initial broad run exposed a seam fixture still using the old synthetic bed anchor; it was updated to use the real shared water-bed callback and passes.
 
-Phase 2 painter and Phase 3 per-map persistence remain in progress at this checkpoint. They are not represented as completed UI.
+## Phase 2 checkpoint — painter
+
+Added a modal top-down editor with an immutable central native map, 17 biome/shape/restore brushes, world-space zoom/pan, radius/hardness/height controls, 32-stroke undo/redo and explicit Preview/Apply. An 89×89 nonuniform mask puts more samples near the map; material and height channels are independent. Painted islands/coasts are part of the terrain field, with flat separate water, bounded forest proxies and no gameplay entities. Repainting an island with forest retains its land coverage (the first scripted render exposed gaps at overlapping brush rims; fixed and regression-tested). Tree proxies use deterministic jitter.
+
+18 programs PASS on Java17 and stock Steam25. Corrected actual SDL fixture: 240 frames, five views including the real canvas drag event path and Preview button, zero GL errors and unchanged native map/entities. The 960×600 UI and island overview were visually inspected. No physical input or Linux gameplay acceptance is claimed.
+
+Phase 3 per-map persistence remains outstanding at this checkpoint; phase 2's in-memory custom painting is not advertised as restart-safe yet.

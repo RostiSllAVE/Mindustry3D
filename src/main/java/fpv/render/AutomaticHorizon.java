@@ -90,7 +90,7 @@ public final class AutomaticHorizon {
         if(paletteAtlas!=Core.atlas){palette.clear();paletteAtlas=Core.atlas;if(detailTexture!=null)detailTexture.dispose();detailTexture=null;}
         styleRevision=style;
         long started=System.nanoTime();profile=fpv.background.BackgroundProfiles.current().profile(BorderBiomeProfile.analyze(new BorderBiomeProfile.Source(){public int width(){return Vars.world.width();}public int height(){return Vars.world.height();}public BorderBiomeProfile.Cell cell(int x,int y){return coloured(Vars.world.tile(x,y));}},strip));composition=HorizonComposition.analyze(terrain);analysisMs=(System.nanoTime()-started)/1e6;analyses++;
-        started=System.nanoTime();HorizonGeometry geometry=HorizonGeometry.build(profile,this::boundaryHeight,composition,this::waterBedHeight);
+        started=System.nanoTime();HorizonGeometry geometry=HorizonGeometry.build(profile,this::boundaryHeight,composition,this::waterBedHeight,fpv.background.BackgroundProfiles.current());
         if(geometry.vertices.length>0){far=new Mesh(true,geometry.vertices.length/HorizonGeometry.STRIDE,0,VertexAttribute.position3,new VertexAttribute(4,"a_color"),new VertexAttribute(2,"a_meta"),new VertexAttribute(2,"a_material"),new VertexAttribute(3,"a_normal"),new VertexAttribute(1,"a_coast"));far.setVertices(geometry.vertices);}
         var batch=new HorizonCollarMesh.Builder();
         for(int i=0;i<geometry.seamPositions.length-1;i++){

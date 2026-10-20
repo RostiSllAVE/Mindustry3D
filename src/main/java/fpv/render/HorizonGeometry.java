@@ -17,6 +17,15 @@ public final class HorizonGeometry {
     public final HorizonLandscape landscape;
     public final int islandCount,outcropCount,structureCount;
     public record Point(float x,float z){}
+    public record Coordinates(double along,double distance){}
+    /** Shared inverse for cached scenery and the top-down painter, in render X/Z coordinates. */
+    public static Coordinates coordinates(BorderBiomeProfile profile,float x,float z){
+        int w=profile.width,h=profile.height;double south=z-.5,east=x-w+.5,north=-z-h+.5,west=-x-.5;
+        double d=Math.max(Math.max(south,east),Math.max(north,west)),along;
+        if(south>=d)along=(x+.5+d)/(w+2*d)*w;else if(east>=d)along=w+(-z+.5+d)/(h+2*d)*h;
+        else if(north>=d)along=w+h+(w-.5+d-x)/(w+2*d)*w;else along=2d*w+h+(h-.5+d+z)/(h+2*d)*h;
+        return new Coordinates(Math.max(0,Math.min(profile.perimeter,along)),d);
+    }
     private HorizonGeometry(BorderBiomeProfile profile,double[] positions,double[] distances,double[] seamPositions,float[][][] rows,float[] vertices,int trees,HorizonLandscape landscape,int islands,int rocks,int structures){this.profile=profile;this.positions=positions;this.distances=distances;this.seamPositions=seamPositions;this.rows=rows;this.vertices=vertices;this.treeCount=trees;this.landscape=landscape;islandCount=islands;outcropCount=rocks;structureCount=structures;}
     public static double outerDistance(int w,int h){return Math.max(2048,Math.hypot(w,h)*1.15+96);}
     public static double boundRadius(int w,int h){double d=outerDistance(w,h);return Math.hypot(w*.5+d,h*.5+d)+200;}
@@ -34,9 +43,13 @@ public final class HorizonGeometry {
         return build(p,seam,composition,s->Double.NaN);
     }
     public static HorizonGeometry build(BorderBiomeProfile p,DoubleUnaryOperator seam,HorizonComposition composition,DoubleUnaryOperator waterBed){
-        double outer=outerDistance(p.width,p.height);var landscape=new HorizonLandscape(p,composition,waterBed);
-        var bands=new ArrayList<Double>();bands.add((double)COLLAR);bands.add(12d);
+        return build(p,seam,composition,waterBed,null);
+    }
+    public static HorizonGeometry build(BorderBiomeProfile p,DoubleUnaryOperator seam,HorizonComposition composition,DoubleUnaryOperator waterBed,fpv.background.BackgroundStyle style){
+        double outer=outerDistance(p.width,p.height);var landscape=new HorizonLandscape(p,composition,waterBed,style);
+        var bands=new TreeSet<Double>();bands.add((double)COLLAR);bands.add(12d);
         for(double d=24;d<outer;d*=1.75)bands.add(d);bands.add(outer);
+        if(landscape.custom())for(int i=1;i<=fpv.background.BackgroundPaint.EDGE_CELLS;i++){double d=outer*i*i/(fpv.background.BackgroundPaint.EDGE_CELLS*(double)fpv.background.BackgroundPaint.EDGE_CELLS);if(d>COLLAR)bands.add(d);}
         double[] distances=bands.stream().mapToDouble(Double::doubleValue).toArray();
         var knots=new TreeSet<Double>();
         for(int si=0;si<p.sections().size();si++){var section=p.sections().get(si);
@@ -48,7 +61,7 @@ public final class HorizonGeometry {
             }
         }
         double offset=0;for(int length:new int[]{p.width,p.height,p.width,p.height}){
-            int n=Math.min(length,16);for(int i=0;i<n;i++)knots.add(offset+length*(double)i/n);offset+=length;
+            int n=Math.min(length,landscape.custom()?64:16);for(int i=0;i<n;i++)knots.add(offset+length*(double)i/n);offset+=length;
         }knots.add(p.perimeter);double[] positions=knots.stream().mapToDouble(Double::doubleValue).toArray();
         // Both collar joins share this exact polyline, including fractional material knots.
         // A linear merge keeps construction proportional to perimeter without boxed tile entries.
@@ -72,28 +85,38 @@ public final class HorizonGeometry {
         Builder b=new Builder(),water=new Builder();var geometry=new HorizonGeometry(p,positions,distances,seamPositions,rows,null,0,landscape,0,0,0);
         // Tile-resolution first band closes the collar without T-junctions; far rings are bounded.
         float[] a=new float[NODE],c=new float[NODE],d=new float[NODE],e=new float[NODE];
-        for(int i=0;i<seamPositions.length-1;i++){double s=seamPositions[i],end=seamPositions[i+1];geometry.row(s,0,a);geometry.row(end,0,c);geometry.row(end,1,d);geometry.row(s,1,e);b.coastalQuad(a,c,d,e,water);}
-        for(int r=1;r<rows.length-1;r++)for(int i=0;i<positions.length-1;i++)b.coastalQuad(rows[r][i],rows[r][i+1],rows[r+1][i+1],rows[r+1][i],water);
+        int coarseStart=0;
+        while(coarseStart+1<rows.length&&distances[coarseStart+1]<=12){int r=coarseStart++;
+            for(int i=0;i<seamPositions.length-1;i++){double s=seamPositions[i],end=seamPositions[i+1];geometry.row(s,r,a);geometry.row(end,r,c);geometry.row(end,r+1,d);geometry.row(s,r+1,e);b.coastalQuad(a,c,d,e,water);}
+        }
+        for(int r=coarseStart;r<rows.length-1;r++)for(int i=0;i<positions.length-1;i++)b.coastalQuad(rows[r][i],rows[r][i+1],rows[r+1][i+1],rows[r+1][i],water);
         int trees=0;
         int candidates=Math.min(192,Math.max(12,(int)p.perimeter/5));
         for(int i=0;i<candidates;i++){
             double seed=(composition.seed()&65535)*.0001;double s=(i+.15+.7*hash(i+(int)(composition.seed()&8191),81))*p.perimeter/candidates;
-            double distance=12+200*Math.pow(hash(i+(int)(composition.seed()&8191),117),1.7);landscape.sample(s,distance,point(p,s,distance).x,point(p,s,distance).z,surface);p.sampleReadable(landscape.warpedAlong(s,distance),sample);
+            double distance=12+(landscape.custom()?outer*.72:200)*Math.pow(hash(i+(int)(composition.seed()&8191),117),1.7);landscape.sample(s,distance,point(p,s,distance).x,point(p,s,distance).z,surface);
             Point pt=point(p,s,distance);double density=.35+.65*(noise(pt.x*.07,pt.z*.07)+1)*.5;
             if(surface.coast>-.7f||surface.space>.1f||surface.forest<.25f||hash(i,73)>surface.forest*density)continue;
             int r=0;while(r<distances.length-2&&distances[r+1]<distance)r++;
             geometry.row(s,r,a);geometry.row(s,r+1,c);float t=(float)((distance-distances[r])/(distances[r+1]-distances[r]));
-            float size=(float)((8+10*hash(i,13))*(1-.002*distance));
-            b.tree(pt.x,geometry.surfaceHeight(s,distance,pt.x,pt.z)-.01f,pt.z,size,sample.form,sample.tr,sample.tg,sample.tb,(float)(hash(i,7)*Math.PI*2),(float)(.7+.6*hash(i,43)));trees++;
+            float size=(float)((8+10*hash(i,13))*(landscape.custom()?1-.2*distance/outer:1-.002*distance));
+            if(!landscape.custom())p.sampleReadable(landscape.warpedAlong(s,distance),sample);
+            b.tree(pt.x,geometry.surfaceHeight(s,distance,pt.x,pt.z)-.01f,pt.z,size,landscape.custom()?surface.form:sample.form,landscape.custom()?surface.tr:sample.tr,landscape.custom()?surface.tg:sample.tg,landscape.custom()?surface.tb:sample.tb,(float)(hash(i,7)*Math.PI*2),(float)(.7+.6*hash(i,43)));trees++;
             if(hash(i,271)>.30){
                 // A smaller neighbour makes irregular canopy clusters rather than isolated identical tokens.
                 double ss=s+(hash(i,191)-.5)*8,dd=distance+3+4*hash(i,103);
                 ss=ss-Math.floor(ss/p.perimeter)*p.perimeter;Point companion=point(p,ss,dd);
                 landscape.sample(ss,dd,companion.x,companion.z,surface);
                 if(surface.coast>-.7f||surface.space>.1f||surface.forest<.25f)continue;
-                p.sampleReadable(landscape.warpedAlong(ss,dd),sample);
-                b.tree(companion.x,geometry.surfaceHeight(ss,dd,companion.x,companion.z)-.01f,companion.z,size*(float)(.55+.3*hash(i,59)),sample.form,sample.tr*.94f,sample.tg*.98f,sample.tb*.94f,(float)(hash(i,197)*Math.PI*2),(float)(.8+.4*hash(i,53)));trees++;
+                if(!landscape.custom())p.sampleReadable(landscape.warpedAlong(ss,dd),sample);
+                b.tree(companion.x,geometry.surfaceHeight(ss,dd,companion.x,companion.z)-.01f,companion.z,size*(float)(.55+.3*hash(i,59)),landscape.custom()?surface.form:sample.form,(landscape.custom()?surface.tr:sample.tr)*.94f,(landscape.custom()?surface.tg:sample.tg)*.98f,(landscape.custom()?surface.tb:sample.tb)*.94f,(float)(hash(i,197)*Math.PI*2),(float)(.8+.4*hash(i,53)));trees++;
             }
+        }
+        if(landscape.custom())for(var site:landscape.paint().treeSites(128)){
+            if(trees>=384)break;float x=site.x(),z=-site.y();var pos=HorizonDistantFeatures.position(geometry,x,z);
+            if(pos.distance()<12||pos.distance()>outer*.75)continue;
+            landscape.sample(pos.along(),pos.distance(),x,z,surface);if(surface.coast>-.7f||surface.forest<.25f||surface.space>.1f)continue;
+            float size=(float)(8+8*site.rank());b.tree(x,geometry.surfaceHeight(pos.along(),pos.distance(),x,z)-.01f,z,size,surface.form,surface.tr,surface.tg,surface.tb,(float)(site.rank()*Math.PI*2),.8f);trees++;
         }
         var features=HorizonDistantFeatures.build(geometry);b.append(features.vertices());
         b.append(Arrays.copyOf(water.data,water.count));

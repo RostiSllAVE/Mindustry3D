@@ -7,14 +7,14 @@ public final class HorizonDistantFeatures {
     public static final int MAX_ISLANDS=12,MAX_OUTCROPS=12,MAX_STRUCTURES=6,MAX_VERTICES=2500;
     public record Result(float[] vertices,int islands,int outcrops,int structures) {}
     private record Site(float x,float z,float radius) {}
-    private record Position(double along,double distance) {}
+    record Position(double along,double distance) {}
     private HorizonDistantFeatures(){}
 
     public static Result build(HorizonGeometry geometry){
         var landscape=geometry.landscape;var composition=landscape.composition;var mesh=new Builder();
         var occupied=new ArrayList<Site>();var surface=new HorizonLandscape.Surface();
         int islands=0,outcrops=0,structures=0;long seed=composition.seed();
-        if(composition.islands()){
+        if(composition.islands()&&!landscape.custom()){
             int target=Math.min(MAX_ISLANDS,Math.max(1,Math.round(composition.waterFraction()*10)));
             for(int i=0;i<96&&islands<target;i++){
                 double along=random(seed,i,101)*geometry.profile.perimeter,distance=100+350*random(seed,i,103);
@@ -129,15 +129,8 @@ public final class HorizonDistantFeatures {
     static float groundHeight(HorizonGeometry geometry,float x,float z){
         Position p=position(geometry,x,z);return geometry.surfaceHeight(p.along,p.distance,x,z);
     }
-    private static Position position(HorizonGeometry geometry,float x,float z){
-        int w=geometry.profile.width,h=geometry.profile.height;
-        double south=z-.5,east=x-w+.5,north=-z-h+.5,west=-x-.5;
-        double d=Math.max(Math.max(south,east),Math.max(north,west)),along;
-        if(south>=d)along=(x+.5+d)/(w+2*d)*w;
-        else if(east>=d)along=w+(-z+.5+d)/(h+2*d)*h;
-        else if(north>=d)along=w+h+(w-.5+d-x)/(w+2*d)*w;
-        else along=2d*w+h+(h-.5+d+z)/(h+2*d)*h;
-        return new Position(Math.max(0,Math.min(geometry.profile.perimeter,along)),d);
+    static Position position(HorizonGeometry geometry,float x,float z){
+        var p=HorizonGeometry.coordinates(geometry.profile,x,z);return new Position(p.along(),p.distance());
     }
     private static double random(long seed,int index,int salt){
         long h=seed^((long)index*0x9e3779b97f4a7c15L)^((long)salt*0xc2b2ae3d27d4eb4fL);
