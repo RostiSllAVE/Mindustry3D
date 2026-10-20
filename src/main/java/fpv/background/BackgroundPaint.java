@@ -143,14 +143,20 @@ public final class BackgroundPaint {
             int minX=lower(xs,Math.min(ax,bx)-radius),maxX=Math.min(NODES-1,lower(xs,Math.max(ax,bx)+radius)+1),minY=lower(ys,Math.min(ay,by)-radius),maxY=Math.min(NODES-1,lower(ys,Math.max(ay,by)+radius)+1);
             for(int y=minY;y<=maxY;y++)for(int x=minX;x<=maxX;x++)if(editable(x,y)){
                 double t=length==0?0:Math.max(0,Math.min(1,((xs[x]-ax)*dx+(ys[y]-ay)*dy)/length));double d=Math.hypot(xs[x]-ax-dx*t,ys[y]-ay-dy*t)/radius;if(d>=1)continue;
-                float w=(float)Math.max(0,Math.min(1,(1-d)/(1-hardness)));w=w*w*(3-2*w)*(float)strength;int at=y*NODES+x;if(w<=influence[at])continue;influence[at]=w;
+                float w=(float)Math.max(0,Math.min(1,(1-d)/(1-hardness)));w=w*w*(3-2*w)*(float)strength;
+                double form=1;if(brush==Brush.MOUNTAINS||brush==Brush.HILLS)form=(1-d*d)*(1-d*d);else if(brush==Brush.ISLAND){double shore=Math.max(0,Math.min(1,(1-d)/.75));form=shore*shore*(3-2*shore);}
+                int at=y*NODES+x;float score=w*(float)form;if(score<=influence[at])continue;influence[at]=score;
                 if(brush==Brush.ERASE){coverage[at]=before.coverage[at]*(1-w);heightCoverage[at]=before.heightCoverage[at]*(1-w);continue;}
                 if(brush.material!=null){int id=brush.material.ordinal(),previous=before.mix[at]>.5f?before.secondary[at]:before.material[at];float old=before.coverage[at],alpha=old+(1-old)*w;
-                    coverage[at]=alpha;material[at]=(byte)(previous==0?id:previous);secondary[at]=(byte)id;mix[at]=previous==0?0:w/Math.max(.00001f,alpha);
+                    coverage[at]=alpha;
+                    if(before.material[at]==0){material[at]=(byte)id;secondary[at]=0;mix[at]=0;}
+                    else if(id==before.material[at]||id==before.secondary[at]){material[at]=before.material[at];secondary[at]=before.secondary[at];mix[at]=(old*before.mix[at]*(1-w)+(id==before.secondary[at]?w:0))/Math.max(.00001f,alpha);}
+                    else{material[at]=(byte)previous;secondary[at]=(byte)id;mix[at]=w/Math.max(.00001f,alpha);}
                     if(brush.material.water()){heightCoverage[at]=before.heightCoverage[at]*(1-w);}
                 }
                 if(brush.shape()){double h=sourceHeight(x,y),next=target;
-                    if(brush==Brush.RAISE)next=Math.min(radius*1.5,h+target);else if(brush==Brush.LOWER)next=Math.max(0,h-target);
+                    if(brush==Brush.MOUNTAINS||brush==Brush.HILLS||brush==Brush.ISLAND)next=target*form;
+                    else if(brush==Brush.RAISE)next=Math.min(radius*1.5,h+target);else if(brush==Brush.LOWER)next=Math.max(0,h-target);
                     else if(brush==Brush.SMOOTH){double sum=0;int count=0;for(int yy=Math.max(0,y-1);yy<=Math.min(NODES-1,y+1);yy++)for(int xx=Math.max(0,x-1);xx<=Math.min(NODES-1,x+1);xx++){sum+=sourceHeight(xx,yy);count++;}next=sum/count;}
                     float old=before.heightCoverage[at],alpha=old+(1-old)*w;heightCoverage[at]=alpha;heights[at]=(float)Math.max(0,Math.min(MAX_HEIGHT,(before.heights[at]*old*(1-w)+next*w)/Math.max(.00001f,alpha)));
                 }

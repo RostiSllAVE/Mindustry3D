@@ -149,7 +149,7 @@ public final class EnvironmentRenderer {
         skyShader.setUniformf("u_planetColor",companionColor.r,companionColor.g,companionColor.b);
         skyShader.setUniformf("u_atmosphere",atmosphere.r,atmosphere.g,atmosphere.b);
         float fy=(float)Math.tan(camera.fov*Mathf.degRad*.5f);
-        skyShader.setUniformf("u_fov",fy*Core.graphics.getWidth()/Core.graphics.getHeight(),fy);
+        skyShader.setUniformf("u_fov",fy*camera.width/Math.max(1,camera.height),fy);
         var style=fpv.background.BackgroundProfiles.current();
         skyShader.setUniformf("u_day",style.all(fpv.background.BackgroundPreset.SPACE)?0:day);skyShader.setUniformf("u_void",style.all(fpv.background.BackgroundPreset.VOID)?1:0);skyShader.setUniformf("u_seconds",(float)(seconds%100000));
         skyShader.setUniformf("u_radius",(float)EnvironmentConfig.PLANET_ANGULAR_RADIUS);
