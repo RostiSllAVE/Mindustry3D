@@ -1,0 +1,580 @@
+{
+  "task": "A2-16d",
+  "baselineCommit": "6747d4beac1faea99e1601bb23762ba0175a5139",
+  "branch": "main",
+  "jarSha256": "e17635068c0d23c54a645773e30cbba8a20d31fe03bbccfeafde31afe46dfa68",
+  "payloadIdentity": "payload1-fc16ae49bb686a6af935cd43ddaf79e9938c1df5380ad853a1b942f8df71beef",
+  "java17ProgramsPassed": 176,
+  "stockSteam25ProgramsPassed": 176,
+  "manufacturingNativeAssertions": 2441166,
+  "manufacturingConstructionAssertions": 473,
+  "freshSourceVerification": {
+    "status": "PASS",
+    "freshRecompiledRuntimeClassesByteIdentical": 984,
+    "packagedResourcesMatch": true,
+    "frozenSourceInputsMatch": true,
+    "jarSha256": "e17635068c0d23c54a645773e30cbba8a20d31fe03bbccfeafde31afe46dfa68"
+  },
+  "changedRuntimeEntries": [
+    "fpv/render/FpvWorldRenderer$1.class",
+    "fpv/render/FpvWorldRenderer$AircraftStats.class",
+    "fpv/render/FpvWorldRenderer$BuildBeamState.class",
+    "fpv/render/FpvWorldRenderer$Candidate.class",
+    "fpv/render/FpvWorldRenderer$ChunkMesh.class",
+    "fpv/render/FpvWorldRenderer$CoarseFogMask.class",
+    "fpv/render/FpvWorldRenderer$DepthSceneBuffer.class",
+    "fpv/render/FpvWorldRenderer$Geometry.class",
+    "fpv/render/FpvWorldRenderer$PickResult.class",
+    "fpv/render/FpvWorldRenderer$Stats.class",
+    "fpv/render/FpvWorldRenderer.class",
+    "fpv/render/LayerWorldRenderer$Activity.class",
+    "fpv/render/LayerWorldRenderer.class"
+  ],
+  "newRuntimeEntries": [
+    "fpv/render/ManufacturingModelGeometry$Model.class",
+    "fpv/render/ManufacturingModelGeometry.class",
+    "fpv/render/ManufacturingModelProfile.class",
+    "fpv/render/ManufacturingModelRenderer$Model.class",
+    "fpv/render/ManufacturingModelRenderer.class"
+  ],
+  "unchangedExistingRuntimeClassesIncludingDependencies": 1091,
+  "licensesAndJnaUnchanged": true,
+  "alphaFilesPreserved": 2065,
+  "earlierDiagnosticAssetsPreserved": 93,
+  "actualWindowsScriptedGraphics": {
+    "benchmark-baseline": {
+      "status": "PASS",
+      "frames": 3072,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false
+    },
+    "benchmark-graphics2": {
+      "status": "PASS",
+      "frames": 3072,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false
+    },
+    "benchmark-java172": {
+      "status": "PASS",
+      "frames": 3072,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false
+    }
+  },
+  "nativeProductionAndBeltObservations": {
+    "benchmark-baseline": {
+      "nativeOutputObservations": 177483,
+      "upperOutputObservations": 33412,
+      "authorizedUpperFactories": 48,
+      "nativeBeltFlow": true,
+      "upperBeltFlow": true
+    },
+    "benchmark-graphics2": {
+      "nativeOutputObservations": 177483,
+      "upperOutputObservations": 33412,
+      "authorizedUpperFactories": 48,
+      "nativeBeltFlow": true,
+      "upperBeltFlow": true
+    },
+    "benchmark-java172": {
+      "nativeOutputObservations": 177483,
+      "upperOutputObservations": 33412,
+      "authorizedUpperFactories": 48,
+      "nativeBeltFlow": true,
+      "upperBeltFlow": true
+    }
+  },
+  "comparison": {
+    "baseline": "completed A2-16c 6747d4beac1faea99e1601bb23762ba0175a5139; owner physical acceptance deferred",
+    "candidateJarSha256": "e17635068c0d23c54a645773e30cbba8a20d31fe03bbccfeafde31afe46dfa68",
+    "runtime": "stock Steam25 Windows SDL/OpenGL, 960x600",
+    "scope": "Sequential whole-renderer calls; identical fixture overlay and layouts, 48 warmup +64 timed frames per scene, asynchronous GPU queries; not gameplay FPS or statistical performance guarantee",
+    "cacheBefore": {
+      "cachedTypes": 0,
+      "materializedVertices": 0,
+      "cacheBytes": 0,
+      "scope": "generic crafter baseline has no manufacturing model cache"
+    },
+    "cacheAfter": {
+      "cachedTypes": 6,
+      "materializedVertices": 11604,
+      "cacheBytes": 371328
+    },
+    "measurements": [
+      {
+        "scene": "top",
+        "cpuBefore": 1.329453125,
+        "cpuAfter": 1.426875,
+        "gpuBefore": 0.071328,
+        "gpuAfter": 0.13768,
+        "drawCallsBefore": 28,
+        "drawCallsAfter": 28,
+        "verticesBefore": 69191,
+        "verticesAfter": 87227,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "oblique",
+        "cpuBefore": 0.873340625,
+        "cpuAfter": 1.4435984375,
+        "gpuBefore": 0.09384,
+        "gpuAfter": 0.194448,
+        "drawCallsBefore": 40,
+        "drawCallsAfter": 40,
+        "verticesBefore": 100169,
+        "verticesAfter": 124451,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "low",
+        "cpuBefore": 0.7022671875,
+        "cpuAfter": 1.1355015625,
+        "gpuBefore": 0.09048,
+        "gpuAfter": 0.174112,
+        "drawCallsBefore": 36,
+        "drawCallsAfter": 36,
+        "verticesBefore": 86879,
+        "verticesAfter": 109385,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "graphite",
+        "cpuBefore": 0.535,
+        "cpuAfter": 0.841584375,
+        "gpuBefore": 0.066816,
+        "gpuAfter": 0.087344,
+        "drawCallsBefore": 24,
+        "drawCallsAfter": 24,
+        "verticesBefore": 57275,
+        "verticesAfter": 67973,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "multi",
+        "cpuBefore": 0.6001703125,
+        "cpuAfter": 0.8986125,
+        "gpuBefore": 0.074064,
+        "gpuAfter": 0.1204,
+        "drawCallsBefore": 28,
+        "drawCallsAfter": 28,
+        "verticesBefore": 64985,
+        "verticesAfter": 80225,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "smelter",
+        "cpuBefore": 0.663384375,
+        "cpuAfter": 1.158603125,
+        "gpuBefore": 0.075712,
+        "gpuAfter": 0.145664,
+        "drawCallsBefore": 30,
+        "drawCallsAfter": 30,
+        "verticesBefore": 69947,
+        "verticesAfter": 88265,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "crucible",
+        "cpuBefore": 0.610765625,
+        "cpuAfter": 1.2522296875,
+        "gpuBefore": 0.07872,
+        "gpuAfter": 0.187328,
+        "drawCallsBefore": 31,
+        "drawCallsAfter": 31,
+        "verticesBefore": 74609,
+        "verticesAfter": 98033,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "pyratite",
+        "cpuBefore": 0.6401359375,
+        "cpuAfter": 1.172296875,
+        "gpuBefore": 0.083392,
+        "gpuAfter": 0.224352,
+        "drawCallsBefore": 32,
+        "drawCallsAfter": 32,
+        "verticesBefore": 77951,
+        "verticesAfter": 102233,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "blast",
+        "cpuBefore": 0.5750625,
+        "cpuAfter": 1.146803125,
+        "gpuBefore": 0.085392,
+        "gpuAfter": 0.185488,
+        "drawCallsBefore": 33,
+        "drawCallsAfter": 33,
+        "verticesBefore": 80771,
+        "verticesAfter": 104051,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "idle",
+        "cpuBefore": 0.6170640625,
+        "cpuAfter": 1.1979078125,
+        "gpuBefore": 0.099328,
+        "gpuAfter": 0.199664,
+        "drawCallsBefore": 40,
+        "drawCallsAfter": 40,
+        "verticesBefore": 100169,
+        "verticesAfter": 124331,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "disabled",
+        "cpuBefore": 0.73365625,
+        "cpuAfter": 1.1111953125,
+        "gpuBefore": 0.096416,
+        "gpuAfter": 0.166048,
+        "drawCallsBefore": 40,
+        "drawCallsAfter": 40,
+        "verticesBefore": 100169,
+        "verticesAfter": 124331,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "blocked",
+        "cpuBefore": 0.7013453125,
+        "cpuAfter": 1.2301765625,
+        "gpuBefore": 0.089216,
+        "gpuAfter": 0.17952,
+        "drawCallsBefore": 40,
+        "drawCallsAfter": 40,
+        "verticesBefore": 100169,
+        "verticesAfter": 124391,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "stacked",
+        "cpuBefore": 0.584975,
+        "cpuAfter": 1.1992734375,
+        "gpuBefore": 0.087504,
+        "gpuAfter": 0.202064,
+        "drawCallsBefore": 34,
+        "drawCallsAfter": 34,
+        "verticesBefore": 82475,
+        "verticesAfter": 105611,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "floor1",
+        "cpuBefore": 0.6113921875,
+        "cpuAfter": 1.019325,
+        "gpuBefore": 0.075424,
+        "gpuAfter": 0.117632,
+        "drawCallsBefore": 28,
+        "drawCallsAfter": 28,
+        "verticesBefore": 71195,
+        "verticesAfter": 86357,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "floor3",
+        "cpuBefore": 0.5742203125,
+        "cpuAfter": 1.2053203125,
+        "gpuBefore": 0.083248,
+        "gpuAfter": 0.153136,
+        "drawCallsBefore": 30,
+        "drawCallsAfter": 30,
+        "verticesBefore": 73847,
+        "verticesAfter": 95255,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "floor4",
+        "cpuBefore": 0.5099859375,
+        "cpuAfter": 0.573115625,
+        "gpuBefore": 0.068288,
+        "gpuAfter": 0.077184,
+        "drawCallsBefore": 19,
+        "drawCallsAfter": 19,
+        "verticesBefore": 49703,
+        "verticesAfter": 54971,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "floor5",
+        "cpuBefore": 0.5494609375,
+        "cpuAfter": 1.2443015625,
+        "gpuBefore": 0.077584,
+        "gpuAfter": 0.150512,
+        "drawCallsBefore": 30,
+        "drawCallsAfter": 30,
+        "verticesBefore": 73223,
+        "verticesAfter": 95609,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "below",
+        "cpuBefore": 0.471565625,
+        "cpuAfter": 0.96473125,
+        "gpuBefore": 0.078992,
+        "gpuAfter": 0.117248,
+        "drawCallsBefore": 28,
+        "drawCallsAfter": 28,
+        "verticesBefore": 66743,
+        "verticesAfter": 85187,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "field100",
+        "cpuBefore": 0.8691921875,
+        "cpuAfter": 2.1638078125,
+        "gpuBefore": 0.102432,
+        "gpuAfter": 2.818912,
+        "drawCallsBefore": 29,
+        "drawCallsAfter": 29,
+        "verticesBefore": 84593,
+        "verticesAfter": 146447,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "field1024",
+        "cpuBefore": 1.87959375,
+        "cpuAfter": 1.62591875,
+        "gpuBefore": 1.839904,
+        "gpuAfter": 0.153408,
+        "drawCallsBefore": 68,
+        "drawCallsAfter": 66,
+        "verticesBefore": 225461,
+        "verticesAfter": 198077,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "reload",
+        "cpuBefore": 0.9225734375,
+        "cpuAfter": 1.5413375,
+        "gpuBefore": 0.099232,
+        "gpuAfter": 0.26896,
+        "drawCallsBefore": 44,
+        "drawCallsAfter": 44,
+        "verticesBefore": 108005,
+        "verticesAfter": 132287,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "ghost",
+        "cpuBefore": 0.846034375,
+        "cpuAfter": 1.238053125,
+        "gpuBefore": 0.115392,
+        "gpuAfter": 0.257312,
+        "drawCallsBefore": 35,
+        "drawCallsAfter": 35,
+        "verticesBefore": 79685,
+        "verticesAfter": 99725,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "clipboard",
+        "cpuBefore": 0.753228125,
+        "cpuAfter": 1.3498359375,
+        "gpuBefore": 0.116976,
+        "gpuAfter": 0.178064,
+        "drawCallsBefore": 34,
+        "drawCallsAfter": 34,
+        "verticesBefore": 79409,
+        "verticesAfter": 99449,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "unfinished",
+        "cpuBefore": 0.776159375,
+        "cpuAfter": 1.28150625,
+        "gpuBefore": 0.111216,
+        "gpuAfter": 0.16456,
+        "drawCallsBefore": 35,
+        "drawCallsAfter": 35,
+        "verticesBefore": 79517,
+        "verticesAfter": 99557,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      }
+    ]
+  },
+  "geometry": {
+    "scope": "One cold CPU template generation per type/LOD; native content not changed; not an FPS result",
+    "models": [
+      {
+        "profile": "GRAPHITE",
+        "lod": 0,
+        "vertices": 840,
+        "triangles": 280,
+        "templateBytes": 26880,
+        "coldGenerationMs": 6.1802
+      },
+      {
+        "profile": "GRAPHITE",
+        "lod": 1,
+        "vertices": 648,
+        "triangles": 216,
+        "templateBytes": 20736,
+        "coldGenerationMs": 0.0608
+      },
+      {
+        "profile": "GRAPHITE",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0053
+      },
+      {
+        "profile": "MULTI",
+        "lod": 0,
+        "vertices": 1326,
+        "triangles": 442,
+        "templateBytes": 42432,
+        "coldGenerationMs": 0.1041
+      },
+      {
+        "profile": "MULTI",
+        "lod": 1,
+        "vertices": 1038,
+        "triangles": 346,
+        "templateBytes": 33216,
+        "coldGenerationMs": 0.0835
+      },
+      {
+        "profile": "MULTI",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0054
+      },
+      {
+        "profile": "SMELTER",
+        "lod": 0,
+        "vertices": 912,
+        "triangles": 304,
+        "templateBytes": 29184,
+        "coldGenerationMs": 0.0841
+      },
+      {
+        "profile": "SMELTER",
+        "lod": 1,
+        "vertices": 624,
+        "triangles": 208,
+        "templateBytes": 19968,
+        "coldGenerationMs": 0.0495
+      },
+      {
+        "profile": "SMELTER",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0057
+      },
+      {
+        "profile": "CRUCIBLE",
+        "lod": 0,
+        "vertices": 1416,
+        "triangles": 472,
+        "templateBytes": 45312,
+        "coldGenerationMs": 0.1038
+      },
+      {
+        "profile": "CRUCIBLE",
+        "lod": 1,
+        "vertices": 1056,
+        "triangles": 352,
+        "templateBytes": 33792,
+        "coldGenerationMs": 0.1144
+      },
+      {
+        "profile": "CRUCIBLE",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0263
+      },
+      {
+        "profile": "PYRATITE",
+        "lod": 0,
+        "vertices": 1044,
+        "triangles": 348,
+        "templateBytes": 33408,
+        "coldGenerationMs": 0.1293
+      },
+      {
+        "profile": "PYRATITE",
+        "lod": 1,
+        "vertices": 780,
+        "triangles": 260,
+        "templateBytes": 24960,
+        "coldGenerationMs": 0.0859
+      },
+      {
+        "profile": "PYRATITE",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0076
+      },
+      {
+        "profile": "BLAST",
+        "lod": 0,
+        "vertices": 984,
+        "triangles": 328,
+        "templateBytes": 31488,
+        "coldGenerationMs": 0.0746
+      },
+      {
+        "profile": "BLAST",
+        "lod": 1,
+        "vertices": 756,
+        "triangles": 252,
+        "templateBytes": 24192,
+        "coldGenerationMs": 0.0415
+      },
+      {
+        "profile": "BLAST",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0046
+      }
+    ],
+    "allTemplateBytes": 371328
+  },
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "actualRemoteMultiplayer": "NOT TESTED",
+  "realGameplayFps": "NOT TESTED",
+  "newControls": false,
+  "gameplaySimulationChanged": false
+}
