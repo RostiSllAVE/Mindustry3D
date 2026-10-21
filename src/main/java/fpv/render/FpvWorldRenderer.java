@@ -62,6 +62,8 @@ import java.util.Set;
 /** Read-only 3D view of the currently loaded Mindustry world. All methods run on the render thread. */
 public final class FpvWorldRenderer {
     public static final float WORLD_SCALE = 1f / Vars.tilesize;
+    private final CosmicFloorRenderer cosmicFloors=new CosmicFloorRenderer();
+    private final java.util.function.Predicate<Tile> cosmicVisible=this::discovered;
     private static final int CHUNK = (int)RenderConfig.CHUNK_TILES;
     private static final int MAX_CACHED_CHUNKS = (int)RenderConfig.MAX_CACHED_CHUNKS;
     private static final float DETAIL_DISTANCE = (float)RenderConfig.DETAIL_DISTANCE_TILES;
@@ -271,6 +273,7 @@ public final class FpvWorldRenderer {
     /** Invalidates cached geometry after a world or tile change; resources rebuild lazily. */
     public void invalidate() {
         LiquidBedVisual.clear();
+        cosmicFloors.clear();
         environment.invalidate();
         organicProps.invalidate();
         blockAnimations.clear();
@@ -431,6 +434,7 @@ public final class FpvWorldRenderer {
     public void invalidate(Tile tile) {
         if (tile == null) { invalidate(); return; }
         LiquidBedVisual.invalidate(tile);
+        cosmicFloors.invalidate(tile.x,tile.y,CHUNK);
         updatePlacedBuilding(tile);
         environment.invalidate(tile);
         elevation.invalidate(tile);
@@ -681,6 +685,8 @@ public final class FpvWorldRenderer {
         }
         evictInactive(detailLimit);
         flushDynamic();streamAtlas.drawAndClear(atlasShader);
+        cosmicFloors.begin(camera);
+        for(Candidate c:visibleChunks)cosmicFloors.draw(c.x,c.y,CHUNK,staticFogEnabled,cosmicVisible);
     }
 
     private void evictInactive(int target){
@@ -1391,10 +1397,11 @@ public final class FpvWorldRenderer {
         if (atlasShader != null) atlasShader.dispose();
         if (dynamicMesh != null) dynamicMesh.dispose();
         if (sceneBuffer != null) sceneBuffer.dispose();
-        liquidStatic.dispose();liquidStream.dispose();liquidImmersion.close();if(liquidShader!=null)liquidShader.dispose();staticAtlas.dispose();streamAtlas.dispose();environment.dispose();extrusion.dispose();groundFamily.close();naval.close();forceFields.dispose();projectedWalls.dispose();forceProjectorRenderer.dispose();supportEffects.clear();
+        cosmicFloors.dispose();liquidStatic.dispose();liquidStream.dispose();liquidImmersion.close();if(liquidShader!=null)liquidShader.dispose();staticAtlas.dispose();streamAtlas.dispose();environment.dispose();extrusion.dispose();groundFamily.close();naval.close();forceFields.dispose();projectedWalls.dispose();forceProjectorRenderer.dispose();supportEffects.clear();
     }
 
     private void clearChunks() {
+        cosmicFloors.clear();
         for (ChunkMesh chunk : chunks.values()) chunk.dispose();
         chunks.clear();
         cachedBytes=0;

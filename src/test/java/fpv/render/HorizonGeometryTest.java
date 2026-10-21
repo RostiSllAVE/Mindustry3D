@@ -78,7 +78,7 @@ public final class HorizonGeometryTest {
                 float n=a.vertices[i+11]*a.vertices[i+11]+a.vertices[i+12]*a.vertices[i+12]+a.vertices[i+13]*a.vertices[i+13];
                 check(n==0||Math.abs(n-1)<.001,"terrain has unit smooth normals; proxies explicitly bypass terrain shading");
             }
-            if(biome==SPACE)check(a.vertices.length==0,"space is empty scenery, no portal/tiles");
+            if(biome==SPACE){check(a.vertices.length>0,"space has a batched cosmic mask");for(int at=0;at<a.vertices.length;at+=HorizonGeometry.STRIDE)check(a.vertices[at+6]>.995f&&a.vertices[at+7]==0,"cosmic mask contains no ordinary land/water material");}
             if(biome==OCEAN)for(int i=0;i<a.vertices.length;i+=HorizonGeometry.STRIDE)check(a.vertices[i+7]>.5?Math.abs(a.vertices[i+1]+.16)<.00001:a.vertices[i+1]<-.16,"separate horizontal ocean and deeper seabed, never water relief");
             if(biome==FOREST){check(a.treeCount>0&&a.treeCount<=384,"forest has bounded lightweight decorative proxies");
                 var roots=new HashSet<Integer>();for(int i=0;i<a.vertices.length;i+=HorizonGeometry.STRIDE)if(a.vertices[i+12]==0)roots.add(Float.floatToIntBits(a.vertices[i+2]));

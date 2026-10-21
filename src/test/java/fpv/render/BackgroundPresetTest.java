@@ -13,7 +13,7 @@ public final class BackgroundPresetTest {
             style.whole=preset;var out=style.profile(p);check(p.fingerprint()==before,"presets never mutate automatic metadata");
             for(var side:out.sections())check(side.value().dominant()==preset.biome,"whole-world biome "+preset.label);
             var g=HorizonGeometry.build(out,s->0);check(g.vertices.length%(HorizonGeometry.STRIDE*3)==0,"valid cached geometry "+preset);
-            if(preset==BackgroundPreset.SPACE||preset==BackgroundPreset.VOID)check(g.vertices.length==0,"empty preset has no landscape geometry");
+            if(preset==BackgroundPreset.SPACE||preset==BackgroundPreset.VOID){check(g.vertices.length>0,"empty preset has a cached cosmic mask");for(int i=0;i<g.vertices.length;i+=HorizonGeometry.STRIDE)check(g.vertices[i+6]>.995f&&g.vertices[i+7]==0,"mask has no ordinary landscape/water");}
         }
         style.whole=BackgroundPreset.DESERT;style.sides.put(BorderBiomeProfile.Side.NORTH,BackgroundPreset.OCEAN);style.sides.put(BorderBiomeProfile.Side.SOUTH,BackgroundPreset.FOREST);
         var out=style.profile(p);for(var section:out.sections())check(section.value().dominant()==switch(section.side()){case NORTH->OCEAN;case SOUTH->FOREST;default->DESERT;},"opposite sides remain independent");

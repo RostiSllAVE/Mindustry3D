@@ -22,10 +22,12 @@ public final class EnvironmentRenderer {
     private static final String SKY_VERTEX = "attribute vec2 a_position; attribute vec2 a_texCoord0; varying vec2 v_uv; void main(){v_uv=a_texCoord0;gl_Position=vec4(a_position,0.0,1.0);}";
     private static final String SKY_FRAGMENT = """
         varying vec2 v_uv;
+        uniform vec3 u_cameraOrigin;
         uniform vec3 u_forward, u_right, u_up, u_sun, u_planet;
         uniform vec3 u_planetColor, u_atmosphere;
         uniform vec2 u_fov;
-        uniform float u_day, u_seconds, u_radius, u_starGrid, u_starThreshold,u_void;
+        uniform float u_day, u_seconds, u_radius, u_starGrid, u_starThreshold,u_void,u_cosmic;
+        """+CosmicField.GLSL+"""
         float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
         float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
         float fbm(vec2 p){return .54*noise(p)+.27*noise(p*2.03+13.2)+.13*noise(p*4.07+31.8)+.06*noise(p*8.13+7.1);}
@@ -73,7 +75,9 @@ public final class EnvironmentRenderer {
                     col=body*illumination+u_planetColor*pow(1.0-n.z,5.0)*.5;
                 }
             }
-            gl_FragColor=vec4(mix(col,vec3(0.0),u_void),1.0);
+            if(u_void>.5)col=cosmicField(ray)*.12;
+            else if(u_cosmic>.5)col=cosmicField(normalize(ray+u_cameraOrigin/100000.0));
+            gl_FragColor=vec4(col,1.0);
         }
         """;
     private static final String LAND_VERTEX = "attribute vec3 a_position;attribute vec4 a_color;uniform mat4 u_combined;varying vec4 v_color;void main(){v_color=a_color;gl_Position=u_combined*vec4(a_position,1.0);}";
@@ -143,7 +147,7 @@ public final class EnvironmentRenderer {
         if(skyShader==null){skyShader=new Shader(SKY_VERTEX,SKY_FRAGMENT);landShader=new Shader(LAND_VERTEX,LAND_FRAGMENT);quad=new ScreenQuad();}
         Gl.disable(Gl.depthTest);Gl.depthMask(false);
         skyShader.bind();
-        skyShader.setUniformf("u_forward",camera.direction);
+        skyShader.setUniformf("u_forward",camera.direction);skyShader.setUniformf("u_cameraOrigin",camera.position);
         skyShader.setUniformf("u_right",right);skyShader.setUniformf("u_up",up);
         skyShader.setUniformf("u_sun",sun);skyShader.setUniformf("u_planet",companion);
         skyShader.setUniformf("u_planetColor",companionColor.r,companionColor.g,companionColor.b);
@@ -151,6 +155,7 @@ public final class EnvironmentRenderer {
         float fy=(float)Math.tan(camera.fov*Mathf.degRad*.5f);
         skyShader.setUniformf("u_fov",fy*camera.width/Math.max(1,camera.height),fy);
         var style=fpv.background.BackgroundProfiles.current();
+        skyShader.setUniformf("u_cosmic",style.all(fpv.background.BackgroundPreset.SPACE)?1:0);
         skyShader.setUniformf("u_day",style.all(fpv.background.BackgroundPreset.SPACE)?0:day);skyShader.setUniformf("u_void",style.all(fpv.background.BackgroundPreset.VOID)?1:0);skyShader.setUniformf("u_seconds",(float)(seconds%100000));
         skyShader.setUniformf("u_radius",(float)EnvironmentConfig.PLANET_ANGULAR_RADIUS);
         skyShader.setUniformf("u_starGrid",(float)EnvironmentConfig.STAR_GRID);

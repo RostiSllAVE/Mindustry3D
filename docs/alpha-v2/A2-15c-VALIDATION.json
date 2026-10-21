@@ -1,0 +1,146 @@
+{
+  "task": "A2-15c",
+  "branch": "main",
+  "baselineCommit": "74d0441266a47f0b66be0bd5c241466659cd43a3",
+  "finalJarSha256": "108057376c38c000d13bf40674814fa196152a5819efa83f4304bf3446de53c9",
+  "java17TestsPassed": 163,
+  "stockSteam25TestsPassed": 163,
+  "stockSteam25Failures": 0,
+  "java17Resume": "Initial run passed all programs preceding BackgroundPresetTest; updated obsolete no-geometry assertion, recompiled that test only, resumed at it and passed all remaining programs. Unchanged runtime classes freshly recompiled and matched JAR. Full Steam25 run started from beginning.",
+  "oldExpectationsUpdated": [
+    "BackgroundPresetTest: cosmic mask replaces empty geometry",
+    "HorizonGeometryTest: mask excludes ordinary land/water"
+  ],
+  "scriptedGraphics": {
+    "steam25Frames": 1152,
+    "java17Frames": 1152,
+    "baselineFrames": 1152,
+    "glErrors": 0,
+    "viewsPerRun": 12,
+    "nativeMapAndEntityCountsUnchanged": true,
+    "existingMaskMeshesReusedWhileRotating": true,
+    "realSaveLoad": true
+  },
+  "freshRecompiledRuntimeClasses": 956,
+  "unchangedExistingRuntimeClasses": 1061,
+  "payloadIdentity": "payload1-feac072170cb9112de0a10fa291b3319ca5dfb4ddadfe695b7a07b30b7b6ef69",
+  "jarFolderIdentityJava17AndSteam25": "PASS",
+  "licensesAndJnaUnchanged": true,
+  "priorAlphaFilesPreserved": 2065,
+  "priorDiagnosticAssetsPreserved": 69,
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinux": "NOT TESTED",
+  "physicalRemoteMultiplayer": "NOT TESTED",
+  "unsupportedDriverCompileFallback": "GUARDED, NOT PHYSICALLY TESTED",
+  "performance": {
+    "scope": "Sequential same-host Windows/Steam25 real SDL renderer, 960x600, 96x64 frozen disposable map, 32 warmup +64 measured CPU submissions per view, 63 available-only GPU samples; no synchronous GPU waits, no FPS claim. Java17 graphical run is validation only (concurrent headless tests).",
+    "baselineCommit": "74d0441266a47f0b66be0bd5c241466659cd43a3",
+    "baselineJarSha256": "631f466d7e697a16d177958a61edf609992b27d9d1cb2e98e57b9abe290e620c",
+    "finalJarSha256": "108057376c38c000d13bf40674814fa196152a5819efa83f4304bf3446de53c9",
+    "scenarios": [
+      {
+        "view": "mixed-top",
+        "beforeCpuMs": 0.7130734375000001,
+        "afterCpuMs": 0.7888984375000002,
+        "beforeGpuMs": 0.06706387301587302,
+        "afterGpuMs": 0.08031085714285714,
+        "gpuDeltaMs": 0.013246984126984121
+      },
+      {
+        "view": "mixed-oblique",
+        "beforeCpuMs": 0.6355218750000002,
+        "afterCpuMs": 0.639884375,
+        "beforeGpuMs": 0.056580063492063494,
+        "afterGpuMs": 0.07452444444444443,
+        "gpuDeltaMs": 0.01794438095238094
+      },
+      {
+        "view": "mixed-low",
+        "beforeCpuMs": 0.5605624999999999,
+        "afterCpuMs": 0.5448578124999998,
+        "beforeGpuMs": 0.05215898412698413,
+        "afterGpuMs": 0.06262653968253969,
+        "gpuDeltaMs": 0.010467555555555556
+      },
+      {
+        "view": "all-space",
+        "beforeCpuMs": 0.5160140624999999,
+        "afterCpuMs": 0.5354640625,
+        "beforeGpuMs": 0.053004190476190476,
+        "afterGpuMs": 0.08505701587301587,
+        "gpuDeltaMs": 0.03205282539682539
+      },
+      {
+        "view": "empty-floor",
+        "beforeCpuMs": 0.45321875,
+        "afterCpuMs": 0.510853125,
+        "beforeGpuMs": 0.05318298412698413,
+        "afterGpuMs": 0.08528457142857143,
+        "gpuDeltaMs": 0.032101587301587305
+      },
+      {
+        "view": "space-sky",
+        "beforeCpuMs": 0.35436874999999995,
+        "afterCpuMs": 0.43002187500000005,
+        "beforeGpuMs": 0.05459707936507936,
+        "afterGpuMs": 0.08635733333333333,
+        "gpuDeltaMs": 0.031760253968253965
+      },
+      {
+        "view": "void-sky",
+        "beforeCpuMs": 0.42195156249999993,
+        "afterCpuMs": 0.4095734374999999,
+        "beforeGpuMs": 0.05436952380952381,
+        "afterGpuMs": 0.08521955555555556,
+        "gpuDeltaMs": 0.03085003174603175
+      },
+      {
+        "view": "custom-mixed",
+        "beforeCpuMs": 0.34167656249999995,
+        "afterCpuMs": 0.4041374999999999,
+        "beforeGpuMs": 0.0545808253968254,
+        "afterGpuMs": 0.08622730158730159,
+        "gpuDeltaMs": 0.03164647619047619
+      },
+      {
+        "view": "night",
+        "beforeCpuMs": 0.4168421875000001,
+        "afterCpuMs": 0.44206249999999997,
+        "beforeGpuMs": 0.054125714285714284,
+        "afterGpuMs": 0.08403301587301587,
+        "gpuDeltaMs": 0.029907301587301587
+      },
+      {
+        "view": "fallback",
+        "beforeCpuMs": 0.4091046874999999,
+        "afterCpuMs": 0.39627187500000005,
+        "beforeGpuMs": 0.05328050793650794,
+        "afterGpuMs": 0.07307784126984128,
+        "gpuDeltaMs": 0.01979733333333334
+      },
+      {
+        "view": "reload",
+        "beforeCpuMs": 0.4503015624999999,
+        "afterCpuMs": 0.46019843750000006,
+        "beforeGpuMs": 0.053329269841269844,
+        "afterGpuMs": 0.08590222222222221,
+        "gpuDeltaMs": 0.03257295238095237
+      },
+      {
+        "view": "underside",
+        "beforeCpuMs": 0.31631406249999994,
+        "afterCpuMs": 0.3925750000000001,
+        "beforeGpuMs": 0.04905447619047619,
+        "afterGpuMs": 0.05368685714285715,
+        "gpuDeltaMs": 0.004632380952380957
+      }
+    ],
+    "coldGeometryBenchmark": [
+      "COSMIC,solid,coldChunkMeanUs=13.601600000000001,allocatedBytes=73760,vertices=0,triangles=0,meshBytes=0,draws=0",
+      "COSMIC,space,coldChunkMeanUs=13.807649999999999,allocatedBytes=78880,vertices=192,triangles=64,meshBytes=2304,draws=1",
+      "COSMIC,mixed,coldChunkMeanUs=9.729,allocatedBytes=78880,vertices=192,triangles=64,meshBytes=2304,draws=1",
+      "COSMIC,checker,coldChunkMeanUs=21.16385,allocatedBytes=155680,vertices=3072,triangles=1024,meshBytes=36864,draws=1"
+    ]
+  },
+  "labOnlyFailure": "First final graphics fixture mutated access-order cache while inspecting it; fixed inspector iteration only, no runtime/JAR change; repeated final run passed."
+}

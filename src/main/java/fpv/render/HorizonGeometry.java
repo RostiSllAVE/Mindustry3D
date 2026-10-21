@@ -178,7 +178,7 @@ public final class HorizonGeometry {
         void append(float[] values){while(count+values.length>data.length)data=Arrays.copyOf(data,data.length*2);System.arraycopy(values,0,data,count,values.length);count+=values.length;}
         void coastalQuad(float[] a,float[] b,float[] c,float[] d,Builder water){coastalTriangle(a,b,c,water);coastalTriangle(a,c,d,water);}
         void coastalTriangle(float[] a,float[] b,float[] c,Builder water){
-            if(a[6]>.995f&&b[6]>.995f&&c[6]>.995f)return;
+            if(a[6]>.995f&&b[6]>.995f&&c[6]>.995f){triangle(a,b,c);return;}
             if(a[14]<0&&b[14]<0&&c[14]<0){triangle(a,b,c);return;}
             if(a[14]>0&&b[14]>0&&c[14]>0){triangle(a,b,c);water.waterTriangle(a,b,c);return;}
             float[][] triangle={a,b,c};
