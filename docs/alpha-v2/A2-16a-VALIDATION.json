@@ -1,0 +1,512 @@
+{
+  "task": "A2-16a",
+  "baselineCommit": "57602ceb83fa3bd5a9954294d308d51e33d3c0e4",
+  "branch": "main",
+  "finalJarSha256": "23c424df6b3f02da671516a17005ab162f6a83f8ba825ea52137a13782e5f80c",
+  "payloadIdentity": "payload1-7b1ba352f623b0b5e194936e4d91d15f3440c599954d463ff5afbe24b78dc672",
+  "testsJava17": 167,
+  "testsStockSteam25": 167,
+  "newGeometryChecks": 36338,
+  "newNativeDrillChecks": 207596,
+  "finalActualSdlFrames": 3584,
+  "baselineActualSdlFrames": 1792,
+  "glErrors": 0,
+  "mockVsPhysical": "Native CPU regression fixtures use mock GL; separate scripted actual SDL rendering uses real atlas/GPU with only SmokeHarness overlaid; neither is physical gameplay acceptance",
+  "actualCases": [
+    "four native drill types",
+    "native relative texture sizes",
+    "top/oblique/low camera",
+    "operating/idle",
+    "upper floors and platforms",
+    "actual disk save/load",
+    "map dimensions change",
+    "100 drills",
+    "1024 overview",
+    "1024 near field"
+  ],
+  "modelStats": {
+    "types": [
+      {
+        "name": "laser-drill",
+        "nearVerticesActive": 876,
+        "midVerticesActive": 492,
+        "farVertices": 36,
+        "basePixels": 96,
+        "rotorPixels": 74,
+        "capPixels": 50,
+        "sameTextureBatch": true
+      },
+      {
+        "name": "pneumatic-drill",
+        "nearVerticesActive": 924,
+        "midVerticesActive": 480,
+        "farVertices": 36,
+        "basePixels": 64,
+        "rotorPixels": 58,
+        "capPixels": 34,
+        "sameTextureBatch": true
+      },
+      {
+        "name": "blast-drill",
+        "nearVerticesActive": 966,
+        "midVerticesActive": 594,
+        "farVertices": 36,
+        "basePixels": 128,
+        "rotorPixels": 90,
+        "capPixels": 50,
+        "sameTextureBatch": true
+      },
+      {
+        "name": "mechanical-drill",
+        "nearVerticesActive": 804,
+        "midVerticesActive": 456,
+        "farVertices": 36,
+        "basePixels": 64,
+        "rotorPixels": 58,
+        "capPixels": 34,
+        "sameTextureBatch": true
+      }
+    ],
+    "cacheBytes": 180864
+  },
+  "pixelChecks": {
+    "status": "PASS",
+    "checks": [
+      {
+        "run": "checked-graphics",
+        "scene": "operating",
+        "changedPixels": 1698
+      },
+      {
+        "run": "checked-graphics",
+        "scene": "idle",
+        "changedPixels": 0
+      },
+      {
+        "run": "checked-java17",
+        "scene": "operating",
+        "changedPixels": 1698
+      },
+      {
+        "run": "checked-java17",
+        "scene": "idle",
+        "changedPixels": 0
+      }
+    ],
+    "sameCachedGeometryAcrossRuntimes": true,
+    "individualCloseups": [
+      {
+        "run": "checked-graphics",
+        "type": "mechanical",
+        "changedCenterPixels": 2963
+      },
+      {
+        "run": "checked-graphics",
+        "type": "pneumatic",
+        "changedCenterPixels": 2087
+      },
+      {
+        "run": "checked-graphics",
+        "type": "laser",
+        "changedCenterPixels": 3246
+      },
+      {
+        "run": "checked-graphics",
+        "type": "airblast",
+        "changedCenterPixels": 2732
+      },
+      {
+        "run": "checked-java17",
+        "type": "mechanical",
+        "changedCenterPixels": 2963
+      },
+      {
+        "run": "checked-java17",
+        "type": "pneumatic",
+        "changedCenterPixels": 2087
+      },
+      {
+        "run": "checked-java17",
+        "type": "laser",
+        "changedCenterPixels": 3246
+      },
+      {
+        "run": "checked-java17",
+        "type": "airblast",
+        "changedCenterPixels": 2732
+      }
+    ]
+  },
+  "performance": {
+    "baselineCommit": "57602ceb83fa3bd5a9954294d308d51e33d3c0e4",
+    "runtime": "Mindustry160.7 stock Steam Java25.0.1 on same Windows development PC",
+    "viewport": [
+      960,
+      600
+    ],
+    "warmupFrames": 48,
+    "measuredFramesPerScene": 64,
+    "timing": "whole FpvWorldRenderer.render, not display FPS; asynchronous GPU elapsed queries",
+    "drawCounts": "separate instrumented single frame, not timed; whole-renderer GL draw calls and submitted vertex/index counts",
+    "concurrentTestSuitesDuringPairedRuns": false,
+    "baselineJarSha256": "a640b0620a96571782ba2d9aa3080d26e2df7f6d61efbc7143bf1b8d1ecf424c",
+    "finalJarSha256": "23c424df6b3f02da671516a17005ab162f6a83f8ba825ea52137a13782e5f80c",
+    "comparison": [
+      {
+        "scene": "top",
+        "before": {
+          "scene": "top",
+          "cpuMeanMs": 0.9270421875,
+          "gpuMeanMs": 0.063904,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 22,
+          "verticesOneFrame": 67523,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "top",
+          "cpuMeanMs": 0.854090625,
+          "gpuMeanMs": 0.06272,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 21,
+          "verticesOneFrame": 70709,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "oblique",
+        "before": {
+          "scene": "oblique",
+          "cpuMeanMs": 0.7364609375,
+          "gpuMeanMs": 0.070368,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 24,
+          "verticesOneFrame": 73667,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "oblique",
+          "cpuMeanMs": 0.7393125,
+          "gpuMeanMs": 0.070544,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 23,
+          "verticesOneFrame": 76853,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "low",
+        "before": {
+          "scene": "low",
+          "cpuMeanMs": 0.480325,
+          "gpuMeanMs": 0.06552,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 55235,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "low",
+          "cpuMeanMs": 0.4634984375,
+          "gpuMeanMs": 0.065328,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 58421,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "mechanical",
+        "before": {
+          "scene": "mechanical",
+          "cpuMeanMs": 0.4798640625,
+          "gpuMeanMs": 0.065472,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 50543,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "mechanical",
+          "cpuMeanMs": 0.4305015625,
+          "gpuMeanMs": 0.064,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 16,
+          "verticesOneFrame": 52079,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "pneumatic",
+        "before": {
+          "scene": "pneumatic",
+          "cpuMeanMs": 0.415765625,
+          "gpuMeanMs": 0.067088,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 55139,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "pneumatic",
+          "cpuMeanMs": 0.403340625,
+          "gpuMeanMs": 0.066096,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 57455,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "laser",
+        "before": {
+          "scene": "laser",
+          "cpuMeanMs": 0.4266125,
+          "gpuMeanMs": 0.067872,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 55235,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "laser",
+          "cpuMeanMs": 0.4478328125,
+          "gpuMeanMs": 0.067376,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 58421,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "airblast",
+        "before": {
+          "scene": "airblast",
+          "cpuMeanMs": 0.5365640625,
+          "gpuMeanMs": 0.067168,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 20,
+          "verticesOneFrame": 61379,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "airblast",
+          "cpuMeanMs": 0.4695328125,
+          "gpuMeanMs": 0.069136,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 19,
+          "verticesOneFrame": 64565,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "operating",
+        "before": {
+          "scene": "operating",
+          "cpuMeanMs": 0.405878125,
+          "gpuMeanMs": 0.065248,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 55235,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "operating",
+          "cpuMeanMs": 0.3782578125,
+          "gpuMeanMs": 0.06624,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 58421,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "idle",
+        "before": {
+          "scene": "idle",
+          "cpuMeanMs": 0.6729484375,
+          "gpuMeanMs": 0.064816,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 55235,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "idle",
+          "cpuMeanMs": 0.5171125,
+          "gpuMeanMs": 0.066176,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 58415,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "upper",
+        "before": {
+          "scene": "upper",
+          "cpuMeanMs": 0.6781234375,
+          "gpuMeanMs": 0.071808,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 28,
+          "verticesOneFrame": 81365,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "upper",
+          "cpuMeanMs": 0.6919484375,
+          "gpuMeanMs": 0.072832,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 28,
+          "verticesOneFrame": 87953,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "reload",
+        "before": {
+          "scene": "reload",
+          "cpuMeanMs": 0.4915078125,
+          "gpuMeanMs": 0.067376,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 20,
+          "verticesOneFrame": 56789,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "reload",
+          "cpuMeanMs": 0.721609375,
+          "gpuMeanMs": 0.068,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 20,
+          "verticesOneFrame": 62573,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "field100",
+        "before": {
+          "scene": "field100",
+          "cpuMeanMs": 1.0621640625,
+          "gpuMeanMs": 0.178464,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 381695,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "field100",
+          "cpuMeanMs": 1.917528125,
+          "gpuMeanMs": 0.211664,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 416903,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "field1024",
+        "before": {
+          "scene": "field1024",
+          "cpuMeanMs": 2.922346875,
+          "gpuMeanMs": 0.66232,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 66,
+          "verticesOneFrame": 1097639,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "field1024",
+          "cpuMeanMs": 3.1803390625,
+          "gpuMeanMs": 0.642512,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 66,
+          "verticesOneFrame": 1091495,
+          "cachedDrillModelBuilds": 4
+        }
+      },
+      {
+        "scene": "field1024-near",
+        "before": {
+          "scene": "field1024-near",
+          "cpuMeanMs": 1.3034953125,
+          "gpuMeanMs": 0.238064,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 612287,
+          "cachedDrillModelBuilds": 0
+        },
+        "after": {
+          "scene": "field1024-near",
+          "cpuMeanMs": 3.40083125,
+          "gpuMeanMs": 2.685792,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 682487,
+          "cachedDrillModelBuilds": 4
+        }
+      }
+    ],
+    "fpsParity": "NOT TESTED",
+    "knownCost": "Dense low near field adds about2.1ms CPU and2.45ms GPU; no FPS or optimization claim"
+  },
+  "freshRecompiledRuntimeClasses": 966,
+  "changedExistingRuntimeEntries": [
+    "fpv/render/FpvWorldRenderer$1.class",
+    "fpv/render/FpvWorldRenderer$AircraftStats.class",
+    "fpv/render/FpvWorldRenderer$BuildBeamState.class",
+    "fpv/render/FpvWorldRenderer$Candidate.class",
+    "fpv/render/FpvWorldRenderer$ChunkMesh.class",
+    "fpv/render/FpvWorldRenderer$CoarseFogMask.class",
+    "fpv/render/FpvWorldRenderer$DepthSceneBuffer.class",
+    "fpv/render/FpvWorldRenderer$Geometry.class",
+    "fpv/render/FpvWorldRenderer$PickResult.class",
+    "fpv/render/FpvWorldRenderer$Stats.class",
+    "fpv/render/FpvWorldRenderer.class",
+    "fpv/render/LayerWorldRenderer$Activity.class",
+    "fpv/render/LayerWorldRenderer.class"
+  ],
+  "newRuntimeEntries": [
+    "fpv/render/DrillModelProfile.class",
+    "fpv/render/DrillModelRenderer$Model.class",
+    "fpv/render/DrillModelRenderer.class",
+    "fpv/render/MechanicalBlockGeometry$Builder.class",
+    "fpv/render/MechanicalBlockGeometry$Model.class",
+    "fpv/render/MechanicalBlockGeometry.class"
+  ],
+  "unchangedExistingRuntimeClasses": 1072,
+  "previousAlphaFilesPreserved": 2065,
+  "previousDiagnosticAssetsPreserved": 78,
+  "physicalWindowsGameplay": "NOT TESTED",
+  "physicalLinuxGameplay": "NOT TESTED",
+  "physicalTwoComputerMultiplayer": "NOT TESTED",
+  "realGameplayFpsParity": "NOT TESTED"
+}

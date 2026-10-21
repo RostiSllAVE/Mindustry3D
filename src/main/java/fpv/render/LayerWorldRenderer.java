@@ -58,6 +58,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private final LayerDisplayRenderer displays=new LayerDisplayRenderer();
     private final NativeBlockAnimationAdapter blockAnimations=new NativeBlockAnimationAdapter();
     private final TurretModelRenderer turretModels=new TurretModelRenderer();
+    private final DrillModelRenderer drillModels=new DrillModelRenderer();
     public LayerWorldRenderer(){displays.onRelease(animated::forget);}
     public void prepareDisplays(){displays.prepare(runtime);}
     private fpv.units.UnitAltitudeSystem altitudes;
@@ -202,6 +203,8 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 float r=c.kind()==LayerComponent.Kind.PLATFORM?.40f:1,g=c.kind()==LayerComponent.Kind.PLATFORM?.48f:1,blue=c.kind()==LayerComponent.Kind.PLATFORM?.54f:1;
                 // Door state changes do not rebuild structural chunk meshes; the whole door is streamed below.
                 if(block instanceof mindustry.world.blocks.defense.Door||block instanceof mindustry.world.blocks.defense.AutoDoor)continue;
+                // The shared drill pass owns its entire body and read-only moving components.
+                if(DrillModelRenderer.supports(block))continue;
                 if(block instanceof Turret turret&&turretModels.supports(turret)){
                     // The shared turret pass owns its alpha-shaped stationary base as well as guns.
                     continue;
@@ -263,6 +266,11 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 }
             }
             if(!camera.frustum.containsBounds(x,base+h*.5f,z,size,b instanceof Turret.TurretBuild?(h+size)*.5f:h*.5f,size))continue;
+            if(DrillModelRenderer.supports(b.block)){
+                if(!drillModels.render(b,animated,x,base,z,size,h,camera.position.dst2(x,base+h*.5f,z)))
+                    box(animated,NativeRegions.block(b.block),world.coordinates().bounds(c),1,1,1);
+                continue;
+            }
             if(b instanceof Turret.TurretBuild turret&&turretModels.render(turret,animated,x,base,z,h,(float)runtime.turretControls().pitch(turret)))continue;
             if(blockAnimations.render(b,animated,x,base,z,size,h))continue;
             TextureRegion display=displays.texture(b);
@@ -378,5 +386,5 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private void rect(float minX,float minY,float maxX,float maxY,float z,float r,float g,float b,float alpha){
         overlay.projectionFace(Core.atlas.white(),minX,z,-minY,maxX,z,-minY,maxX,z,-maxY,minX,z,-maxY,r,g,b,alpha);
     }
-    @Override public void close(){volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
+    @Override public void close(){drillModels.clear();volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
 }
