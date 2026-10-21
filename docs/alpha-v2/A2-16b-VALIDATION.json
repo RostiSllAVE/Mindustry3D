@@ -1,0 +1,1082 @@
+{
+  "task": "A2-16b",
+  "baselineCommit": "19535b19980e50544b1386825242f2dc5a05e0fe",
+  "jarSha256": "edab4d5440f20d724bd3413722c804ffd15bdd6a54d779d42b78438ca0b89bda",
+  "testsJava17": 171,
+  "testsStockSteam25": 171,
+  "dedicatedChecks": {
+    "geometry": 944915,
+    "nativeStateAndGeometry": 459226,
+    "platformsAndClipboard": 208
+  },
+  "sourceBinary": {
+    "status": "PASS",
+    "freshRecompiledRuntimeClassesByteIdentical": 973,
+    "packagedResourcesMatch": true,
+    "frozenSourceInputsMatch": true,
+    "jarSha256": "edab4d5440f20d724bd3413722c804ffd15bdd6a54d779d42b78438ca0b89bda"
+  },
+  "geometry": {
+    "profiles": [
+      {
+        "name": "CONVEYOR",
+        "verticesNoRoofOrCargo": [
+          90,
+          90,
+          30
+        ]
+      },
+      {
+        "name": "TITANIUM",
+        "verticesNoRoofOrCargo": [
+          90,
+          90,
+          30
+        ]
+      },
+      {
+        "name": "PLASTANIUM",
+        "verticesNoRoofOrCargo": [
+          90,
+          90,
+          30
+        ]
+      },
+      {
+        "name": "ARMORED",
+        "verticesNoRoofOrCargo": [
+          90,
+          90,
+          30
+        ]
+      },
+      {
+        "name": "JUNCTION",
+        "verticesNoRoofOrCargo": [
+          318,
+          222,
+          30
+        ]
+      },
+      {
+        "name": "ROUTER",
+        "verticesNoRoofOrCargo": [
+          318,
+          222,
+          30
+        ]
+      },
+      {
+        "name": "DISTRIBUTOR",
+        "verticesNoRoofOrCargo": [
+          942,
+          654,
+          30
+        ]
+      },
+      {
+        "name": "SORTER",
+        "verticesNoRoofOrCargo": [
+          318,
+          222,
+          30
+        ]
+      },
+      {
+        "name": "INVERTED_SORTER",
+        "verticesNoRoofOrCargo": [
+          318,
+          222,
+          30
+        ]
+      },
+      {
+        "name": "OVERFLOW",
+        "verticesNoRoofOrCargo": [
+          318,
+          222,
+          30
+        ]
+      },
+      {
+        "name": "UNDERFLOW",
+        "verticesNoRoofOrCargo": [
+          318,
+          222,
+          30
+        ]
+      }
+    ]
+  },
+  "modelCache": {
+    "cachedTypes": 11,
+    "materializedVertices": 5268,
+    "cacheBytes": 168576
+  },
+  "graphics": {
+    "steam25": {
+      "status": "PASS",
+      "frames": 3840,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "measurements": [
+        {
+          "scene": "top",
+          "cpuMeanMs": 2.4568078125,
+          "gpuMeanMs": 0.725984,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 47,
+          "verticesOneFrame": 126371,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "oblique",
+          "cpuMeanMs": 1.1958578125,
+          "gpuMeanMs": 0.597888,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 112013,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "low",
+          "cpuMeanMs": 0.5943859375,
+          "gpuMeanMs": 0.450496,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 27,
+          "verticesOneFrame": 70103,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "conveyor",
+          "cpuMeanMs": 0.44165625,
+          "gpuMeanMs": 0.436288,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 41705,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "titanium",
+          "cpuMeanMs": 0.4514625,
+          "gpuMeanMs": 0.415312,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 44969,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "plastanium",
+          "cpuMeanMs": 0.4872671875,
+          "gpuMeanMs": 0.353168,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 19,
+          "verticesOneFrame": 50267,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "armored",
+          "cpuMeanMs": 0.5192078125,
+          "gpuMeanMs": 0.343008,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 20,
+          "verticesOneFrame": 51551,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "junction",
+          "cpuMeanMs": 0.506175,
+          "gpuMeanMs": 0.325792,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 21,
+          "verticesOneFrame": 52385,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "router",
+          "cpuMeanMs": 0.483440625,
+          "gpuMeanMs": 0.310656,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 22,
+          "verticesOneFrame": 55763,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "distributor",
+          "cpuMeanMs": 0.4108078125,
+          "gpuMeanMs": 0.36096,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 23,
+          "verticesOneFrame": 59861,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "sorter",
+          "cpuMeanMs": 0.4531859375,
+          "gpuMeanMs": 0.323488,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 24,
+          "verticesOneFrame": 63383,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "inverted",
+          "cpuMeanMs": 0.48793125,
+          "gpuMeanMs": 0.341328,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 24,
+          "verticesOneFrame": 64343,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "overflow",
+          "cpuMeanMs": 0.499440625,
+          "gpuMeanMs": 0.343264,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 24,
+          "verticesOneFrame": 64343,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "underflow",
+          "cpuMeanMs": 0.5683875,
+          "gpuMeanMs": 0.333568,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 27,
+          "verticesOneFrame": 68483,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "corners",
+          "cpuMeanMs": 0.7302390625,
+          "gpuMeanMs": 0.404656,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 113429,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "stacked",
+          "cpuMeanMs": 1.0827375,
+          "gpuMeanMs": 0.453248,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 112769,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "floor1",
+          "cpuMeanMs": 1.466525,
+          "gpuMeanMs": 0.791664,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 128867,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "floor2",
+          "cpuMeanMs": 1.18965,
+          "gpuMeanMs": 1.039632,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 124547,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "floor3",
+          "cpuMeanMs": 1.133209375,
+          "gpuMeanMs": 1.013584,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 105473,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "floor4",
+          "cpuMeanMs": 0.99185,
+          "gpuMeanMs": 0.96336,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 35,
+          "verticesOneFrame": 91283,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "floor5",
+          "cpuMeanMs": 1.50843125,
+          "gpuMeanMs": 1.165856,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 136169,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "below",
+          "cpuMeanMs": 1.628059375,
+          "gpuMeanMs": 1.273056,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 136955,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "field100",
+          "cpuMeanMs": 0.862309375,
+          "gpuMeanMs": 0.638336,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 30,
+          "verticesOneFrame": 106991,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "field1024",
+          "cpuMeanMs": 3.6555375,
+          "gpuMeanMs": 1.916704,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 63,
+          "verticesOneFrame": 331667,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "reload",
+          "cpuMeanMs": 0.994278125,
+          "gpuMeanMs": 0.53168,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 111749,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "ghost",
+          "cpuMeanMs": 0.5159671875,
+          "gpuMeanMs": 0.480656,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 25,
+          "verticesOneFrame": 53921,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "clipboard",
+          "cpuMeanMs": 0.4023375,
+          "gpuMeanMs": 0.559552,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 24,
+          "verticesOneFrame": 53609,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "junction-crossing",
+          "cpuMeanMs": 0.8509375,
+          "gpuMeanMs": 0.780208,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 104627,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "routing-area",
+          "cpuMeanMs": 0.636103125,
+          "gpuMeanMs": 0.660288,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 101675,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "unfinished",
+          "cpuMeanMs": 0.5276203125,
+          "gpuMeanMs": 0.77584,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 25,
+          "verticesOneFrame": 53693,
+          "cachedDrillModelBuilds": 11
+        }
+      ]
+    },
+    "java17": {
+      "status": "PASS",
+      "frames": 3840,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "measurements": [
+        {
+          "scene": "top",
+          "cpuMeanMs": 2.3166828125,
+          "gpuMeanMs": 0.731088,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 124999.875,
+          "drawCallsOneFrame": 47,
+          "verticesOneFrame": 126371,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "oblique",
+          "cpuMeanMs": 1.248678125,
+          "gpuMeanMs": 0.559872,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 55219.875,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 112013,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "low",
+          "cpuMeanMs": 0.7050453125,
+          "gpuMeanMs": 0.359264,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 37930.125,
+          "drawCallsOneFrame": 27,
+          "verticesOneFrame": 70103,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "conveyor",
+          "cpuMeanMs": 0.461534375,
+          "gpuMeanMs": 0.320784,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 35588.5,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 41705,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "titanium",
+          "cpuMeanMs": 0.4957609375,
+          "gpuMeanMs": 0.322848,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 36215.75,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 44969,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "plastanium",
+          "cpuMeanMs": 0.5349828125,
+          "gpuMeanMs": 0.351968,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 36735.75,
+          "drawCallsOneFrame": 19,
+          "verticesOneFrame": 50267,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "armored",
+          "cpuMeanMs": 0.4965234375,
+          "gpuMeanMs": 0.367776,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 37215.75,
+          "drawCallsOneFrame": 20,
+          "verticesOneFrame": 51551,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "junction",
+          "cpuMeanMs": 0.561525,
+          "gpuMeanMs": 0.360592,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 36838.875,
+          "drawCallsOneFrame": 21,
+          "verticesOneFrame": 52385,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "router",
+          "cpuMeanMs": 0.5316921875,
+          "gpuMeanMs": 0.32328,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 36583.0,
+          "drawCallsOneFrame": 22,
+          "verticesOneFrame": 55763,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "distributor",
+          "cpuMeanMs": 0.4968640625,
+          "gpuMeanMs": 0.38192,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 36576.0,
+          "drawCallsOneFrame": 23,
+          "verticesOneFrame": 59861,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "sorter",
+          "cpuMeanMs": 0.5363484375,
+          "gpuMeanMs": 0.324384,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 36302.375,
+          "drawCallsOneFrame": 24,
+          "verticesOneFrame": 63383,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "inverted",
+          "cpuMeanMs": 0.522728125,
+          "gpuMeanMs": 0.37368,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 36359.0,
+          "drawCallsOneFrame": 24,
+          "verticesOneFrame": 64343,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "overflow",
+          "cpuMeanMs": 0.818871875,
+          "gpuMeanMs": 0.366432,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 36850.625,
+          "drawCallsOneFrame": 24,
+          "verticesOneFrame": 64343,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "underflow",
+          "cpuMeanMs": 0.533228125,
+          "gpuMeanMs": 0.356112,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 36639.0,
+          "drawCallsOneFrame": 27,
+          "verticesOneFrame": 68483,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "corners",
+          "cpuMeanMs": 0.9049734375,
+          "gpuMeanMs": 0.581888,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 57086.5,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 113429,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "stacked",
+          "cpuMeanMs": 1.1551515625,
+          "gpuMeanMs": 0.557104,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 63246.5,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 112769,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "floor1",
+          "cpuMeanMs": 1.412071875,
+          "gpuMeanMs": 0.670768,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 117094.5,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 128867,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "floor2",
+          "cpuMeanMs": 1.4104625,
+          "gpuMeanMs": 0.853408,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 103806.5,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 124547,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "floor3",
+          "cpuMeanMs": 1.1778203125,
+          "gpuMeanMs": 0.725856,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 86046.5,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 105473,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "floor4",
+          "cpuMeanMs": 0.909196875,
+          "gpuMeanMs": 0.71384,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 69383.0,
+          "drawCallsOneFrame": 35,
+          "verticesOneFrame": 91283,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "floor5",
+          "cpuMeanMs": 1.578625,
+          "gpuMeanMs": 0.887936,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 141262.5,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 136169,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "below",
+          "cpuMeanMs": 1.4816921875,
+          "gpuMeanMs": 0.837952,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 145326.5,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 136955,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "field100",
+          "cpuMeanMs": 0.834784375,
+          "gpuMeanMs": 0.629008,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 12435.375,
+          "drawCallsOneFrame": 30,
+          "verticesOneFrame": 106991,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "field1024",
+          "cpuMeanMs": 3.3979109375,
+          "gpuMeanMs": 1.654192,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 69071.0,
+          "drawCallsOneFrame": 63,
+          "verticesOneFrame": 331667,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "reload",
+          "cpuMeanMs": 0.9143140625,
+          "gpuMeanMs": 0.499632,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 54035.75,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 111749,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "ghost",
+          "cpuMeanMs": 0.539753125,
+          "gpuMeanMs": 0.404704,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 62087.875,
+          "drawCallsOneFrame": 25,
+          "verticesOneFrame": 53921,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "clipboard",
+          "cpuMeanMs": 0.47305,
+          "gpuMeanMs": 0.513936,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 40060.875,
+          "drawCallsOneFrame": 24,
+          "verticesOneFrame": 53609,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "junction-crossing",
+          "cpuMeanMs": 0.99374375,
+          "gpuMeanMs": 0.833424,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 64027.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 104627,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "routing-area",
+          "cpuMeanMs": 0.6407875,
+          "gpuMeanMs": 0.664432,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 40015.625,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 101675,
+          "cachedDrillModelBuilds": 11
+        },
+        {
+          "scene": "unfinished",
+          "cpuMeanMs": 0.5943390625,
+          "gpuMeanMs": 0.657296,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 39559.625,
+          "drawCallsOneFrame": 25,
+          "verticesOneFrame": 53693,
+          "cachedDrillModelBuilds": 11
+        }
+      ]
+    }
+  },
+  "performance": {
+    "baseline": "accepted 19535b1 drill polish",
+    "candidateJarSha256": "edab4d5440f20d724bd3413722c804ffd15bdd6a54d779d42b78438ca0b89bda",
+    "runtime": "stock Steam Java25, Windows SDL/OpenGL 960x600",
+    "scope": "whole-renderer calls, not display FPS; sequential scenes without regression-suite load; 48 warmup + 64 samples; async GPU queries",
+    "measurements": [
+      {
+        "scene": "top",
+        "cpuBeforeMs": 1.2513765625,
+        "cpuAfterMs": 2.4568078125,
+        "gpuBeforeMs": 0.597392,
+        "gpuAfterMs": 0.725984,
+        "drawCallsBefore": 47,
+        "drawCallsAfter": 47,
+        "verticesBefore": 100919,
+        "verticesAfter": 126371
+      },
+      {
+        "scene": "oblique",
+        "cpuBeforeMs": 0.71686875,
+        "cpuAfterMs": 1.1958578125,
+        "gpuBeforeMs": 0.657552,
+        "gpuAfterMs": 0.597888,
+        "drawCallsBefore": 41,
+        "drawCallsAfter": 40,
+        "verticesBefore": 100169,
+        "verticesAfter": 112013
+      },
+      {
+        "scene": "low",
+        "cpuBeforeMs": 0.55851875,
+        "cpuAfterMs": 0.5943859375,
+        "gpuBeforeMs": 0.483088,
+        "gpuAfterMs": 0.450496,
+        "drawCallsBefore": 28,
+        "drawCallsAfter": 27,
+        "verticesBefore": 70571,
+        "verticesAfter": 70103
+      },
+      {
+        "scene": "conveyor",
+        "cpuBeforeMs": 0.494084375,
+        "cpuAfterMs": 0.44165625,
+        "gpuBeforeMs": 0.325568,
+        "gpuAfterMs": 0.436288,
+        "drawCallsBefore": 18,
+        "drawCallsAfter": 17,
+        "verticesBefore": 42569,
+        "verticesAfter": 41705
+      },
+      {
+        "scene": "titanium",
+        "cpuBeforeMs": 0.428040625,
+        "cpuAfterMs": 0.4514625,
+        "gpuBeforeMs": 0.330256,
+        "gpuAfterMs": 0.415312,
+        "drawCallsBefore": 19,
+        "drawCallsAfter": 18,
+        "verticesBefore": 45689,
+        "verticesAfter": 44969
+      },
+      {
+        "scene": "plastanium",
+        "cpuBeforeMs": 0.4210015625,
+        "cpuAfterMs": 0.4872671875,
+        "gpuBeforeMs": 0.331152,
+        "gpuAfterMs": 0.353168,
+        "drawCallsBefore": 20,
+        "drawCallsAfter": 19,
+        "verticesBefore": 50831,
+        "verticesAfter": 50267
+      },
+      {
+        "scene": "armored",
+        "cpuBeforeMs": 0.45935625,
+        "cpuAfterMs": 0.5192078125,
+        "gpuBeforeMs": 0.341936,
+        "gpuAfterMs": 0.343008,
+        "drawCallsBefore": 21,
+        "drawCallsAfter": 20,
+        "verticesBefore": 52979,
+        "verticesAfter": 51551
+      },
+      {
+        "scene": "junction",
+        "cpuBeforeMs": 0.4726796875,
+        "cpuAfterMs": 0.506175,
+        "gpuBeforeMs": 0.343408,
+        "gpuAfterMs": 0.325792,
+        "drawCallsBefore": 22,
+        "drawCallsAfter": 21,
+        "verticesBefore": 53609,
+        "verticesAfter": 52385
+      },
+      {
+        "scene": "router",
+        "cpuBeforeMs": 0.3943734375,
+        "cpuAfterMs": 0.483440625,
+        "gpuBeforeMs": 0.343744,
+        "gpuAfterMs": 0.310656,
+        "drawCallsBefore": 23,
+        "drawCallsAfter": 22,
+        "verticesBefore": 54683,
+        "verticesAfter": 55763
+      },
+      {
+        "scene": "distributor",
+        "cpuBeforeMs": 0.4013421875,
+        "cpuAfterMs": 0.4108078125,
+        "gpuBeforeMs": 0.336608,
+        "gpuAfterMs": 0.36096,
+        "drawCallsBefore": 24,
+        "drawCallsAfter": 23,
+        "verticesBefore": 57173,
+        "verticesAfter": 59861
+      },
+      {
+        "scene": "sorter",
+        "cpuBeforeMs": 0.4487734375,
+        "cpuAfterMs": 0.4531859375,
+        "gpuBeforeMs": 0.320064,
+        "gpuAfterMs": 0.323488,
+        "drawCallsBefore": 24,
+        "drawCallsAfter": 24,
+        "verticesBefore": 60227,
+        "verticesAfter": 63383
+      },
+      {
+        "scene": "inverted",
+        "cpuBeforeMs": 0.397590625,
+        "cpuAfterMs": 0.48793125,
+        "gpuBeforeMs": 0.326112,
+        "gpuAfterMs": 0.341328,
+        "drawCallsBefore": 24,
+        "drawCallsAfter": 24,
+        "verticesBefore": 60227,
+        "verticesAfter": 64343
+      },
+      {
+        "scene": "overflow",
+        "cpuBeforeMs": 0.403571875,
+        "cpuAfterMs": 0.499440625,
+        "gpuBeforeMs": 0.335456,
+        "gpuAfterMs": 0.343264,
+        "drawCallsBefore": 24,
+        "drawCallsAfter": 24,
+        "verticesBefore": 60227,
+        "verticesAfter": 64343
+      },
+      {
+        "scene": "underflow",
+        "cpuBeforeMs": 0.4987234375,
+        "cpuAfterMs": 0.5683875,
+        "gpuBeforeMs": 0.372528,
+        "gpuAfterMs": 0.333568,
+        "drawCallsBefore": 27,
+        "drawCallsAfter": 27,
+        "verticesBefore": 64061,
+        "verticesAfter": 68483
+      },
+      {
+        "scene": "corners",
+        "cpuBeforeMs": 0.622825,
+        "cpuAfterMs": 0.7302390625,
+        "gpuBeforeMs": 0.739056,
+        "gpuAfterMs": 0.404656,
+        "drawCallsBefore": 41,
+        "drawCallsAfter": 40,
+        "verticesBefore": 106505,
+        "verticesAfter": 113429
+      },
+      {
+        "scene": "stacked",
+        "cpuBeforeMs": 0.5116375,
+        "cpuAfterMs": 1.0827375,
+        "gpuBeforeMs": 0.772048,
+        "gpuAfterMs": 0.453248,
+        "drawCallsBefore": 40,
+        "drawCallsAfter": 39,
+        "verticesBefore": 97637,
+        "verticesAfter": 112769
+      },
+      {
+        "scene": "floor1",
+        "cpuBeforeMs": 0.62086875,
+        "cpuAfterMs": 1.466525,
+        "gpuBeforeMs": 0.813264,
+        "gpuAfterMs": 0.791664,
+        "drawCallsBefore": 44,
+        "drawCallsAfter": 43,
+        "verticesBefore": 106613,
+        "verticesAfter": 128867
+      },
+      {
+        "scene": "floor2",
+        "cpuBeforeMs": 0.5736046875,
+        "cpuAfterMs": 1.18965,
+        "gpuBeforeMs": 1.03288,
+        "gpuAfterMs": 1.039632,
+        "drawCallsBefore": 44,
+        "drawCallsAfter": 43,
+        "verticesBefore": 105485,
+        "verticesAfter": 124547
+      },
+      {
+        "scene": "floor3",
+        "cpuBeforeMs": 0.5321421875,
+        "cpuAfterMs": 1.133209375,
+        "gpuBeforeMs": 1.02752,
+        "gpuAfterMs": 1.013584,
+        "drawCallsBefore": 38,
+        "drawCallsAfter": 37,
+        "verticesBefore": 89813,
+        "verticesAfter": 105473
+      },
+      {
+        "scene": "floor4",
+        "cpuBeforeMs": 0.5457046875,
+        "cpuAfterMs": 0.99185,
+        "gpuBeforeMs": 0.817104,
+        "gpuAfterMs": 0.96336,
+        "drawCallsBefore": 36,
+        "drawCallsAfter": 35,
+        "verticesBefore": 82835,
+        "verticesAfter": 91283
+      },
+      {
+        "scene": "floor5",
+        "cpuBeforeMs": 0.6109078125,
+        "cpuAfterMs": 1.50843125,
+        "gpuBeforeMs": 1.131216,
+        "gpuAfterMs": 1.165856,
+        "drawCallsBefore": 46,
+        "drawCallsAfter": 45,
+        "verticesBefore": 110795,
+        "verticesAfter": 136169
+      },
+      {
+        "scene": "below",
+        "cpuBeforeMs": 0.6113171875,
+        "cpuAfterMs": 1.628059375,
+        "gpuBeforeMs": 1.058832,
+        "gpuAfterMs": 1.273056,
+        "drawCallsBefore": 46,
+        "drawCallsAfter": 45,
+        "verticesBefore": 110933,
+        "verticesAfter": 136955
+      },
+      {
+        "scene": "field100",
+        "cpuBeforeMs": 0.5249671875,
+        "cpuAfterMs": 0.862309375,
+        "gpuBeforeMs": 0.606336,
+        "gpuAfterMs": 0.638336,
+        "drawCallsBefore": 31,
+        "drawCallsAfter": 30,
+        "verticesBefore": 87671,
+        "verticesAfter": 106991
+      },
+      {
+        "scene": "field1024",
+        "cpuBeforeMs": 1.128559375,
+        "cpuAfterMs": 3.6555375,
+        "gpuBeforeMs": 0.67824,
+        "gpuAfterMs": 1.916704,
+        "drawCallsBefore": 61,
+        "drawCallsAfter": 63,
+        "verticesBefore": 207629,
+        "verticesAfter": 331667
+      },
+      {
+        "scene": "reload",
+        "cpuBeforeMs": 0.675,
+        "cpuAfterMs": 0.994278125,
+        "gpuBeforeMs": 0.577856,
+        "gpuAfterMs": 0.53168,
+        "drawCallsBefore": 41,
+        "drawCallsAfter": 40,
+        "verticesBefore": 99905,
+        "verticesAfter": 111749
+      },
+      {
+        "scene": "ghost",
+        "cpuBeforeMs": 0.6196140625,
+        "cpuAfterMs": 0.5159671875,
+        "gpuBeforeMs": 0.461552,
+        "gpuAfterMs": 0.480656,
+        "drawCallsBefore": 26,
+        "drawCallsAfter": 25,
+        "verticesBefore": 57743,
+        "verticesAfter": 53921
+      },
+      {
+        "scene": "clipboard",
+        "cpuBeforeMs": 0.611871875,
+        "cpuAfterMs": 0.4023375,
+        "gpuBeforeMs": 0.602288,
+        "gpuAfterMs": 0.559552,
+        "drawCallsBefore": 25,
+        "drawCallsAfter": 24,
+        "verticesBefore": 57431,
+        "verticesAfter": 53609
+      },
+      {
+        "scene": "junction-crossing",
+        "cpuBeforeMs": 0.666859375,
+        "cpuAfterMs": 0.8509375,
+        "gpuBeforeMs": 0.7604,
+        "gpuAfterMs": 0.780208,
+        "drawCallsBefore": 35,
+        "drawCallsAfter": 34,
+        "verticesBefore": 91919,
+        "verticesAfter": 104627
+      },
+      {
+        "scene": "routing-area",
+        "cpuBeforeMs": 0.6405078125,
+        "cpuAfterMs": 0.636103125,
+        "gpuBeforeMs": 0.66936,
+        "gpuAfterMs": 0.660288,
+        "drawCallsBefore": 36,
+        "drawCallsAfter": 36,
+        "verticesBefore": 97889,
+        "verticesAfter": 101675
+      },
+      {
+        "scene": "unfinished",
+        "cpuBeforeMs": 0.82033125,
+        "cpuAfterMs": 0.5276203125,
+        "gpuBeforeMs": 0.885632,
+        "gpuAfterMs": 0.77584,
+        "drawCallsBefore": 25,
+        "drawCallsAfter": 25,
+        "verticesBefore": 57515,
+        "verticesAfter": 53693
+      }
+    ]
+  },
+  "previousAlphaFilesPreserved": 2065,
+  "previousDiagnosticAssetsPreserved": 84,
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "physicalRemoteMultiplayer": "NOT TESTED",
+  "realGameplayFpsParity": "NOT TESTED"
+}
