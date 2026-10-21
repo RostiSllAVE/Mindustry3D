@@ -1,0 +1,110 @@
+{
+  "task": "A2-15c.2",
+  "baselineCommit": "86a418114b070e317f09c195cbda6f7396295665",
+  "branch": "main",
+  "finalJarSha256": "a640b0620a96571782ba2d9aa3080d26e2df7f6d61efbc7143bf1b8d1ecf424c",
+  "payloadIdentity": "payload1-fb80a5b92e343cf5e8cf1b078b57529903ab9932c6c3d5718a3bbbac8b3dcb90",
+  "testsJava17": 165,
+  "testsStockSteam25": 165,
+  "newPlanetChecks": 51,
+  "actualSdlFrames": 1728,
+  "actualGlErrors": 0,
+  "namedControlsBothHostPlanets": true,
+  "profileRoundtripAndLegacyMigration": true,
+  "independentPixelTests": [
+    {
+      "run": "checked-graphics",
+      "host": "serpulo",
+      "sky": "day",
+      "serpuloPixels": 9221,
+      "erekirPixels": 9081,
+      "bothPixels": 18302,
+      "overlapPixels": 0,
+      "independentBodies": true
+    },
+    {
+      "run": "checked-graphics",
+      "host": "serpulo",
+      "sky": "space",
+      "serpuloPixels": 8662,
+      "erekirPixels": 8898,
+      "bothPixels": 17560,
+      "overlapPixels": 0,
+      "independentBodies": true
+    },
+    {
+      "run": "checked-graphics",
+      "host": "erekir",
+      "sky": "day",
+      "serpuloPixels": 9000,
+      "erekirPixels": 9298,
+      "bothPixels": 18298,
+      "overlapPixels": 0,
+      "independentBodies": true
+    },
+    {
+      "run": "checked-graphics",
+      "host": "erekir",
+      "sky": "space",
+      "serpuloPixels": 8565,
+      "erekirPixels": 9055,
+      "bothPixels": 17620,
+      "overlapPixels": 0,
+      "independentBodies": true
+    },
+    {
+      "run": "checked-java17",
+      "host": "serpulo",
+      "sky": "day",
+      "serpuloPixels": 9221,
+      "erekirPixels": 9081,
+      "bothPixels": 18302,
+      "overlapPixels": 0,
+      "independentBodies": true
+    },
+    {
+      "run": "checked-java17",
+      "host": "serpulo",
+      "sky": "space",
+      "serpuloPixels": 8662,
+      "erekirPixels": 8898,
+      "bothPixels": 17560,
+      "overlapPixels": 0,
+      "independentBodies": true
+    },
+    {
+      "run": "checked-java17",
+      "host": "erekir",
+      "sky": "day",
+      "serpuloPixels": 9000,
+      "erekirPixels": 9298,
+      "bothPixels": 18298,
+      "overlapPixels": 0,
+      "independentBodies": true
+    },
+    {
+      "run": "checked-java17",
+      "host": "erekir",
+      "sky": "space",
+      "serpuloPixels": 8565,
+      "erekirPixels": 9055,
+      "bothPixels": 17620,
+      "overlapPixels": 0,
+      "independentBodies": true
+    }
+  ],
+  "freshRecompiledClasses": 960,
+  "changedRuntimeEntries": [
+    "fpv/background/BackgroundProfileStore.class",
+    "fpv/background/BackgroundStyle.class",
+    "fpv/render/EnvironmentRenderer.class",
+    "fpv/ui/BackgroundSkyControls.class"
+  ],
+  "unchangedExistingRuntimeClasses": 1081,
+  "previousAlphaFilesPreserved": 2065,
+  "previousDiagnosticAssetsPreserved": 75,
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "physicalRemoteMultiplayer": "NOT TESTED",
+  "evidenceDirectory": "local/a2-15c-planets/"
+}

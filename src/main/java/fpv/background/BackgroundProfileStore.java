@@ -8,7 +8,7 @@ import java.util.zip.CRC32;
 
 /** Versioned, bounded local art data, never a native save chunk or network payload. */
 public final class BackgroundProfileStore {
-    public static final int VERSION=3,MAX_BYTES=196608,MAX_PROFILES=128;
+    public static final int VERSION=4,MAX_BYTES=196608,MAX_PROFILES=128;
     private static final int MAGIC=0x4d334247;
     private final Path root;
     public record Loaded(BackgroundStyle style,String warning){}
@@ -40,7 +40,7 @@ public final class BackgroundProfileStore {
         try{if(in.readBoolean()){if(in.readInt()!=BackgroundPaint.NODES)throw new IOException("Unsupported paint resolution");style.paint=new BackgroundPaint(width,height);
             for(int y=0;y<BackgroundPaint.NODES;y++)for(int x=0;x<BackgroundPaint.NODES;x++){int id=in.readUnsignedByte();if(version==1&&id>=14)throw new IOException("Invalid v1 material");style.paint.node(x,y,id,in.readFloat(),in.readFloat(),in.readFloat());if(version>=2)style.paint.blendNode(x,y,in.readUnsignedByte(),in.readFloat());}
         }}catch(IllegalArgumentException bad){throw new IOException("Invalid paint data",bad);}
-        if(version>=3){int flags=in.readUnsignedByte();style.fixedPhase=in.readFloat();if(flags>31||!Float.isFinite(style.fixedPhase)||style.fixedPhase<0||style.fixedPhase>1)throw new IOException("Invalid sky controls");style.showPlanet=(flags&1)!=0;style.showSun=(flags&2)!=0;style.cycleTime=(flags&4)!=0;style.fullSpace=(flags&8)!=0;style.showMapBoundary=(flags&16)!=0;}
+        if(version>=3){int flags=in.readUnsignedByte();style.fixedPhase=in.readFloat();if(flags>(version>=4?63:31)||!Float.isFinite(style.fixedPhase)||style.fixedPhase<0||style.fixedPhase>1)throw new IOException("Invalid sky controls");style.showPlanet=(flags&1)!=0;style.showOtherPlanet=(flags&32)!=0;style.showSun=(flags&2)!=0;style.cycleTime=(flags&4)!=0;style.fullSpace=(flags&8)!=0;style.showMapBoundary=(flags&16)!=0;}
         if(in.readInt()!=(int)crc.getValue()||in.available()!=0)throw new IOException("Background checksum / trailing data invalid");return style;
     }
     private BackgroundStyle read(Path file,String key,int width,int height)throws IOException{

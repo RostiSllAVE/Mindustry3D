@@ -23,14 +23,39 @@ public final class EnvironmentRenderer {
     private static final String SKY_FRAGMENT = """
         varying vec2 v_uv;
         uniform vec3 u_cameraOrigin;
-        uniform vec3 u_forward, u_right, u_up, u_sun, u_planet;
-        uniform vec3 u_planetColor, u_atmosphere;
+        uniform vec3 u_forward, u_right, u_up, u_sun, u_planet, u_otherPlanet;
+        uniform vec3 u_planetColor, u_otherPlanetColor, u_atmosphere;
         uniform vec2 u_fov;
-        uniform float u_day, u_seconds, u_radius, u_starGrid, u_starThreshold,u_void,u_cosmic,u_showPlanet,u_showSun;
+        uniform float u_day, u_seconds, u_radius, u_starGrid, u_starThreshold,u_void,u_cosmic,u_showPlanet,u_showOtherPlanet,u_showSun;
         """+CosmicField.GLSL+"""
         float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
         float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
         float fbm(vec2 p){return .54*noise(p)+.27*noise(p*2.03+13.2)+.13*noise(p*4.07+31.8)+.06*noise(p*8.13+7.1);}
+        vec3 drawPlanet(vec3 color,vec3 ray,vec3 planetDirection,vec3 planetColor){
+            vec3 pr=normalize(cross(planetDirection,vec3(0.0,1.0,0.0)));
+            vec3 pu=normalize(cross(pr,planetDirection));
+            vec2 pp=vec2(dot(ray,pr),dot(ray,pu))/u_radius;
+            float rr=dot(pp,pp);
+            if(dot(ray,planetDirection)>0.0){
+                float halo=exp(-abs(rr-1.0)*13.0)*.15;
+                color+=planetColor*halo;
+                if(rr<1.0){
+                    vec3 n=vec3(pp,sqrt(max(0.0,1.0-rr)));
+                    vec2 spherical=vec2(atan(n.x,n.z),asin(n.y));
+                    vec2 surface=spherical*3.4+vec2(u_seconds*.0002,7.0);
+                    float terrain=fbm(surface+vec2(fbm(surface*1.9),fbm(surface*1.3+11.0)));
+                    float land=smoothstep(.38,.69,terrain);
+                    vec3 body=mix(planetColor*.32,planetColor*1.18,land);
+                    float ridges=abs(noise(surface*10.0)-.5)*.15;
+                    body*=.88+ridges;
+                    float clouds=smoothstep(.58,.78,fbm(spherical*7.0+vec2(u_seconds*.0004,19.0)));
+                    body=mix(body,vec3(.85,.85,.84),clouds*.55);
+                    float illumination=.12+.88*max(0.0,dot(n,normalize(vec3(-.55,.3,.78))));
+                    color=body*illumination+planetColor*pow(1.0-n.z,5.0)*.5;
+                }
+            }
+            return color;
+        }
         void main(){
             vec2 xy=v_uv*2.0-1.0;
             vec3 ray=normalize(u_forward+u_right*xy.x*u_fov.x+u_up*xy.y*u_fov.y);
@@ -57,36 +82,16 @@ public final class EnvironmentRenderer {
             col+=mix(vec3(.62,.76,1.0),vec3(1.0,.86,.68),hash(cell+9.0))*stars*nightAmount;
             float band=pow(max(0.0,1.0-abs(dot(ray,normalize(vec3(.25,.8,-.47))))),20.0);
             col+=vec3(.025,.03,.065)*band*nightAmount*(.4+.6*hash(floor(st*.4)));
-            vec3 pr=normalize(cross(u_planet,vec3(0.0,1.0,0.0)));
-            vec3 pu=normalize(cross(pr,u_planet));
-            vec2 pp=vec2(dot(ray,pr),dot(ray,pu))/u_radius;
-            float rr=dot(pp,pp);
-            if(u_showPlanet>.5&&dot(ray,u_planet)>0.0){
-                float halo=exp(-abs(rr-1.0)*13.0)*.15;
-                col+=u_planetColor*halo;
-                if(rr<1.0){
-                    vec3 n=vec3(pp,sqrt(max(0.0,1.0-rr)));
-                    vec2 spherical=vec2(atan(n.x,n.z),asin(n.y));
-                    vec2 surface=spherical*3.4+vec2(u_seconds*.0002,7.0);
-                    float terrain=fbm(surface+vec2(fbm(surface*1.9),fbm(surface*1.3+11.0)));
-                    float land=smoothstep(.38,.69,terrain);
-                    vec3 body=mix(u_planetColor*.32,u_planetColor*1.18,land);
-                    float ridges=abs(noise(surface*10.0)-.5)*.15;
-                    body*=.88+ridges;
-                    float clouds=smoothstep(.58,.78,fbm(spherical*7.0+vec2(u_seconds*.0004,19.0)));
-                    body=mix(body,vec3(.85,.85,.84),clouds*.55);
-                    float illumination=.12+.88*max(0.0,dot(n,normalize(vec3(-.55,.3,.78))));
-                    col=body*illumination+u_planetColor*pow(1.0-n.z,5.0)*.5;
-                }
-            }
+            if(u_showPlanet>.5)col=drawPlanet(col,ray,u_planet,u_planetColor);
+            if(u_showOtherPlanet>.5)col=drawPlanet(col,ray,u_otherPlanet,u_otherPlanetColor);
             gl_FragColor=vec4(col,1.0);
         }
         """;
     private static final String LAND_VERTEX = "attribute vec3 a_position;attribute vec4 a_color;uniform mat4 u_combined;varying vec4 v_color;void main(){v_color=a_color;gl_Position=u_combined*vec4(a_position,1.0);}";
     private static final String LAND_FRAGMENT = "varying vec4 v_color;uniform float u_ambient;void main(){gl_FragColor=vec4(v_color.rgb*u_ambient,1.0);}";
     private final Vec3 sun = new Vec3(), right = new Vec3(), up = new Vec3(), north = new Vec3();
-    private final Vec3 normal = new Vec3(), east = new Vec3(), globalSun = new Vec3(), companion = new Vec3();
-    private final Color skyColor = new Color(), companionColor = new Color(), atmosphere = new Color();
+    private final Vec3 normal = new Vec3(), east = new Vec3(), globalSun = new Vec3(), companion = new Vec3(), otherPlanet = new Vec3();
+    private final Color skyColor = new Color(), companionColor = new Color(), otherPlanetColor = new Color(), atmosphere = new Color();
     private Shader skyShader, landShader;
     private ScreenQuad quad;
     private Mesh mountains;
@@ -138,10 +143,14 @@ public final class EnvironmentRenderer {
         skyColor.set(.065f,.075f,.15f,1).lerp(.66f,.72f,.78f,1,day);
         Planet other=planet==Planets.erekir?Planets.serpulo:Planets.erekir;
         companionColor.set(other.iconColor).lerp(other.atmosphereColor,.3f);
+        otherPlanetColor.set(planet==Planets.erekir?Planets.erekir.iconColor:Planets.serpulo.iconColor).lerp(planet==Planets.erekir?Planets.erekir.atmosphereColor:Planets.serpulo.atmosphereColor,.3f);
         atmosphere.set(planet.atmosphereColor).lerp(Color.white,.7f);
         float az=(float)EnvironmentConfig.PLANET_AZIMUTH_DEGREES;
         float el=(float)EnvironmentConfig.PLANET_ELEVATION_DEGREES;
         companion.set(Mathf.sinDeg(az)*Mathf.cosDeg(el),Mathf.sinDeg(el),-Mathf.cosDeg(az)*Mathf.cosDeg(el));
+        // Second decorative body stays separate from the legacy companion and from the sun.
+        float otherAz=az+58f,otherEl=Mathf.clamp(el-10f,12f,65f);
+        otherPlanet.set(Mathf.sinDeg(otherAz)*Mathf.cosDeg(otherEl),Mathf.sinDeg(otherEl),-Mathf.cosDeg(otherAz)*Mathf.cosDeg(otherEl));
         right.set(camera.direction).crs(camera.up).nor();
         up.set(right).crs(camera.direction).nor();
     }
@@ -154,12 +163,14 @@ public final class EnvironmentRenderer {
         skyShader.setUniformf("u_forward",camera.direction);skyShader.setUniformf("u_cameraOrigin",camera.position);
         skyShader.setUniformf("u_right",right);skyShader.setUniformf("u_up",up);
         skyShader.setUniformf("u_sun",sun);skyShader.setUniformf("u_planet",companion);
+        skyShader.setUniformf("u_otherPlanet",otherPlanet);
+        skyShader.setUniformf("u_otherPlanetColor",otherPlanetColor.r,otherPlanetColor.g,otherPlanetColor.b);
         skyShader.setUniformf("u_planetColor",companionColor.r,companionColor.g,companionColor.b);
         skyShader.setUniformf("u_atmosphere",atmosphere.r,atmosphere.g,atmosphere.b);
         float fy=(float)Math.tan(camera.fov*Mathf.degRad*.5f);
         skyShader.setUniformf("u_fov",fy*camera.width/Math.max(1,camera.height),fy);
         var style=fpv.background.BackgroundProfiles.current();
-        skyShader.setUniformf("u_showPlanet",style.showPlanet?1:0);skyShader.setUniformf("u_showSun",style.showSun?1:0);
+        skyShader.setUniformf("u_showPlanet",style.showPlanet?1:0);skyShader.setUniformf("u_showOtherPlanet",style.showOtherPlanet?1:0);skyShader.setUniformf("u_showSun",style.showSun?1:0);
         skyShader.setUniformf("u_cosmic",style.fullSpace||style.all(fpv.background.BackgroundPreset.SPACE)?1:0);
         skyShader.setUniformf("u_day",style.fullSpace||style.all(fpv.background.BackgroundPreset.SPACE)?0:day);skyShader.setUniformf("u_void",!style.fullSpace&&style.all(fpv.background.BackgroundPreset.VOID)?1:0);skyShader.setUniformf("u_seconds",(float)(seconds%100000));
         skyShader.setUniformf("u_radius",(float)EnvironmentConfig.PLANET_ANGULAR_RADIUS);
