@@ -31,6 +31,7 @@ public final class BackgroundEditor extends BaseDialog {
         float panelWidth=Math.max(600,Math.min(1180,Core.graphics.getWidth()/arc.scene.ui.layout.Scl.scl()-60));
         cont.defaults().pad(4).width(panelWidth);
         cont.label(()->previewing?"3D scenery preview · Central map reference · Edits are visual only":"N ↑ · White rectangle = read-only map · Paint outside the border").wrap().fontScale(.8f).row();
+        cont.button("Sky / map appearance",()->BackgroundSkyControls.open(working,()->status="Sky changes staged. Preview / Apply to show.")).height(32).get().name="fpv-background-sky";cont.row();
         cont.table(body->{
             body.pane(tools->{tools.defaults().width(210).pad(2);tools.add("[accent]Biome / shape brush").fontScale(.8f).row();
                 for(var b:BackgroundPaint.Brush.values())tools.button(b.label,()->{brush=b;if(b.shape())brushHeight=b.defaultHeight;}).height(32).update(button->{button.setText((brush==b?"> ":"")+b.label);button.getLabel().setFontScale(.8f);}).row();

@@ -8,7 +8,7 @@ import java.util.zip.CRC32;
 
 /** Versioned, bounded local art data, never a native save chunk or network payload. */
 public final class BackgroundProfileStore {
-    public static final int VERSION=2,MAX_BYTES=196608,MAX_PROFILES=128;
+    public static final int VERSION=3,MAX_BYTES=196608,MAX_PROFILES=128;
     private static final int MAGIC=0x4d334247;
     private final Path root;
     public record Loaded(BackgroundStyle style,String warning){}
@@ -23,13 +23,15 @@ public final class BackgroundProfileStore {
         out.writeBoolean(style.paint!=null);
         if(style.paint!=null){out.writeInt(BackgroundPaint.NODES);for(int y=0;y<BackgroundPaint.NODES;y++)for(int x=0;x<BackgroundPaint.NODES;x++){
             out.writeByte(style.paint.material(x,y).ordinal());out.writeFloat(style.paint.coverage(x,y));out.writeFloat(style.paint.height(x,y));out.writeFloat(style.paint.heightCoverage(x,y));out.writeByte(style.paint.secondary(x,y));out.writeFloat(style.paint.mix(x,y));
-        }}out.flush();var crc=new CRC32();crc.update(bytes.toByteArray());out.writeInt((int)crc.getValue());out.close();
+        }}
+        if(!Float.isFinite(style.fixedPhase)||style.fixedPhase<0||style.fixedPhase>1)throw new IOException("Invalid fixed sky time");
+        out.writeByte(style.skyFlags());out.writeFloat(style.fixedPhase);out.flush();var crc=new CRC32();crc.update(bytes.toByteArray());out.writeInt((int)crc.getValue());out.close();
         if(bytes.size()>MAX_BYTES)throw new IOException("Background profile exceeds limit");return bytes.toByteArray();
     }
     public static BackgroundStyle decode(byte[] bytes,String key,int width,int height)throws IOException{
         if(bytes.length<60||bytes.length>MAX_BYTES)throw new IOException("Invalid profile length");
         var crc=new CRC32();crc.update(bytes,0,bytes.length-4);var in=new DataInputStream(new ByteArrayInputStream(bytes));
-        if(in.readInt()!=MAGIC)throw new IOException("Unknown background profile type");int version=in.readInt();if(version!=1&&version!=VERSION)throw new IOException("Unknown background profile version");
+        if(in.readInt()!=MAGIC)throw new IOException("Unknown background profile type");int version=in.readInt();if(version<1||version>VERSION)throw new IOException("Unknown background profile version");
         if(!HexFormat.of().formatHex(in.readNBytes(32)).equals(key)||in.readInt()!=width||in.readInt()!=height)throw new IOException("Background map identity differs");
         var style=new BackgroundStyle();int mode=in.readUnsignedByte(),whole=in.readUnsignedByte();
         if(mode>=BackgroundStyle.Mode.values().length||whole>=BackgroundPreset.values().length)throw new IOException("Invalid background mode / preset");
@@ -38,6 +40,7 @@ public final class BackgroundProfileStore {
         try{if(in.readBoolean()){if(in.readInt()!=BackgroundPaint.NODES)throw new IOException("Unsupported paint resolution");style.paint=new BackgroundPaint(width,height);
             for(int y=0;y<BackgroundPaint.NODES;y++)for(int x=0;x<BackgroundPaint.NODES;x++){int id=in.readUnsignedByte();if(version==1&&id>=14)throw new IOException("Invalid v1 material");style.paint.node(x,y,id,in.readFloat(),in.readFloat(),in.readFloat());if(version>=2)style.paint.blendNode(x,y,in.readUnsignedByte(),in.readFloat());}
         }}catch(IllegalArgumentException bad){throw new IOException("Invalid paint data",bad);}
+        if(version>=3){int flags=in.readUnsignedByte();style.fixedPhase=in.readFloat();if(flags>31||!Float.isFinite(style.fixedPhase)||style.fixedPhase<0||style.fixedPhase>1)throw new IOException("Invalid sky controls");style.showPlanet=(flags&1)!=0;style.showSun=(flags&2)!=0;style.cycleTime=(flags&4)!=0;style.fullSpace=(flags&8)!=0;style.showMapBoundary=(flags&16)!=0;}
         if(in.readInt()!=(int)crc.getValue()||in.available()!=0)throw new IOException("Background checksum / trailing data invalid");return style;
     }
     private BackgroundStyle read(Path file,String key,int width,int height)throws IOException{

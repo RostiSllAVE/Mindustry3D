@@ -22,5 +22,7 @@ final class CosmicField {
             return vec3(.003,.005,.014)+band*cloud*vec3(.040,.021,.075)+tint*star*mix(.3,1.0,seed);
         }
         """;
+    static final String VERTEX="attribute vec3 a_position;uniform mat4 u_combined;varying vec3 v_world;void main(){v_world=a_position;gl_Position=u_combined*vec4(a_position,1.0);}";
+    static final String FRAGMENT="varying vec3 v_world;uniform vec3 u_camera;"+GLSL+"void main(){vec3 ray=normalize(v_world-u_camera);vec3 distant=normalize(ray+u_camera/100000.0);gl_FragColor=vec4(cosmicField(distant),1.0);}";
     private CosmicField(){}
 }

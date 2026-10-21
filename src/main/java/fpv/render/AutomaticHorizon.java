@@ -22,7 +22,8 @@ public final class AutomaticHorizon {
     private int strip,planet=-1;
     private boolean dirty=true;
     private Shader farShader,nearShader;
-    private Mesh far;
+    private Mesh far,cosmicApron;
+    private Shader cosmicShader;
     private HorizonCollarMesh collar;
     private Texture detailTexture;
     private HorizonComposition composition=HorizonComposition.EMPTY;
@@ -68,7 +69,7 @@ public final class AutomaticHorizon {
         }
         """;
     private static final String FAR_VERTEX="attribute vec3 a_position;attribute vec4 a_color;attribute vec2 a_meta,a_material;attribute vec3 a_normal;attribute float a_coast;uniform mat4 u_combined;varying vec4 v_color;varying vec3 v_pos,v_normal;varying vec2 v_meta,v_material;varying float v_coast;"+COMMON+"void main(){v_color=a_color;v_normal=a_normal;v_meta=a_meta;v_material=a_material;v_coast=a_coast;v_pos=a_position;v_pos.y+=wave(v_pos,a_meta.x,a_meta.y);gl_Position=u_combined*vec4(v_pos,1.0);}";
-    private static final String FAR_FRAGMENT="varying vec4 v_color;varying vec3 v_pos,v_normal;varying vec2 v_meta,v_material;varying float v_coast;"+COMMON+LIGHT+CosmicField.GLSL+"void main(){float alpha=1.0-v_color.a;float terrain=step(0.1,length(v_normal));vec3 n=normalize(v_normal+vec3(0.0,0.0001,0.0));vec3 c=mix(v_color.rgb,material(v_color.rgb,v_pos,n,v_material,v_meta.x),terrain);c=lit(c,v_pos,n,v_meta.x,v_meta.y,v_coast);if(v_color.a>0.001){c=mix(c,cosmicField(normalize(v_pos-u_camera+u_camera/100000.0)),clamp(v_color.a,0.0,1.0));alpha=1.0;}if(v_meta.x>0.5)alpha*=u_camera.y<(-0.17)?0.94:mix(0.88,0.98,smoothstep(0.1,3.5,v_meta.y));gl_FragColor=vec4(c,alpha);}";
+    private static final String FAR_FRAGMENT="varying vec4 v_color;varying vec3 v_pos,v_normal;varying vec2 v_meta,v_material;varying float v_coast;"+COMMON+LIGHT+CosmicField.GLSL+"void main(){float alpha=1.0-v_color.a;float terrain=step(0.1,length(v_normal));vec3 n=normalize(v_normal+vec3(0.0,0.0001,0.0));vec3 c=mix(v_color.rgb,material(v_color.rgb,v_pos,n,v_material,v_meta.x),terrain);c=lit(c,v_pos,n,v_meta.x,v_meta.y,v_coast);if(v_color.a>0.001){c=mix(c,cosmicField(normalize(normalize(v_pos-u_camera)+u_camera/100000.0)),clamp(v_color.a,0.0,1.0));alpha=1.0;}if(v_meta.x>0.5)alpha*=u_camera.y<(-0.17)?0.94:mix(0.88,0.98,smoothstep(0.1,3.5,v_meta.y));gl_FragColor=vec4(c,alpha);}";
     private static final String NEAR_VERTEX="attribute vec3 a_position;attribute vec4 a_color,a_rect;attribute vec2 a_material;attribute vec3 a_normal;attribute float a_depth;uniform mat4 u_combined;varying vec4 v_color,v_rect;varying vec3 v_pos,v_normal;varying vec2 v_material;varying float v_depth;"+COMMON+"void main(){v_color=a_color;v_rect=a_rect;v_normal=a_normal;v_material=a_material;v_depth=a_depth;v_pos=a_position;v_pos.y+=wave(v_pos,a_color.a,a_depth);gl_Position=u_combined*vec4(v_pos,1.0);}";
     // The map apron is not a shoreline. Only the clipped far coast supplies foam eligibility.
     private static final String NEAR_FRAGMENT="uniform sampler2D u_texture;varying vec4 v_color,v_rect;varying vec3 v_pos,v_normal;varying vec2 v_material;varying float v_depth;"+COMMON+LIGHT+"void main(){vec3 n=normalize(v_normal+vec3(0.0,0.0001,0.0));vec2 uv=mix(v_rect.xy,v_rect.zw,fract(projected(v_pos,n)+vec2(0.5)));vec4 t=texture2D(u_texture,uv);if(t.a<0.02)discard;float blend=smoothstep(0.0,4.0,outside(v_pos));vec3 c=mix(t.rgb,material(v_color.rgb,v_pos,n,v_material,v_color.a),blend);c=lit(c,v_pos,n,v_color.a,v_depth,1.0);float alpha=v_color.a>0.5?mix(mix(1.0,0.88,blend),0.98,smoothstep(0.1,3.5,v_depth)):1.0;gl_FragColor=vec4(c,alpha);}";
@@ -90,15 +91,20 @@ public final class AutomaticHorizon {
         if(paletteAtlas!=Core.atlas){palette.clear();paletteAtlas=Core.atlas;if(detailTexture!=null)detailTexture.dispose();detailTexture=null;}
         styleRevision=style;
         long started=System.nanoTime();profile=fpv.background.BackgroundProfiles.current().profile(BorderBiomeProfile.analyze(new BorderBiomeProfile.Source(){public int width(){return Vars.world.width();}public int height(){return Vars.world.height();}public BorderBiomeProfile.Cell cell(int x,int y){return coloured(Vars.world.tile(x,y));}},strip));composition=HorizonComposition.analyze(terrain);analysisMs=(System.nanoTime()-started)/1e6;analyses++;
-        started=System.nanoTime();HorizonGeometry geometry=HorizonGeometry.build(profile,this::boundaryHeight,composition,this::waterBedHeight,fpv.background.BackgroundProfiles.current());
+        started=System.nanoTime();var art=fpv.background.BackgroundProfiles.current();if(art.fullSpace){art=art.copy();art.paint=null;}
+        HorizonGeometry geometry=HorizonGeometry.build(profile,this::boundaryHeight,composition,this::waterBedHeight,art);
         if(geometry.vertices.length>0){far=new Mesh(true,geometry.vertices.length/HorizonGeometry.STRIDE,0,VertexAttribute.position3,new VertexAttribute(4,"a_color"),new VertexAttribute(2,"a_meta"),new VertexAttribute(2,"a_material"),new VertexAttribute(3,"a_normal"),new VertexAttribute(1,"a_coast"));far.setVertices(geometry.vertices);}
-        var batch=new HorizonCollarMesh.Builder();
+        var batch=new HorizonCollarMesh.Builder();var cosmic=new arc.struct.FloatSeq();
         for(int i=0;i<geometry.seamPositions.length-1;i++){
-            double s=geometry.seamPositions[i],end=geometry.seamPositions[i+1];Tile tile=edgeTile((s+end)*.5);if(tile==null||tile.floor()==Blocks.space||tile.floor()==Blocks.empty)continue;
+            double s=geometry.seamPositions[i],end=geometry.seamPositions[i+1];Tile tile=edgeTile((s+end)*.5);if(tile==null)continue;
             var region=terrain.naturalWall(tile)?NativeRegions.wall(tile.block(),tile):NativeRegions.floor(tile.floor(),tile);
             if(!NativeAtlasMesh.valid(region))region=Core.atlas.white();
             var pa=HorizonGeometry.point(profile,s,0);var pb=HorizonGeometry.point(profile,end,0);geometry.row(s,0,a);geometry.row(end,0,b);
-            if(a[6]>.995f&&b[6]>.995f)continue;
+            if(CosmicFloorGeometry.designated(tile)||a[6]>.995f&&b[6]>.995f){
+                float ha=CosmicFloorGeometry.designated(tile)?0:edgeHeight(tile,s),hb=CosmicFloorGeometry.designated(tile)?0:edgeHeight(tile,end);
+                for(float[] v:new float[][]{{pa.x(),ha,pa.z()},{pb.x(),hb,pb.z()},{b[0],b[1],b[2]},{pa.x(),ha,pa.z()},{b[0],b[1],b[2]},{a[0],a[1],a[2]}})cosmic.addAll(v);
+                continue;
+            }
             float ha=edgeHeight(tile,s),hb=edgeHeight(tile,end);boolean water=LiquidSurfaceVisual.open(tile)&&tile.floor().liquidDrop==mindustry.content.Liquids.water;
             // Split the native tile's collar at every fractional outer-row knot, too.
             // All three meshes share identical d4/d12 edge polylines rather than T-junctions.
@@ -108,7 +114,8 @@ public final class AutomaticHorizon {
             if(s==Math.floor(s)){Tile previous=edgeTile(s-.5);float old=edgeHeight(previous,s);
                 if(Math.abs(old-ha)>.0001f){float[] step=na.clone();step[1]=old;batch.face(region,step,na,a,a);}}
         }
-        collar=batch.upload();vertices=geometry.vertices.length/HorizonGeometry.STRIDE+(int)(collar.bytes/(HorizonCollarMesh.STRIDE*4));meshBytes=(long)geometry.vertices.length*4+collar.bytes;fingerprint=geometry.fingerprint();builds++;
+        if(cosmic.size>0){cosmicApron=new Mesh(true,cosmic.size/3,0,VertexAttribute.position3);cosmicApron.setVertices(cosmic.items,0,cosmic.size);}
+        collar=batch.upload();vertices=geometry.vertices.length/HorizonGeometry.STRIDE+(int)(collar.bytes/(HorizonCollarMesh.STRIDE*4));meshBytes=(long)geometry.vertices.length*4+collar.bytes;fingerprint=geometry.fingerprint();if(cosmicApron!=null){vertices+=cosmic.size/3;meshBytes+=cosmic.size*4L;}builds++;
         islands=geometry.islandCount;outcrops=geometry.outcropCount;structures=geometry.structureCount;generationMs=(System.nanoTime()-started)/1e6;dirty=false;
     }
     private BorderBiomeProfile.Cell coloured(Tile tile){
@@ -179,9 +186,11 @@ public final class AutomaticHorizon {
         detailTexture.bind(1);
         apply(farShader,camera,ambient,sky,seconds);Gl.enable(Gl.blend);Gl.blendFunc(Gl.srcAlpha,Gl.oneMinusSrcAlpha);
         if(far!=null)far.render(farShader,Gl.triangles);
-        apply(nearShader,camera,ambient,sky,seconds);nearShader.setUniformi("u_texture",0);collar.draw(nearShader);Gl.disable(Gl.blend);Gl.activeTexture(Gl.texture0);
+        apply(nearShader,camera,ambient,sky,seconds);nearShader.setUniformi("u_texture",0);collar.draw(nearShader);
+        if(cosmicApron!=null){if(cosmicShader==null)cosmicShader=new Shader(CosmicField.VERTEX,CosmicField.FRAGMENT);cosmicShader.bind();cosmicShader.setUniformMatrix4("u_combined",camera.combined.val);cosmicShader.setUniformf("u_camera",camera.position);Gl.disable(Gl.blend);Gl.depthMask(false);try{cosmicApron.render(cosmicShader,Gl.triangles);}finally{Gl.depthMask(true);}}
+        Gl.disable(Gl.blend);Gl.activeTexture(Gl.texture0);
     }
     private void apply(Shader shader,Camera3D camera,float ambient,Color sky,double seconds){shader.bind();shader.setUniformMatrix4("u_combined",camera.combined.val);shader.setUniformf("u_bounds",-.5f,-profile.height+.5f,profile.width-.5f,.5f);shader.setUniformf("u_camera",camera.position);shader.setUniformf("u_time",(float)(seconds%100000));shader.setUniformf("u_ambient",ambient);shader.setUniformf("u_sky",sky.r,sky.g,sky.b);shader.setUniformi("u_detail",1);shader.setUniformf("u_waves",Core.settings.getBool(LiquidSurfaceVisual.WAVES_SETTING,true)?1f:0f);shader.setUniformf("u_hazeNear",(float)(HorizonGeometry.outerDistance(profile.width,profile.height)*.72));shader.setUniformf("u_hazeFar",(float)(HorizonGeometry.outerDistance(profile.width,profile.height)*.92));}
-    public void clear(){if(far!=null)far.dispose();if(collar!=null)collar.dispose();far=null;collar=null;profile=null;tiles=content=atlas=null;vertices=0;meshBytes=0;islands=outcrops=structures=0;composition=HorizonComposition.EMPTY;dirty=true;}
-    public void dispose(){clear();palette.clear();paletteAtlas=null;if(detailTexture!=null)detailTexture.dispose();detailTexture=null;if(farShader!=null)farShader.dispose();if(nearShader!=null)nearShader.dispose();farShader=nearShader=null;}
+    public void clear(){if(cosmicApron!=null)cosmicApron.dispose();cosmicApron=null;if(far!=null)far.dispose();if(collar!=null)collar.dispose();far=null;collar=null;profile=null;tiles=content=atlas=null;vertices=0;meshBytes=0;islands=outcrops=structures=0;composition=HorizonComposition.EMPTY;dirty=true;}
+    public void dispose(){clear();if(cosmicShader!=null)cosmicShader.dispose();cosmicShader=null;palette.clear();paletteAtlas=null;if(detailTexture!=null)detailTexture.dispose();detailTexture=null;if(farShader!=null)farShader.dispose();if(nearShader!=null)nearShader.dispose();farShader=nearShader=null;}
 }

@@ -26,7 +26,7 @@ public final class EnvironmentRenderer {
         uniform vec3 u_forward, u_right, u_up, u_sun, u_planet;
         uniform vec3 u_planetColor, u_atmosphere;
         uniform vec2 u_fov;
-        uniform float u_day, u_seconds, u_radius, u_starGrid, u_starThreshold,u_void,u_cosmic;
+        uniform float u_day, u_seconds, u_radius, u_starGrid, u_starThreshold,u_void,u_cosmic,u_showPlanet,u_showSun;
         """+CosmicField.GLSL+"""
         float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
         float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);}
@@ -39,17 +39,21 @@ public final class EnvironmentRenderer {
             vec3 day=mix(vec3(.66,.72,.78),vec3(.12,.32,.58),pow(h,.55));
             day=mix(day,day*u_atmosphere*1.8,.09);
             vec3 col=mix(night,day,u_day);
-            float dusk=(1.0-smoothstep(.0,.30,abs(u_sun.y)))*pow(1.0-h,5.0);
+            bool cosmic=u_cosmic>.5||u_void>.5;
+            if(cosmic)col=cosmicField(normalize(ray+u_cameraOrigin/100000.0))*(u_void>.5?.12:1.0);
+            if(u_showSun>.5){
+            float dusk=(cosmic?0.0:1.0)*(1.0-smoothstep(.0,.30,abs(u_sun.y)))*pow(1.0-h,5.0);
             float glow=pow(max(dot(ray,u_sun),0.0),6.0);
             col+=vec3(.48,.15,.045)*dusk*(.2+glow*.8);
             float sun=dot(ray,u_sun);
             col+=vec3(1.0,.88,.58)*smoothstep(.99962,.99988,sun)*2.0;
             col+=vec3(.34,.24,.12)*pow(max(sun,0.0),180.0)*u_day;
+            }
             vec2 st=vec2(atan(ray.z,ray.x),asin(clamp(ray.y,-1.0,1.0)))*u_starGrid;
             vec2 cell=floor(st), p=fract(st)-vec2(.5);
             float seed=hash(cell), radius=mix(.055,.18,hash(cell+17.0));
             float stars=step(u_starThreshold,seed)*(1.0-smoothstep(radius*.25,radius,length(p)));
-            float nightAmount=pow(1.0-u_day,2.0)*smoothstep(-.03,.15,ray.y);
+            float nightAmount=cosmic?0.0:pow(1.0-u_day,2.0)*smoothstep(-.03,.15,ray.y);
             col+=mix(vec3(.62,.76,1.0),vec3(1.0,.86,.68),hash(cell+9.0))*stars*nightAmount;
             float band=pow(max(0.0,1.0-abs(dot(ray,normalize(vec3(.25,.8,-.47))))),20.0);
             col+=vec3(.025,.03,.065)*band*nightAmount*(.4+.6*hash(floor(st*.4)));
@@ -57,7 +61,7 @@ public final class EnvironmentRenderer {
             vec3 pu=normalize(cross(pr,u_planet));
             vec2 pp=vec2(dot(ray,pr),dot(ray,pu))/u_radius;
             float rr=dot(pp,pp);
-            if(dot(ray,u_planet)>0.0){
+            if(u_showPlanet>.5&&dot(ray,u_planet)>0.0){
                 float halo=exp(-abs(rr-1.0)*13.0)*.15;
                 col+=u_planetColor*halo;
                 if(rr<1.0){
@@ -75,8 +79,6 @@ public final class EnvironmentRenderer {
                     col=body*illumination+u_planetColor*pow(1.0-n.z,5.0)*.5;
                 }
             }
-            if(u_void>.5)col=cosmicField(ray)*.12;
-            else if(u_cosmic>.5)col=cosmicField(normalize(ray+u_cameraOrigin/100000.0));
             gl_FragColor=vec4(col,1.0);
         }
         """;
@@ -103,14 +105,16 @@ public final class EnvironmentRenderer {
     private boolean disposed;
 
     public void update(Camera3D camera) {
+        var style=fpv.background.BackgroundProfiles.current();
         Planet planet = planet();
         var sector = Vars.state.hasSector() ? Vars.state.getSector() : null;
-        nativeClock = sector != null && Core.settings.getInt("fpv-sky-clock",0)==0;
+        nativeClock = style.cycleTime && sector != null && Core.settings.getInt("fpv-sky-clock",0)==0;
         polarClock=false;
         seconds = nativeClock ? Vars.universe.secondsf() : Vars.state.tick / 60.0;
         double cycleSeconds=Math.max(120,Core.settings.getInt("fpv-day-minutes",(int)(EnvironmentConfig.CYCLE_SECONDS/60))*60.0);
         float phase = (float)((seconds / cycleSeconds + EnvironmentConfig.START_PHASE) % 1.0);
-        if (Float.isFinite(previewPhase)) phase = previewPhase%1f;
+        if(!style.cycleTime)phase=style.fixedPhase;
+        else if (Float.isFinite(previewPhase)) phase = previewPhase%1f;
         if (nativeClock && !Float.isFinite(previewPhase)) {
             normal.set(sector.tile.v).rotate(Vec3.Y, -planet.getRotation()).nor();
             east.set(Vec3.Y).crs(normal);
@@ -155,14 +159,15 @@ public final class EnvironmentRenderer {
         float fy=(float)Math.tan(camera.fov*Mathf.degRad*.5f);
         skyShader.setUniformf("u_fov",fy*camera.width/Math.max(1,camera.height),fy);
         var style=fpv.background.BackgroundProfiles.current();
-        skyShader.setUniformf("u_cosmic",style.all(fpv.background.BackgroundPreset.SPACE)?1:0);
-        skyShader.setUniformf("u_day",style.all(fpv.background.BackgroundPreset.SPACE)?0:day);skyShader.setUniformf("u_void",style.all(fpv.background.BackgroundPreset.VOID)?1:0);skyShader.setUniformf("u_seconds",(float)(seconds%100000));
+        skyShader.setUniformf("u_showPlanet",style.showPlanet?1:0);skyShader.setUniformf("u_showSun",style.showSun?1:0);
+        skyShader.setUniformf("u_cosmic",style.fullSpace||style.all(fpv.background.BackgroundPreset.SPACE)?1:0);
+        skyShader.setUniformf("u_day",style.fullSpace||style.all(fpv.background.BackgroundPreset.SPACE)?0:day);skyShader.setUniformf("u_void",!style.fullSpace&&style.all(fpv.background.BackgroundPreset.VOID)?1:0);skyShader.setUniformf("u_seconds",(float)(seconds%100000));
         skyShader.setUniformf("u_radius",(float)EnvironmentConfig.PLANET_ANGULAR_RADIUS);
         skyShader.setUniformf("u_starGrid",(float)EnvironmentConfig.STAR_GRID);
         skyShader.setUniformf("u_starThreshold",(float)EnvironmentConfig.STAR_THRESHOLD);
         quad.render(skyShader);
         Gl.enable(Gl.depthTest);Gl.depthMask(true);
-        if(automaticEnabled()){
+        if(style.fullSpace||automaticEnabled()){
             if(mountains!=null){mountains.dispose();mountains=null;}
             automatic.render(camera,illumination,skyColor,seconds);
         }else{

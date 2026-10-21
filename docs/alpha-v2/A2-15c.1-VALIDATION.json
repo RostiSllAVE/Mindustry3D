@@ -1,0 +1,72 @@
+{
+  "task": "A2-15c.1",
+  "branch": "main",
+  "baselineCommit": "7024d605a939d01824a50a6689feb6c3635b5bca",
+  "finalJarSha256": "0b46ced3001aababdafc628097115062cd216da3c6983a6a55411036297e768e",
+  "java17TestsPassed": 164,
+  "stockSteam25TestsPassed": 164,
+  "stockSteam25Failures": 0,
+  "freshRecompiledRuntimeClasses": 960,
+  "unchangedExistingRuntimeClasses": 1058,
+  "nativeSimulationClassesOutsideVisualProfileUiScopeUnchanged": true,
+  "payloadIdentity": "payload1-616b64b2358ee13a9d8d61b7f12d42ef2e12d3ad5dc000d5d3e6fc8876c66297",
+  "jarFolderFingerprintJava17AndSteam25": "PASS",
+  "licensesAndJnaUnchanged": true,
+  "priorAlphaFilesPreserved": 2065,
+  "priorDiagnosticAssetsPreserved": 72,
+  "scriptedGraphics": {
+    "stockSteam25Frames": 1248,
+    "java17Frames": 1248,
+    "viewsPerRun": 13,
+    "glErrors": 0,
+    "nativeMapAndEntityCountsUnchanged": true,
+    "cachedMeshesRetainIdentity": true,
+    "checkboxAndSliderEventsApplySaveReload": true,
+    "frozenSkyWithChangedNativeTick": true
+  },
+  "pixelToggleChecks": {
+    "planet": {
+      "pixelsChangedOver12": 8148,
+      "bbox": [
+        422,
+        247,
+        538,
+        358
+      ]
+    },
+    "sun": {
+      "pixelsChangedOver12": 460,
+      "bbox": [
+        468,
+        288,
+        492,
+        312
+      ]
+    },
+    "border": {
+      "pixelsChangedOver12": 305,
+      "bbox": [
+        248,
+        150,
+        249,
+        455
+      ]
+    }
+  },
+  "profileVersion": 3,
+  "readsProfileVersions": [
+    1,
+    2,
+    3
+  ],
+  "nativeSaveAndNetworkFormatsUnchanged": true,
+  "physicalWindowsGameplayAcceptance": "NOT TESTED",
+  "physicalLinux": "NOT TESTED",
+  "physicalRemoteMultiplayer": "NOT TESTED",
+  "timings": "Recorded diagnostic query intervals only; concurrent correctness runs, not a comparative performance benchmark or FPS claim.",
+  "fixtureCorrections": [
+    "Moved fixture wall outside core footprint.",
+    "Seam fixture uses the same covered detail band on both chunks.",
+    "Sun-view camera moved outside Z3 platform; no mod change."
+  ]
+}

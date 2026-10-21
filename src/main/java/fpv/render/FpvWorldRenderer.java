@@ -62,6 +62,7 @@ import java.util.Set;
 /** Read-only 3D view of the currently loaded Mindustry world. All methods run on the render thread. */
 public final class FpvWorldRenderer {
     public static final float WORLD_SCALE = 1f / Vars.tilesize;
+    private boolean cosmicActive;
     private final CosmicFloorRenderer cosmicFloors=new CosmicFloorRenderer();
     private final java.util.function.Predicate<Tile> cosmicVisible=this::discovered;
     private static final int CHUNK = (int)RenderConfig.CHUNK_TILES;
@@ -636,6 +637,7 @@ public final class FpvWorldRenderer {
     }
 
     private void renderTerrain() {
+        boolean active=cosmicFloors.begin(camera);if(active!=cosmicActive){cosmicActive=active;clearChunks();}
         visibleChunks.clear(); pinnedChunks.clear();
         detailedChunks = coarseChunks = 0;
         coarseFogPruned = false;
@@ -684,9 +686,20 @@ public final class FpvWorldRenderer {
             }
         }
         evictInactive(detailLimit);
+        if(fpv.background.BackgroundProfiles.current().showMapBoundary){
+            float w=worldWidth,h=worldHeight;
+            dynamic.box(-.5f,.025f,-(h-1)*.5f,.035f,.025f,h,0,.85f,.90f,1);
+            dynamic.box(w-.5f,.025f,-(h-1)*.5f,.035f,.025f,h,0,.85f,.90f,1);
+            dynamic.box((w-1)*.5f,.025f,.5f,w,.025f,.035f,0,.85f,.90f,1);
+            dynamic.box((w-1)*.5f,.025f,-h+.5f,w,.025f,.035f,0,.85f,.90f,1);
+        }
         flushDynamic();streamAtlas.drawAndClear(atlasShader);
         cosmicFloors.begin(camera);
-        for(Candidate c:visibleChunks)cosmicFloors.draw(c.x,c.y,CHUNK,staticFogEnabled,cosmicVisible);
+        if(cosmicActive){
+            Gl.depthMask(false);
+            try{for(Candidate c:visibleChunks)cosmicFloors.draw(c.x,c.y,CHUNK,staticFogEnabled,cosmicVisible);}finally{Gl.depthMask(true);}
+            for(Candidate c:visibleChunks)cosmicFloors.drawIslands(c.x,c.y,atlasShader);
+        }
     }
 
     private void evictInactive(int target){
@@ -740,6 +753,7 @@ public final class FpvWorldRenderer {
     /** Only cached presentation vertices move; native XYZ/picking/physical terrain remain untouched. */
     private void floorSurface(Tile tile,TextureRegion region,float offset,boolean overlay){
         int x=tile.x,y=tile.y;
+        if(cosmicActive&&!overlay&&CosmicFloorGeometry.designated(tile))return;
         if(tile.floor().isLiquid){
             if(!overlay)liquidSurface(tile,region,staticAtlas,true);
             else if(NativeAtlasMesh.valid(region))liquidStatic.liquidTop(region,x,y,true,offset);
@@ -775,16 +789,18 @@ public final class FpvWorldRenderer {
             boolean known=!staticFogEnabled || (visibility!=null && visibility.known[(y-cy*CHUNK)/stride*visibility.side+(x-cx*CHUNK)/stride]);
             if(!known){dynamic.top(centerX,0,centerZ,width,depth,(float)RenderConfig.UNDISCOVERED_R,(float)RenderConfig.UNDISCOVERED_G,(float)RenderConfig.UNDISCOVERED_B);continue;}
             Tile sample=Vars.world.tile(x+width/2,y+depth/2);
-            boolean liquidCell=false;
+            boolean liquidCell=false,cosmicCell=false;
+            if(cosmicActive)for(int yy=y;yy<y+depth&&!cosmicCell;yy++)for(int xx=x;xx<x+width;xx++)if(CosmicFloorGeometry.designated(Vars.world.tile(xx,yy))){cosmicCell=true;break;}
             for(int yy=y;yy<y+depth&&!liquidCell;yy++)for(int xx=x;xx<x+width;xx++)if(Vars.world.tile(xx,yy).floor().isLiquid){liquidCell=true;break;}
-            if(liquidCell){
-                if(LiquidSurfaceVisual.coarse(sample,x,y,width,depth)){
+            if(liquidCell||cosmicCell){
+                if(!cosmicCell&&LiquidSurfaceVisual.coarse(sample,x,y,width,depth)){
                     TextureRegion liquid=NativeRegions.floor(sample.floor(),sample);
                     if(NativeAtlasMesh.valid(liquid)){float bed=LiquidBedVisual.depth(sample),shade=Math.max(.65f,1-bed*.12f);streamAtlas.top(liquid,centerX,-bed,centerZ,width,depth,0,shade,shade,shade,false);deferLiquid(x,y,width,depth,1);}
                     else{color.set(sample.floor().mapColor);dynamic.top(centerX,-LiquidSurfaceVisual.DEPTH,centerZ,width,depth,color.r,color.g,color.b);}
                 }else for(int yy=y;yy<y+depth;yy++)for(int xx=x;xx<x+width;xx++){
                     Tile piece=Vars.world.tile(xx,yy);
                     if(elevation.naturalWall(piece))terrainTile(piece,streamAtlas,dynamic);
+                    else if(cosmicActive&&CosmicFloorGeometry.designated(piece)){coarseOre(piece);}
                     else if(piece.floor().isLiquid){liquidSurface(piece,NativeRegions.floor(piece.floor(),piece),streamAtlas,false);coarseOre(piece);}
                     else{streamAtlas.top(NativeRegions.floor(piece.floor(),piece),xx,0,-yy,1,1,0,1,1,1,false);coarseOre(piece);}
                     if(elevation.staticArtificial(piece))coarseStaticStructure(piece.x+piece.y*worldWidth);
@@ -860,7 +876,7 @@ public final class FpvWorldRenderer {
 
     private boolean chunkVisible(int cx,int cy){
         float h=Math.max(Math.max(6,vegetationHeight),elevation.maxHeight());
-        float low=Math.min(-FloorSurfaceRelief.MAX_HEIGHT,-LiquidBedVisual.DEEP_DEPTH);
+        float low=Math.min(cosmicActive?-8f:-FloorSurfaceRelief.MAX_HEIGHT,-LiquidBedVisual.DEEP_DEPTH);
         return camera.frustum.containsBounds(cx*CHUNK+(CHUNK-1)*.5f,(h+low)/2,-cy*CHUNK-(CHUNK-1)*.5f,CHUNK*.5f+vegetationPadding,(h-low)/2,CHUNK*.5f+vegetationPadding);
     }
 
