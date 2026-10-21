@@ -1,0 +1,804 @@
+{
+  "task": "A2-16a.1",
+  "baselineCommit": "09c9cff622a118a75efff3eb2d7c9032c534e9b5",
+  "jarSha256": "17e58279b66a93416b7a7847cde875b02e29404375bde8a777ba723d76d501ac",
+  "testsJava17": 168,
+  "testsStockSteam25": 168,
+  "portsPerSide": {
+    "mechanical": 2,
+    "pneumatic": 2,
+    "laser": 3,
+    "airblast": 4
+  },
+  "geometryChecks": 48444,
+  "nativeDrillChecks": 427256,
+  "portChecks": 180549,
+  "sourceBinary": {
+    "status": "PASS",
+    "freshRecompiledRuntimeClassesByteIdentical": 968,
+    "packagedResourcesMatch": true,
+    "frozenSourceInputsMatch": true,
+    "jarSha256": "17e58279b66a93416b7a7847cde875b02e29404375bde8a777ba723d76d501ac"
+  },
+  "modelStats": {
+    "types": [
+      {
+        "name": "laser-drill",
+        "nearVerticesActive": 2052,
+        "midVerticesActive": 1380,
+        "farVertices": 36,
+        "basePixels": 96,
+        "rotorPixels": 74,
+        "capPixels": 50,
+        "sameTextureBatch": true
+      },
+      {
+        "name": "pneumatic-drill",
+        "nearVerticesActive": 1644,
+        "midVerticesActive": 1008,
+        "farVertices": 36,
+        "basePixels": 64,
+        "rotorPixels": 58,
+        "capPixels": 34,
+        "sameTextureBatch": true
+      },
+      {
+        "name": "blast-drill",
+        "nearVerticesActive": 2310,
+        "midVerticesActive": 1554,
+        "farVertices": 36,
+        "basePixels": 128,
+        "rotorPixels": 90,
+        "capPixels": 50,
+        "sameTextureBatch": true
+      },
+      {
+        "name": "mechanical-drill",
+        "nearVerticesActive": 1524,
+        "midVerticesActive": 984,
+        "farVertices": 36,
+        "basePixels": 64,
+        "rotorPixels": 58,
+        "capPixels": 34,
+        "sameTextureBatch": true
+      }
+    ],
+    "cacheBytes": 400512
+  },
+  "graphics": {
+    "steam25": {
+      "status": "PASS",
+      "frames": 2816,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "measurements": [
+        {
+          "scene": "top",
+          "cpuMeanMs": 1.2147234375,
+          "gpuMeanMs": 0.063824,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 21,
+          "verticesOneFrame": 74669,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "oblique",
+          "cpuMeanMs": 0.82503125,
+          "gpuMeanMs": 0.070784,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 23,
+          "verticesOneFrame": 80813,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "low",
+          "cpuMeanMs": 0.6575140625,
+          "gpuMeanMs": 0.066512,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62381,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "mechanical",
+          "cpuMeanMs": 0.4651796875,
+          "gpuMeanMs": 0.064704,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 16,
+          "verticesOneFrame": 53519,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "pneumatic",
+          "cpuMeanMs": 0.4847859375,
+          "gpuMeanMs": 0.066832,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 60071,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "laser",
+          "cpuMeanMs": 0.51630625,
+          "gpuMeanMs": 0.068944,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62381,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "airblast",
+          "cpuMeanMs": 0.47245,
+          "gpuMeanMs": 0.069664,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 19,
+          "verticesOneFrame": 68525,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "operating",
+          "cpuMeanMs": 0.557803125,
+          "gpuMeanMs": 0.06632,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62381,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "idle",
+          "cpuMeanMs": 0.528921875,
+          "gpuMeanMs": 0.06768,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62375,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "upper",
+          "cpuMeanMs": 0.99521875,
+          "gpuMeanMs": 0.087376,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 28,
+          "verticesOneFrame": 95873,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "reload",
+          "cpuMeanMs": 1.20468125,
+          "gpuMeanMs": 0.073952,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 20,
+          "verticesOneFrame": 69773,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "field100",
+          "cpuMeanMs": 3.8523671875,
+          "gpuMeanMs": 1.889024,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 47,
+          "verticesOneFrame": 479735,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "field1024",
+          "cpuMeanMs": 2.9031546875,
+          "gpuMeanMs": 0.619712,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 66,
+          "verticesOneFrame": 1091495,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "field1024-near",
+          "cpuMeanMs": 5.2866328125,
+          "gpuMeanMs": 3.640112,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 799775,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "mechanical-active",
+          "cpuMeanMs": 0.362321875,
+          "gpuMeanMs": 0.063824,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 15,
+          "verticesOneFrame": 48803,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "mechanical-full",
+          "cpuMeanMs": 0.386559375,
+          "gpuMeanMs": 0.0644,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 15,
+          "verticesOneFrame": 48803,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "pneumatic-active",
+          "cpuMeanMs": 0.46999375,
+          "gpuMeanMs": 0.065856,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 16,
+          "verticesOneFrame": 56999,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "pneumatic-full",
+          "cpuMeanMs": 0.4295671875,
+          "gpuMeanMs": 0.065872,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 16,
+          "verticesOneFrame": 56999,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "laser-active",
+          "cpuMeanMs": 0.49300625,
+          "gpuMeanMs": 0.065104,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62381,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "laser-full",
+          "cpuMeanMs": 0.4869625,
+          "gpuMeanMs": 0.063552,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62375,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "airblast-active",
+          "cpuMeanMs": 0.5480578125,
+          "gpuMeanMs": 0.065024,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 65453,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "airblast-full",
+          "cpuMeanMs": 0.5211375,
+          "gpuMeanMs": 0.064896,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 65447,
+          "cachedDrillModelBuilds": 4
+        }
+      ]
+    },
+    "java17": {
+      "status": "PASS",
+      "frames": 2816,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "measurements": [
+        {
+          "scene": "top",
+          "cpuMeanMs": 1.4919703125,
+          "gpuMeanMs": 0.067424,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 6078.5,
+          "drawCallsOneFrame": 21,
+          "verticesOneFrame": 74669,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "oblique",
+          "cpuMeanMs": 0.937778125,
+          "gpuMeanMs": 0.073056,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 4788.0,
+          "drawCallsOneFrame": 23,
+          "verticesOneFrame": 80813,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "low",
+          "cpuMeanMs": 0.6944953125,
+          "gpuMeanMs": 0.066688,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 4071.125,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62381,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "mechanical",
+          "cpuMeanMs": 0.544753125,
+          "gpuMeanMs": 0.0648,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3648.375,
+          "drawCallsOneFrame": 16,
+          "verticesOneFrame": 53519,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "pneumatic",
+          "cpuMeanMs": 0.6079390625,
+          "gpuMeanMs": 0.066576,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3921.125,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 60071,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "laser",
+          "cpuMeanMs": 0.76931875,
+          "gpuMeanMs": 0.071328,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 4065.125,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62381,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "airblast",
+          "cpuMeanMs": 0.699509375,
+          "gpuMeanMs": 0.073008,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 4350.25,
+          "drawCallsOneFrame": 19,
+          "verticesOneFrame": 68525,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "operating",
+          "cpuMeanMs": 0.505125,
+          "gpuMeanMs": 0.06728,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3938.25,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62381,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "idle",
+          "cpuMeanMs": 0.675390625,
+          "gpuMeanMs": 0.0676,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3922.25,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62375,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "upper",
+          "cpuMeanMs": 0.825034375,
+          "gpuMeanMs": 0.094032,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 5483.625,
+          "drawCallsOneFrame": 28,
+          "verticesOneFrame": 95873,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "reload",
+          "cpuMeanMs": 0.736178125,
+          "gpuMeanMs": 0.08256,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 4327.75,
+          "drawCallsOneFrame": 20,
+          "verticesOneFrame": 69773,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "field100",
+          "cpuMeanMs": 3.0131296875,
+          "gpuMeanMs": 1.454656,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 29099.375,
+          "drawCallsOneFrame": 47,
+          "verticesOneFrame": 479735,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "field1024",
+          "cpuMeanMs": 2.8937265625,
+          "gpuMeanMs": 0.5772,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 113539.375,
+          "drawCallsOneFrame": 66,
+          "verticesOneFrame": 1091495,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "field1024-near",
+          "cpuMeanMs": 5.114546875,
+          "gpuMeanMs": 3.712496,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 44699.375,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 799775,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "mechanical-active",
+          "cpuMeanMs": 0.4390421875,
+          "gpuMeanMs": 0.06408,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3145.125,
+          "drawCallsOneFrame": 15,
+          "verticesOneFrame": 48803,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "mechanical-full",
+          "cpuMeanMs": 0.475596875,
+          "gpuMeanMs": 0.064176,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3145.125,
+          "drawCallsOneFrame": 15,
+          "verticesOneFrame": 48803,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "pneumatic-active",
+          "cpuMeanMs": 0.4556859375,
+          "gpuMeanMs": 0.065424,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3553.125,
+          "drawCallsOneFrame": 16,
+          "verticesOneFrame": 56999,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "pneumatic-full",
+          "cpuMeanMs": 0.500771875,
+          "gpuMeanMs": 0.06584,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3553.125,
+          "drawCallsOneFrame": 16,
+          "verticesOneFrame": 56999,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "laser-active",
+          "cpuMeanMs": 0.50356875,
+          "gpuMeanMs": 0.065024,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3849.125,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62381,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "laser-full",
+          "cpuMeanMs": 0.524859375,
+          "gpuMeanMs": 0.066592,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3834.25,
+          "drawCallsOneFrame": 17,
+          "verticesOneFrame": 62375,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "airblast-active",
+          "cpuMeanMs": 0.4761453125,
+          "gpuMeanMs": 0.067472,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 4002.25,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 65453,
+          "cachedDrillModelBuilds": 4
+        },
+        {
+          "scene": "airblast-full",
+          "cpuMeanMs": 0.5112,
+          "gpuMeanMs": 0.065584,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 3986.25,
+          "drawCallsOneFrame": 18,
+          "verticesOneFrame": 65447,
+          "cachedDrillModelBuilds": 4
+        }
+      ]
+    }
+  },
+  "pixels": {
+    "checked-graphics": {
+      "mechanicalActiveVersusFullChangedPixels": 1159,
+      "pneumaticActiveVersusFullChangedPixels": 1870,
+      "laserActiveVersusFullChangedPixels": 5427,
+      "airblastActiveVersusFullChangedPixels": 6367,
+      "operatingFrameChangePixels": 1853,
+      "idleFrameChangePixels": 0
+    },
+    "checked-java17": {
+      "mechanicalActiveVersusFullChangedPixels": 1159,
+      "pneumaticActiveVersusFullChangedPixels": 1870,
+      "laserActiveVersusFullChangedPixels": 5427,
+      "airblastActiveVersusFullChangedPixels": 6367,
+      "operatingFrameChangePixels": 1853,
+      "idleFrameChangePixels": 0
+    }
+  },
+  "performance": {
+    "baseline": "accepted A2-16a, 09c9cff",
+    "candidate": "final verified A2-16a.1 JAR",
+    "runtime": "stock Steam Java25.0.1, actual Windows SDL/OpenGL, 960x600",
+    "scope": "whole renderer, 48 warmup + 64 measured calls/scene; not display FPS; no simultaneous regression workload",
+    "measurements": [
+      {
+        "scene": "top",
+        "cpuBeforeMs": 0.8705734375,
+        "cpuAfterMs": 1.2147234375,
+        "gpuBeforeMs": 0.063104,
+        "gpuAfterMs": 0.063824,
+        "drawCallsBefore": 21,
+        "drawCallsAfter": 21,
+        "verticesBefore": 70709,
+        "verticesAfter": 74669
+      },
+      {
+        "scene": "oblique",
+        "cpuBeforeMs": 0.66215,
+        "cpuAfterMs": 0.82503125,
+        "gpuBeforeMs": 0.06968,
+        "gpuAfterMs": 0.070784,
+        "drawCallsBefore": 23,
+        "drawCallsAfter": 23,
+        "verticesBefore": 76853,
+        "verticesAfter": 80813
+      },
+      {
+        "scene": "low",
+        "cpuBeforeMs": 0.4709015625,
+        "cpuAfterMs": 0.6575140625,
+        "gpuBeforeMs": 0.065568,
+        "gpuAfterMs": 0.066512,
+        "drawCallsBefore": 17,
+        "drawCallsAfter": 17,
+        "verticesBefore": 58421,
+        "verticesAfter": 62381
+      },
+      {
+        "scene": "mechanical",
+        "cpuBeforeMs": 0.42605,
+        "cpuAfterMs": 0.4651796875,
+        "gpuBeforeMs": 0.064816,
+        "gpuAfterMs": 0.064704,
+        "drawCallsBefore": 16,
+        "drawCallsAfter": 16,
+        "verticesBefore": 52079,
+        "verticesAfter": 53519
+      },
+      {
+        "scene": "pneumatic",
+        "cpuBeforeMs": 0.3922484375,
+        "cpuAfterMs": 0.4847859375,
+        "gpuBeforeMs": 0.065744,
+        "gpuAfterMs": 0.066832,
+        "drawCallsBefore": 17,
+        "drawCallsAfter": 17,
+        "verticesBefore": 57455,
+        "verticesAfter": 60071
+      },
+      {
+        "scene": "laser",
+        "cpuBeforeMs": 0.4243671875,
+        "cpuAfterMs": 0.51630625,
+        "gpuBeforeMs": 0.067424,
+        "gpuAfterMs": 0.068944,
+        "drawCallsBefore": 17,
+        "drawCallsAfter": 17,
+        "verticesBefore": 58421,
+        "verticesAfter": 62381
+      },
+      {
+        "scene": "airblast",
+        "cpuBeforeMs": 0.524659375,
+        "cpuAfterMs": 0.47245,
+        "gpuBeforeMs": 0.0684,
+        "gpuAfterMs": 0.069664,
+        "drawCallsBefore": 19,
+        "drawCallsAfter": 19,
+        "verticesBefore": 64565,
+        "verticesAfter": 68525
+      },
+      {
+        "scene": "operating",
+        "cpuBeforeMs": 0.4630984375,
+        "cpuAfterMs": 0.557803125,
+        "gpuBeforeMs": 0.065296,
+        "gpuAfterMs": 0.06632,
+        "drawCallsBefore": 17,
+        "drawCallsAfter": 17,
+        "verticesBefore": 58421,
+        "verticesAfter": 62381
+      },
+      {
+        "scene": "idle",
+        "cpuBeforeMs": 0.7171890625,
+        "cpuAfterMs": 0.528921875,
+        "gpuBeforeMs": 0.065232,
+        "gpuAfterMs": 0.06768,
+        "drawCallsBefore": 17,
+        "drawCallsAfter": 17,
+        "verticesBefore": 58415,
+        "verticesAfter": 62375
+      },
+      {
+        "scene": "upper",
+        "cpuBeforeMs": 0.705621875,
+        "cpuAfterMs": 0.99521875,
+        "gpuBeforeMs": 0.074512,
+        "gpuAfterMs": 0.087376,
+        "drawCallsBefore": 28,
+        "drawCallsAfter": 28,
+        "verticesBefore": 87953,
+        "verticesAfter": 95873
+      },
+      {
+        "scene": "reload",
+        "cpuBeforeMs": 0.586834375,
+        "cpuAfterMs": 1.20468125,
+        "gpuBeforeMs": 0.06872,
+        "gpuAfterMs": 0.073952,
+        "drawCallsBefore": 20,
+        "drawCallsAfter": 20,
+        "verticesBefore": 62573,
+        "verticesAfter": 69773
+      },
+      {
+        "scene": "field100",
+        "cpuBeforeMs": 2.23175625,
+        "cpuAfterMs": 3.8523671875,
+        "gpuBeforeMs": 0.309632,
+        "gpuAfterMs": 1.889024,
+        "drawCallsBefore": 45,
+        "drawCallsAfter": 47,
+        "verticesBefore": 416903,
+        "verticesAfter": 479735
+      },
+      {
+        "scene": "field1024",
+        "cpuBeforeMs": 2.7264515625,
+        "cpuAfterMs": 2.9031546875,
+        "gpuBeforeMs": 0.608816,
+        "gpuAfterMs": 0.619712,
+        "drawCallsBefore": 66,
+        "drawCallsAfter": 66,
+        "verticesBefore": 1091495,
+        "verticesAfter": 1091495
+      },
+      {
+        "scene": "field1024-near",
+        "cpuBeforeMs": 2.9860609375,
+        "cpuAfterMs": 5.2866328125,
+        "gpuBeforeMs": 2.323648,
+        "gpuAfterMs": 3.640112,
+        "drawCallsBefore": 36,
+        "drawCallsAfter": 39,
+        "verticesBefore": 682487,
+        "verticesAfter": 799775
+      },
+      {
+        "scene": "mechanical-active",
+        "cpuBeforeMs": 0.36294375,
+        "cpuAfterMs": 0.362321875,
+        "gpuBeforeMs": 0.063104,
+        "gpuAfterMs": 0.063824,
+        "drawCallsBefore": 15,
+        "drawCallsAfter": 15,
+        "verticesBefore": 48083,
+        "verticesAfter": 48803
+      },
+      {
+        "scene": "mechanical-full",
+        "cpuBeforeMs": 0.4765171875,
+        "cpuAfterMs": 0.386559375,
+        "gpuBeforeMs": 0.0632,
+        "gpuAfterMs": 0.0644,
+        "drawCallsBefore": 15,
+        "drawCallsAfter": 15,
+        "verticesBefore": 48083,
+        "verticesAfter": 48803
+      },
+      {
+        "scene": "pneumatic-active",
+        "cpuBeforeMs": 0.424528125,
+        "cpuAfterMs": 0.46999375,
+        "gpuBeforeMs": 0.064432,
+        "gpuAfterMs": 0.065856,
+        "drawCallsBefore": 16,
+        "drawCallsAfter": 16,
+        "verticesBefore": 54383,
+        "verticesAfter": 56999
+      },
+      {
+        "scene": "pneumatic-full",
+        "cpuBeforeMs": 0.442921875,
+        "cpuAfterMs": 0.4295671875,
+        "gpuBeforeMs": 0.065376,
+        "gpuAfterMs": 0.065872,
+        "drawCallsBefore": 16,
+        "drawCallsAfter": 16,
+        "verticesBefore": 54383,
+        "verticesAfter": 56999
+      },
+      {
+        "scene": "laser-active",
+        "cpuBeforeMs": 0.49801875,
+        "cpuAfterMs": 0.49300625,
+        "gpuBeforeMs": 0.064368,
+        "gpuAfterMs": 0.065104,
+        "drawCallsBefore": 17,
+        "drawCallsAfter": 17,
+        "verticesBefore": 58421,
+        "verticesAfter": 62381
+      },
+      {
+        "scene": "laser-full",
+        "cpuBeforeMs": 0.4425984375,
+        "cpuAfterMs": 0.4869625,
+        "gpuBeforeMs": 0.064768,
+        "gpuAfterMs": 0.063552,
+        "drawCallsBefore": 17,
+        "drawCallsAfter": 17,
+        "verticesBefore": 58415,
+        "verticesAfter": 62375
+      },
+      {
+        "scene": "airblast-active",
+        "cpuBeforeMs": 0.3878828125,
+        "cpuAfterMs": 0.5480578125,
+        "gpuBeforeMs": 0.064256,
+        "gpuAfterMs": 0.065024,
+        "drawCallsBefore": 18,
+        "drawCallsAfter": 18,
+        "verticesBefore": 61493,
+        "verticesAfter": 65453
+      },
+      {
+        "scene": "airblast-full",
+        "cpuBeforeMs": 0.4480375,
+        "cpuAfterMs": 0.5211375,
+        "gpuBeforeMs": 0.064448,
+        "gpuAfterMs": 0.064896,
+        "drawCallsBefore": 18,
+        "drawCallsAfter": 18,
+        "verticesBefore": 61487,
+        "verticesAfter": 65447
+      }
+    ]
+  },
+  "previousAlphaFilesPreserved": 2065,
+  "previousDiagnosticAssetsPreserved": 81,
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "physicalRemoteMultiplayer": "NOT TESTED",
+  "realGameplayFpsParity": "NOT TESTED"
+}

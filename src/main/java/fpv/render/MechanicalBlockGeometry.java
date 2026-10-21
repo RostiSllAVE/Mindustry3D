@@ -7,17 +7,21 @@ import java.util.Arrays;
  */
 public final class MechanicalBlockGeometry {
     private MechanicalBlockGeometry(){}
-    public record Model(float[] body,float[] pistons){
-        public int vertices(){return (body.length+pistons.length)/SpriteExtrusionGeometry.STRIDE;}
-        public long bytes(){return (long)(body.length+pistons.length)*Float.BYTES;}
+    public record Model(float[] body,float[] pistons,float[] lights){
+        public int vertices(){return (body.length+pistons.length+lights.length)/SpriteExtrusionGeometry.STRIDE;}
+        public long bytes(){return (long)(body.length+pistons.length+lights.length)*Float.BYTES;}
     }
     private static final Model[][] CACHE=new Model[DrillModelProfile.values().length][3];
     public static Model drill(DrillModelProfile profile,int lod){
         if(profile==null||lod<0||lod>2)throw new IllegalArgumentException("Drill profile and LOD required");
         var old=CACHE[profile.ordinal()][lod];if(old!=null)return old;
-        var body=new Builder();var moving=new Builder();float deck=profile.deck;
-        body.box(-.49f,0,-.49f,.49f,lod==2?.65f:deck,.49f,true);
-        if(lod==2)return CACHE[profile.ordinal()][lod]=new Model(body.finish(),moving.finish());
+        var body=new Builder();var moving=new Builder();var lights=new Builder();float deck=profile.deck;
+        if(lod==2){body.box(-.49f,0,-.49f,.49f,.65f,.49f,true);return CACHE[profile.ordinal()][lod]=new Model(body.finish(),moving.finish(),lights.finish());}
+        // The reusable port foundation owns the lower shell. Status rails sit above the mouths.
+        lights.accentBox(-.49f,deck*.84f,-.491f,.49f,deck*.94f,-.488f);
+        lights.accentBox(-.49f,deck*.84f,.488f,.49f,deck*.94f,.491f);
+        lights.accentBox(-.491f,deck*.84f,-.488f,-.488f,deck*.94f,.488f);
+        lights.accentBox(.488f,deck*.84f,-.488f,.491f,deck*.94f,.488f);
         body.column(0,deck,0,.24f,profile.rotor-.06f,.19f,profile==DrillModelProfile.LASER?4:8);
         body.column(0,profile.rotor-.06f,0,.065f,profile.cap-profile.capDepth*.5f,.065f,4);
         if(profile==DrillModelProfile.MECHANICAL){
@@ -35,8 +39,9 @@ public final class MechanicalBlockGeometry {
         }else if(profile==DrillModelProfile.LASER){
             for(int i=0;i<4;i++){
                 float x=(i%2==0?-1:1)*.32f,z=(i<2?-1:1)*.32f;
-                body.box(x-.08f,deck,z-.08f,x+.08f,.73f,z+.08f,true);
-                if(lod==0)body.accentBox(x-.10f,.39f,z-.10f,x+.10f,.47f,z+.10f);
+                body.box(x-.08f,deck,z-.08f,x+.08f,.56f,z+.08f,true);
+                moving.column(x,.51f,z,.035f,.77f,.035f,4);
+                if(lod==0)lights.accentBox(x-.10f,.39f,z-.10f,x+.10f,.47f,z+.10f);
             }
         }else{
             body.column(0,deck,0,.36f,.43f,.32f,8);
@@ -44,10 +49,10 @@ public final class MechanicalBlockGeometry {
                 double a=i*Math.PI/2;float x=(float)Math.cos(a)*.34f,z=(float)Math.sin(a)*.34f;
                 body.box(x-.09f,deck,z-.09f,x+.09f,.61f,z+.09f,true);
                 if(lod==0){moving.column(x,.52f,z,.055f,.74f,.055f,4);
-                    body.accentBox(x-.11f,.33f,z-.11f,x+.11f,.40f,z+.11f);}
+                    lights.accentBox(x-.11f,.33f,z-.11f,x+.11f,.40f,z+.11f);}
             }
         }
-        return CACHE[profile.ordinal()][lod]=new Model(body.finish(),moving.finish());
+        return CACHE[profile.ordinal()][lod]=new Model(body.finish(),moving.finish(),lights.finish());
     }
     /** No bottom faces under foundations or hidden internal horizontal subdivision layers. */
     public static final class Builder {
@@ -58,7 +63,7 @@ public final class MechanicalBlockGeometry {
             values[count++]=nx;values[count++]=ny;values[count++]=nz;
             values[count++]=ny>.5f?x+.5f:-1;values[count++]=ny>.5f?z+.5f:-1;
         }
-        private void face(float ax,float ay,float az,float bx,float by,float bz,float cx,float cy,float cz,float dx,float dy,float dz,float nx,float ny,float nz){
+        public void face(float ax,float ay,float az,float bx,float by,float bz,float cx,float cy,float cz,float dx,float dy,float dz,float nx,float ny,float nz){
             vertex(ax,ay,az,nx,ny,nz);vertex(bx,by,bz,nx,ny,nz);vertex(cx,cy,cz,nx,ny,nz);
             vertex(ax,ay,az,nx,ny,nz);vertex(cx,cy,cz,nx,ny,nz);vertex(dx,dy,dz,nx,ny,nz);
         }

@@ -39,6 +39,7 @@ public final class DrillModelNativeTest {
                 var tile=Vars.world.tile(x,y);tile.setBlock(type,Team.sharded,0);var build=(Drill.DrillBuild)tile.build;build.onProximityUpdate();build.efficiency=1;build.warmup=1;build.timeDrilled=17;build.progress=13;
                 float speed=type.drillTime,power=type.liquidBoostIntensity,hp=build.health;int resources=build.items.total(),ore=build.dominantItems;float progress=build.progress,time=build.timeDrilled;
                 check(DrillModelRenderer.activity(build)>0,"actual operating state "+type.name+" enabled="+build.enabled+" efficiency="+build.efficiency+" ore="+build.dominantItem+" cells="+build.dominantItems+" items="+build.items.total()+" capacity="+type.itemCapacity+" drop="+tile.drop()+" block="+tile.block()+" static="+tile.block().isStatic()+" tier="+type.tier+" canMine="+type.canMine(tile));
+                check(DrillModelRenderer.statusLight(build)==1,"active native-color status brightness");
                 for(int layer:new int[]{0,2})for(int rotation=0;rotation<4;rotation++)for(int lod=0;lod<3;lod++){
                     build.rotation=rotation;batch.clear();float base=layer*2.5f,height=fpv.net.HeadlessGeometry.heightFor(type),size=type.size;
                     check(draw.render(build,batch,0,base,0,size,height,lod==0?0:lod==1?900:10000),"both floors and orientations rendered");
@@ -50,6 +51,8 @@ public final class DrillModelNativeTest {
                 build.enabled=false;check(DrillModelRenderer.activity(build)==0&&DrillModelRenderer.pistonOffset(build,profile)==0,"disabled has no active piston motion");build.enabled=true;
                 build.efficiency=0;check(DrillModelRenderer.activity(build)==0,"unpowered/blocked consumption inactive");build.efficiency=1;
                 build.items.set(Items.copper,type.itemCapacity);check(DrillModelRenderer.activity(build)==0,"full output inactive");build.items.clear();
+                build.items.set(Items.copper,type.itemCapacity);check(Math.abs(DrillModelRenderer.statusLight(build)-.18f)<1e-6,"full buffer dims status without changing inventory");build.items.clear();
+                build.enabled=false;check(Math.abs(DrillModelRenderer.statusLight(build)-.18f)<1e-6,"disabled status dark");build.enabled=true;
                 var nativeBytes=new java.io.ByteArrayOutputStream();build.write(arc.util.io.Writes.get(new java.io.DataOutputStream(nativeBytes)));float savedProgress=build.progress,savedWarmup=build.warmup;build.progress=0;build.warmup=0;build.read(arc.util.io.Reads.get(new java.io.DataInputStream(new java.io.ByteArrayInputStream(nativeBytes.toByteArray()))),build.version());check(build.progress==savedProgress&&build.warmup==savedWarmup,"native progress/warmup save format unchanged");
                 long cached=draw.builds();batch.clear();for(int i=0;i<100;i++)draw.render(build,batch,i*5,0,0,type.size,1,10000);check(draw.builds()==cached,"large fields reuse model without regeneration");
                 // Production is still performed only by the original native update.

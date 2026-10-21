@@ -13,6 +13,7 @@ final class DrillModelRenderer {
     private static final class Model {
         TextureRegion base,rotor,cap;
         final float[][] bodies=new float[3][],pistons=new float[3][];
+        final float[][] foundations=new float[2][],tunnels=new float[2][],lights=new float[3][];
         float[] rotorNear,capNear,rotorMid,capMid;
     }
     private final IdentityHashMap<Drill,Model> cache=new IdentityHashMap<>();
@@ -33,7 +34,7 @@ final class DrillModelRenderer {
         var type=(Drill)b.block;var model=cache.get(type);
         if(model==null||model.base!=type.region||model.rotor!=type.rotatorRegion||model.cap!=type.topRegion){
             model=create(type,profile);if(model==null)return false;cache.put(type,model);builds++;
-            bytes=0;for(var m:cache.values()){for(var a:m.bodies)bytes+=(long)a.length*4;for(var a:m.pistons)bytes+=(long)a.length*4;bytes+=(long)(m.rotorNear.length+m.capNear.length+m.rotorMid.length+m.capMid.length)*4;}
+            bytes=0;for(var m:cache.values()){for(var list:new float[][][]{m.bodies,m.pistons,m.foundations,m.tunnels,m.lights})for(var a:list)bytes+=(long)a.length*4;bytes+=(long)(m.rotorNear.length+m.capNear.length+m.rotorMid.length+m.capMid.length)*4;}
         }
         int lod=DrillModelProfile.lod(distanceSquared);float angle=type.rotate&&type.rotateDraw?b.rotation*90f:0;
         SpriteExtrusionGeometry.basis(90+angle,0,0,basis);
@@ -41,14 +42,17 @@ final class DrillModelRenderer {
         if(lod==2){
             out.top(type.fullIcon,x,base+height*.65f,z,size,size,-angle,1,1,1,false);return true;
         }
+        out.extrusion(model.base,model.foundations[lod],x,base,z,size,height,size,basis,1,1,1);
+        out.extrusion(model.base,model.tunnels[lod],x,base,z,size,height,size,basis,.16f,.16f,.16f);
+        float active=activity(b),light=statusLight(b);
+        out.extrusion(model.base,model.lights[lod],x,base,z,size,height,size,basis,light,light,light);
         out.extrusion(model.base,model.pistons[lod],x,base+pistonOffset(b,profile)*height,z,size,height,size,basis,.9f,.94f,1);
         SpriteExtrusionGeometry.basis(90+angle+rotorAngle(b),0,0,rotorBasis);
         out.extrusion(model.rotor,lod==0?model.rotorNear:model.rotorMid,x,base+height*profile.rotor,z,size*ratio(model.rotor,model.base),height*.075f,size*depthRatio(model.rotor,model.base),rotorBasis,1,1,1);
         out.extrusion(model.cap,lod==0?model.capNear:model.capMid,x,base+height*profile.cap,z,size*ratio(model.cap,model.base),height*profile.capDepth,size*depthRatio(model.cap,model.base),basis,1,1,1);
-        float active=activity(b);
         if(type.drawRim&&active>.001f&&NativeAtlasMesh.valid(type.rimRegion)){
-            var c=type.heatColor;float light=active*.75f;
-            out.top(type.rimRegion,x,base+height*(profile.deck+.008f),z,size*ratio(type.rimRegion,model.base),size*depthRatio(type.rimRegion,model.base),-angle,c.r*light,c.g*light,c.b*light,false);
+            var c=type.heatColor;float rimLight=active*.75f;
+            out.top(type.rimRegion,x,base+height*(profile.deck+.008f),z,size*ratio(type.rimRegion,model.base),size*depthRatio(type.rimRegion,model.base),-angle,c.r*rimLight,c.g*rimLight,c.b*rimLight,false);
         }
         if(type.drawMineItem&&b.dominantItem!=null&&NativeAtlasMesh.valid(type.itemRegion)){
             var c=b.dominantItem.color;out.top(type.itemRegion,x,base+height*(profile.cap+profile.capDepth*.5f)+.003f,z,size*ratio(type.itemRegion,model.base),size*depthRatio(type.itemRegion,model.base),-angle,c.r,c.g,c.b,false);
@@ -56,6 +60,7 @@ final class DrillModelRenderer {
         return true;
     }
     static float ratio(TextureRegion part,TextureRegion base){return part.width/(float)Math.max(1,base.width);}
+    static float statusLight(Drill.DrillBuild b){return .18f+.82f*activity(b);}
     static float depthRatio(TextureRegion part,TextureRegion base){return part.height/(float)Math.max(1,base.height);}
     private Model create(Drill type,DrillModelProfile profile){
         if(!NativeAtlasMesh.valid(type.region)||!NativeAtlasMesh.valid(type.rotatorRegion)||!NativeAtlasMesh.valid(type.topRegion))return null;
@@ -69,7 +74,8 @@ final class DrillModelRenderer {
             if(d<nearest){nearest=d;su=(float)u;sv=(float)v;}
         }
         for(int lod=0;lod<3;lod++){
-            var shape=MechanicalBlockGeometry.drill(profile,lod);model.bodies[lod]=material(shape.body(),su,sv);model.pistons[lod]=material(shape.pistons(),su,sv);
+            var shape=MechanicalBlockGeometry.drill(profile,lod);model.bodies[lod]=material(shape.body(),su,sv);model.pistons[lod]=material(shape.pistons(),su,sv);model.lights[lod]=material(shape.lights(),su,sv);
+            if(lod<2){var ports=ResourcePortGeometry.generate(type.size,profile.deck,lod==0);model.foundations[lod]=material(ports.shell(),su,sv);model.tunnels[lod]=material(ports.lining(),su,sv);}
         }
         model.rotorNear=rotating(silhouette(rotor,12,360));model.capNear=silhouette(cap,12,360);
         model.rotorMid=rotating(silhouette(rotor,4,180));model.capMid=silhouette(cap,4,180);
