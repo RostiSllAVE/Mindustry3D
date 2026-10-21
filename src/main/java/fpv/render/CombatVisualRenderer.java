@@ -105,7 +105,7 @@ public final class CombatVisualRenderer {
                 if(state!=null)return state.z();
             }
             if(owner instanceof Building building)
-                return FpvWorldRenderer.heightFor(building.block)+RenderConfig.BULLET_MIN_SIZE;
+                return (building.block==mindustry.content.Blocks.massDriver?AdvancedLogisticsModelRenderer.visualHeight(building.block,FpvWorldRenderer.heightFor(building.block)):FpvWorldRenderer.heightFor(building.block))+RenderConfig.BULLET_MIN_SIZE;
             if(owner instanceof Bullet parent){
                 NativeShot parentShot=nativeShots.get(parent.id);
                 if(parentShot!=null&&parentShot.bullet==parent)return parentShot.height;

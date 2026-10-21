@@ -1,0 +1,9 @@
+# A2-16c — Three owner checks
+
+Import `local/a2-16c/test-kit-final/mindustry-fpv-a2-16c-diagnostics.jar` through Mindustry 160.7 Mods → Import Mod, enable one copy and restart. Use a disposable map/backup; fullscreen is recommended on Windows. The same release-17 JAR supports the existing Windows/Linux paths and stock Steam Java25 fallback. Physical Linux acceptance remains pending. No new bindings.
+
+1. On Z0, build Bridge and Phase Conveyor pairs with normal belts feeding/receiving. Inspect top and low FPV views; disconnect/reconnect, remove an endpoint, stop input/power and resume. Verify range limits, direction, native item delivery and subdued idle phase detail. Repeat on supported Z1 and Z3+ platforms; also inspect an existing explicit cross-floor bridge link if available; identical XY on another floor must not attract a false link.
+2. Place Unloader next to a filled container/core and belt; change its filter and clear it. Compare Duct Unloader's front/back orientation and chosen resource. Inspect dense neighbors and below an elevated platform. Native unloading, core restrictions and item rates must remain normal.
+3. Connect and power a pair of Mass Drivers. Send items repeatedly; check native gun turning, recoil, transfer indicators, bolt/pod travel and actual receipt. Repeat on Z3 with floors above/below. Copy/paste a multi-floor fragment, rotate its preview, save/reload, then verify F5/Tab, placement/configuration/removal, F3 pause and Alt-click priority. No source plans or inventories should duplicate.
+
+Inspect old conveyors/turn guards/Distributor, accepted drills and Item Source colors for regressions. If testing multiplayer, use this identical JAR on all peers. Report clipping, detached effects, false links, incorrect colors or dense-field slowdowns. Automated checks do not constitute physical input/visual acceptance or a real two-computer session.

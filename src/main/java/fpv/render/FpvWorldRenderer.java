@@ -108,6 +108,9 @@ public final class FpvWorldRenderer {
     private final TurretModelRenderer turretModels=new TurretModelRenderer();
     private final DrillModelRenderer drillModels=new DrillModelRenderer();
     private final LogisticsModelRenderer logisticsModels=new LogisticsModelRenderer();
+    private final AdvancedLogisticsModelRenderer advancedLogistics=new AdvancedLogisticsModelRenderer();
+    public long advancedLogisticsBuilds(){return advancedLogistics.builds();}
+    public long advancedLogisticsBytes(){return advancedLogistics.bytes();}
     public long logisticsModelBuilds(){return logisticsModels.builds();}
     public long logisticsModelBytes(){return logisticsModels.bytes();}
     public long drillModelBuilds(){return drillModels.builds();}
@@ -350,6 +353,7 @@ public final class FpvWorldRenderer {
     }
 
     private void renderPlacedBuildings() {
+        advancedLogistics.begin(constructionRuntime);
         syncPlacedBuildings();
         var entries = placedBuildings.entries();
         while (entries.hasNext()) {
@@ -369,7 +373,8 @@ public final class FpvWorldRenderer {
         float ax=source.x*WORLD_SCALE,az=-source.y*WORLD_SCALE,bx=target.x*WORLD_SCALE,bz=-target.y*WORLD_SCALE;
         float dx=bx-ax,dz=bz-az,distance=(float)Math.hypot(dx,dz);
         if(distance<=.001f)return false;
-        float h=Math.max(heightFor(source.block),heightFor(target.block));
+        float sourceHeight=AdvancedLogisticsModelRenderer.visualHeight(source.block,heightFor(source.block)),targetHeight=AdvancedLogisticsModelRenderer.visualHeight(target.block,heightFor(target.block));
+        float h=Math.max(sourceHeight,targetHeight);
         int samples=Math.max(1,Math.min((int)RenderConfig.BRIDGE_MAX_SURFACE_SAMPLES,(int)Math.ceil(distance*2)));
         for(int i=0;i<=samples;i++){
             float fraction=i/(float)samples,x=ax+dx*fraction,z=az+dz*fraction;
@@ -399,8 +404,8 @@ public final class FpvWorldRenderer {
             dynamic.beam(sx+rx,h+thickness,sz+rz,ex+rx,h+thickness,ez+rz,rail,
                 .4f+team.r*.4f,.4f+team.g*.4f,.4f+team.b*.4f);
         }
-        dynamic.beam(ax,heightFor(source.block),az,ax,h,az,width*.18f,.5f,.56f,.64f);
-        dynamic.beam(bx,heightFor(target.block),bz,bx,h,bz,width*.18f,.5f,.56f,.64f);
+        dynamic.beam(ax,sourceHeight,az,ax,h,az,width*.18f,.5f,.56f,.64f);
+        dynamic.beam(bx,targetHeight,bz,bx,h,bz,width*.18f,.5f,.56f,.64f);
         int arrows=Math.min((int)RenderConfig.BRIDGE_MAX_ARROWS,Math.max(1,(int)(length/RenderConfig.BRIDGE_ARROW_SPACING)));
         float phase=bridgeLink.phase-(float)Math.floor(bridgeLink.phase);
         for(int i=0;i<arrows;i++){
@@ -978,6 +983,7 @@ public final class FpvWorldRenderer {
             texturedWall(b.tile,streamAtlas,dynamic,x,z,size,h,false);
             return true;
         }
+        if(advancedLogistics.render(b,streamAtlas,x,0,z,b.block.size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(logisticsModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(drillModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(camera.position.dst2(x,h*.5f,z)>DETAIL_DISTANCE*DETAIL_DISTANCE){
@@ -1415,7 +1421,7 @@ public final class FpvWorldRenderer {
         placedBuildings.clear(); submittedBuildings.clear(); submittedBridges.clear(); submittedUnits.clear();submittedUnitBodies.clear();placedWorldTiles = null;
         buildingFrameCompleted = false;
         combatVisuals.clear();
-        organicProps.clear();oreDeposits.clear();drillModels.clear();logisticsModels.clear();
+        organicProps.clear();oreDeposits.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
         clearChunks();
         if (shader != null) shader.dispose();
         if (atlasShader != null) atlasShader.dispose();
