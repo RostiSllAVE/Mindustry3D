@@ -214,7 +214,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
                     TextureRegion base=turret.drawer instanceof DrawTurret drawer&&NativeAtlasMesh.valid(drawer.base)?drawer.base:region;
                     box(builder,base,new LayerCoordinates.Bounds(b.minX(),b.minY(),b.minZ(),b.maxX(),b.maxY(),b.minZ()+c.height()*.55),r,g,blue);
                 }else box(builder,region,b,r,g,blue,block!=null&&block.rotate?-c.rotation()*90:0,
-                    !(block instanceof Conveyor||block instanceof mindustry.world.blocks.units.UnitBlock||block instanceof mindustry.world.blocks.liquid.LiquidBlock&&!(block instanceof Conduit)));
+                    !(block instanceof Conveyor||block instanceof mindustry.world.blocks.storage.Unloader||block instanceof mindustry.world.blocks.sandbox.ItemSource||block instanceof mindustry.world.blocks.units.UnitBlock||block instanceof mindustry.world.blocks.liquid.LiquidBlock&&!(block instanceof Conduit)));
                 // Small team plate, without recoloring the familiar block artwork.
                 float cx=(float)((b.minX()+b.maxX())*.5),cy=(float)((b.minY()+b.maxY())*.5),top=(float)b.maxZ()+.003f;
                 builder.top(Core.atlas.white(),cx,top,-cy,c.size()*.23f,c.size()*.23f,0,tint.r,tint.g,tint.b,false);

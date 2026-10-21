@@ -22,7 +22,13 @@ final class NativeBlockAnimationAdapter {
     private static final class ReleaseVisual {mindustry.gen.Unit payload;float flashUntil;}
     void clear(){releases.clear();tiles=null;pruneAt=0;}
     boolean releaseFlash(Building b){var state=releases.get(b);return state!=null&&state.flashUntil>Time.time;}
-    static boolean supports(Building b){return b instanceof Conveyor.ConveyorBuild||b.block instanceof UnitBlock||b.block instanceof LiquidBlock&&!(b.block instanceof mindustry.world.blocks.liquid.Conduit);}
+    static boolean supports(Building b){return itemFilter(b)||b instanceof Conveyor.ConveyorBuild||b.block instanceof UnitBlock||b.block instanceof LiquidBlock&&!(b.block instanceof mindustry.world.blocks.liquid.Conduit);}
+    static boolean itemFilter(Building b){return b instanceof mindustry.world.blocks.storage.Unloader.UnloaderBuild||b instanceof mindustry.world.blocks.sandbox.ItemSource.ItemSourceBuild;}
+    static mindustry.type.Item configuredItem(Building b){
+        if(b instanceof mindustry.world.blocks.storage.Unloader.UnloaderBuild u)return u.sortItem;
+        if(b instanceof mindustry.world.blocks.sandbox.ItemSource.ItemSourceBuild source)return source.outputItem;
+        return null;
+    }
     static int conveyorFrame(Conveyor.ConveyorBuild b){
         var type=(Conveyor)b.block;
         return b.enabled&&b.clogHeat<=.5f&&!Vars.state.rules.editor?Math.floorMod((int)(Time.time*type.speed*8*b.timeScale()*b.efficiency),4):0;
@@ -39,6 +45,19 @@ final class NativeBlockAnimationAdapter {
     }
     boolean render(Building b,NativeAtlasMesh.Builder out,float x,float base,float z,float size,float height){
         float top=base+height+.006f;
+        if(itemFilter(b)){
+            var item=configuredItem(b);var region=NativeRegions.block(b.block);
+            if(b instanceof mindustry.world.blocks.sandbox.ItemSource.ItemSourceBuild){
+                if(item!=null){var c=item.color;out.top(Core.atlas.white(),x,top-.001f,z,size*.999f,size*.999f,0,c.r,c.g,c.b,false);}
+                else out.top(Core.atlas.find("cross-full"),x,top-.001f,z,size,size,0,1,1,1,false);
+            }
+            out.top(region,x,top,z,size,size,0,1,1,1,false);
+            if(b.block instanceof mindustry.world.blocks.storage.Unloader u&&item!=null&&NativeAtlasMesh.valid(u.centerRegion)){
+                var c=item.color;float width=size*u.centerRegion.width/(float)Math.max(1,region.width),depth=size*u.centerRegion.height/(float)Math.max(1,region.height);
+                out.top(u.centerRegion,x,top+.002f,z,width,depth,0,c.r,c.g,c.b,false);
+            }
+            return true;
+        }
         if(b instanceof Conveyor.ConveyorBuild belt){
             var type=(Conveyor)b.block;
             out.top(type.regions[belt.blendbits][conveyorFrame(belt)],x,top,z,size*belt.blendsclx,size*belt.blendscly,-b.rotation*90,1,1,1,false);

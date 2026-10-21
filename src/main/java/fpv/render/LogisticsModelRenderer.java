@@ -20,12 +20,26 @@ final class LogisticsModelRenderer {
     long builds(){return builds;}long bytes(){return bytes;}int entries(){return cache.size();}
     void clear(){cache.clear();atlas=null;bytes=builds=0;}
     static int openings(Building b){
-        int mask=1<<b.rotation|1<<((b.rotation+2)&3);
-        if(b instanceof Conveyor.ConveyorBuild){
-            var type=(Conveyor)b.block;
-            for(int side=0;side<4;side++){var other=b.nearby(side);if(other!=null&&other.team==b.team&&type.blends(b.tile,b.rotation,other.tileX(),other.tileY(),other.rotation,other.block))mask|=1<<side;}
-        }else if(b instanceof StackConveyor.StackConveyorBuild s)for(int side=0;side<4;side++)if((s.blendprox&(1<<side))!=0)mask|=1<<((s.rotation-side)&3);
-        int r=b.rotation&3;return ((mask>>>r)|(mask<<(4-r)))&15;
+        int output=b.rotation&3,inputs=0;
+        for(int side=0;side<4;side++)if(side!=output){
+            var other=b.nearby(side);if(other==null||other.team!=b.team)continue;
+            if(other instanceof Conveyor.ConveyorBuild||other instanceof StackConveyor.StackConveyorBuild){if((other.rotation&3)!=((side+2)&3))continue;}
+            else if(!other.block.outputsItems())continue;
+            boolean valid=b instanceof Conveyor.ConveyorBuild?((Conveyor)b.block).blends(b.tile,b.rotation,other.tileX(),other.tileY(),other.rotation,other.block):other instanceof StackConveyor.StackConveyorBuild||((StackConveyor.StackConveyorBuild)b).state==1;
+            if(valid)inputs|=1<<side;
+        }
+        // Only use the conventional rear mouth when there is no actual input. A bend must
+        // close its unused rear edge instead of looking like a three-way open chassis.
+        int mask=(1<<output)|(inputs==0?1<<((output+2)&3):inputs);
+        return ((mask>>>output)|(mask<<(4-output)))&15;
+    }
+    static boolean cargoConnection(Building b,int side){
+        var other=b.nearby(side);
+        if(!(other instanceof Conveyor.ConveyorBuild)||other.team!=b.team)return false;
+        boolean outgoing=(b.rotation&3)==side,incoming=(other.rotation&3)==((side+2)&3);
+        if(outgoing==incoming)return false; // no parallel or head-on pseudo-connection
+        var type=(Conveyor)b.block;var target=(Conveyor)other.block;
+        return type.blends(b.tile,b.rotation,other.tileX(),other.tileY(),other.rotation,other.block)&&target.blends(other.tile,other.rotation,b.tileX(),b.tileY(),b.rotation,b.block);
     }
     /** Packed links are resolved through the owning Tile view, never a same-XY Z0 building. */
     static Tile stackSource(StackConveyor.StackConveyorBuild b){return b.link==-1||b.tile==null?null:b.tile.nearby(Point2.x(b.link)-b.tile.x,Point2.y(b.link)-b.tile.y);}
@@ -47,8 +61,13 @@ final class LogisticsModelRenderer {
             var frames=type.regions;int blend=Math.max(0,Math.min(frames.length-1,belt.blendbits));
             out.top(frames[blend][NativeBlockAnimationAdapter.conveyorFrame(belt)],x,top,z,size*belt.blendsclx,size*belt.blendscly,-b.rotation*90,1,1,1,false);
             float dx=Mathf.cosDeg(b.rotation*90),dy=Mathf.sinDeg(b.rotation*90);
+            float left=x-size*.5f,right=x+size*.5f,near=z-size*.5f,far=z+size*.5f;
+            // Preserve full cargo across a real same-floor belt seam. Keep clipping against
+            // walls, closed ends, unrelated neighbors and other floors. No depth bypass.
+            if(cargoConnection(b,0))right+=.15f;if(cargoConnection(b,1))near-=.15f;
+            if(cargoConnection(b,2))left-=.15f;if(cargoConnection(b,3))far+=.15f;
             for(int i=0;i<belt.len;i++)if(belt.ids[i]!=null){float along=belt.ys[i]-.5f,across=belt.xs[i]*.5f;
-                item(out,belt.ids[i].fullIcon,x+dx*along-dy*across,top+.025f,z-dy*along-dx*across,.30f,x,z,size);
+                itemBounds(out,belt.ids[i].fullIcon,x+dx*along-dy*across,top+.025f,z-dy*along-dx*across,.30f,left,near,right,far);
             }
         }else if(b instanceof StackConveyor.StackConveyorBuild stack){
             var type=(StackConveyor)b.block;float top=base+height*LogisticsModelGeometry.BELT_SURFACE+.002f;
@@ -74,7 +93,10 @@ final class LogisticsModelRenderer {
         return true;
     }
     private void item(NativeAtlasMesh.Builder out,TextureRegion icon,float x,float y,float z,float width,float cellX,float cellZ,float cellSize){
-        if(!NativeAtlasMesh.valid(icon))return;float half=width*.5f,left=Math.max(x-half,cellX-cellSize*.5f),right=Math.min(x+half,cellX+cellSize*.5f),near=Math.max(z-half,cellZ-cellSize*.5f),far=Math.min(z+half,cellZ+cellSize*.5f);if(right<=left||far<=near)return;
+        itemBounds(out,icon,x,y,z,width,cellX-cellSize*.5f,cellZ-cellSize*.5f,cellX+cellSize*.5f,cellZ+cellSize*.5f);
+    }
+    private void itemBounds(NativeAtlasMesh.Builder out,TextureRegion icon,float x,float y,float z,float width,float minX,float minZ,float maxX,float maxZ){
+        if(!NativeAtlasMesh.valid(icon))return;float half=width*.5f,left=Math.max(x-half,minX),right=Math.min(x+half,maxX),near=Math.max(z-half,minZ),far=Math.min(z+half,maxZ);if(right<=left||far<=near)return;
         clipped.set(icon);clipped.u=Mathf.lerp(icon.u,icon.u2,(left-x+half)/width);clipped.u2=Mathf.lerp(icon.u,icon.u2,(right-x+half)/width);clipped.v=Mathf.lerp(icon.v,icon.v2,(near-z+half)/width);clipped.v2=Mathf.lerp(icon.v,icon.v2,(far-z+half)/width);
         out.top(clipped,(left+right)*.5f,y,(near+far)*.5f,right-left,far-near,0,1,1,1,false);
     }

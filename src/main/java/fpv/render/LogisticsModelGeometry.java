@@ -21,7 +21,7 @@ public final class LogisticsModelGeometry {
                 else trim.box(-.5f,BELT_SURFACE,.5f-w,.5f,top,.5f,true);
             }
         }else if(lod<2){
-            int cells=p==LogisticsModelProfile.DISTRIBUTOR?3:1;
+            int cells=p==LogisticsModelProfile.DISTRIBUTOR?2:1;
             var ports=ResourcePortGeometry.generate(cells,1,lod==0);lining=ports.lining();
             // The native roof carries the recognizable routing symbols. Chassis geometry owns the side bays.
             body.face(-.49f,0,-.49f,.49f,0,-.49f,.49f,0,.49f,-.49f,0,.49f,0,-1,0);
