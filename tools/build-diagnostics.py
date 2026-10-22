@@ -9,7 +9,7 @@ from preflight import ROOT, run
 import argparse
 
 parser=argparse.ArgumentParser()
-parser.add_argument('--task', choices=('a2-01','a2-02','a2-03','a2-04','a2-05','a2-06','a2-07','a2-08a','a2-08b','a2-09a','a2-09b','a2-09c','a2-10','a2-11','a2-12','a2-13','a2-13b','a2-14','a2-15a','a2-15a-1','a2-15a-2','a2-15b','a2-15b-2','a2-15c','a2-15c-polish','a2-15c-planets','a2-16a','a2-16a-polish','a2-16b','a2-16b-polish','a2-16c','a2-16d','a2-16e','a2-16f','a2-16g','a2-16h','a2-16i','a2-16i-polish','a2-16i-fix1'), default='a2-01')
+parser.add_argument('--task', choices=('a2-01','a2-02','a2-03','a2-04','a2-05','a2-06','a2-07','a2-08a','a2-08b','a2-09a','a2-09b','a2-09c','a2-10','a2-11','a2-12','a2-13','a2-13b','a2-14','a2-15a','a2-15a-1','a2-15a-2','a2-15b','a2-15b-2','a2-15c','a2-15c-polish','a2-15c-planets','a2-16a','a2-16a-polish','a2-16b','a2-16b-polish','a2-16c','a2-16d','a2-16e','a2-16f','a2-16g','a2-16h','a2-16i','a2-16i-polish','a2-16i-fix1','a2-16i-fix2'), default='a2-01')
 parser.add_argument('--run', default='build', help='New local task subdirectory; existing builds are never overwritten')
 options=parser.parse_args()
 if not options.run or any(c not in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_' for c in options.run):

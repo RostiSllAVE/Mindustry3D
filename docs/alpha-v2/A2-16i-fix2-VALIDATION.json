@@ -1,0 +1,49 @@
+{
+  "task": "A2-16i-fix2",
+  "baselineCommit": "64d4b5d7a0b534f15c222faf967ae72279239bd9",
+  "jarSha256": "42c7addf74b4bcced26d208ef1bd60515b60a4f1bd2d766b669a3bb7e3d29ea3",
+  "testsJava17": 193,
+  "testsStockSteam25": 193,
+  "targetedNativeLayerChecks": 5189,
+  "targetedNativeLayerPoses": 480,
+  "directAtlasChecksPerRuntime": 1087,
+  "directAtlasMainFramesPerRuntime": 1080,
+  "worldScenesPerRuntime": 11,
+  "worldFramesPerRuntime": 1408,
+  "glErrors": 0,
+  "saveReloadFixture": "PASS",
+  "renderingMutatedGameplay": false,
+  "changedRuntimeEntries": [
+    "fpv/render/TurretModelProfile.class",
+    "fpv/render/TurretModelRenderer$Capture.class",
+    "fpv/render/TurretModelRenderer$Entry.class",
+    "fpv/render/TurretModelRenderer.class"
+  ],
+  "unchangedRuntimeClasses": 1156,
+  "freshRecompiledRuntimeClassesByteIdentical": 1035,
+  "cachedRegionsBefore": 25,
+  "cachedRegionsAfter": 25,
+  "cachedCpuBytesBefore": 405504,
+  "cachedCpuBytesAfter": 449856,
+  "wholeWorldGeometrySamples": [
+    {
+      "scene": "field100",
+      "verticesBefore": 260423,
+      "verticesAfter": 226901,
+      "drawCallsBefore": 35,
+      "drawCallsAfter": 35
+    },
+    {
+      "scene": "field1024",
+      "verticesBefore": 743939,
+      "verticesAfter": 640007,
+      "drawCallsBefore": 77,
+      "drawCallsAfter": 75
+    }
+  ],
+  "timingConclusion": "NOT MEASURED under controlled conditions; raw overlapping-process observations are not FPS evidence",
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "remoteMultiplayerAcceptance": "NOT TESTED",
+  "previousAssetsProtected": 2179
+}

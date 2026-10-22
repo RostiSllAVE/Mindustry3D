@@ -15,8 +15,9 @@ import java.util.*;
  * No draw callback updates buildings or executes combat. Non-region drawers retain their old path.
  */
 final class TurretModelRenderer {
-    private record Entry(Texture texture,float u,float v,float u2,float v2,int width,int height,SpriteExtrusionGeometry.Result shape){
+    private record Entry(Texture texture,float u,float v,float u2,float v2,int width,int height,SpriteExtrusionGeometry.Result shape,float[] surface){
         boolean matches(TextureRegion r){return texture==r.texture&&u==r.u&&v==r.v&&u2==r.u2&&v2==r.v2&&width==r.width&&height==r.height;}
+        long bytes(){return shape.vertexBytes()+(long)surface.length*Float.BYTES;}
     }
     private final IdentityHashMap<TextureRegion,Entry> cache=new IdentityHashMap<>();
     private final IdentityHashMap<Turret,Boolean> supported=new IdentityHashMap<>();
@@ -59,7 +60,7 @@ final class TurretModelRenderer {
             Draw.scl();Draw.color();Draw.mixcol();Draw.z(drawer.turretLayer);
             drawer.drawTurret(type,build);
             // Heat overlays keep native hue/animation, with a thin separated surface.
-            capture.lift=thickness*.51f;capture.depth=.003f;drawer.drawHeat(type,build);
+            drawer.drawHeat(type,build);
             for(var part:drawer.parts)drawPart(part,build,thickness);
             var ammo=build.getAmmoContent();var parts=ammo==null?null:drawer.ammoParts.get(ammo);
             if(parts!=null)for(var part:parts)drawPart(part,build,thickness);
@@ -71,13 +72,16 @@ final class TurretModelRenderer {
         params.set(build.warmup(),progress,progress,build.heat,build.curRecoil,build.charge,build.x+build.recoilOffset.x,build.y+build.recoilOffset.y,build.rotation);
         params.setRecoil(part.recoilIndex>=0&&build.curRecoils!=null?build.curRecoils[part.recoilIndex]:build.curRecoil);
         capture.lift=TurretModelProfile.partLift((Turret)build.block,part,thickness);
-        capture.depth=thickness*.65f;Draw.color();Draw.mixcol();part.draw(params);
+        capture.depth=TurretModelProfile.partDepth((Turret)build.block,part,thickness);Draw.color();Draw.mixcol();part.draw(params);
     }
     private void emit(NativeAtlasMesh.Builder out,TextureRegion art,float x,float y,float z,float width,float depth,float length,double[] transform,float r,float g,float b){
+        emit(out,art,x,y,z,width,depth,length,transform,r,g,b,false);
+    }
+    private void emit(NativeAtlasMesh.Builder out,TextureRegion art,float x,float y,float z,float width,float depth,float length,double[] transform,float r,float g,float b,boolean surface){
         if(!NativeAtlasMesh.valid(art)||width==0||length==0)return;
         Entry e=cache.get(art);
         if(e==null||!e.matches(art)){
-            if(e!=null)bytes-=e.shape.vertexBytes();
+            if(e!=null)bytes-=e.bytes();
             if(cache.size()>=256||bytes>16L*1024*1024){cache.clear();bytes=0;}
             // Flipped atlas regions are sampled with their signed UVs. Rotated packed regions
             // are not present in the vanilla atlas; preserve a plane if an external atlas uses one.
@@ -95,11 +99,17 @@ final class TurretModelRenderer {
                 (ar.name.equals("wave")||ar.name.equals("tsunami")||ar.name.equals("cyclone"));
             var shape=retainThin?SpriteExtrusionGeometry.conservative(alpha,art.width,art.height,24,6,32,16380):
                 SpriteExtrusionGeometry.generate(alpha,art.width,art.height,24,6,32,.2,16380);
-            e=new Entry(art.texture,art.u,art.v,art.u2,art.v2,art.width,art.height,shape);cache.put(art,e);bytes+=shape.vertexBytes();builds++;
+            // Decals have one cached roof, without coincident bottoms or narrow side walls.
+            // Their original alpha/UV mask is retained, including liquid fill and heat colours.
+            float[] roof=new float[shape.topQuads()*6*SpriteExtrusionGeometry.STRIDE];int next=0;
+            for(int i=0;i<shape.vertices().length;i+=SpriteExtrusionGeometry.STRIDE)if(shape.vertices()[i+4]>.5f){
+                System.arraycopy(shape.vertices(),i,roof,next,SpriteExtrusionGeometry.STRIDE);roof[next+1]=0;next+=SpriteExtrusionGeometry.STRIDE;
+            }
+            e=new Entry(art.texture,art.u,art.v,art.u2,art.v2,art.width,art.height,shape,roof);cache.put(art,e);bytes+=e.bytes();builds++;
         }
         if(capture.foundation)
             out.seatedExtrusion(art,e.shape.vertices(),x,y,z,width,depth,length,transform,r,g,b);
-        else out.extrusion(art,e.shape.vertices(),x,y,z,width,depth,length,transform,r,g,b);
+        else out.extrusion(art,surface?e.surface:e.shape.vertices(),x,y,z,width,depth,length,transform,r,g,b);
     }
     private final class Capture extends Batch {
         NativeAtlasMesh.Builder out;Turret.TurretBuild build;float x,z,pivot,pitch,depth,lift;boolean foundation;
@@ -122,12 +132,15 @@ final class TurretModelRenderer {
             // Native top/liquid/heat are overlays, not additional complete thick hull copies.
             var drawer=(DrawTurret)((Turret)build.block).drawer;
             boolean overlay=region==drawer.top||region==drawer.liquid||region==drawer.heat||blending==Blending.additive;
-            float h=overlay?lift+depth*.51f:lift,d=overlay?.003f:depth;
+            // Native painter order is body -> liquid -> top -> heat. Preserve it along the
+            // pitched mount normal, rather than putting every thin extrusion on one plane.
+            int layer=region==drawer.heat?3:region==drawer.top?2:1;
+            float h=overlay?lift+depth*.5f+TurretModelProfile.surfaceGap(depth)*layer:lift;
             int rgba=Color.floatToIntColor(colorPacked);float alpha=((rgba>>>24)&255)/255f;
             if(alpha<.02f)return;
             emit(out,region,x+ca*forward*cp-sa*side+(float)gunBasis[3]*h,pivot+forward*sp+(float)gunBasis[4]*h,
-                z-sa*forward*cp-ca*side+(float)gunBasis[5]*h,width/Vars.tilesize,d,length/Vars.tilesize,basis,
-                (rgba&255)/255f*alpha,((rgba>>>8)&255)/255f*alpha,((rgba>>>16)&255)/255f*alpha);
+                z-sa*forward*cp-ca*side+(float)gunBasis[5]*h,width/Vars.tilesize,depth,length/Vars.tilesize,basis,
+                (rgba&255)/255f*alpha,((rgba>>>8)&255)/255f*alpha,((rgba>>>16)&255)/255f*alpha,overlay);
         }
     }
 }
