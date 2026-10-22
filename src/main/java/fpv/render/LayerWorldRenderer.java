@@ -58,6 +58,9 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private final LayerDisplayRenderer displays=new LayerDisplayRenderer();
     private final NativeBlockAnimationAdapter blockAnimations=new NativeBlockAnimationAdapter();
     private final TurretModelRenderer turretModels=new TurretModelRenderer();
+    private final PowerModelRenderer powerModels=new PowerModelRenderer();
+    public long powerModelBuilds(){return powerModels.builds();}
+    public long powerModelBytes(){return powerModels.bytes();}
     private final ChemicalModelRenderer chemicalModels=new ChemicalModelRenderer();
     public long chemicalModelBuilds(){return chemicalModels.builds();}
     public long chemicalModelBytes(){return chemicalModels.bytes();}
@@ -126,7 +129,6 @@ public final class LayerWorldRenderer implements AutoCloseable {
         externalBridgeSources.clear();
         for(var link:runtime.transfers().links()){signature=signature*31+link.hashCode();if(link.kind().name().startsWith("BRIDGE"))externalBridgeSources.add(link.from());}
         for(var entry:runtime.nativeBuildings().entries())if(entry.building() instanceof ItemBridge.ItemBridgeBuild bridge)signature=signature*31+bridge.link;
-        for(var link:runtime.nativeBuildings().powerLinks())signature=signature*31+link.hashCode();
         if(signature!=connectionSignature){
             if(connections!=null)connections.dispose();builder.clear();
             for(var link:runtime.transfers().links()){
@@ -154,10 +156,6 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 if(target==null||target==source||target.team!=source.team)continue;
                 var component=world.at(target.tile.x,target.tile.y,entry.layer(),LayerComponent.Kind.BLOCK);if(component==null||!visibleIds.contains(component.id()))continue;
                 double[] a=endpoint(world,entry.id()),b=endpoint(world,component.id());if(a!=null&&b!=null)texturedSpan(builder,NativeAtlasMesh.valid(region)?region:Core.atlas.white(),a,b,width,1,1,1);
-            }
-            for(var link:runtime.nativeBuildings().powerLinks()){
-                double[] a=endpoint(world,link.first()),b=endpoint(world,link.second());if(a==null||b==null)continue;
-                texturedSpan(builder,Core.atlas.white(),a,b,.052f,1,.87f,.35f);
             }
             connections=builder.upload();connectionSignature=signature;
         }
@@ -216,7 +214,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 // Door state changes do not rebuild structural chunk meshes; the whole door is streamed below.
                 if(block instanceof mindustry.world.blocks.defense.Door||block instanceof mindustry.world.blocks.defense.AutoDoor)continue;
                 // The shared drill pass owns its entire body and read-only moving components.
-                if(ChemicalModelRenderer.supports(block)||AdvancedManufacturingRenderer.supports(block)||ManufacturingModelRenderer.supports(block)||DrillModelRenderer.supports(block)||LogisticsModelRenderer.supports(block)||AdvancedLogisticsModelRenderer.supports(block))continue;
+                if(PowerModelRenderer.supports(block)||ChemicalModelRenderer.supports(block)||AdvancedManufacturingRenderer.supports(block)||ManufacturingModelRenderer.supports(block)||DrillModelRenderer.supports(block)||LogisticsModelRenderer.supports(block)||AdvancedLogisticsModelRenderer.supports(block))continue;
                 if(block instanceof Turret turret&&turretModels.supports(turret)){
                     // The shared turret pass owns its alpha-shaped stationary base as well as guns.
                     continue;
@@ -282,6 +280,10 @@ public final class LayerWorldRenderer implements AutoCloseable {
             }
             float visualH=AdvancedLogisticsModelRenderer.visualHeight(b.block,h);
             if(!camera.frustum.containsBounds(x,base+visualH*.5f,z,size,b instanceof Turret.TurretBuild?(h+size)*.5f:AdvancedLogisticsModelRenderer.supports(b.block)?visualH*.75f:h*.5f,size))continue;
+            if(PowerModelRenderer.supports(b.block)){
+                if(!powerModels.render(b,animated,x,base,z,size,h,camera.position.dst2(x,base+h*.5f,z)))box(animated,NativeRegions.block(b.block),world.coordinates().bounds(c),1,1,1);
+                continue;
+            }
             if(ChemicalModelRenderer.supports(b.block)){
                 if(!chemicalModels.render(b,animated,x,base,z,size,h,camera.position.dst2(x,base+h*.5f,z)))box(animated,NativeRegions.block(b.block),world.coordinates().bounds(c),1,1,1);
                 continue;
@@ -422,5 +424,5 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private void rect(float minX,float minY,float maxX,float maxY,float z,float r,float g,float b,float alpha){
         overlay.projectionFace(Core.atlas.white(),minX,z,-minY,maxX,z,-minY,maxX,z,-maxY,minX,z,-maxY,r,g,b,alpha);
     }
-    @Override public void close(){chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
+    @Override public void close(){powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
 }

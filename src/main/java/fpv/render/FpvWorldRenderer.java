@@ -106,6 +106,12 @@ public final class FpvWorldRenderer {
     private final Geometry dynamic = new Geometry((int)RenderConfig.DYNAMIC_MESH_VERTICES, true);
     private final NativeBlockAnimationAdapter blockAnimations=new NativeBlockAnimationAdapter();
     private final TurretModelRenderer turretModels=new TurretModelRenderer();
+    private final PowerConnectionRenderer powerConnections=new PowerConnectionRenderer();
+    public long powerConnectionBuilds(){return powerConnections.builds();}
+    public int powerConnectionCount(){return powerConnections.links();}
+    private final PowerModelRenderer powerModels=new PowerModelRenderer();
+    public long powerModelBuilds(){return powerModels.builds();}
+    public long powerModelBytes(){return powerModels.bytes();}
     private final ChemicalModelRenderer chemicalModels=new ChemicalModelRenderer();
     public long chemicalModelBuilds(){return chemicalModels.builds();}
     public long chemicalModelBytes(){return chemicalModels.bytes();}
@@ -582,6 +588,7 @@ public final class FpvWorldRenderer {
             Gl.enable(Gl.blend);Gl.blendEquation(Gl.funcAdd);Gl.blendFunc(Gl.srcAlpha,Gl.oneMinusSrcAlpha);Gl.depthMask(false);
             for(ChunkMesh liquidChunk:visibleLiquidChunks)if(liquidChunk.liquid!=null)liquidChunk.liquid.draw(liquidShader);
             renderDeferredLiquid();liquidStream.drawAndClear(liquidShader);Gl.depthMask(true);Gl.disable(Gl.blend);
+            powerConnections.render(camera,placedBuildings,constructionRuntime);
             profiled=CameraPerformanceProfile.start();
             projectedWalls.render(camera,projectedDefense,sceneBuffer);
             CameraPerformanceProfile.end(Part.PROJECTIONS,profiled);
@@ -992,6 +999,7 @@ public final class FpvWorldRenderer {
             texturedWall(b.tile,streamAtlas,dynamic,x,z,size,h,false);
             return true;
         }
+        if(powerModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(chemicalModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(advancedManufacturing.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(manufacturingModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
@@ -1059,12 +1067,7 @@ public final class FpvWorldRenderer {
         } else if(b.block instanceof PowerNode){
             dynamic.box(x,h*.75f,z,size*.17f,h*.48f,size*.17f,0,.65f,.68f,.74f);
             dynamic.box(x,h*.91f,z,size*.58f,h*.09f,size*.09f,0,team.r,team.g,team.b);
-            if(b.power!=null)for(int i=0;i<b.power.links.size;i++){
-                Building other=Vars.world.build(b.power.links.get(i));
-                if(other==null||other.inFogTo(Vars.player.team())||(other.block instanceof PowerNode&&other.id>=b.id))continue;
-                float otherX=other.x*WORLD_SCALE,otherZ=-other.y*WORLD_SCALE;
-                dynamic.beam(x,h, z,otherX,heightFor(other.block),otherZ,(float)RenderConfig.POWER_LINK_WIDTH,team.r,team.g,team.b);
-            }
+
         }
         streamAtlas.top(roof,x,baseHeight+(float)RenderConfig.ATLAS_SURFACE_OFFSET,z,roofWidth,roofDepth,roofAngle,1,1,1,false);
         if(b.block.teamRegions!=null&&b.team.id<b.block.teamRegions.length)
@@ -1433,7 +1436,7 @@ public final class FpvWorldRenderer {
         placedBuildings.clear(); submittedBuildings.clear(); submittedBridges.clear(); submittedUnits.clear();submittedUnitBodies.clear();placedWorldTiles = null;
         buildingFrameCompleted = false;
         combatVisuals.clear();
-        organicProps.clear();oreDeposits.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
+        organicProps.clear();oreDeposits.clear();powerConnections.close();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
         clearChunks();
         if (shader != null) shader.dispose();
         if (atlasShader != null) atlasShader.dispose();

@@ -1,0 +1,3449 @@
+{
+  "task": "A2-16g",
+  "branch": "main",
+  "baselineCommit": "3636d2d0d3fe0a1413848df2e7e1fe93fd502a7f",
+  "jarSha256": "005a1d5e85bb820da088f30215257a21bf87415d2ca3452b668a759ee2fe6c7d",
+  "payloadIdentity": "payload1-c320737971e6e03c8656fc05a94570aee8e63b12e95d88af23d334797aed60f8",
+  "java17ProgramsPassed": 183,
+  "stockSteam25ProgramsPassed": 183,
+  "freshSourceVerification": {
+    "status": "PASS",
+    "freshRecompiledRuntimeClassesByteIdentical": 1010,
+    "packagedResourcesMatch": true,
+    "frozenSourceInputsMatch": true,
+    "jarSha256": "005a1d5e85bb820da088f30215257a21bf87415d2ca3452b668a759ee2fe6c7d"
+  },
+  "changedRuntimeEntries": [
+    "fpv/FpvMod$2.class",
+    "fpv/FpvMod.class",
+    "fpv/render/FpvWorldRenderer$1.class",
+    "fpv/render/FpvWorldRenderer$AircraftStats.class",
+    "fpv/render/FpvWorldRenderer$BuildBeamState.class",
+    "fpv/render/FpvWorldRenderer$Candidate.class",
+    "fpv/render/FpvWorldRenderer$ChunkMesh.class",
+    "fpv/render/FpvWorldRenderer$CoarseFogMask.class",
+    "fpv/render/FpvWorldRenderer$DepthSceneBuffer.class",
+    "fpv/render/FpvWorldRenderer$Geometry.class",
+    "fpv/render/FpvWorldRenderer$PickResult.class",
+    "fpv/render/FpvWorldRenderer$Stats.class",
+    "fpv/render/FpvWorldRenderer.class",
+    "fpv/render/LayerWorldRenderer$Activity.class",
+    "fpv/render/LayerWorldRenderer.class"
+  ],
+  "newRuntimeEntries": [
+    "fpv/render/PowerBeamGeometry$Builder.class",
+    "fpv/render/PowerBeamGeometry.class",
+    "fpv/render/PowerConnectionRenderer$Chunk.class",
+    "fpv/render/PowerConnectionRenderer$Edge.class",
+    "fpv/render/PowerConnectionRenderer$End.class",
+    "fpv/render/PowerConnectionRenderer$Pair.class",
+    "fpv/render/PowerConnectionRenderer.class",
+    "fpv/render/PowerModelGeometry$1.class",
+    "fpv/render/PowerModelGeometry$Model.class",
+    "fpv/render/PowerModelGeometry.class",
+    "fpv/render/PowerModelProfile.class",
+    "fpv/render/PowerModelRenderer$Model.class",
+    "fpv/render/PowerModelRenderer.class"
+  ],
+  "unchangedExistingRuntimeClassesIncludingDependencies": 1107,
+  "licensesAndJnaUnchanged": true,
+  "alphaFilesPreserved": 2065,
+  "earlierDiagnosticAssetsPreserved": 102,
+  "actualWindowsScriptedGraphics": {
+    "benchmark-baseline": {
+      "status": "PASS",
+      "frames": 5888,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "powerPassStateChecks": 0
+    },
+    "benchmark-graphics": {
+      "status": "PASS",
+      "frames": 5888,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "powerPassStateChecks": 46
+    },
+    "benchmark-java17": {
+      "status": "PASS",
+      "frames": 5888,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "powerPassStateChecks": 46
+    }
+  },
+  "fixtureOverlays": {
+    "benchmark-baseline": {
+      "originalJarSha256": "c759acd80c4aecdb7756175b6010c9db39e71525470c98a16601bf7713d26587",
+      "onlyReplacedClass": "fpv/SmokeHarness.class",
+      "replacementSha256": "2cfba114217b1351e2175bf726c034bdf3d1de64dfc5d1992c4dafe2fa723577",
+      "scope": "Isolated actual SDL fixture; no physical gameplay proof"
+    },
+    "benchmark-graphics": {
+      "originalJarSha256": "005a1d5e85bb820da088f30215257a21bf87415d2ca3452b668a759ee2fe6c7d",
+      "onlyReplacedClass": "fpv/SmokeHarness.class",
+      "replacementSha256": "2cfba114217b1351e2175bf726c034bdf3d1de64dfc5d1992c4dafe2fa723577",
+      "scope": "Isolated actual SDL fixture; no physical gameplay proof"
+    },
+    "benchmark-java17": {
+      "originalJarSha256": "005a1d5e85bb820da088f30215257a21bf87415d2ca3452b668a759ee2fe6c7d",
+      "onlyReplacedClass": "fpv/SmokeHarness.class",
+      "replacementSha256": "2cfba114217b1351e2175bf726c034bdf3d1de64dfc5d1992c4dafe2fa723577",
+      "scope": "Isolated actual SDL fixture; no physical gameplay proof"
+    }
+  },
+  "nativeProductionObservations": {
+    "benchmark-baseline": {
+      "authorizedUpperBlocks": 153,
+      "acceptedXYZLinks": 46,
+      "nativePerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16188,
+        16188,
+        16188,
+        16188,
+        16188,
+        16188,
+        16188,
+        16744
+      ],
+      "upperPerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16288,
+        16288,
+        16288,
+        16288,
+        16288,
+        16288,
+        16288,
+        18512
+      ]
+    },
+    "benchmark-graphics": {
+      "authorizedUpperBlocks": 153,
+      "acceptedXYZLinks": 46,
+      "nativePerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16188,
+        16188,
+        16188,
+        16188,
+        16188,
+        16188,
+        16188,
+        16744
+      ],
+      "upperPerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16288,
+        16288,
+        16288,
+        16288,
+        16288,
+        16288,
+        16288,
+        18512
+      ]
+    },
+    "benchmark-java17": {
+      "authorizedUpperBlocks": 153,
+      "acceptedXYZLinks": 46,
+      "nativePerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16188,
+        16188,
+        16188,
+        16188,
+        16188,
+        16188,
+        16188,
+        16744
+      ],
+      "upperPerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        16288,
+        16288,
+        16288,
+        16288,
+        16288,
+        16288,
+        16288,
+        18512
+      ]
+    }
+  },
+  "performance": {
+    "scope": "Single sequential 960x600 scripted Windows renderer sample, 48 warm frames then 64 measured frames per scene; asynchronous available-only GPU queries. Whole renderer, not gameplay FPS or a statistical guarantee. GL-state probes/screenshots occur outside timing. Steam25 allocation counters unavailable (-1).",
+    "comparison": [
+      {
+        "scene": "top",
+        "baseline": {
+          "scene": "top",
+          "cpuMeanMs": 1.2024890625,
+          "gpuMeanMs": 0.109056,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 120425,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "top",
+          "cpuMeanMs": 1.5216453125,
+          "gpuMeanMs": 0.174976,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 55,
+          "verticesOneFrame": 153341,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "top",
+          "cpuMeanMs": 2.40021571875,
+          "gpuMeanMs": 0.7467398095238095,
+          "gpuSamples": 63,
+          "allocatedBytesPerFrame": 25020.125,
+          "drawCallsOneFrame": 55,
+          "verticesOneFrame": 153341,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "oblique",
+        "baseline": {
+          "scene": "oblique",
+          "cpuMeanMs": 0.8690390625,
+          "gpuMeanMs": 0.100752,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 55,
+          "verticesOneFrame": 121505,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "oblique",
+          "cpuMeanMs": 1.4369203125,
+          "gpuMeanMs": 0.206032,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "oblique",
+          "cpuMeanMs": 1.3554560625,
+          "gpuMeanMs": 0.199456,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 27018.75,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "low",
+        "baseline": {
+          "scene": "low",
+          "cpuMeanMs": 0.530021875,
+          "gpuMeanMs": 0.079504,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 47,
+          "verticesOneFrame": 104585,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "low",
+          "cpuMeanMs": 0.92608125,
+          "gpuMeanMs": 0.14312,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 130943,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "low",
+          "cpuMeanMs": 0.951568703125,
+          "gpuMeanMs": 0.147968,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 24048.875,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 130943,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "node",
+        "baseline": {
+          "scene": "node",
+          "cpuMeanMs": 0.4184890625,
+          "gpuMeanMs": 0.062944,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 27,
+          "verticesOneFrame": 59189,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "node",
+          "cpuMeanMs": 0.4385703125,
+          "gpuMeanMs": 0.062112,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 28,
+          "verticesOneFrame": 61877,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "node",
+          "cpuMeanMs": 0.5062109375,
+          "gpuMeanMs": 0.06208,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 17930.0,
+          "drawCallsOneFrame": 28,
+          "verticesOneFrame": 61877,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "large-node",
+        "baseline": {
+          "scene": "large-node",
+          "cpuMeanMs": 0.3942234375,
+          "gpuMeanMs": 0.064128,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 30,
+          "verticesOneFrame": 63593,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "large-node",
+          "cpuMeanMs": 0.43838125,
+          "gpuMeanMs": 0.064496,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 31,
+          "verticesOneFrame": 67355,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "large-node",
+          "cpuMeanMs": 0.487638984375,
+          "gpuMeanMs": 0.064448,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 18418.0,
+          "drawCallsOneFrame": 31,
+          "verticesOneFrame": 67355,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "surge",
+        "baseline": {
+          "scene": "surge",
+          "cpuMeanMs": 0.3835734375,
+          "gpuMeanMs": 0.065216,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 68273,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "surge",
+          "cpuMeanMs": 0.48063125,
+          "gpuMeanMs": 0.065232,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 73115,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "surge",
+          "cpuMeanMs": 0.44641725,
+          "gpuMeanMs": 0.065728,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 18938.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 73115,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "diode",
+        "baseline": {
+          "scene": "diode",
+          "cpuMeanMs": 0.3854171875,
+          "gpuMeanMs": 0.06776,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 35,
+          "verticesOneFrame": 75329,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "diode",
+          "cpuMeanMs": 0.4702265625,
+          "gpuMeanMs": 0.068608,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 81869,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "diode",
+          "cpuMeanMs": 0.483162546875,
+          "gpuMeanMs": 0.068144,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 19458.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 81869,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "battery",
+        "baseline": {
+          "scene": "battery",
+          "cpuMeanMs": 0.371175,
+          "gpuMeanMs": 0.067984,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 35,
+          "verticesOneFrame": 75425,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "battery",
+          "cpuMeanMs": 0.542384375,
+          "gpuMeanMs": 0.069376,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 83843,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "battery",
+          "cpuMeanMs": 0.548195328125,
+          "gpuMeanMs": 0.069632,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 20039.625,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 83843,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "large-battery",
+        "baseline": {
+          "scene": "large-battery",
+          "cpuMeanMs": 0.3721140625,
+          "gpuMeanMs": 0.06952,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 38,
+          "verticesOneFrame": 79001,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "large-battery",
+          "cpuMeanMs": 0.6498828125,
+          "gpuMeanMs": 0.074384,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 91157,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "large-battery",
+          "cpuMeanMs": 0.602590765625,
+          "gpuMeanMs": 0.07512,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 20872.125,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 91157,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "solar",
+        "baseline": {
+          "scene": "solar",
+          "cpuMeanMs": 0.3281234375,
+          "gpuMeanMs": 0.072304,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 42,
+          "verticesOneFrame": 87719,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "solar",
+          "cpuMeanMs": 0.4915140625,
+          "gpuMeanMs": 0.079552,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 97445,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "solar",
+          "cpuMeanMs": 0.52716878125,
+          "gpuMeanMs": 0.075648,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 20304.625,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 97445,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "large-solar",
+        "baseline": {
+          "scene": "large-solar",
+          "cpuMeanMs": 0.3383734375,
+          "gpuMeanMs": 0.072304,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 44,
+          "verticesOneFrame": 88469,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "large-solar",
+          "cpuMeanMs": 0.638728125,
+          "gpuMeanMs": 0.089824,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 105179,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "large-solar",
+          "cpuMeanMs": 0.629868859375,
+          "gpuMeanMs": 0.084784,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21427.125,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 105179,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "combustion",
+        "baseline": {
+          "scene": "combustion",
+          "cpuMeanMs": 0.387015625,
+          "gpuMeanMs": 0.083472,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 44,
+          "verticesOneFrame": 90887,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "combustion",
+          "cpuMeanMs": 0.6427484375,
+          "gpuMeanMs": 0.093792,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 111107,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "combustion",
+          "cpuMeanMs": 0.73860784375,
+          "gpuMeanMs": 0.091952,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21356.875,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 111107,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "steam",
+        "baseline": {
+          "scene": "steam",
+          "cpuMeanMs": 0.444575,
+          "gpuMeanMs": 0.075264,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 97031,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "steam",
+          "cpuMeanMs": 0.74833125,
+          "gpuMeanMs": 0.199344,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 49,
+          "verticesOneFrame": 124019,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "steam",
+          "cpuMeanMs": 1.073600078125,
+          "gpuMeanMs": 0.21504,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 22404.875,
+          "drawCallsOneFrame": 49,
+          "verticesOneFrame": 124019,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "differential",
+        "baseline": {
+          "scene": "differential",
+          "cpuMeanMs": 0.438253125,
+          "gpuMeanMs": 0.079392,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 52,
+          "verticesOneFrame": 106547,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "differential",
+          "cpuMeanMs": 1.0200671875,
+          "gpuMeanMs": 0.178288,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 145523,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "differential",
+          "cpuMeanMs": 1.24586721875,
+          "gpuMeanMs": 0.179104,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 23380.875,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 145523,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "rtg",
+        "baseline": {
+          "scene": "rtg",
+          "cpuMeanMs": 0.5226171875,
+          "gpuMeanMs": 0.0784,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 51,
+          "verticesOneFrame": 102251,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "rtg",
+          "cpuMeanMs": 1.0536578125,
+          "gpuMeanMs": 0.166224,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 52,
+          "verticesOneFrame": 143315,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "rtg",
+          "cpuMeanMs": 1.20358284375,
+          "gpuMeanMs": 0.163696,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 23171.25,
+          "drawCallsOneFrame": 52,
+          "verticesOneFrame": 143315,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "thorium",
+        "baseline": {
+          "scene": "thorium",
+          "cpuMeanMs": 0.4505015625,
+          "gpuMeanMs": 0.081472,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 55,
+          "verticesOneFrame": 108077,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "thorium",
+          "cpuMeanMs": 1.1197109375,
+          "gpuMeanMs": 0.269456,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 152063,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "thorium",
+          "cpuMeanMs": 1.22307971875,
+          "gpuMeanMs": 0.25024,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 23787.25,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 152063,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "impact",
+        "baseline": {
+          "scene": "impact",
+          "cpuMeanMs": 0.4996984375,
+          "gpuMeanMs": 0.080592,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 55,
+          "verticesOneFrame": 109805,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "impact",
+          "cpuMeanMs": 1.058059375,
+          "gpuMeanMs": 0.167488,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 149489,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "impact",
+          "cpuMeanMs": 1.31298925,
+          "gpuMeanMs": 0.16688,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 24844.875,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 149489,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "idle",
+        "baseline": {
+          "scene": "idle",
+          "cpuMeanMs": 0.5800734375,
+          "gpuMeanMs": 0.203152,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 55,
+          "verticesOneFrame": 121505,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "idle",
+          "cpuMeanMs": 1.2296171875,
+          "gpuMeanMs": 0.2772,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "idle",
+          "cpuMeanMs": 1.539235984375,
+          "gpuMeanMs": 0.273168,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 26980.875,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "disabled",
+        "baseline": {
+          "scene": "disabled",
+          "cpuMeanMs": 0.5264328125,
+          "gpuMeanMs": 0.178912,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 55,
+          "verticesOneFrame": 121505,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "disabled",
+          "cpuMeanMs": 1.1264671875,
+          "gpuMeanMs": 0.263536,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "disabled",
+          "cpuMeanMs": 1.137968734375,
+          "gpuMeanMs": 0.270208,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 26723.25,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "empty-battery",
+        "baseline": {
+          "scene": "empty-battery",
+          "cpuMeanMs": 0.555909375,
+          "gpuMeanMs": 0.197264,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 55,
+          "verticesOneFrame": 121505,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "empty-battery",
+          "cpuMeanMs": 1.245184375,
+          "gpuMeanMs": 0.263568,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "empty-battery",
+          "cpuMeanMs": 1.13637659375,
+          "gpuMeanMs": 0.296208,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 26980.875,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "full-battery",
+        "baseline": {
+          "scene": "full-battery",
+          "cpuMeanMs": 0.514353125,
+          "gpuMeanMs": 0.192576,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 55,
+          "verticesOneFrame": 121505,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "full-battery",
+          "cpuMeanMs": 1.2199625,
+          "gpuMeanMs": 0.28096,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "full-battery",
+          "cpuMeanMs": 1.136082953125,
+          "gpuMeanMs": 0.265952,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 26978.375,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "stacked",
+        "baseline": {
+          "scene": "stacked",
+          "cpuMeanMs": 0.3824109375,
+          "gpuMeanMs": 0.185712,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 52,
+          "verticesOneFrame": 107303,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "stacked",
+          "cpuMeanMs": 0.9227953125,
+          "gpuMeanMs": 0.33152,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136595,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "stacked",
+          "cpuMeanMs": 0.92012659375,
+          "gpuMeanMs": 0.349216,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 23852.875,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136595,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "floor1",
+        "baseline": {
+          "scene": "floor1",
+          "cpuMeanMs": 0.4247109375,
+          "gpuMeanMs": 0.163136,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 104639,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "floor1",
+          "cpuMeanMs": 0.850715625,
+          "gpuMeanMs": 0.112176,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 49,
+          "verticesOneFrame": 127127,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "floor1",
+          "cpuMeanMs": 0.732740640625,
+          "gpuMeanMs": 0.112224,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 22360.5,
+          "drawCallsOneFrame": 49,
+          "verticesOneFrame": 127127,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "floor3",
+        "baseline": {
+          "scene": "floor3",
+          "cpuMeanMs": 0.345740625,
+          "gpuMeanMs": 0.171072,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 47,
+          "verticesOneFrame": 101837,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "floor3",
+          "cpuMeanMs": 0.862165625,
+          "gpuMeanMs": 0.212064,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 125363,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "floor3",
+          "cpuMeanMs": 0.752720421875,
+          "gpuMeanMs": 0.192064,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 22300.875,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 125363,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "floor4",
+        "baseline": {
+          "scene": "floor4",
+          "cpuMeanMs": 0.275546875,
+          "gpuMeanMs": 0.172672,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 82223,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "floor4",
+          "cpuMeanMs": 0.420625,
+          "gpuMeanMs": 0.070832,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 86381,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "floor4",
+          "cpuMeanMs": 0.37357665625,
+          "gpuMeanMs": 0.070336,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 19156.875,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 86381,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "floor5",
+        "baseline": {
+          "scene": "floor5",
+          "cpuMeanMs": 0.335490625,
+          "gpuMeanMs": 0.267424,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 47,
+          "verticesOneFrame": 101741,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "floor5",
+          "cpuMeanMs": 0.7178828125,
+          "gpuMeanMs": 0.103904,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 124535,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "floor5",
+          "cpuMeanMs": 0.744821859375,
+          "gpuMeanMs": 0.102704,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 22123.25,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 124535,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "below",
+        "baseline": {
+          "scene": "below",
+          "cpuMeanMs": 0.2850609375,
+          "gpuMeanMs": 0.075472,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 77579,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "below",
+          "cpuMeanMs": 0.457190625,
+          "gpuMeanMs": 0.183472,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 85997,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "below",
+          "cpuMeanMs": 0.5008593125,
+          "gpuMeanMs": 0.163872,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 20052.875,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 85997,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 1,
+          "links": 16
+        }
+      },
+      {
+        "scene": "field100",
+        "baseline": {
+          "scene": "field100",
+          "cpuMeanMs": 1.1089484375,
+          "gpuMeanMs": 0.25992,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 121625,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "field100",
+          "cpuMeanMs": 1.5749234375,
+          "gpuMeanMs": 4.285408,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 147947,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 2,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "field100",
+          "cpuMeanMs": 1.470187484375,
+          "gpuMeanMs": 4.196,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 11963.375,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 147947,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 2,
+          "links": 0
+        }
+      },
+      {
+        "scene": "field1024",
+        "baseline": {
+          "scene": "field1024",
+          "cpuMeanMs": 1.0715859375,
+          "gpuMeanMs": 0.131632,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 66,
+          "verticesOneFrame": 206039,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "field1024",
+          "cpuMeanMs": 1.790446875,
+          "gpuMeanMs": 3.22776,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 66,
+          "verticesOneFrame": 228587,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 3,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "field1024",
+          "cpuMeanMs": 1.619829578125,
+          "gpuMeanMs": 3.164048,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 55611.375,
+          "drawCallsOneFrame": 66,
+          "verticesOneFrame": 228587,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 3,
+          "links": 0
+        }
+      },
+      {
+        "scene": "reload",
+        "baseline": {
+          "scene": "reload",
+          "cpuMeanMs": 0.601090625,
+          "gpuMeanMs": 0.090336,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 55,
+          "verticesOneFrame": 121505,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "reload",
+          "cpuMeanMs": 1.3198484375,
+          "gpuMeanMs": 0.179392,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 4,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "reload",
+          "cpuMeanMs": 1.222520390625,
+          "gpuMeanMs": 0.17736,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 26924.0,
+          "drawCallsOneFrame": 56,
+          "verticesOneFrame": 159773,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 4,
+          "links": 16
+        }
+      },
+      {
+        "scene": "ghost",
+        "baseline": {
+          "scene": "ghost",
+          "cpuMeanMs": 0.45443125,
+          "gpuMeanMs": 0.080464,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 86039,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "ghost",
+          "cpuMeanMs": 0.6424671875,
+          "gpuMeanMs": 0.083536,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 42,
+          "verticesOneFrame": 95213,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 4,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "ghost",
+          "cpuMeanMs": 0.6926405625,
+          "gpuMeanMs": 0.083696,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 32849.75,
+          "drawCallsOneFrame": 42,
+          "verticesOneFrame": 95213,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 4,
+          "links": 16
+        }
+      },
+      {
+        "scene": "clipboard",
+        "baseline": {
+          "scene": "clipboard",
+          "cpuMeanMs": 0.4006484375,
+          "gpuMeanMs": 0.079728,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 85967,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "clipboard",
+          "cpuMeanMs": 0.49,
+          "gpuMeanMs": 0.082016,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 41,
+          "verticesOneFrame": 95141,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 4,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "clipboard",
+          "cpuMeanMs": 0.64534225,
+          "gpuMeanMs": 0.081648,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 22415.0,
+          "drawCallsOneFrame": 41,
+          "verticesOneFrame": 95141,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 4,
+          "links": 16
+        }
+      },
+      {
+        "scene": "unfinished",
+        "baseline": {
+          "scene": "unfinished",
+          "cpuMeanMs": 0.412371875,
+          "gpuMeanMs": 0.0784,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 85811,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "unfinished",
+          "cpuMeanMs": 0.539725,
+          "gpuMeanMs": 0.179808,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 42,
+          "verticesOneFrame": 94985,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 4,
+          "links": 16
+        },
+        "finalJava17": {
+          "scene": "unfinished",
+          "cpuMeanMs": 0.63467509375,
+          "gpuMeanMs": 0.132288,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 20626.0,
+          "drawCallsOneFrame": 42,
+          "verticesOneFrame": 94985,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 4,
+          "links": 16
+        }
+      },
+      {
+        "scene": "previous-models",
+        "baseline": {
+          "scene": "previous-models",
+          "cpuMeanMs": 0.57426875,
+          "gpuMeanMs": 0.079584,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 109757,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "previous-models",
+          "cpuMeanMs": 0.590403125,
+          "gpuMeanMs": 0.08008,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 109757,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 5,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "previous-models",
+          "cpuMeanMs": 0.679207796875,
+          "gpuMeanMs": 0.07904,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 9235.375,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 109757,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 5,
+          "links": 0
+        }
+      },
+      {
+        "scene": "links10-static",
+        "baseline": {
+          "scene": "links10-static",
+          "cpuMeanMs": 0.457971875,
+          "gpuMeanMs": 0.073792,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 35,
+          "verticesOneFrame": 99671,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links10-static",
+          "cpuMeanMs": 0.4229546875,
+          "gpuMeanMs": 0.074928,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 102299,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 6,
+          "links": 10
+        },
+        "finalJava17": {
+          "scene": "links10-static",
+          "cpuMeanMs": 0.520239,
+          "gpuMeanMs": 0.074576,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 9932.5,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 102299,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 6,
+          "links": 10
+        }
+      },
+      {
+        "scene": "links10-animated",
+        "baseline": {
+          "scene": "links10-animated",
+          "cpuMeanMs": 0.402115625,
+          "gpuMeanMs": 0.07432,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 35,
+          "verticesOneFrame": 99671,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links10-animated",
+          "cpuMeanMs": 0.4156171875,
+          "gpuMeanMs": 0.074288,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 102539,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 6,
+          "links": 10
+        },
+        "finalJava17": {
+          "scene": "links10-animated",
+          "cpuMeanMs": 0.51844540625,
+          "gpuMeanMs": 0.074672,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 9931.375,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 102539,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 6,
+          "links": 10
+        }
+      },
+      {
+        "scene": "links100-static",
+        "baseline": {
+          "scene": "links100-static",
+          "cpuMeanMs": 0.6195109375,
+          "gpuMeanMs": 0.080384,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 117281,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links100-static",
+          "cpuMeanMs": 0.71973125,
+          "gpuMeanMs": 0.10072,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 41,
+          "verticesOneFrame": 133487,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 7,
+          "links": 100
+        },
+        "finalJava17": {
+          "scene": "links100-static",
+          "cpuMeanMs": 0.8832000625,
+          "gpuMeanMs": 0.100816,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 15027.375,
+          "drawCallsOneFrame": 41,
+          "verticesOneFrame": 133487,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 7,
+          "links": 100
+        }
+      },
+      {
+        "scene": "links100-animated",
+        "baseline": {
+          "scene": "links100-animated",
+          "cpuMeanMs": 0.5357265625,
+          "gpuMeanMs": 0.080912,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 117281,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links100-animated",
+          "cpuMeanMs": 0.6734109375,
+          "gpuMeanMs": 0.100768,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 135887,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 7,
+          "links": 100
+        },
+        "finalJava17": {
+          "scene": "links100-animated",
+          "cpuMeanMs": 0.833381171875,
+          "gpuMeanMs": 0.100992,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 15027.375,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 135887,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 7,
+          "links": 100
+        }
+      },
+      {
+        "scene": "links512-static",
+        "baseline": {
+          "scene": "links512-static",
+          "cpuMeanMs": 1.085215625,
+          "gpuMeanMs": 0.160192,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 167039,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links512-static",
+          "cpuMeanMs": 1.6560875,
+          "gpuMeanMs": 3.917312,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 193613,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 8,
+          "links": 512
+        },
+        "finalJava17": {
+          "scene": "links512-static",
+          "cpuMeanMs": 1.857859484375,
+          "gpuMeanMs": 3.99288,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 52802.375,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 193613,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 8,
+          "links": 512
+        }
+      },
+      {
+        "scene": "links512-animated",
+        "baseline": {
+          "scene": "links512-animated",
+          "cpuMeanMs": 1.0039671875,
+          "gpuMeanMs": 0.16072,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 167039,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links512-animated",
+          "cpuMeanMs": 1.4978765625,
+          "gpuMeanMs": 3.739248,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 62,
+          "verticesOneFrame": 205901,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 8,
+          "links": 512
+        },
+        "finalJava17": {
+          "scene": "links512-animated",
+          "cpuMeanMs": 1.727423515625,
+          "gpuMeanMs": 3.981424,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 52794.25,
+          "drawCallsOneFrame": 62,
+          "verticesOneFrame": 205901,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 8,
+          "links": 512
+        }
+      },
+      {
+        "scene": "links-stacked",
+        "baseline": {
+          "scene": "links-stacked",
+          "cpuMeanMs": 0.6605546875,
+          "gpuMeanMs": 0.080016,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 47,
+          "verticesOneFrame": 109889,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links-stacked",
+          "cpuMeanMs": 0.706609375,
+          "gpuMeanMs": 0.081392,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 120539,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 9,
+          "links": 139
+        },
+        "finalJava17": {
+          "scene": "links-stacked",
+          "cpuMeanMs": 0.695995203125,
+          "gpuMeanMs": 0.082832,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 27704.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 120539,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 9,
+          "links": 139
+        }
+      },
+      {
+        "scene": "links-below",
+        "baseline": {
+          "scene": "links-below",
+          "cpuMeanMs": 0.620565625,
+          "gpuMeanMs": 0.075728,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 94553,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links-below",
+          "cpuMeanMs": 0.645090625,
+          "gpuMeanMs": 0.076272,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 102293,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 9,
+          "links": 139
+        },
+        "finalJava17": {
+          "scene": "links-below",
+          "cpuMeanMs": 0.618290609375,
+          "gpuMeanMs": 0.077792,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 27119.75,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 102293,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 9,
+          "links": 139
+        }
+      },
+      {
+        "scene": "links-night",
+        "baseline": {
+          "scene": "links-night",
+          "cpuMeanMs": 0.7018625,
+          "gpuMeanMs": 0.083184,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 47,
+          "verticesOneFrame": 109889,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links-night",
+          "cpuMeanMs": 0.7296078125,
+          "gpuMeanMs": 0.083008,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 120539,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 9,
+          "links": 139
+        },
+        "finalJava17": {
+          "scene": "links-night",
+          "cpuMeanMs": 0.648872015625,
+          "gpuMeanMs": 0.084864,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 27725.75,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 120539,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 9,
+          "links": 139
+        }
+      },
+      {
+        "scene": "links-occlusion",
+        "baseline": {
+          "scene": "links-occlusion",
+          "cpuMeanMs": 0.567565625,
+          "gpuMeanMs": 0.06976,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 28,
+          "verticesOneFrame": 78923,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links-occlusion",
+          "cpuMeanMs": 0.558459375,
+          "gpuMeanMs": 0.06872,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 30,
+          "verticesOneFrame": 79907,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 10,
+          "links": 10
+        },
+        "finalJava17": {
+          "scene": "links-occlusion",
+          "cpuMeanMs": 0.5255186875,
+          "gpuMeanMs": 0.069808,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 15293.0,
+          "drawCallsOneFrame": 30,
+          "verticesOneFrame": 79907,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 10,
+          "links": 10
+        }
+      },
+      {
+        "scene": "links-removal",
+        "baseline": {
+          "scene": "links-removal",
+          "cpuMeanMs": 0.519575,
+          "gpuMeanMs": 0.075792,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 35,
+          "verticesOneFrame": 99605,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links-removal",
+          "cpuMeanMs": 0.491646875,
+          "gpuMeanMs": 0.074064,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 102041,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 11,
+          "links": 9
+        },
+        "finalJava17": {
+          "scene": "links-removal",
+          "cpuMeanMs": 0.482492234375,
+          "gpuMeanMs": 0.076016,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 9953.5,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 102041,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 11,
+          "links": 9
+        }
+      },
+      {
+        "scene": "links-reconfigure",
+        "baseline": {
+          "scene": "links-reconfigure",
+          "cpuMeanMs": 0.4627234375,
+          "gpuMeanMs": 0.075456,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 35,
+          "verticesOneFrame": 99593,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 0,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "links-reconfigure",
+          "cpuMeanMs": 0.54960625,
+          "gpuMeanMs": 0.07408,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 101993,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 12,
+          "links": 8
+        },
+        "finalJava17": {
+          "scene": "links-reconfigure",
+          "cpuMeanMs": 0.428865671875,
+          "gpuMeanMs": 0.07536,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 9954.25,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 101993,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 12,
+          "links": 8
+        }
+      }
+    ],
+    "staticAnimatedPairs": [
+      {
+        "links": 10,
+        "static": {
+          "scene": "links10-static",
+          "cpuMeanMs": 0.4229546875,
+          "gpuMeanMs": 0.074928,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 102299,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 6,
+          "links": 10
+        },
+        "animated": {
+          "scene": "links10-animated",
+          "cpuMeanMs": 0.4156171875,
+          "gpuMeanMs": 0.074288,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 102539,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 6,
+          "links": 10
+        },
+        "cpuDeltaMs": -0.007337499999999997,
+        "gpuDeltaMs": -0.0006399999999999878,
+        "drawDelta": 1,
+        "verticesDelta": 240
+      },
+      {
+        "links": 100,
+        "static": {
+          "scene": "links100-static",
+          "cpuMeanMs": 0.71973125,
+          "gpuMeanMs": 0.10072,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 41,
+          "verticesOneFrame": 133487,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 7,
+          "links": 100
+        },
+        "animated": {
+          "scene": "links100-animated",
+          "cpuMeanMs": 0.6734109375,
+          "gpuMeanMs": 0.100768,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 135887,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 7,
+          "links": 100
+        },
+        "cpuDeltaMs": -0.046320312500000016,
+        "gpuDeltaMs": 4.799999999999249e-05,
+        "drawDelta": 2,
+        "verticesDelta": 2400
+      },
+      {
+        "links": 512,
+        "static": {
+          "scene": "links512-static",
+          "cpuMeanMs": 1.6560875,
+          "gpuMeanMs": 3.917312,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 193613,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 8,
+          "links": 512
+        },
+        "animated": {
+          "scene": "links512-animated",
+          "cpuMeanMs": 1.4978765625,
+          "gpuMeanMs": 3.739248,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 62,
+          "verticesOneFrame": 205901,
+          "cachedModelBuilds": 14,
+          "cachedLinkBuilds": 8,
+          "links": 512
+        },
+        "cpuDeltaMs": -0.15821093750000004,
+        "gpuDeltaMs": -0.178064,
+        "drawDelta": 8,
+        "verticesDelta": 12288
+      }
+    ],
+    "cache": {
+      "benchmark-graphics": {
+        "cachedTypes": 14,
+        "materializedVertices": 21276,
+        "cacheBytes": 680832
+      },
+      "benchmark-java17": {
+        "cachedTypes": 14,
+        "materializedVertices": 21276,
+        "cacheBytes": 680832
+      }
+    },
+    "denseFollowup": {
+      "scope": "Follow-up to the full-run dense-scene GPU increase. Four repetitions per scenario, same original JARs and identical fixture overlay on stock Steam25. All samples including first-pass warmup variance and GPU spikes retained. No additional save/load or physical acceptance claim. Whole renderer; no cause assigned to timing variance.",
+      "rows": [
+        {
+          "scene": "field100",
+          "dense-baseline": {
+            "samples": [
+              {
+                "scene": "field100",
+                "cpuMeanMs": 2.2470703125,
+                "gpuMeanMs": 0.19893231746031745,
+                "gpuSamples": 63,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 33,
+                "verticesOneFrame": 121625,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "field100",
+                "cpuMeanMs": 0.9463703125,
+                "gpuMeanMs": 0.156448,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 33,
+                "verticesOneFrame": 121625,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "field100",
+                "cpuMeanMs": 1.013809375,
+                "gpuMeanMs": 0.158352,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 33,
+                "verticesOneFrame": 121625,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "field100",
+                "cpuMeanMs": 0.911259375,
+                "gpuMeanMs": 0.156288,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 33,
+                "verticesOneFrame": 121625,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              }
+            ],
+            "cpuMeanMs": {
+              "median": 0.98008984375,
+              "min": 0.911259375,
+              "max": 2.2470703125
+            },
+            "gpuMeanMs": {
+              "median": 0.15739999999999998,
+              "min": 0.156288,
+              "max": 0.19893231746031745
+            }
+          },
+          "dense-final": {
+            "samples": [
+              {
+                "scene": "field100",
+                "cpuMeanMs": 2.668603125,
+                "gpuMeanMs": 0.6853810793650794,
+                "gpuSamples": 63,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 33,
+                "verticesOneFrame": 147947,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 1,
+                "links": 0
+              },
+              {
+                "scene": "field100",
+                "cpuMeanMs": 1.3424484375,
+                "gpuMeanMs": 0.406064,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 33,
+                "verticesOneFrame": 147947,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 4,
+                "links": 0
+              },
+              {
+                "scene": "field100",
+                "cpuMeanMs": 1.445225,
+                "gpuMeanMs": 0.47472,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 33,
+                "verticesOneFrame": 147947,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 7,
+                "links": 0
+              },
+              {
+                "scene": "field100",
+                "cpuMeanMs": 1.2963125,
+                "gpuMeanMs": 0.383408,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 33,
+                "verticesOneFrame": 147947,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 10,
+                "links": 0
+              }
+            ],
+            "cpuMeanMs": {
+              "median": 1.39383671875,
+              "min": 1.2963125,
+              "max": 2.668603125
+            },
+            "gpuMeanMs": {
+              "median": 0.440392,
+              "min": 0.383408,
+              "max": 0.6853810793650794
+            }
+          }
+        },
+        {
+          "scene": "field1024",
+          "dense-baseline": {
+            "samples": [
+              {
+                "scene": "field1024",
+                "cpuMeanMs": 1.3273171875,
+                "gpuMeanMs": 0.125424,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 66,
+                "verticesOneFrame": 206039,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "field1024",
+                "cpuMeanMs": 1.117615625,
+                "gpuMeanMs": 0.125152,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 66,
+                "verticesOneFrame": 206039,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "field1024",
+                "cpuMeanMs": 1.0036453125,
+                "gpuMeanMs": 0.126336,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 66,
+                "verticesOneFrame": 206039,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "field1024",
+                "cpuMeanMs": 0.9823765625,
+                "gpuMeanMs": 0.125232,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 66,
+                "verticesOneFrame": 206039,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              }
+            ],
+            "cpuMeanMs": {
+              "median": 1.0606304687499999,
+              "min": 0.9823765625,
+              "max": 1.3273171875
+            },
+            "gpuMeanMs": {
+              "median": 0.125328,
+              "min": 0.125152,
+              "max": 0.126336
+            }
+          },
+          "dense-final": {
+            "samples": [
+              {
+                "scene": "field1024",
+                "cpuMeanMs": 2.8259359375,
+                "gpuMeanMs": 0.7334440634920636,
+                "gpuSamples": 63,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 66,
+                "verticesOneFrame": 228587,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 2,
+                "links": 0
+              },
+              {
+                "scene": "field1024",
+                "cpuMeanMs": 1.6130828125,
+                "gpuMeanMs": 0.647552,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 66,
+                "verticesOneFrame": 228587,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 5,
+                "links": 0
+              },
+              {
+                "scene": "field1024",
+                "cpuMeanMs": 1.59178125,
+                "gpuMeanMs": 0.508992,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 66,
+                "verticesOneFrame": 228587,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 8,
+                "links": 0
+              },
+              {
+                "scene": "field1024",
+                "cpuMeanMs": 1.570084375,
+                "gpuMeanMs": 0.459728,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 66,
+                "verticesOneFrame": 228587,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 11,
+                "links": 0
+              }
+            ],
+            "cpuMeanMs": {
+              "median": 1.60243203125,
+              "min": 1.570084375,
+              "max": 2.8259359375
+            },
+            "gpuMeanMs": {
+              "median": 0.578272,
+              "min": 0.459728,
+              "max": 0.7334440634920636
+            }
+          }
+        },
+        {
+          "scene": "links512-static",
+          "dense-baseline": {
+            "samples": [
+              {
+                "scene": "links512-static",
+                "cpuMeanMs": 1.0962859375,
+                "gpuMeanMs": 0.1512,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 44,
+                "verticesOneFrame": 166817,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "links512-static",
+                "cpuMeanMs": 1.0459484375,
+                "gpuMeanMs": 0.148656,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 44,
+                "verticesOneFrame": 166817,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "links512-static",
+                "cpuMeanMs": 1.003540625,
+                "gpuMeanMs": 0.149824,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 44,
+                "verticesOneFrame": 166817,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "links512-static",
+                "cpuMeanMs": 1.18928125,
+                "gpuMeanMs": 0.149104,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 44,
+                "verticesOneFrame": 166817,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              }
+            ],
+            "cpuMeanMs": {
+              "median": 1.0711171875,
+              "min": 1.003540625,
+              "max": 1.18928125
+            },
+            "gpuMeanMs": {
+              "median": 0.14946399999999999,
+              "min": 0.148656,
+              "max": 0.1512
+            }
+          },
+          "dense-final": {
+            "samples": [
+              {
+                "scene": "links512-static",
+                "cpuMeanMs": 1.9121015625,
+                "gpuMeanMs": 0.680704,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 52,
+                "verticesOneFrame": 193391,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 3,
+                "links": 512
+              },
+              {
+                "scene": "links512-static",
+                "cpuMeanMs": 1.5230875,
+                "gpuMeanMs": 0.44432,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 52,
+                "verticesOneFrame": 193391,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 6,
+                "links": 512
+              },
+              {
+                "scene": "links512-static",
+                "cpuMeanMs": 1.505296875,
+                "gpuMeanMs": 0.503536,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 52,
+                "verticesOneFrame": 193391,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 9,
+                "links": 512
+              },
+              {
+                "scene": "links512-static",
+                "cpuMeanMs": 1.4682671875,
+                "gpuMeanMs": 0.417072,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 52,
+                "verticesOneFrame": 193391,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 12,
+                "links": 512
+              }
+            ],
+            "cpuMeanMs": {
+              "median": 1.5141921875,
+              "min": 1.4682671875,
+              "max": 1.9121015625
+            },
+            "gpuMeanMs": {
+              "median": 0.473928,
+              "min": 0.417072,
+              "max": 0.680704
+            }
+          }
+        },
+        {
+          "scene": "links512-animated",
+          "dense-baseline": {
+            "samples": [
+              {
+                "scene": "links512-animated",
+                "cpuMeanMs": 1.0096171875,
+                "gpuMeanMs": 0.150864,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 44,
+                "verticesOneFrame": 166817,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "links512-animated",
+                "cpuMeanMs": 0.9080171875,
+                "gpuMeanMs": 0.149168,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 44,
+                "verticesOneFrame": 166817,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "links512-animated",
+                "cpuMeanMs": 0.8639875,
+                "gpuMeanMs": 0.150144,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 44,
+                "verticesOneFrame": 166817,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              },
+              {
+                "scene": "links512-animated",
+                "cpuMeanMs": 1.0259046875,
+                "gpuMeanMs": 0.149056,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 44,
+                "verticesOneFrame": 166817,
+                "cachedModelBuilds": 0,
+                "cachedLinkBuilds": 0,
+                "links": 0
+              }
+            ],
+            "cpuMeanMs": {
+              "median": 0.9588171875,
+              "min": 0.8639875,
+              "max": 1.0259046875
+            },
+            "gpuMeanMs": {
+              "median": 0.149656,
+              "min": 0.149056,
+              "max": 0.150864
+            }
+          },
+          "dense-final": {
+            "samples": [
+              {
+                "scene": "links512-animated",
+                "cpuMeanMs": 1.6534765625,
+                "gpuMeanMs": 0.56712,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 60,
+                "verticesOneFrame": 205679,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 3,
+                "links": 512
+              },
+              {
+                "scene": "links512-animated",
+                "cpuMeanMs": 1.8613421875,
+                "gpuMeanMs": 0.557568,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 60,
+                "verticesOneFrame": 205679,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 6,
+                "links": 512
+              },
+              {
+                "scene": "links512-animated",
+                "cpuMeanMs": 1.53,
+                "gpuMeanMs": 0.445328,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 60,
+                "verticesOneFrame": 205679,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 9,
+                "links": 512
+              },
+              {
+                "scene": "links512-animated",
+                "cpuMeanMs": 1.6786140625,
+                "gpuMeanMs": 3.857968,
+                "gpuSamples": 64,
+                "allocatedBytesPerFrame": -1.0,
+                "drawCallsOneFrame": 60,
+                "verticesOneFrame": 205679,
+                "cachedModelBuilds": 14,
+                "cachedLinkBuilds": 12,
+                "links": 512
+              }
+            ],
+            "cpuMeanMs": {
+              "median": 1.6660453125,
+              "min": 1.53,
+              "max": 1.8613421875
+            },
+            "gpuMeanMs": {
+              "median": 0.562344,
+              "min": 0.445328,
+              "max": 3.857968
+            }
+          }
+        }
+      ],
+      "runs": {
+        "dense-baseline": {
+          "status": "PASS",
+          "frames": 2048,
+          "glErrors": 0,
+          "nativeWorldUnchangedByRendering": true,
+          "saveLoad": false,
+          "physicalAcceptance": false,
+          "powerPassStateChecks": 0,
+          "measurements": [
+            {
+              "scene": "field100",
+              "cpuMeanMs": 2.2470703125,
+              "gpuMeanMs": 0.19893231746031745,
+              "gpuSamples": 63,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 33,
+              "verticesOneFrame": 121625,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "field1024",
+              "cpuMeanMs": 1.3273171875,
+              "gpuMeanMs": 0.125424,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 66,
+              "verticesOneFrame": 206039,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "links512-static",
+              "cpuMeanMs": 1.0962859375,
+              "gpuMeanMs": 0.1512,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 44,
+              "verticesOneFrame": 166817,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "links512-animated",
+              "cpuMeanMs": 1.0096171875,
+              "gpuMeanMs": 0.150864,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 44,
+              "verticesOneFrame": 166817,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "field100",
+              "cpuMeanMs": 0.9463703125,
+              "gpuMeanMs": 0.156448,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 33,
+              "verticesOneFrame": 121625,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "field1024",
+              "cpuMeanMs": 1.117615625,
+              "gpuMeanMs": 0.125152,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 66,
+              "verticesOneFrame": 206039,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "links512-static",
+              "cpuMeanMs": 1.0459484375,
+              "gpuMeanMs": 0.148656,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 44,
+              "verticesOneFrame": 166817,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "links512-animated",
+              "cpuMeanMs": 0.9080171875,
+              "gpuMeanMs": 0.149168,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 44,
+              "verticesOneFrame": 166817,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "field100",
+              "cpuMeanMs": 1.013809375,
+              "gpuMeanMs": 0.158352,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 33,
+              "verticesOneFrame": 121625,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "field1024",
+              "cpuMeanMs": 1.0036453125,
+              "gpuMeanMs": 0.126336,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 66,
+              "verticesOneFrame": 206039,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "links512-static",
+              "cpuMeanMs": 1.003540625,
+              "gpuMeanMs": 0.149824,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 44,
+              "verticesOneFrame": 166817,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "links512-animated",
+              "cpuMeanMs": 0.8639875,
+              "gpuMeanMs": 0.150144,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 44,
+              "verticesOneFrame": 166817,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "field100",
+              "cpuMeanMs": 0.911259375,
+              "gpuMeanMs": 0.156288,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 33,
+              "verticesOneFrame": 121625,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "field1024",
+              "cpuMeanMs": 0.9823765625,
+              "gpuMeanMs": 0.125232,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 66,
+              "verticesOneFrame": 206039,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "links512-static",
+              "cpuMeanMs": 1.18928125,
+              "gpuMeanMs": 0.149104,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 44,
+              "verticesOneFrame": 166817,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            },
+            {
+              "scene": "links512-animated",
+              "cpuMeanMs": 1.0259046875,
+              "gpuMeanMs": 0.149056,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 44,
+              "verticesOneFrame": 166817,
+              "cachedModelBuilds": 0,
+              "cachedLinkBuilds": 0,
+              "links": 0
+            }
+          ]
+        },
+        "dense-final": {
+          "status": "PASS",
+          "frames": 2048,
+          "glErrors": 0,
+          "nativeWorldUnchangedByRendering": true,
+          "saveLoad": false,
+          "physicalAcceptance": false,
+          "powerPassStateChecks": 16,
+          "measurements": [
+            {
+              "scene": "field100",
+              "cpuMeanMs": 2.668603125,
+              "gpuMeanMs": 0.6853810793650794,
+              "gpuSamples": 63,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 33,
+              "verticesOneFrame": 147947,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 1,
+              "links": 0
+            },
+            {
+              "scene": "field1024",
+              "cpuMeanMs": 2.8259359375,
+              "gpuMeanMs": 0.7334440634920636,
+              "gpuSamples": 63,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 66,
+              "verticesOneFrame": 228587,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 2,
+              "links": 0
+            },
+            {
+              "scene": "links512-static",
+              "cpuMeanMs": 1.9121015625,
+              "gpuMeanMs": 0.680704,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 52,
+              "verticesOneFrame": 193391,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 3,
+              "links": 512
+            },
+            {
+              "scene": "links512-animated",
+              "cpuMeanMs": 1.6534765625,
+              "gpuMeanMs": 0.56712,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 60,
+              "verticesOneFrame": 205679,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 3,
+              "links": 512
+            },
+            {
+              "scene": "field100",
+              "cpuMeanMs": 1.3424484375,
+              "gpuMeanMs": 0.406064,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 33,
+              "verticesOneFrame": 147947,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 4,
+              "links": 0
+            },
+            {
+              "scene": "field1024",
+              "cpuMeanMs": 1.6130828125,
+              "gpuMeanMs": 0.647552,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 66,
+              "verticesOneFrame": 228587,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 5,
+              "links": 0
+            },
+            {
+              "scene": "links512-static",
+              "cpuMeanMs": 1.5230875,
+              "gpuMeanMs": 0.44432,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 52,
+              "verticesOneFrame": 193391,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 6,
+              "links": 512
+            },
+            {
+              "scene": "links512-animated",
+              "cpuMeanMs": 1.8613421875,
+              "gpuMeanMs": 0.557568,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 60,
+              "verticesOneFrame": 205679,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 6,
+              "links": 512
+            },
+            {
+              "scene": "field100",
+              "cpuMeanMs": 1.445225,
+              "gpuMeanMs": 0.47472,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 33,
+              "verticesOneFrame": 147947,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 7,
+              "links": 0
+            },
+            {
+              "scene": "field1024",
+              "cpuMeanMs": 1.59178125,
+              "gpuMeanMs": 0.508992,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 66,
+              "verticesOneFrame": 228587,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 8,
+              "links": 0
+            },
+            {
+              "scene": "links512-static",
+              "cpuMeanMs": 1.505296875,
+              "gpuMeanMs": 0.503536,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 52,
+              "verticesOneFrame": 193391,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 9,
+              "links": 512
+            },
+            {
+              "scene": "links512-animated",
+              "cpuMeanMs": 1.53,
+              "gpuMeanMs": 0.445328,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 60,
+              "verticesOneFrame": 205679,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 9,
+              "links": 512
+            },
+            {
+              "scene": "field100",
+              "cpuMeanMs": 1.2963125,
+              "gpuMeanMs": 0.383408,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 33,
+              "verticesOneFrame": 147947,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 10,
+              "links": 0
+            },
+            {
+              "scene": "field1024",
+              "cpuMeanMs": 1.570084375,
+              "gpuMeanMs": 0.459728,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 66,
+              "verticesOneFrame": 228587,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 11,
+              "links": 0
+            },
+            {
+              "scene": "links512-static",
+              "cpuMeanMs": 1.4682671875,
+              "gpuMeanMs": 0.417072,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 52,
+              "verticesOneFrame": 193391,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 12,
+              "links": 512
+            },
+            {
+              "scene": "links512-animated",
+              "cpuMeanMs": 1.6786140625,
+              "gpuMeanMs": 3.857968,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 60,
+              "verticesOneFrame": 205679,
+              "cachedModelBuilds": 14,
+              "cachedLinkBuilds": 12,
+              "links": 512
+            }
+          ]
+        }
+      },
+      "fixtureOverlays": {
+        "dense-baseline": {
+          "originalJarSha256": "c759acd80c4aecdb7756175b6010c9db39e71525470c98a16601bf7713d26587",
+          "onlyReplacedClass": "fpv/SmokeHarness.class",
+          "replacementSha256": "fb4136130ed3bdaf0371aaa56ea917785d2154f19ea4f72c04b781d910a224ed",
+          "scope": "Isolated actual SDL fixture; no physical gameplay proof"
+        },
+        "dense-final": {
+          "originalJarSha256": "005a1d5e85bb820da088f30215257a21bf87415d2ca3452b668a759ee2fe6c7d",
+          "onlyReplacedClass": "fpv/SmokeHarness.class",
+          "replacementSha256": "fb4136130ed3bdaf0371aaa56ea917785d2154f19ea4f72c04b781d910a224ed",
+          "scope": "Isolated actual SDL fixture; no physical gameplay proof"
+        }
+      }
+    }
+  },
+  "geometry": {
+    "scope": "One cold CPU template generation per profile/LOD, not FPS",
+    "models": [
+      {
+        "profile": "NODE",
+        "lod": 0,
+        "vertices": 252,
+        "triangles": 84,
+        "templateBytes": 8064,
+        "coldGenerationMs": 3.6698
+      },
+      {
+        "profile": "NODE",
+        "lod": 1,
+        "vertices": 180,
+        "triangles": 60,
+        "templateBytes": 5760,
+        "coldGenerationMs": 0.039
+      },
+      {
+        "profile": "NODE",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0331
+      },
+      {
+        "profile": "LARGE_NODE",
+        "lod": 0,
+        "vertices": 384,
+        "triangles": 128,
+        "templateBytes": 12288,
+        "coldGenerationMs": 0.0649
+      },
+      {
+        "profile": "LARGE_NODE",
+        "lod": 1,
+        "vertices": 348,
+        "triangles": 116,
+        "templateBytes": 11136,
+        "coldGenerationMs": 0.0568
+      },
+      {
+        "profile": "LARGE_NODE",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0179
+      },
+      {
+        "profile": "SURGE",
+        "lod": 0,
+        "vertices": 330,
+        "triangles": 110,
+        "templateBytes": 10560,
+        "coldGenerationMs": 0.0494
+      },
+      {
+        "profile": "SURGE",
+        "lod": 1,
+        "vertices": 294,
+        "triangles": 98,
+        "templateBytes": 9408,
+        "coldGenerationMs": 0.0278
+      },
+      {
+        "profile": "SURGE",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0091
+      },
+      {
+        "profile": "DIODE",
+        "lod": 0,
+        "vertices": 240,
+        "triangles": 80,
+        "templateBytes": 7680,
+        "coldGenerationMs": 0.0187
+      },
+      {
+        "profile": "DIODE",
+        "lod": 1,
+        "vertices": 240,
+        "triangles": 80,
+        "templateBytes": 7680,
+        "coldGenerationMs": 0.0169
+      },
+      {
+        "profile": "DIODE",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0114
+      },
+      {
+        "profile": "BATTERY",
+        "lod": 0,
+        "vertices": 378,
+        "triangles": 126,
+        "templateBytes": 12096,
+        "coldGenerationMs": 0.0727
+      },
+      {
+        "profile": "BATTERY",
+        "lod": 1,
+        "vertices": 378,
+        "triangles": 126,
+        "templateBytes": 12096,
+        "coldGenerationMs": 0.0271
+      },
+      {
+        "profile": "BATTERY",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0091
+      },
+      {
+        "profile": "LARGE_BATTERY",
+        "lod": 0,
+        "vertices": 678,
+        "triangles": 226,
+        "templateBytes": 21696,
+        "coldGenerationMs": 0.0512
+      },
+      {
+        "profile": "LARGE_BATTERY",
+        "lod": 1,
+        "vertices": 678,
+        "triangles": 226,
+        "templateBytes": 21696,
+        "coldGenerationMs": 0.037
+      },
+      {
+        "profile": "LARGE_BATTERY",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0115
+      },
+      {
+        "profile": "SOLAR",
+        "lod": 0,
+        "vertices": 318,
+        "triangles": 106,
+        "templateBytes": 10176,
+        "coldGenerationMs": 0.0205
+      },
+      {
+        "profile": "SOLAR",
+        "lod": 1,
+        "vertices": 318,
+        "triangles": 106,
+        "templateBytes": 10176,
+        "coldGenerationMs": 0.0255
+      },
+      {
+        "profile": "SOLAR",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0285
+      },
+      {
+        "profile": "LARGE_SOLAR",
+        "lod": 0,
+        "vertices": 318,
+        "triangles": 106,
+        "templateBytes": 10176,
+        "coldGenerationMs": 0.0165
+      },
+      {
+        "profile": "LARGE_SOLAR",
+        "lod": 1,
+        "vertices": 318,
+        "triangles": 106,
+        "templateBytes": 10176,
+        "coldGenerationMs": 0.0213
+      },
+      {
+        "profile": "LARGE_SOLAR",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0123
+      },
+      {
+        "profile": "COMBUSTION",
+        "lod": 0,
+        "vertices": 840,
+        "triangles": 280,
+        "templateBytes": 26880,
+        "coldGenerationMs": 1.4505
+      },
+      {
+        "profile": "COMBUSTION",
+        "lod": 1,
+        "vertices": 624,
+        "triangles": 208,
+        "templateBytes": 19968,
+        "coldGenerationMs": 0.0706
+      },
+      {
+        "profile": "COMBUSTION",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0123
+      },
+      {
+        "profile": "STEAM",
+        "lod": 0,
+        "vertices": 1266,
+        "triangles": 422,
+        "templateBytes": 40512,
+        "coldGenerationMs": 0.1834
+      },
+      {
+        "profile": "STEAM",
+        "lod": 1,
+        "vertices": 882,
+        "triangles": 294,
+        "templateBytes": 28224,
+        "coldGenerationMs": 0.1438
+      },
+      {
+        "profile": "STEAM",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0135
+      },
+      {
+        "profile": "DIFFERENTIAL",
+        "lod": 0,
+        "vertices": 1524,
+        "triangles": 508,
+        "templateBytes": 48768,
+        "coldGenerationMs": 0.199
+      },
+      {
+        "profile": "DIFFERENTIAL",
+        "lod": 1,
+        "vertices": 864,
+        "triangles": 288,
+        "templateBytes": 27648,
+        "coldGenerationMs": 0.1341
+      },
+      {
+        "profile": "DIFFERENTIAL",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0129
+      },
+      {
+        "profile": "RTG",
+        "lod": 0,
+        "vertices": 1110,
+        "triangles": 370,
+        "templateBytes": 35520,
+        "coldGenerationMs": 0.079
+      },
+      {
+        "profile": "RTG",
+        "lod": 1,
+        "vertices": 882,
+        "triangles": 294,
+        "templateBytes": 28224,
+        "coldGenerationMs": 0.0608
+      },
+      {
+        "profile": "RTG",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0122
+      },
+      {
+        "profile": "THORIUM",
+        "lod": 0,
+        "vertices": 1572,
+        "triangles": 524,
+        "templateBytes": 50304,
+        "coldGenerationMs": 0.3505
+      },
+      {
+        "profile": "THORIUM",
+        "lod": 1,
+        "vertices": 1068,
+        "triangles": 356,
+        "templateBytes": 34176,
+        "coldGenerationMs": 0.0609
+      },
+      {
+        "profile": "THORIUM",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0076
+      },
+      {
+        "profile": "IMPACT",
+        "lod": 0,
+        "vertices": 2100,
+        "triangles": 700,
+        "templateBytes": 67200,
+        "coldGenerationMs": 0.1055
+      },
+      {
+        "profile": "IMPACT",
+        "lod": 1,
+        "vertices": 1380,
+        "triangles": 460,
+        "templateBytes": 44160,
+        "coldGenerationMs": 0.0658
+      },
+      {
+        "profile": "IMPACT",
+        "lod": 2,
+        "vertices": 108,
+        "triangles": 36,
+        "templateBytes": 3456,
+        "coldGenerationMs": 0.0075
+      }
+    ],
+    "allTemplateBytes": 680832
+  },
+  "pixelChecks": {
+    "animations": [
+      {
+        "scene": "steam",
+        "changedPixels": 2137,
+        "scope": "Two actual GL frames; native motion/pulses may change together. Not an isolated-part or physical acceptance test."
+      },
+      {
+        "scene": "combustion",
+        "changedPixels": 1448,
+        "scope": "Two actual GL frames; native motion/pulses may change together. Not an isolated-part or physical acceptance test."
+      },
+      {
+        "scene": "differential",
+        "changedPixels": 1109,
+        "scope": "Two actual GL frames; native motion/pulses may change together. Not an isolated-part or physical acceptance test."
+      },
+      {
+        "scene": "impact",
+        "changedPixels": 4393,
+        "scope": "Two actual GL frames; native motion/pulses may change together. Not an isolated-part or physical acceptance test."
+      },
+      {
+        "scene": "links10-animated",
+        "changedPixels": 1746,
+        "scope": "Two actual GL frames; native motion/pulses may change together. Not an isolated-part or physical acceptance test."
+      },
+      {
+        "scene": "links100-animated",
+        "changedPixels": 5543,
+        "scope": "Two actual GL frames; native motion/pulses may change together. Not an isolated-part or physical acceptance test."
+      },
+      {
+        "scene": "links512-animated",
+        "changedPixels": 9954,
+        "scope": "Two actual GL frames; native motion/pulses may change together. Not an isolated-part or physical acceptance test."
+      }
+    ],
+    "priorModels": {
+      "changedPixels": 1105,
+      "bounds": [
+        292,
+        96,
+        408,
+        159
+      ],
+      "scope": "Same prior-only scene and camera; class identity checked separately. Pixel differences are reported without assuming their cause."
+    }
+  },
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "actualRemoteMultiplayer": "NOT TESTED",
+  "realGameplayFps": "NOT TESTED",
+  "gameplaySimulationChanged": false,
+  "newSetting": "Animated power connections (default ON); OFF static core"
+}

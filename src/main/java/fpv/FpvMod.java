@@ -318,6 +318,7 @@ public final class FpvMod extends Mod {
         Core.bundle.getProperties().put("setting.fpv-acceleration.name","Custom: thrust acceleration reference");
         Core.bundle.getProperties().put("setting.fpv-rate-scale.name","Custom: angular rate multiplier");
         Core.bundle.getProperties().put("setting.fpv-ram-strength.name","Impact damage strength");
+        Core.bundle.getProperties().put("setting.fpv-animated-power-connections.name","Animated power connections");
         Core.bundle.getProperties().put("setting.fpv-water-waves.name","Animated 3D liquid waves (disable for lower-end GPUs)");
         Core.bundle.getProperties().put("setting.fpv-cosmic-floor.name","Cosmic floor effect");
         Core.bundle.getProperties().put("setting.fpv-auto-horizon.name","Background scenery system (OFF: legacy mountains)");
@@ -330,6 +331,7 @@ public final class FpvMod extends Mod {
             table.label(()->network.status()).wrap().width(460).row();
             table.checkPref("fpv-threat-markers",true);
             table.checkPref("fpv-water-waves",true);
+            table.checkPref("fpv-animated-power-connections",true);
             table.checkPref("fpv-auto-horizon",true);
             table.checkPref("fpv-cosmic-floor",true);
             table.button("Background settings",fpv.ui.BackgroundSettings::open).height(42).row();
