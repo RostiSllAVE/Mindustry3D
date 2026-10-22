@@ -58,6 +58,9 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private final LayerDisplayRenderer displays=new LayerDisplayRenderer();
     private final NativeBlockAnimationAdapter blockAnimations=new NativeBlockAnimationAdapter();
     private final TurretModelRenderer turretModels=new TurretModelRenderer();
+    private final LiquidModelRenderer liquidModels=new LiquidModelRenderer();
+    public long liquidModelBuilds(){return liquidModels.builds();}
+    public long liquidModelBytes(){return liquidModels.bytes();}
     private final PowerModelRenderer powerModels=new PowerModelRenderer();
     public long powerModelBuilds(){return powerModels.builds();}
     public long powerModelBytes(){return powerModels.bytes();}
@@ -176,9 +179,9 @@ public final class LayerWorldRenderer implements AutoCloseable {
             (float)(b[0]+nx),(float)(b[2]+nz),(float)(-b[1]-ny),(float)(a[0]+nx),(float)(a[2]+nz),(float)(-a[1]-ny),r*.7f,g*.7f,blue*.7f,0);
     }
     private double[] endpoint(LayerWorld world,long id){
-        if(id>0){var c=world.get(id);if(c==null||!visibleIds.contains(id))return null;var b=world.coordinates().bounds(c);Block block=Vars.content.getByName(ContentType.block,c.blockName());double top=block instanceof ItemBridge&&AdvancedLogisticsModelRenderer.supports(block)?b.minZ()+AdvancedLogisticsModelRenderer.visualHeight(block,(float)c.height()):b.maxZ();return new double[]{b.centerX(),b.centerY(),top+.04};}
+        if(id>0){var c=world.get(id);if(c==null||!visibleIds.contains(id))return null;var b=world.coordinates().bounds(c);Block block=Vars.content.getByName(ContentType.block,c.blockName());double top=block instanceof ItemBridge&&AdvancedLogisticsModelRenderer.supports(block)?b.minZ()+LiquidModelRenderer.visualHeight(block,AdvancedLogisticsModelRenderer.visualHeight(block,(float)c.height())):b.minZ()+LiquidModelRenderer.visualHeight(block,(float)c.height());return new double[]{b.centerX(),b.centerY(),top+.04};}
         long packed=-id-1;var b=packed>=0&&packed<=0xffffffffL?Vars.world.build((int)packed):null;
-        return b==null||Vars.player==null||b.inFogTo(Vars.player.team())?null:new double[]{b.x/Vars.tilesize,b.y/Vars.tilesize,(b.block instanceof ItemBridge?AdvancedLogisticsModelRenderer.visualHeight(b.block,fpv.net.HeadlessGeometry.heightFor(b.block)):fpv.net.HeadlessGeometry.heightFor(b.block))+.04};
+        return b==null||Vars.player==null||b.inFogTo(Vars.player.team())?null:new double[]{b.x/Vars.tilesize,b.y/Vars.tilesize,LiquidModelRenderer.visualHeight(b.block,b.block instanceof ItemBridge?AdvancedLogisticsModelRenderer.visualHeight(b.block,fpv.net.HeadlessGeometry.heightFor(b.block)):fpv.net.HeadlessGeometry.heightFor(b.block))+.04};
     }
     private boolean visible(LayerComponent c){
         return Vars.player!=null&&(c.team()==Vars.player.team().id||!Vars.state.rules.fog||Vars.fogControl==null||Vars.fogControl.isVisible(Vars.player.team(),c.x(),c.y()));
@@ -214,7 +217,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 // Door state changes do not rebuild structural chunk meshes; the whole door is streamed below.
                 if(block instanceof mindustry.world.blocks.defense.Door||block instanceof mindustry.world.blocks.defense.AutoDoor)continue;
                 // The shared drill pass owns its entire body and read-only moving components.
-                if(PowerModelRenderer.supports(block)||ChemicalModelRenderer.supports(block)||AdvancedManufacturingRenderer.supports(block)||ManufacturingModelRenderer.supports(block)||DrillModelRenderer.supports(block)||LogisticsModelRenderer.supports(block)||AdvancedLogisticsModelRenderer.supports(block))continue;
+                if(LiquidModelRenderer.supports(block)||PowerModelRenderer.supports(block)||ChemicalModelRenderer.supports(block)||AdvancedManufacturingRenderer.supports(block)||ManufacturingModelRenderer.supports(block)||DrillModelRenderer.supports(block)||LogisticsModelRenderer.supports(block)||AdvancedLogisticsModelRenderer.supports(block))continue;
                 if(block instanceof Turret turret&&turretModels.supports(turret)){
                     // The shared turret pass owns its alpha-shaped stationary base as well as guns.
                     continue;
@@ -278,8 +281,12 @@ public final class LayerWorldRenderer implements AutoCloseable {
                     box(animated,shell,new LayerCoordinates.Bounds(px-.14,py-.14,pz-.09,px+.14,py+.14,pz+.09),1,.75f,.3f);
                 }
             }
-            float visualH=AdvancedLogisticsModelRenderer.visualHeight(b.block,h);
-            if(!camera.frustum.containsBounds(x,base+visualH*.5f,z,size,b instanceof Turret.TurretBuild?(h+size)*.5f:AdvancedLogisticsModelRenderer.supports(b.block)?visualH*.75f:h*.5f,size))continue;
+            float visualH=LiquidModelRenderer.visualHeight(b.block,AdvancedLogisticsModelRenderer.visualHeight(b.block,h));
+            if(!camera.frustum.containsBounds(x,base+visualH*.5f,z,size,b instanceof Turret.TurretBuild?(h+size)*.5f:AdvancedLogisticsModelRenderer.supports(b.block)||LiquidModelRenderer.supports(b.block)?visualH*.75f:h*.5f,size))continue;
+            if(LiquidModelRenderer.supports(b.block)){
+                if(!liquidModels.render(b,animated,x,base,z,size,h,camera.position.dst2(x,base+visualH*.5f,z)))box(animated,NativeRegions.block(b.block),world.coordinates().bounds(c),1,1,1);
+                continue;
+            }
             if(PowerModelRenderer.supports(b.block)){
                 if(!powerModels.render(b,animated,x,base,z,size,h,camera.position.dst2(x,base+h*.5f,z)))box(animated,NativeRegions.block(b.block),world.coordinates().bounds(c),1,1,1);
                 continue;
@@ -424,5 +431,5 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private void rect(float minX,float minY,float maxX,float maxY,float z,float r,float g,float b,float alpha){
         overlay.projectionFace(Core.atlas.white(),minX,z,-minY,maxX,z,-minY,maxX,z,-maxY,minX,z,-maxY,r,g,b,alpha);
     }
-    @Override public void close(){powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
+    @Override public void close(){liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
 }

@@ -109,6 +109,9 @@ public final class FpvWorldRenderer {
     private final PowerConnectionRenderer powerConnections=new PowerConnectionRenderer();
     public long powerConnectionBuilds(){return powerConnections.builds();}
     public int powerConnectionCount(){return powerConnections.links();}
+    private final LiquidModelRenderer liquidModels=new LiquidModelRenderer();
+    public long liquidModelBuilds(){return liquidModels.builds();}
+    public long liquidModelBytes(){return liquidModels.bytes();}
     private final PowerModelRenderer powerModels=new PowerModelRenderer();
     public long powerModelBuilds(){return powerModels.builds();}
     public long powerModelBytes(){return powerModels.bytes();}
@@ -388,7 +391,7 @@ public final class FpvWorldRenderer {
         float ax=source.x*WORLD_SCALE,az=-source.y*WORLD_SCALE,bx=target.x*WORLD_SCALE,bz=-target.y*WORLD_SCALE;
         float dx=bx-ax,dz=bz-az,distance=(float)Math.hypot(dx,dz);
         if(distance<=.001f)return false;
-        float sourceHeight=AdvancedLogisticsModelRenderer.visualHeight(source.block,heightFor(source.block)),targetHeight=AdvancedLogisticsModelRenderer.visualHeight(target.block,heightFor(target.block));
+        float sourceHeight=LiquidModelRenderer.visualHeight(source.block,AdvancedLogisticsModelRenderer.visualHeight(source.block,heightFor(source.block))),targetHeight=LiquidModelRenderer.visualHeight(target.block,AdvancedLogisticsModelRenderer.visualHeight(target.block,heightFor(target.block)));
         float h=Math.max(sourceHeight,targetHeight);
         int samples=Math.max(1,Math.min((int)RenderConfig.BRIDGE_MAX_SURFACE_SAMPLES,(int)Math.ceil(distance*2)));
         for(int i=0;i<=samples;i++){
@@ -999,6 +1002,7 @@ public final class FpvWorldRenderer {
             texturedWall(b.tile,streamAtlas,dynamic,x,z,size,h,false);
             return true;
         }
+        if(liquidModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(powerModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(chemicalModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(advancedManufacturing.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
@@ -1436,7 +1440,7 @@ public final class FpvWorldRenderer {
         placedBuildings.clear(); submittedBuildings.clear(); submittedBridges.clear(); submittedUnits.clear();submittedUnitBodies.clear();placedWorldTiles = null;
         buildingFrameCompleted = false;
         combatVisuals.clear();
-        organicProps.clear();oreDeposits.clear();powerConnections.close();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
+        organicProps.clear();oreDeposits.clear();powerConnections.close();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
         clearChunks();
         if (shader != null) shader.dispose();
         if (atlasShader != null) atlasShader.dispose();

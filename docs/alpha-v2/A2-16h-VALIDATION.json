@@ -1,0 +1,3622 @@
+{
+  "task": "A2-16h",
+  "branch": "main",
+  "baselineCommit": "b373e1a033eb759f8039d1c787bc4b6dd4b7b301",
+  "jarSha256": "9e72ec58c1bc7545dd14e01bc3d14cf8e660b784d464f1c3dd6661f5d5e1f8e8",
+  "payloadIdentity": "payload1-f59db9951a56f35f12827ec7ecbcca165047c9d991756a300f7d127b1100d3b1",
+  "java17ProgramsPassed": 185,
+  "stockSteam25ProgramsPassed": 185,
+  "freshSourceVerification": {
+    "status": "PASS",
+    "freshRecompiledRuntimeClassesByteIdentical": 1016,
+    "packagedResourcesMatch": true,
+    "frozenSourceInputsMatch": true,
+    "jarSha256": "9e72ec58c1bc7545dd14e01bc3d14cf8e660b784d464f1c3dd6661f5d5e1f8e8"
+  },
+  "changedRuntimeEntries": [
+    "fpv/render/FpvWorldRenderer$1.class",
+    "fpv/render/FpvWorldRenderer$AircraftStats.class",
+    "fpv/render/FpvWorldRenderer$BuildBeamState.class",
+    "fpv/render/FpvWorldRenderer$Candidate.class",
+    "fpv/render/FpvWorldRenderer$ChunkMesh.class",
+    "fpv/render/FpvWorldRenderer$CoarseFogMask.class",
+    "fpv/render/FpvWorldRenderer$DepthSceneBuffer.class",
+    "fpv/render/FpvWorldRenderer$Geometry.class",
+    "fpv/render/FpvWorldRenderer$PickResult.class",
+    "fpv/render/FpvWorldRenderer$Stats.class",
+    "fpv/render/FpvWorldRenderer.class",
+    "fpv/render/LayerWorldRenderer$Activity.class",
+    "fpv/render/LayerWorldRenderer.class"
+  ],
+  "newRuntimeEntries": [
+    "fpv/render/LiquidModelGeometry$1.class",
+    "fpv/render/LiquidModelGeometry$Model.class",
+    "fpv/render/LiquidModelGeometry.class",
+    "fpv/render/LiquidModelProfile.class",
+    "fpv/render/LiquidModelRenderer$Model.class",
+    "fpv/render/LiquidModelRenderer.class"
+  ],
+  "unchangedExistingRuntimeClassesIncludingDependencies": 1122,
+  "licensesAndJnaUnchanged": true,
+  "alphaFilesPreserved": 2065,
+  "earlierDiagnosticAssetsPreserved": 105,
+  "actualWindowsScriptedGraphics": {
+    "benchmark-baseline": {
+      "status": "PASS",
+      "frames": 5248,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "powerPassStateChecks": 41
+    },
+    "benchmark-graphics": {
+      "status": "PASS",
+      "frames": 5248,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "powerPassStateChecks": 41
+    },
+    "benchmark-java17": {
+      "status": "PASS",
+      "frames": 5248,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "powerPassStateChecks": 41
+    }
+  },
+  "fixtureOverlays": {
+    "benchmark-baseline": {
+      "originalJarSha256": "005a1d5e85bb820da088f30215257a21bf87415d2ca3452b668a759ee2fe6c7d",
+      "onlyReplacedClass": "fpv/SmokeHarness.class",
+      "replacementSha256": "509a6444b1229d447730da6b8ee8205049a19adfa588ccae24fa918324a0ce07",
+      "scope": "Isolated actual SDL fixture; no physical gameplay proof"
+    },
+    "benchmark-graphics": {
+      "originalJarSha256": "9e72ec58c1bc7545dd14e01bc3d14cf8e660b784d464f1c3dd6661f5d5e1f8e8",
+      "onlyReplacedClass": "fpv/SmokeHarness.class",
+      "replacementSha256": "509a6444b1229d447730da6b8ee8205049a19adfa588ccae24fa918324a0ce07",
+      "scope": "Isolated actual SDL fixture; no physical gameplay proof"
+    },
+    "benchmark-java17": {
+      "originalJarSha256": "9e72ec58c1bc7545dd14e01bc3d14cf8e660b784d464f1c3dd6661f5d5e1f8e8",
+      "onlyReplacedClass": "fpv/SmokeHarness.class",
+      "replacementSha256": "509a6444b1229d447730da6b8ee8205049a19adfa588ccae24fa918324a0ce07",
+      "scope": "Isolated actual SDL fixture; no physical gameplay proof"
+    }
+  },
+  "nativeProductionObservations": {
+    "benchmark-baseline": {
+      "authorizedUpperBlocks": 97,
+      "acceptedXYZLinks": 1,
+      "nativePerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        18052,
+        17744,
+        17744,
+        17744
+      ],
+      "upperPerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "benchmark-graphics": {
+      "authorizedUpperBlocks": 97,
+      "acceptedXYZLinks": 1,
+      "nativePerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        18052,
+        17744,
+        17744,
+        17744
+      ],
+      "upperPerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "benchmark-java17": {
+      "authorizedUpperBlocks": 97,
+      "acceptedXYZLinks": 1,
+      "nativePerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        18052,
+        17744,
+        17744,
+        17744
+      ],
+      "upperPerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "performance": {
+    "scope": "One sequential 960x600 Windows whole-renderer sample. 48 warm frames, 64 timed frames per scene. Async available-only GPU queries; screenshots/probes outside timing. Stock Java25 allocation counters unavailable (-1). Not gameplay FPS or statistical parity. Dense fields mix 13 liquid/thermal types with 13 retained power profiles; they are not pure-conduit fields.",
+    "comparison": [
+      {
+        "scene": "top",
+        "baseline": {
+          "scene": "top",
+          "cpuMeanMs": 1.1901109375,
+          "gpuMeanMs": 0.6559451428571429,
+          "gpuSamples": 63,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 51,
+          "verticesOneFrame": 111389,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "top",
+          "cpuMeanMs": 1.6144140625,
+          "gpuMeanMs": 0.9125465396825396,
+          "gpuSamples": 63,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 51,
+          "verticesOneFrame": 133607,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "top",
+          "cpuMeanMs": 1.4227375,
+          "gpuMeanMs": 0.59416,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 17847.75,
+          "drawCallsOneFrame": 51,
+          "verticesOneFrame": 133607,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "oblique",
+        "baseline": {
+          "scene": "oblique",
+          "cpuMeanMs": 1.067796875,
+          "gpuMeanMs": 0.5709043809523809,
+          "gpuSamples": 63,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 111785,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "oblique",
+          "cpuMeanMs": 1.346790625,
+          "gpuMeanMs": 0.8914813968253968,
+          "gpuSamples": 63,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136535,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "oblique",
+          "cpuMeanMs": 1.0038125,
+          "gpuMeanMs": 0.507056,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21354.875,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136535,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "low",
+        "baseline": {
+          "scene": "low",
+          "cpuMeanMs": 0.443909375,
+          "gpuMeanMs": 0.458544,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 49,
+          "verticesOneFrame": 101009,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "low",
+          "cpuMeanMs": 0.644128125,
+          "gpuMeanMs": 0.325072,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 119315,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "low",
+          "cpuMeanMs": 0.6510359375,
+          "gpuMeanMs": 0.37488,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 14764.875,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 119315,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "conduit",
+        "baseline": {
+          "scene": "conduit",
+          "cpuMeanMs": 0.317628125,
+          "gpuMeanMs": 0.246992,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 27,
+          "verticesOneFrame": 58163,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "conduit",
+          "cpuMeanMs": 0.3113640625,
+          "gpuMeanMs": 0.222784,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 26,
+          "verticesOneFrame": 62213,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "conduit",
+          "cpuMeanMs": 0.3571953125,
+          "gpuMeanMs": 0.260864,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 11026.5,
+          "drawCallsOneFrame": 26,
+          "verticesOneFrame": 62213,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "pulse",
+        "baseline": {
+          "scene": "pulse",
+          "cpuMeanMs": 0.325865625,
+          "gpuMeanMs": 0.244848,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 29,
+          "verticesOneFrame": 61703,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "pulse",
+          "cpuMeanMs": 0.346825,
+          "gpuMeanMs": 0.212976,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 28,
+          "verticesOneFrame": 67649,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "pulse",
+          "cpuMeanMs": 0.3537046875,
+          "gpuMeanMs": 0.267552,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 12330.5,
+          "drawCallsOneFrame": 28,
+          "verticesOneFrame": 67649,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "plated",
+        "baseline": {
+          "scene": "plated",
+          "cpuMeanMs": 0.3770796875,
+          "gpuMeanMs": 0.24784,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 68441,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "plated",
+          "cpuMeanMs": 0.378740625,
+          "gpuMeanMs": 0.214912,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 32,
+          "verticesOneFrame": 75191,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "plated",
+          "cpuMeanMs": 0.40271875,
+          "gpuMeanMs": 0.271728,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 12713.625,
+          "drawCallsOneFrame": 32,
+          "verticesOneFrame": 75191,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "router",
+        "baseline": {
+          "scene": "router",
+          "cpuMeanMs": 0.3697703125,
+          "gpuMeanMs": 0.25064,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 35,
+          "verticesOneFrame": 73019,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "router",
+          "cpuMeanMs": 0.4798125,
+          "gpuMeanMs": 0.217824,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 80495,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "router",
+          "cpuMeanMs": 0.4674015625,
+          "gpuMeanMs": 0.274928,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 13215.25,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 80495,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "junction",
+        "baseline": {
+          "scene": "junction",
+          "cpuMeanMs": 0.3873546875,
+          "gpuMeanMs": 0.618384,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 35,
+          "verticesOneFrame": 72971,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "junction",
+          "cpuMeanMs": 0.62785,
+          "gpuMeanMs": 0.460736,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 81377,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "junction",
+          "cpuMeanMs": 0.5979484375,
+          "gpuMeanMs": 0.417488,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 13239.5,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 81377,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "bridge",
+        "baseline": {
+          "scene": "bridge",
+          "cpuMeanMs": 0.46238125,
+          "gpuMeanMs": 0.714128,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 77429,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "bridge",
+          "cpuMeanMs": 0.673865625,
+          "gpuMeanMs": 0.613152,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 38,
+          "verticesOneFrame": 87947,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "bridge",
+          "cpuMeanMs": 0.674321875,
+          "gpuMeanMs": 0.560656,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 13997.5,
+          "drawCallsOneFrame": 38,
+          "verticesOneFrame": 87947,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "phase",
+        "baseline": {
+          "scene": "phase",
+          "cpuMeanMs": 0.4749328125,
+          "gpuMeanMs": 0.730816,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 85631,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "phase",
+          "cpuMeanMs": 0.7395640625,
+          "gpuMeanMs": 0.733152,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 42,
+          "verticesOneFrame": 99389,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "phase",
+          "cpuMeanMs": 0.8536484375,
+          "gpuMeanMs": 0.702768,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 14910.375,
+          "drawCallsOneFrame": 42,
+          "verticesOneFrame": 99389,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "container",
+        "baseline": {
+          "scene": "container",
+          "cpuMeanMs": 0.5254890625,
+          "gpuMeanMs": 0.743792,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 44,
+          "verticesOneFrame": 84599,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "container",
+          "cpuMeanMs": 0.789971875,
+          "gpuMeanMs": 0.851104,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 102695,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "container",
+          "cpuMeanMs": 0.9416328125,
+          "gpuMeanMs": 0.850288,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 16070.25,
+          "drawCallsOneFrame": 43,
+          "verticesOneFrame": 102695,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "tank",
+        "baseline": {
+          "scene": "tank",
+          "cpuMeanMs": 0.6038890625,
+          "gpuMeanMs": 0.74976,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 46,
+          "verticesOneFrame": 88757,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "tank",
+          "cpuMeanMs": 1.015784375,
+          "gpuMeanMs": 0.888144,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 108749,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "tank",
+          "cpuMeanMs": 1.0327421875,
+          "gpuMeanMs": 0.915008,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 16550.375,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 108749,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "mechanical",
+        "baseline": {
+          "scene": "mechanical",
+          "cpuMeanMs": 0.3505828125,
+          "gpuMeanMs": 0.75856,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 46,
+          "verticesOneFrame": 91841,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "mechanical",
+          "cpuMeanMs": 0.665009375,
+          "gpuMeanMs": 0.9068,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 108107,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "mechanical",
+          "cpuMeanMs": 0.9281453125,
+          "gpuMeanMs": 0.899104,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 13670.375,
+          "drawCallsOneFrame": 45,
+          "verticesOneFrame": 108107,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "rotary",
+        "baseline": {
+          "scene": "rotary",
+          "cpuMeanMs": 0.400728125,
+          "gpuMeanMs": 0.781616,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 52,
+          "verticesOneFrame": 95813,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "rotary",
+          "cpuMeanMs": 0.966909375,
+          "gpuMeanMs": 0.91344,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 51,
+          "verticesOneFrame": 119657,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "rotary",
+          "cpuMeanMs": 1.035434375,
+          "gpuMeanMs": 0.921456,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 17356.25,
+          "drawCallsOneFrame": 51,
+          "verticesOneFrame": 119657,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "impulse",
+        "baseline": {
+          "scene": "impulse",
+          "cpuMeanMs": 0.5296421875,
+          "gpuMeanMs": 0.78024,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 96299,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "impulse",
+          "cpuMeanMs": 0.9475609375,
+          "gpuMeanMs": 0.905424,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 52,
+          "verticesOneFrame": 121139,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "impulse",
+          "cpuMeanMs": 0.95996875,
+          "gpuMeanMs": 0.938496,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 17958.375,
+          "drawCallsOneFrame": 52,
+          "verticesOneFrame": 121139,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "thermal",
+        "baseline": {
+          "scene": "thermal",
+          "cpuMeanMs": 0.5905890625,
+          "gpuMeanMs": 0.797952,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 52,
+          "verticesOneFrame": 98723,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "thermal",
+          "cpuMeanMs": 0.99143125,
+          "gpuMeanMs": 0.921968,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 51,
+          "verticesOneFrame": 119093,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "thermal",
+          "cpuMeanMs": 1.1474875,
+          "gpuMeanMs": 0.95624,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 15294.375,
+          "drawCallsOneFrame": 51,
+          "verticesOneFrame": 119093,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "idle",
+        "baseline": {
+          "scene": "idle",
+          "cpuMeanMs": 0.655053125,
+          "gpuMeanMs": 0.894976,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 111785,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "idle",
+          "cpuMeanMs": 1.250584375,
+          "gpuMeanMs": 1.034352,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136535,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "idle",
+          "cpuMeanMs": 1.3063015625,
+          "gpuMeanMs": 1.039232,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21078.375,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136535,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "disabled",
+        "baseline": {
+          "scene": "disabled",
+          "cpuMeanMs": 0.599834375,
+          "gpuMeanMs": 0.896112,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 111785,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "disabled",
+          "cpuMeanMs": 0.8913796875,
+          "gpuMeanMs": 1.172048,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136535,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "disabled",
+          "cpuMeanMs": 1.065215625,
+          "gpuMeanMs": 1.186576,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21078.375,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136535,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "empty",
+        "baseline": {
+          "scene": "empty",
+          "cpuMeanMs": 0.802034375,
+          "gpuMeanMs": 0.893584,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 111623,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "empty",
+          "cpuMeanMs": 1.01906875,
+          "gpuMeanMs": 1.033728,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 133943,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "empty",
+          "cpuMeanMs": 1.086896875,
+          "gpuMeanMs": 1.040864,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 19926.375,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 133943,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "full",
+        "baseline": {
+          "scene": "full",
+          "cpuMeanMs": 0.720965625,
+          "gpuMeanMs": 0.898464,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 111857,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "full",
+          "cpuMeanMs": 1.1706375,
+          "gpuMeanMs": 1.003232,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136967,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "full",
+          "cpuMeanMs": 1.2682609375,
+          "gpuMeanMs": 1.004544,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21270.375,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136967,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "water",
+        "baseline": {
+          "scene": "water",
+          "cpuMeanMs": 0.6963734375,
+          "gpuMeanMs": 0.899968,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 111857,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "water",
+          "cpuMeanMs": 1.0006671875,
+          "gpuMeanMs": 1.234784,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136967,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "water",
+          "cpuMeanMs": 1.08043125,
+          "gpuMeanMs": 1.232336,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21270.375,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136967,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "oil",
+        "baseline": {
+          "scene": "oil",
+          "cpuMeanMs": 0.6762015625,
+          "gpuMeanMs": 0.899328,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 111857,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "oil",
+          "cpuMeanMs": 1.020075,
+          "gpuMeanMs": 1.016448,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136967,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "oil",
+          "cpuMeanMs": 1.0278296875,
+          "gpuMeanMs": 0.997008,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21199.125,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136967,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "slag",
+        "baseline": {
+          "scene": "slag",
+          "cpuMeanMs": 0.6827859375,
+          "gpuMeanMs": 0.898576,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 111857,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "slag",
+          "cpuMeanMs": 1.101009375,
+          "gpuMeanMs": 1.117424,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136967,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "slag",
+          "cpuMeanMs": 1.147665625,
+          "gpuMeanMs": 1.151792,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21190.375,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136967,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "cryo",
+        "baseline": {
+          "scene": "cryo",
+          "cpuMeanMs": 0.6079640625,
+          "gpuMeanMs": 0.89888,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 111857,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "cryo",
+          "cpuMeanMs": 0.9485140625,
+          "gpuMeanMs": 0.988368,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136967,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "cryo",
+          "cpuMeanMs": 1.24934375,
+          "gpuMeanMs": 1.005952,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21190.375,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136967,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "stacked",
+        "baseline": {
+          "scene": "stacked",
+          "cpuMeanMs": 0.4900125,
+          "gpuMeanMs": 0.855792,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 101963,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "stacked",
+          "cpuMeanMs": 0.8534265625,
+          "gpuMeanMs": 0.875648,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 52,
+          "verticesOneFrame": 122015,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "stacked",
+          "cpuMeanMs": 0.947384375,
+          "gpuMeanMs": 0.87616,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 15582.375,
+          "drawCallsOneFrame": 52,
+          "verticesOneFrame": 122015,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "floor1",
+        "baseline": {
+          "scene": "floor1",
+          "cpuMeanMs": 0.609834375,
+          "gpuMeanMs": 0.812464,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 50,
+          "verticesOneFrame": 102017,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "floor1",
+          "cpuMeanMs": 0.937434375,
+          "gpuMeanMs": 0.949904,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 49,
+          "verticesOneFrame": 116153,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "floor1",
+          "cpuMeanMs": 0.64394375,
+          "gpuMeanMs": 0.952944,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 13094.375,
+          "drawCallsOneFrame": 49,
+          "verticesOneFrame": 116153,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "floor3",
+        "baseline": {
+          "scene": "floor3",
+          "cpuMeanMs": 0.451434375,
+          "gpuMeanMs": 0.839984,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 49,
+          "verticesOneFrame": 99251,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "floor3",
+          "cpuMeanMs": 0.8217125,
+          "gpuMeanMs": 0.966688,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 115319,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "floor3",
+          "cpuMeanMs": 0.7204984375,
+          "gpuMeanMs": 0.962672,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 13182.375,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 115319,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "floor4",
+        "baseline": {
+          "scene": "floor4",
+          "cpuMeanMs": 0.5540296875,
+          "gpuMeanMs": 0.769744,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 81839,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "floor4",
+          "cpuMeanMs": 0.455103125,
+          "gpuMeanMs": 0.758832,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 84713,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "floor4",
+          "cpuMeanMs": 0.567659375,
+          "gpuMeanMs": 0.754752,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 9366.375,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 84713,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "floor5",
+        "baseline": {
+          "scene": "floor5",
+          "cpuMeanMs": 0.6508609375,
+          "gpuMeanMs": 0.860864,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 49,
+          "verticesOneFrame": 99185,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "floor5",
+          "cpuMeanMs": 0.8796953125,
+          "gpuMeanMs": 0.976064,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 116183,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "floor5",
+          "cpuMeanMs": 1.120975,
+          "gpuMeanMs": 0.994624,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 13548.25,
+          "drawCallsOneFrame": 48,
+          "verticesOneFrame": 116183,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "below",
+        "baseline": {
+          "scene": "below",
+          "cpuMeanMs": 0.4742546875,
+          "gpuMeanMs": 0.783968,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 73667,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "below",
+          "cpuMeanMs": 0.6004625,
+          "gpuMeanMs": 0.801952,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 80957,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "below",
+          "cpuMeanMs": 0.751571875,
+          "gpuMeanMs": 0.801312,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 11510.375,
+          "drawCallsOneFrame": 33,
+          "verticesOneFrame": 80957,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 1,
+          "links": 0
+        }
+      },
+      {
+        "scene": "field100",
+        "baseline": {
+          "scene": "field100",
+          "cpuMeanMs": 0.97460625,
+          "gpuMeanMs": 0.87736,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 107135,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 2,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "field100",
+          "cpuMeanMs": 1.1071375,
+          "gpuMeanMs": 1.569136,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 126305,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 2,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "field100",
+          "cpuMeanMs": 1.1704171875,
+          "gpuMeanMs": 1.397008,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 12083.375,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 126305,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 2,
+          "links": 0
+        }
+      },
+      {
+        "scene": "field1024",
+        "baseline": {
+          "scene": "field1024",
+          "cpuMeanMs": 1.56146875,
+          "gpuMeanMs": 1.479168,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 118,
+          "verticesOneFrame": 246347,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 3,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "field1024",
+          "cpuMeanMs": 2.7810046875,
+          "gpuMeanMs": 4.838368,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 119,
+          "verticesOneFrame": 331313,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 3,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "field1024",
+          "cpuMeanMs": 2.841721875,
+          "gpuMeanMs": 4.604768,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 68387.75,
+          "drawCallsOneFrame": 119,
+          "verticesOneFrame": 331313,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 3,
+          "links": 0
+        }
+      },
+      {
+        "scene": "reload",
+        "baseline": {
+          "scene": "reload",
+          "cpuMeanMs": 0.812303125,
+          "gpuMeanMs": 0.629808,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 54,
+          "verticesOneFrame": 111785,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "reload",
+          "cpuMeanMs": 1.146290625,
+          "gpuMeanMs": 0.142912,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136535,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "reload",
+          "cpuMeanMs": 1.274496875,
+          "gpuMeanMs": 0.142432,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 21199.5,
+          "drawCallsOneFrame": 53,
+          "verticesOneFrame": 136535,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        }
+      },
+      {
+        "scene": "ghost",
+        "baseline": {
+          "scene": "ghost",
+          "cpuMeanMs": 0.6204859375,
+          "gpuMeanMs": 0.824848,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 83177,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "ghost",
+          "cpuMeanMs": 0.7872359375,
+          "gpuMeanMs": 0.316112,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 93419,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "ghost",
+          "cpuMeanMs": 0.7856203125,
+          "gpuMeanMs": 0.315808,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 16239.5,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 93419,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        }
+      },
+      {
+        "scene": "clipboard",
+        "baseline": {
+          "scene": "clipboard",
+          "cpuMeanMs": 0.42515,
+          "gpuMeanMs": 0.797024,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 83045,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "clipboard",
+          "cpuMeanMs": 0.6524203125,
+          "gpuMeanMs": 0.421776,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 93287,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "clipboard",
+          "cpuMeanMs": 0.6889859375,
+          "gpuMeanMs": 0.42128,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 13493.875,
+          "drawCallsOneFrame": 39,
+          "verticesOneFrame": 93287,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        }
+      },
+      {
+        "scene": "unfinished",
+        "baseline": {
+          "scene": "unfinished",
+          "cpuMeanMs": 0.363878125,
+          "gpuMeanMs": 0.795168,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 82949,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "unfinished",
+          "cpuMeanMs": 0.642621875,
+          "gpuMeanMs": 0.566176,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 93191,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "unfinished",
+          "cpuMeanMs": 0.6047859375,
+          "gpuMeanMs": 0.55184,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 12101.625,
+          "drawCallsOneFrame": 40,
+          "verticesOneFrame": 93191,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 4,
+          "links": 0
+        }
+      },
+      {
+        "scene": "previous-models",
+        "baseline": {
+          "scene": "previous-models",
+          "cpuMeanMs": 0.6953109375,
+          "gpuMeanMs": 0.839504,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 103901,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 5,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "previous-models",
+          "cpuMeanMs": 0.561225,
+          "gpuMeanMs": 0.70504,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 104411,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 5,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "previous-models",
+          "cpuMeanMs": 0.81704375,
+          "gpuMeanMs": 0.709664,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 9211.375,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 104411,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 5,
+          "links": 0
+        }
+      },
+      {
+        "scene": "pipes",
+        "baseline": {
+          "scene": "pipes",
+          "cpuMeanMs": 0.5507109375,
+          "gpuMeanMs": 0.819728,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 97607,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 6,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "pipes",
+          "cpuMeanMs": 0.9441,
+          "gpuMeanMs": 1.17568,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 133175,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 6,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "pipes",
+          "cpuMeanMs": 1.381865625,
+          "gpuMeanMs": 1.174928,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 14964.25,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 133175,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 6,
+          "links": 0
+        }
+      },
+      {
+        "scene": "pipes-empty",
+        "baseline": {
+          "scene": "pipes-empty",
+          "cpuMeanMs": 0.621696875,
+          "gpuMeanMs": 0.818128,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 97607,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 6,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "pipes-empty",
+          "cpuMeanMs": 1.13005625,
+          "gpuMeanMs": 0.9988,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 125399,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 6,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "pipes-empty",
+          "cpuMeanMs": 1.0439515625,
+          "gpuMeanMs": 1.00008,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 11495.75,
+          "drawCallsOneFrame": 34,
+          "verticesOneFrame": 125399,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 6,
+          "links": 0
+        }
+      },
+      {
+        "scene": "bridge-links",
+        "baseline": {
+          "scene": "bridge-links",
+          "cpuMeanMs": 0.5257296875,
+          "gpuMeanMs": 0.810352,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 92351,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 7,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "bridge-links",
+          "cpuMeanMs": 0.5500390625,
+          "gpuMeanMs": 0.80952,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 93845,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 7,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "bridge-links",
+          "cpuMeanMs": 0.6313515625,
+          "gpuMeanMs": 0.810288,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 8518.375,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 93845,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 7,
+          "links": 0
+        }
+      },
+      {
+        "scene": "bridge-removal",
+        "baseline": {
+          "scene": "bridge-removal",
+          "cpuMeanMs": 0.453165625,
+          "gpuMeanMs": 0.830416,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 36,
+          "verticesOneFrame": 92171,
+          "cachedModelBuilds": 0,
+          "cachedLinkBuilds": 7,
+          "links": 0
+        },
+        "finalSteam25": {
+          "scene": "bridge-removal",
+          "cpuMeanMs": 0.532453125,
+          "gpuMeanMs": 0.80624,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": -1.0,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 93323,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 7,
+          "links": 0
+        },
+        "finalJava17": {
+          "scene": "bridge-removal",
+          "cpuMeanMs": 0.60665625,
+          "gpuMeanMs": 0.805024,
+          "gpuSamples": 64,
+          "allocatedBytesPerFrame": 8422.125,
+          "drawCallsOneFrame": 37,
+          "verticesOneFrame": 93323,
+          "cachedModelBuilds": 13,
+          "cachedLinkBuilds": 7,
+          "links": 0
+        }
+      }
+    ],
+    "cache": {
+      "benchmark-graphics": {
+        "cachedTypes": 13,
+        "materializedVertices": 16266,
+        "cacheBytes": 520512
+      },
+      "benchmark-java17": {
+        "cachedTypes": 13,
+        "materializedVertices": 16266,
+        "cacheBytes": 520512
+      }
+    },
+    "geometry": {
+      "scope": "One cold generation per unique bounded profile/mask/LOD template; worst-case cache, not FPS",
+      "models": [
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 216,
+          "triangles": 72,
+          "templateBytes": 6912,
+          "coldGenerationMs": 1.6166
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 1,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0631
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 2,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0529
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 3,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0672
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 4,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0463
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 5,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0621
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 6,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0688
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 7,
+          "vertices": 576,
+          "triangles": 192,
+          "templateBytes": 18432,
+          "coldGenerationMs": 0.0773
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 8,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0503
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 9,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0721
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 10,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0625
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 11,
+          "vertices": 576,
+          "triangles": 192,
+          "templateBytes": 18432,
+          "coldGenerationMs": 0.0644
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 12,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0317
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 13,
+          "vertices": 576,
+          "triangles": 192,
+          "templateBytes": 18432,
+          "coldGenerationMs": 0.0465
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 14,
+          "vertices": 576,
+          "triangles": 192,
+          "templateBytes": 18432,
+          "coldGenerationMs": 0.0217
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 0,
+          "mask": 15,
+          "vertices": 696,
+          "triangles": 232,
+          "templateBytes": 22272,
+          "coldGenerationMs": 0.0312
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 216,
+          "triangles": 72,
+          "templateBytes": 6912,
+          "coldGenerationMs": 0.0141
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 1,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0227
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 2,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0184
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 3,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0199
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 4,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0286
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 5,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0192
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 6,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0246
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 7,
+          "vertices": 576,
+          "triangles": 192,
+          "templateBytes": 18432,
+          "coldGenerationMs": 0.0209
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 8,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0172
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 9,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0324
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 10,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0177
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 11,
+          "vertices": 576,
+          "triangles": 192,
+          "templateBytes": 18432,
+          "coldGenerationMs": 0.0196
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 12,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0184
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 13,
+          "vertices": 576,
+          "triangles": 192,
+          "templateBytes": 18432,
+          "coldGenerationMs": 0.0307
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 14,
+          "vertices": 576,
+          "triangles": 192,
+          "templateBytes": 18432,
+          "coldGenerationMs": 0.0288
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 1,
+          "mask": 15,
+          "vertices": 696,
+          "triangles": 232,
+          "templateBytes": 22272,
+          "coldGenerationMs": 0.0295
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 216,
+          "triangles": 72,
+          "templateBytes": 6912,
+          "coldGenerationMs": 0.0116
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 1,
+          "vertices": 276,
+          "triangles": 92,
+          "templateBytes": 8832,
+          "coldGenerationMs": 0.0151
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 2,
+          "vertices": 276,
+          "triangles": 92,
+          "templateBytes": 8832,
+          "coldGenerationMs": 0.0173
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 3,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0201
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 4,
+          "vertices": 276,
+          "triangles": 92,
+          "templateBytes": 8832,
+          "coldGenerationMs": 0.0147
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 5,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0191
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 6,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0233
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 7,
+          "vertices": 396,
+          "triangles": 132,
+          "templateBytes": 12672,
+          "coldGenerationMs": 0.0185
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 8,
+          "vertices": 276,
+          "triangles": 92,
+          "templateBytes": 8832,
+          "coldGenerationMs": 0.0145
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 9,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0199
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 10,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0573
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 11,
+          "vertices": 396,
+          "triangles": 132,
+          "templateBytes": 12672,
+          "coldGenerationMs": 0.0179
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 12,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.015
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 13,
+          "vertices": 396,
+          "triangles": 132,
+          "templateBytes": 12672,
+          "coldGenerationMs": 0.0263
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 14,
+          "vertices": 396,
+          "triangles": 132,
+          "templateBytes": 12672,
+          "coldGenerationMs": 0.0264
+        },
+        {
+          "profile": "CONDUIT",
+          "lod": 2,
+          "mask": 15,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.034
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 306,
+          "triangles": 102,
+          "templateBytes": 9792,
+          "coldGenerationMs": 0.0213
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 1,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0313
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 2,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0289
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 3,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.0516
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 4,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0133
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 5,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.0197
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 6,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.0165
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 7,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0229
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 8,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0162
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 9,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.0189
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 10,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.0168
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 11,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0174
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 12,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.0279
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 13,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0261
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 14,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0197
+        },
+        {
+          "profile": "PULSE",
+          "lod": 0,
+          "mask": 15,
+          "vertices": 786,
+          "triangles": 262,
+          "templateBytes": 25152,
+          "coldGenerationMs": 0.0352
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 306,
+          "triangles": 102,
+          "templateBytes": 9792,
+          "coldGenerationMs": 0.0345
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 1,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0264
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 2,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0175
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 3,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.016
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 4,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.015
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 5,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.016
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 6,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.016
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 7,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0168
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 8,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0146
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 9,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.0202
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 10,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.0319
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 11,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0483
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 12,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.0332
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 13,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0434
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 14,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0358
+        },
+        {
+          "profile": "PULSE",
+          "lod": 1,
+          "mask": 15,
+          "vertices": 786,
+          "triangles": 262,
+          "templateBytes": 25152,
+          "coldGenerationMs": 0.0589
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 306,
+          "triangles": 102,
+          "templateBytes": 9792,
+          "coldGenerationMs": 0.0284
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 1,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.0146
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 2,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.0157
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 3,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0249
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 4,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.0144
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 5,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0201
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 6,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0234
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 7,
+          "vertices": 486,
+          "triangles": 162,
+          "templateBytes": 15552,
+          "coldGenerationMs": 0.0414
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 8,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.0185
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 9,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0331
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 10,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0117
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 11,
+          "vertices": 486,
+          "triangles": 162,
+          "templateBytes": 15552,
+          "coldGenerationMs": 0.0163
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 12,
+          "vertices": 426,
+          "triangles": 142,
+          "templateBytes": 13632,
+          "coldGenerationMs": 0.0157
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 13,
+          "vertices": 486,
+          "triangles": 162,
+          "templateBytes": 15552,
+          "coldGenerationMs": 0.016
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 14,
+          "vertices": 486,
+          "triangles": 162,
+          "templateBytes": 15552,
+          "coldGenerationMs": 0.0178
+        },
+        {
+          "profile": "PULSE",
+          "lod": 2,
+          "mask": 15,
+          "vertices": 546,
+          "triangles": 182,
+          "templateBytes": 17472,
+          "coldGenerationMs": 0.0237
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 216,
+          "triangles": 72,
+          "templateBytes": 6912,
+          "coldGenerationMs": 0.0172
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 1,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.0304
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 2,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.028
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 3,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.0356
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 4,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.036
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 5,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.0175
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 6,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.0221
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 7,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0402
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 8,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.0308
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 9,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.0299
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 10,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.0235
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 11,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0469
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 12,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.0355
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 13,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0371
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 14,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0356
+        },
+        {
+          "profile": "PLATED",
+          "lod": 0,
+          "mask": 15,
+          "vertices": 816,
+          "triangles": 272,
+          "templateBytes": 26112,
+          "coldGenerationMs": 0.0324
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 216,
+          "triangles": 72,
+          "templateBytes": 6912,
+          "coldGenerationMs": 0.0132
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 1,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.016
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 2,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.0142
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 3,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.0206
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 4,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.0193
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 5,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.024
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 6,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.0232
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 7,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0441
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 8,
+          "vertices": 366,
+          "triangles": 122,
+          "templateBytes": 11712,
+          "coldGenerationMs": 0.0256
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 9,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.024
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 10,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.0217
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 11,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0406
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 12,
+          "vertices": 516,
+          "triangles": 172,
+          "templateBytes": 16512,
+          "coldGenerationMs": 0.0314
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 13,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0567
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 14,
+          "vertices": 666,
+          "triangles": 222,
+          "templateBytes": 21312,
+          "coldGenerationMs": 0.0432
+        },
+        {
+          "profile": "PLATED",
+          "lod": 1,
+          "mask": 15,
+          "vertices": 816,
+          "triangles": 272,
+          "templateBytes": 26112,
+          "coldGenerationMs": 0.0514
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 216,
+          "triangles": 72,
+          "templateBytes": 6912,
+          "coldGenerationMs": 0.0236
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 1,
+          "vertices": 276,
+          "triangles": 92,
+          "templateBytes": 8832,
+          "coldGenerationMs": 0.025
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 2,
+          "vertices": 276,
+          "triangles": 92,
+          "templateBytes": 8832,
+          "coldGenerationMs": 0.0135
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 3,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0196
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 4,
+          "vertices": 276,
+          "triangles": 92,
+          "templateBytes": 8832,
+          "coldGenerationMs": 0.0164
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 5,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.022
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 6,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.017
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 7,
+          "vertices": 396,
+          "triangles": 132,
+          "templateBytes": 12672,
+          "coldGenerationMs": 0.0225
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 8,
+          "vertices": 276,
+          "triangles": 92,
+          "templateBytes": 8832,
+          "coldGenerationMs": 0.0174
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 9,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0254
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 10,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0208
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 11,
+          "vertices": 396,
+          "triangles": 132,
+          "templateBytes": 12672,
+          "coldGenerationMs": 0.0244
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 12,
+          "vertices": 336,
+          "triangles": 112,
+          "templateBytes": 10752,
+          "coldGenerationMs": 0.0144
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 13,
+          "vertices": 396,
+          "triangles": 132,
+          "templateBytes": 12672,
+          "coldGenerationMs": 0.023
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 14,
+          "vertices": 396,
+          "triangles": 132,
+          "templateBytes": 12672,
+          "coldGenerationMs": 0.0207
+        },
+        {
+          "profile": "PLATED",
+          "lod": 2,
+          "mask": 15,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0221
+        },
+        {
+          "profile": "ROUTER",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 408,
+          "triangles": 136,
+          "templateBytes": 13056,
+          "coldGenerationMs": 0.544
+        },
+        {
+          "profile": "ROUTER",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 372,
+          "triangles": 124,
+          "templateBytes": 11904,
+          "coldGenerationMs": 0.039
+        },
+        {
+          "profile": "ROUTER",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 96,
+          "triangles": 32,
+          "templateBytes": 3072,
+          "coldGenerationMs": 0.0107
+        },
+        {
+          "profile": "JUNCTION",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 276,
+          "triangles": 92,
+          "templateBytes": 8832,
+          "coldGenerationMs": 0.0239
+        },
+        {
+          "profile": "JUNCTION",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 276,
+          "triangles": 92,
+          "templateBytes": 8832,
+          "coldGenerationMs": 0.0158
+        },
+        {
+          "profile": "JUNCTION",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 96,
+          "triangles": 32,
+          "templateBytes": 3072,
+          "coldGenerationMs": 0.0091
+        },
+        {
+          "profile": "BRIDGE",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 390,
+          "triangles": 130,
+          "templateBytes": 12480,
+          "coldGenerationMs": 0.0287
+        },
+        {
+          "profile": "BRIDGE",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 354,
+          "triangles": 118,
+          "templateBytes": 11328,
+          "coldGenerationMs": 0.0235
+        },
+        {
+          "profile": "BRIDGE",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 96,
+          "triangles": 32,
+          "templateBytes": 3072,
+          "coldGenerationMs": 0.0174
+        },
+        {
+          "profile": "PHASE",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 450,
+          "triangles": 150,
+          "templateBytes": 14400,
+          "coldGenerationMs": 0.0242
+        },
+        {
+          "profile": "PHASE",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 414,
+          "triangles": 138,
+          "templateBytes": 13248,
+          "coldGenerationMs": 0.0254
+        },
+        {
+          "profile": "PHASE",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 96,
+          "triangles": 32,
+          "templateBytes": 3072,
+          "coldGenerationMs": 0.011
+        },
+        {
+          "profile": "CONTAINER",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 528,
+          "triangles": 176,
+          "templateBytes": 16896,
+          "coldGenerationMs": 0.0415
+        },
+        {
+          "profile": "CONTAINER",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 444,
+          "triangles": 148,
+          "templateBytes": 14208,
+          "coldGenerationMs": 0.0306
+        },
+        {
+          "profile": "CONTAINER",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 96,
+          "triangles": 32,
+          "templateBytes": 3072,
+          "coldGenerationMs": 0.0113
+        },
+        {
+          "profile": "TANK",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 648,
+          "triangles": 216,
+          "templateBytes": 20736,
+          "coldGenerationMs": 0.034
+        },
+        {
+          "profile": "TANK",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 564,
+          "triangles": 188,
+          "templateBytes": 18048,
+          "coldGenerationMs": 0.0295
+        },
+        {
+          "profile": "TANK",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 96,
+          "triangles": 32,
+          "templateBytes": 3072,
+          "coldGenerationMs": 0.0095
+        },
+        {
+          "profile": "MECHANICAL",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 486,
+          "triangles": 162,
+          "templateBytes": 15552,
+          "coldGenerationMs": 0.0255
+        },
+        {
+          "profile": "MECHANICAL",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 450,
+          "triangles": 150,
+          "templateBytes": 14400,
+          "coldGenerationMs": 0.0194
+        },
+        {
+          "profile": "MECHANICAL",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 96,
+          "triangles": 32,
+          "templateBytes": 3072,
+          "coldGenerationMs": 0.0075
+        },
+        {
+          "profile": "ROTARY",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 444,
+          "triangles": 148,
+          "templateBytes": 14208,
+          "coldGenerationMs": 0.0161
+        },
+        {
+          "profile": "ROTARY",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 408,
+          "triangles": 136,
+          "templateBytes": 13056,
+          "coldGenerationMs": 0.0169
+        },
+        {
+          "profile": "ROTARY",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 96,
+          "triangles": 32,
+          "templateBytes": 3072,
+          "coldGenerationMs": 0.0083
+        },
+        {
+          "profile": "IMPULSE",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 768,
+          "triangles": 256,
+          "templateBytes": 24576,
+          "coldGenerationMs": 0.0385
+        },
+        {
+          "profile": "IMPULSE",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 540,
+          "triangles": 180,
+          "templateBytes": 17280,
+          "coldGenerationMs": 0.0374
+        },
+        {
+          "profile": "IMPULSE",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 96,
+          "triangles": 32,
+          "templateBytes": 3072,
+          "coldGenerationMs": 0.01
+        },
+        {
+          "profile": "THERMAL",
+          "lod": 0,
+          "mask": 0,
+          "vertices": 588,
+          "triangles": 196,
+          "templateBytes": 18816,
+          "coldGenerationMs": 0.0331
+        },
+        {
+          "profile": "THERMAL",
+          "lod": 1,
+          "mask": 0,
+          "vertices": 456,
+          "triangles": 152,
+          "templateBytes": 14592,
+          "coldGenerationMs": 0.0227
+        },
+        {
+          "profile": "THERMAL",
+          "lod": 2,
+          "mask": 0,
+          "vertices": 30,
+          "triangles": 10,
+          "templateBytes": 960,
+          "coldGenerationMs": 0.0042
+        }
+      ],
+      "uniqueTemplates": 174,
+      "allTemplateBytes": 2441664
+    }
+  },
+  "pixelChecks": {
+    "animations": [
+      {
+        "scene": "mechanical",
+        "changedPixels": 350,
+        "scope": "Actual GL frames with native updates; changes are not isolated-part or physical acceptance proof."
+      },
+      {
+        "scene": "rotary",
+        "changedPixels": 1659,
+        "scope": "Actual GL frames with native updates; changes are not isolated-part or physical acceptance proof."
+      },
+      {
+        "scene": "impulse",
+        "changedPixels": 407,
+        "scope": "Actual GL frames with native updates; changes are not isolated-part or physical acceptance proof."
+      },
+      {
+        "scene": "thermal",
+        "changedPixels": 516,
+        "scope": "Actual GL frames with native updates; changes are not isolated-part or physical acceptance proof."
+      }
+    ],
+    "priorModels": {
+      "changedPixels": 2009,
+      "bounds": [
+        294,
+        105,
+        960,
+        338
+      ],
+      "scope": "Same prior-only scene/camera; class identity verified separately. Differences are reported without assigning cause."
+    }
+  },
+  "newControls": false,
+  "gameplaySimulationChanged": false,
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "actualRemoteMultiplayer": "NOT TESTED",
+  "realGameplayFps": "NOT TESTED",
+  "focusedThermalStateGraphics": {
+    "scope": "Focused same-camera Thermal Generator on actual native hotrock. Native enabled/efficiency flags prescribed as normal active or disabled; native updateTile derives actual production. No runtime/source changes. Three scenes/384 frames per runtime, no save/reload claim. Actual GL color comparison, not owner physical acceptance.",
+    "runs": {
+      "thermal-state-steam25": {
+        "result": {
+          "status": "PASS",
+          "frames": 384,
+          "glErrors": 0,
+          "nativeWorldUnchangedByRendering": true,
+          "saveLoad": false,
+          "physicalAcceptance": false,
+          "powerPassStateChecks": 3,
+          "measurements": [
+            {
+              "scene": "thermal",
+              "cpuMeanMs": 0.564578125,
+              "gpuMeanMs": 0.471056,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 15,
+              "verticesOneFrame": 40115,
+              "cachedModelBuilds": 1,
+              "cachedLinkBuilds": 1,
+              "links": 0
+            },
+            {
+              "scene": "disabled",
+              "cpuMeanMs": 0.3163421875,
+              "gpuMeanMs": 0.3568,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 15,
+              "verticesOneFrame": 40115,
+              "cachedModelBuilds": 1,
+              "cachedLinkBuilds": 1,
+              "links": 0
+            },
+            {
+              "scene": "idle",
+              "cpuMeanMs": 0.288209375,
+              "gpuMeanMs": 0.276032,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": -1.0,
+              "drawCallsOneFrame": 15,
+              "verticesOneFrame": 40115,
+              "cachedModelBuilds": 1,
+              "cachedLinkBuilds": 1,
+              "links": 0
+            }
+          ]
+        },
+        "nativeProduction": {
+          "authorizedUpperBlocks": 0,
+          "acceptedXYZLinks": 0,
+          "nativePerType": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            864
+          ],
+          "upperPerType": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "changedPixels": 978,
+        "differenceBounds": [
+          451,
+          283,
+          621,
+          316
+        ],
+        "overlay": {
+          "originalJarSha256": "9e72ec58c1bc7545dd14e01bc3d14cf8e660b784d464f1c3dd6661f5d5e1f8e8",
+          "onlyReplacedClass": "fpv/SmokeHarness.class",
+          "replacementSha256": "1b87cd88d0da15a5ef59d04ba9810dcd0ce1d9a78fe544f0a8b098ee45bc6398",
+          "scope": "Isolated actual SDL fixture; no physical gameplay proof"
+        }
+      },
+      "thermal-state-java17": {
+        "result": {
+          "status": "PASS",
+          "frames": 384,
+          "glErrors": 0,
+          "nativeWorldUnchangedByRendering": true,
+          "saveLoad": false,
+          "physicalAcceptance": false,
+          "powerPassStateChecks": 3,
+          "measurements": [
+            {
+              "scene": "thermal",
+              "cpuMeanMs": 0.698390578125,
+              "gpuMeanMs": 0.3222024126984127,
+              "gpuSamples": 63,
+              "allocatedBytesPerFrame": 4470.875,
+              "drawCallsOneFrame": 15,
+              "verticesOneFrame": 40115,
+              "cachedModelBuilds": 1,
+              "cachedLinkBuilds": 1,
+              "links": 0
+            },
+            {
+              "scene": "disabled",
+              "cpuMeanMs": 0.39545159375,
+              "gpuMeanMs": 0.299584,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": 4225.125,
+              "drawCallsOneFrame": 15,
+              "verticesOneFrame": 40115,
+              "cachedModelBuilds": 1,
+              "cachedLinkBuilds": 1,
+              "links": 0
+            },
+            {
+              "scene": "idle",
+              "cpuMeanMs": 0.2751530625,
+              "gpuMeanMs": 0.28488,
+              "gpuSamples": 64,
+              "allocatedBytesPerFrame": 3238.0,
+              "drawCallsOneFrame": 15,
+              "verticesOneFrame": 40115,
+              "cachedModelBuilds": 1,
+              "cachedLinkBuilds": 1,
+              "links": 0
+            }
+          ]
+        },
+        "nativeProduction": {
+          "authorizedUpperBlocks": 0,
+          "acceptedXYZLinks": 0,
+          "nativePerType": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            864
+          ],
+          "upperPerType": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "changedPixels": 978,
+        "differenceBounds": [
+          451,
+          283,
+          621,
+          316
+        ],
+        "overlay": {
+          "originalJarSha256": "9e72ec58c1bc7545dd14e01bc3d14cf8e660b784d464f1c3dd6661f5d5e1f8e8",
+          "onlyReplacedClass": "fpv/SmokeHarness.class",
+          "replacementSha256": "1b87cd88d0da15a5ef59d04ba9810dcd0ce1d9a78fe544f0a8b098ee45bc6398",
+          "scope": "Isolated actual SDL fixture; no physical gameplay proof"
+        }
+      }
+    }
+  }
+}
