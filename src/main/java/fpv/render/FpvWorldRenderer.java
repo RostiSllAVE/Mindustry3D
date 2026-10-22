@@ -109,6 +109,9 @@ public final class FpvWorldRenderer {
     private final PowerConnectionRenderer powerConnections=new PowerConnectionRenderer();
     public long powerConnectionBuilds(){return powerConnections.builds();}
     public int powerConnectionCount(){return powerConnections.links();}
+    private final SupportModelRenderer supportModels=new SupportModelRenderer();
+    public long supportModelBuilds(){return supportModels.builds();}
+    public long supportModelBytes(){return supportModels.bytes();}
     private final LiquidModelRenderer liquidModels=new LiquidModelRenderer();
     public long liquidModelBuilds(){return liquidModels.builds();}
     public long liquidModelBytes(){return liquidModels.bytes();}
@@ -1002,6 +1005,7 @@ public final class FpvWorldRenderer {
             texturedWall(b.tile,streamAtlas,dynamic,x,z,size,h,false);
             return true;
         }
+        if(supportModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(liquidModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(powerModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(chemicalModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
@@ -1440,7 +1444,7 @@ public final class FpvWorldRenderer {
         placedBuildings.clear(); submittedBuildings.clear(); submittedBridges.clear(); submittedUnits.clear();submittedUnitBodies.clear();placedWorldTiles = null;
         buildingFrameCompleted = false;
         combatVisuals.clear();
-        organicProps.clear();oreDeposits.clear();powerConnections.close();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
+        organicProps.clear();oreDeposits.clear();powerConnections.close();supportModels.clear();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
         clearChunks();
         if (shader != null) shader.dispose();
         if (atlasShader != null) atlasShader.dispose();
