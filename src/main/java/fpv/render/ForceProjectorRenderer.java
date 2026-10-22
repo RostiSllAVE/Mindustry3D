@@ -20,12 +20,13 @@ public final class ForceProjectorRenderer {
     private final HashSet<Building> submitted=new HashSet<>();
     private final Color color=new Color();
     private final float[] a=new float[3],b=new float[3],c=new float[3],d=new float[3],center=new float[3];
-    private int count,faces;
+    private int count,faces,orbs;
     private Mesh mesh;
     private Shader shader;
     public boolean wasSubmitted(Building building){return submitted.contains(building);}
     public int faceCount(){return faces;}
-    public void clear(){submitted.clear();count=0;faces=0;}
+    public int activityOrbCount(){return orbs;}
+    public void clear(){submitted.clear();count=0;faces=0;orbs=0;}
     /** Draw after opaque world geometry; no GPU state leaks into Mindustry UI or the next frame. */
     public void render(Camera3D camera,ForceProjectorSystem system){
         render(camera,system,null);
@@ -59,6 +60,21 @@ public final class ForceProjectorRenderer {
         if(shader==null){shader=new Shader(VERTEX,FRAGMENT);mesh=new Mesh(false,data.length/7,0,VertexAttribute.position3,new VertexAttribute(4,"a_color"));}
         shader.bind();shader.setUniformMatrix4("u_combined",camera.combined.val);color.set(building.team.color).lerp(Color.white,flash);
         shell(x,y,bottom,top,radius,sides,rotation,flash);submitted.add(building);
+        if(building instanceof mindustry.world.blocks.defense.ForceProjector.ForceBuild&&building.enabled)activity(camera,building,x,y,bottom,radius,flash);
+    }
+    /** Small emitter hologram, not a replacement for the authoritative protective prism. */
+    private void activity(Camera3D camera,Building building,double x,double y,double bottom,double fieldRadius,float flash){
+        float radius=building.block.size*.13f,h=FpvWorldRenderer.heightFor(building.block),cy=(float)bottom+h*.85f+.038f+radius;
+        float dist=camera.position.dst2((float)x,cy,(float)-y);if(dist>48*48||!camera.frustum.containsSphere((float)x,cy,(float)-y,radius*1.02f))return;
+        var type=(mindustry.world.blocks.defense.ForceProjector)building.block;
+        float strength=(float)Math.min(1,fieldRadius/Math.max(.001,type.radius/Vars.tilesize)),fade=Math.min(1,(48-(float)Math.sqrt(dist))/8);
+        double angle=Float.isFinite(arc.util.Time.time)?arc.util.Time.time*.004:0,cos=Math.cos(angle),sin=Math.sin(angle);var model=ShieldActivityGeometry.model();
+        orbPart(dist<18*18?model.panels():model.coarse(),x,cy,-y,radius,cos,sin,(.055f+flash*.08f)*strength*fade);
+        if(dist<18*18)orbPart(model.edges(),x,cy,-y,radius,cos,sin,(.55f+flash*.25f)*strength*fade);
+        orbs++;
+    }
+    private void orbPart(float[] vertices,double x,double y,double z,float radius,double cos,double sin,float alpha){
+        for(int i=0;i<vertices.length;i+=3){reserve(1);float px=vertices[i]*radius,pz=vertices[i+2]*radius;vertex((float)(x+px*cos-pz*sin),(float)y+vertices[i+1]*radius,(float)(z+px*sin+pz*cos),alpha);}
     }
     private void shell(double x,double y,double bottom,double top,double radius,int sides,double rotation,float flash){
         float fill=(float)(ForceConfig.FILL_ALPHA+flash*ForceConfig.FLASH_ALPHA),outline=(float)(ForceConfig.EDGE_ALPHA+flash*ForceConfig.FLASH_ALPHA);

@@ -27,7 +27,8 @@ final class SupportModelRenderer {
         float active=level(b),charge=phase(b),boost=booster(b),angle=charge*360;
         if(lod<2){if(b instanceof BuildTurret.BuildTurretBuild t){float yaw=t.buildRotation();SpriteExtrusionGeometry.basis(90+(Float.isFinite(yaw)?yaw:0),0,0,moving);out.extrusion(NativeRegions.block(b.block),a[2],x,base+h*.65f,z,size,h,size,moving,1,1,1);}else{SpriteExtrusionGeometry.basis(90+angle,0,0,moving);out.extrusion(m.region,a[2],x,base,z,size,h,size,moving,1,1,1);}}
         if(p.storage()||lod==2)out.top(m.top,x,base+h*.815f,z,size*.80f,size*.80f,0,1,1,1,false);
-        else if(p!=SupportModelProfile.BUILD)out.top(m.top,x,base+h*.85f,z,size*.27f,size*.27f,0,1,1,1,false);
+        // Force's native cap used to be coplanar with its column roof (.85h).
+        else if(p!=SupportModelProfile.BUILD)out.top(m.top,x,base+h*.85f+(p==SupportModelProfile.FORCE?.008f:0),z,size*.27f,size*.27f,0,1,1,1,false);
         if(b.block instanceof MendProjector t)tint.set(t.baseColor).lerp(t.phaseColor,boost);else if(b.block instanceof OverdriveProjector t)tint.set(t.baseColor).lerp(t.phaseColor,boost);else if(b.block instanceof RegenProjector t)tint.set(t.baseColor);else if(p==SupportModelProfile.FORCE)tint.set(b.team.color);else if(p.reinforced())tint.set(mindustry.graphics.Pal.berylShot);else tint.set(mindustry.graphics.Pal.powerLight);
         // Mend glow indicates readiness only. No outbound pulse falsely claims a heal occurred.
         float brightness=.08f+active*.75f;out.extrusion(Core.atlas.white(),a[3],x,p==SupportModelProfile.BUILD&&lod<2?base+h*.65f:base,z,size,h,size,p==SupportModelProfile.BUILD&&lod<2?moving:basis,tint.r*brightness,tint.g*brightness,tint.b*brightness);

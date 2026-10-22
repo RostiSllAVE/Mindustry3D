@@ -112,6 +112,11 @@ public final class FpvWorldRenderer {
     private final SupportModelRenderer supportModels=new SupportModelRenderer();
     public long supportModelBuilds(){return supportModels.builds();}
     public long supportModelBytes(){return supportModels.bytes();}
+    private final UtilityModelRenderer utilityModels=new UtilityModelRenderer();
+    public long utilityModelBuilds(){return utilityModels.builds();}
+    public long utilityModelBytes(){return utilityModels.bytes();}
+    private final TransferBeamRenderer transferBeams=new TransferBeamRenderer();
+    public TransferBeamRenderer transferBeams(){return transferBeams;}
     private final LiquidModelRenderer liquidModels=new LiquidModelRenderer();
     public long liquidModelBuilds(){return liquidModels.builds();}
     public long liquidModelBytes(){return liquidModels.bytes();}
@@ -311,7 +316,7 @@ public final class FpvWorldRenderer {
         turretModels.clear();
         miningVisuals.clear();
         revision++; coarseFog.clear(); elevation.invalidate();
-        placedBuildings.clear(); submittedBuildings.clear(); submittedBridges.clear(); submittedUnits.clear();submittedUnitBodies.clear();forceFields.clear();projectedWalls.invalidate();forceProjectorRenderer.clear();supportEffects.clear();groundFamily.clear();
+        placedBuildings.clear(); submittedBuildings.clear(); submittedBridges.clear(); submittedUnits.clear();submittedUnitBodies.clear();forceFields.clear();projectedWalls.invalidate();forceProjectorRenderer.clear();transferBeams.clear();supportEffects.clear();groundFamily.clear();
         placedBuildingsDirty = true;
         buildingFrameCompleted = false;
     }
@@ -601,6 +606,7 @@ public final class FpvWorldRenderer {
             profiled=CameraPerformanceProfile.start();
             forceProjectorRenderer.render(camera,forceProjectors,constructionRuntime);
             forceFields.render(camera,unitAltitudes);
+            transferBeams.render(camera,placedBuildings.values(),constructionRuntime);
             CameraPerformanceProfile.end(Part.FIELDS,profiled);
             profiled=CameraPerformanceProfile.start();
             threatMarkers.render(camera,unitAltitudes,sceneBuffer,showControlledUnit);
@@ -1006,6 +1012,7 @@ public final class FpvWorldRenderer {
             return true;
         }
         if(supportModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
+        if(utilityModels.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(liquidModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(powerModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(chemicalModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
@@ -1444,13 +1451,13 @@ public final class FpvWorldRenderer {
         placedBuildings.clear(); submittedBuildings.clear(); submittedBridges.clear(); submittedUnits.clear();submittedUnitBodies.clear();placedWorldTiles = null;
         buildingFrameCompleted = false;
         combatVisuals.clear();
-        organicProps.clear();oreDeposits.clear();powerConnections.close();supportModels.clear();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
+        organicProps.clear();oreDeposits.clear();powerConnections.close();utilityModels.clear();supportModels.clear();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
         clearChunks();
         if (shader != null) shader.dispose();
         if (atlasShader != null) atlasShader.dispose();
         if (dynamicMesh != null) dynamicMesh.dispose();
         if (sceneBuffer != null) sceneBuffer.dispose();
-        cosmicFloors.dispose();liquidStatic.dispose();liquidStream.dispose();liquidImmersion.close();if(liquidShader!=null)liquidShader.dispose();staticAtlas.dispose();streamAtlas.dispose();environment.dispose();extrusion.dispose();groundFamily.close();naval.close();forceFields.dispose();projectedWalls.dispose();forceProjectorRenderer.dispose();supportEffects.clear();
+        cosmicFloors.dispose();liquidStatic.dispose();liquidStream.dispose();liquidImmersion.close();if(liquidShader!=null)liquidShader.dispose();staticAtlas.dispose();streamAtlas.dispose();environment.dispose();extrusion.dispose();groundFamily.close();naval.close();forceFields.dispose();projectedWalls.dispose();forceProjectorRenderer.dispose();transferBeams.close();supportEffects.clear();
     }
 
     private void clearChunks() {
