@@ -1,0 +1,744 @@
+{
+  "task": "A2-16f",
+  "baselineCommit": "195cb152c66679f5a46c8850ca85abf2c3e85a92",
+  "branch": "main",
+  "jarSha256": "c759acd80c4aecdb7756175b6010c9db39e71525470c98a16601bf7713d26587",
+  "payloadIdentity": "payload1-6364009865c53cd2df5b43beda031f631ab0c923fdf24c484787e339c37add33",
+  "java17ProgramsPassed": 180,
+  "stockSteam25ProgramsPassed": 180,
+  "freshSourceVerification": {
+    "status": "PASS",
+    "freshRecompiledRuntimeClassesByteIdentical": 997,
+    "packagedResourcesMatch": true,
+    "frozenSourceInputsMatch": true,
+    "jarSha256": "c759acd80c4aecdb7756175b6010c9db39e71525470c98a16601bf7713d26587"
+  },
+  "changedRuntimeEntries": [
+    "fpv/render/FpvWorldRenderer$1.class",
+    "fpv/render/FpvWorldRenderer$AircraftStats.class",
+    "fpv/render/FpvWorldRenderer$BuildBeamState.class",
+    "fpv/render/FpvWorldRenderer$Candidate.class",
+    "fpv/render/FpvWorldRenderer$ChunkMesh.class",
+    "fpv/render/FpvWorldRenderer$CoarseFogMask.class",
+    "fpv/render/FpvWorldRenderer$DepthSceneBuffer.class",
+    "fpv/render/FpvWorldRenderer$Geometry.class",
+    "fpv/render/FpvWorldRenderer$PickResult.class",
+    "fpv/render/FpvWorldRenderer$Stats.class",
+    "fpv/render/FpvWorldRenderer.class",
+    "fpv/render/LayerWorldRenderer$Activity.class",
+    "fpv/render/LayerWorldRenderer.class"
+  ],
+  "newRuntimeEntries": [
+    "fpv/render/ChemicalModelGeometry$1.class",
+    "fpv/render/ChemicalModelGeometry$Model.class",
+    "fpv/render/ChemicalModelGeometry.class",
+    "fpv/render/ChemicalModelProfile.class",
+    "fpv/render/ChemicalModelRenderer$1.class",
+    "fpv/render/ChemicalModelRenderer$Model.class",
+    "fpv/render/ChemicalModelRenderer.class"
+  ],
+  "unchangedExistingRuntimeClassesIncludingDependencies": 1102,
+  "licensesAndJnaUnchanged": true,
+  "alphaFilesPreserved": 2065,
+  "earlierDiagnosticAssetsPreserved": 99,
+  "actualWindowsScriptedGraphics": {
+    "benchmark-baseline": {
+      "status": "PASS",
+      "frames": 3456,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false
+    },
+    "benchmark-final-graphics": {
+      "status": "PASS",
+      "frames": 3456,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false
+    },
+    "benchmark-final-java17": {
+      "status": "PASS",
+      "frames": 3456,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false
+    }
+  },
+  "nativeProductionAndBeltObservations": {
+    "benchmark-baseline": {
+      "nativeOutputObservations": 211876,
+      "upperOutputObservations": 74772,
+      "authorizedUpperFactories": 64,
+      "nativeBeltFlow": true,
+      "upperBeltFlow": true,
+      "nativePerType": [
+        21762,
+        21762,
+        21762,
+        15677,
+        5531,
+        21494,
+        21494,
+        15108
+      ],
+      "upperPerType": [
+        12984,
+        12984,
+        12984,
+        10712,
+        3260,
+        12984,
+        1148,
+        7716
+      ]
+    },
+    "benchmark-final-graphics": {
+      "nativeOutputObservations": 211876,
+      "upperOutputObservations": 74772,
+      "authorizedUpperFactories": 64,
+      "nativeBeltFlow": true,
+      "upperBeltFlow": true,
+      "nativePerType": [
+        21762,
+        21762,
+        21762,
+        15677,
+        5531,
+        21494,
+        21494,
+        15108
+      ],
+      "upperPerType": [
+        12984,
+        12984,
+        12984,
+        10712,
+        3260,
+        12984,
+        1148,
+        7716
+      ]
+    },
+    "benchmark-final-java17": {
+      "nativeOutputObservations": 211876,
+      "upperOutputObservations": 74772,
+      "authorizedUpperFactories": 64,
+      "nativeBeltFlow": true,
+      "upperBeltFlow": true,
+      "nativePerType": [
+        21762,
+        21762,
+        21762,
+        15677,
+        5531,
+        21494,
+        21494,
+        15108
+      ],
+      "upperPerType": [
+        12984,
+        12984,
+        12984,
+        10712,
+        3260,
+        12984,
+        1148,
+        7716
+      ]
+    }
+  },
+  "comparison": {
+    "baseline": "owner-accepted A2-16e 195cb152c66679f5a46c8850ca85abf2c3e85a92",
+    "candidateJarSha256": "c759acd80c4aecdb7756175b6010c9db39e71525470c98a16601bf7713d26587",
+    "runtime": "stock Steam25 Windows SDL/OpenGL, 960x600",
+    "scope": "Sequential whole-renderer calls; identical fixture overlay and layouts, 48 warmup +64 timed frames per scene, asynchronous GPU queries; not gameplay FPS or statistical performance guarantee",
+    "cacheBefore": {
+      "cachedTypes": 0,
+      "materializedVertices": 0,
+      "cacheBytes": 0,
+      "scope": "no new-family cache in A2-16e; prior caches remain"
+    },
+    "cacheAfter": {
+      "cachedTypes": 8,
+      "materializedVertices": 15456,
+      "cacheBytes": 494592
+    },
+    "measurements": [
+      {
+        "scene": "top",
+        "cpuBefore": 1.436865625,
+        "cpuAfter": 5.23220625,
+        "gpuBefore": 0.122912,
+        "gpuAfter": 1.3601158095238095,
+        "drawCallsBefore": 31,
+        "drawCallsAfter": 31,
+        "verticesBefore": 77033,
+        "verticesAfter": 101147,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "oblique",
+        "cpuBefore": 1.1890484375,
+        "cpuAfter": 1.977240625,
+        "gpuBefore": 0.159296,
+        "gpuAfter": 0.315856,
+        "drawCallsBefore": 46,
+        "drawCallsAfter": 46,
+        "verticesBefore": 116357,
+        "verticesAfter": 147317,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "low",
+        "cpuBefore": 0.8356046875,
+        "cpuAfter": 1.5551375,
+        "gpuBefore": 0.09272,
+        "gpuAfter": 0.231616,
+        "drawCallsBefore": 37,
+        "drawCallsAfter": 37,
+        "verticesBefore": 86279,
+        "verticesAfter": 113135,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "cryo",
+        "cpuBefore": 0.5396515625,
+        "cpuAfter": 0.745009375,
+        "gpuBefore": 0.06288,
+        "gpuAfter": 0.095696,
+        "drawCallsBefore": 24,
+        "drawCallsAfter": 24,
+        "verticesBefore": 54545,
+        "verticesAfter": 63581,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "melter",
+        "cpuBefore": 0.505634375,
+        "cpuAfter": 0.831453125,
+        "gpuBefore": 0.066192,
+        "gpuAfter": 0.112992,
+        "drawCallsBefore": 25,
+        "drawCallsAfter": 25,
+        "verticesBefore": 58793,
+        "verticesAfter": 72047,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "press",
+        "cpuBefore": 0.63850625,
+        "cpuAfter": 1.0263609375,
+        "gpuBefore": 0.06984,
+        "gpuAfter": 0.12552,
+        "drawCallsBefore": 30,
+        "drawCallsAfter": 30,
+        "verticesBefore": 68267,
+        "verticesAfter": 85529,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "centrifuge",
+        "cpuBefore": 0.5088640625,
+        "cpuAfter": 1.0534921875,
+        "gpuBefore": 0.077712,
+        "gpuAfter": 0.181792,
+        "drawCallsBefore": 31,
+        "drawCallsAfter": 31,
+        "verticesBefore": 72323,
+        "verticesAfter": 95579,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "cultivator",
+        "cpuBefore": 0.6215625,
+        "cpuAfter": 1.1768765625,
+        "gpuBefore": 0.07424,
+        "gpuAfter": 0.199056,
+        "drawCallsBefore": 32,
+        "drawCallsAfter": 32,
+        "verticesBefore": 76523,
+        "verticesAfter": 105353,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "water",
+        "cpuBefore": 0.6849265625,
+        "cpuAfter": 1.19725,
+        "gpuBefore": 0.08296,
+        "gpuAfter": 0.204128,
+        "drawCallsBefore": 34,
+        "drawCallsAfter": 34,
+        "verticesBefore": 80459,
+        "verticesAfter": 109001,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "oil",
+        "cpuBefore": 0.630759375,
+        "cpuAfter": 1.6058328125,
+        "gpuBefore": 0.088384,
+        "gpuAfter": 0.228832,
+        "drawCallsBefore": 39,
+        "drawCallsAfter": 39,
+        "verticesBefore": 88367,
+        "verticesAfter": 119819,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "pulverizer",
+        "cpuBefore": 0.80949375,
+        "cpuAfter": 1.2739296875,
+        "gpuBefore": 0.08456,
+        "gpuAfter": 0.189792,
+        "drawCallsBefore": 39,
+        "drawCallsAfter": 39,
+        "verticesBefore": 88865,
+        "verticesAfter": 116327,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "idle",
+        "cpuBefore": 1.125984375,
+        "cpuAfter": 1.5850921875,
+        "gpuBefore": 0.145536,
+        "gpuAfter": 0.205952,
+        "drawCallsBefore": 46,
+        "drawCallsAfter": 46,
+        "verticesBefore": 116297,
+        "verticesAfter": 145997,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "disabled",
+        "cpuBefore": 1.086765625,
+        "cpuAfter": 1.5524359375,
+        "gpuBefore": 0.14264,
+        "gpuAfter": 0.256704,
+        "drawCallsBefore": 46,
+        "drawCallsAfter": 46,
+        "verticesBefore": 116297,
+        "verticesAfter": 145997,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "blocked",
+        "cpuBefore": 0.945290625,
+        "cpuAfter": 1.54879375,
+        "gpuBefore": 0.130144,
+        "gpuAfter": 0.250896,
+        "drawCallsBefore": 46,
+        "drawCallsAfter": 46,
+        "verticesBefore": 116369,
+        "verticesAfter": 147449,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "stacked",
+        "cpuBefore": 0.6604625,
+        "cpuAfter": 1.5177171875,
+        "gpuBefore": 0.080432,
+        "gpuAfter": 0.216864,
+        "drawCallsBefore": 35,
+        "drawCallsAfter": 35,
+        "verticesBefore": 81653,
+        "verticesAfter": 109955,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "floor1",
+        "cpuBefore": 0.7160046875,
+        "cpuAfter": 1.344440625,
+        "gpuBefore": 0.073216,
+        "gpuAfter": 0.23232,
+        "drawCallsBefore": 32,
+        "drawCallsAfter": 32,
+        "verticesBefore": 76571,
+        "verticesAfter": 100901,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "floor3",
+        "cpuBefore": 0.55178125,
+        "cpuAfter": 1.1943171875,
+        "gpuBefore": 0.078384,
+        "gpuAfter": 0.179776,
+        "drawCallsBefore": 32,
+        "drawCallsAfter": 32,
+        "verticesBefore": 77507,
+        "verticesAfter": 103841,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "floor4",
+        "cpuBefore": 0.46245625,
+        "cpuAfter": 0.815815625,
+        "gpuBefore": 0.065504,
+        "gpuAfter": 0.094864,
+        "drawCallsBefore": 21,
+        "drawCallsAfter": 21,
+        "verticesBefore": 55823,
+        "verticesAfter": 62303,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "floor5",
+        "cpuBefore": 0.5215734375,
+        "cpuAfter": 1.2385484375,
+        "gpuBefore": 0.078992,
+        "gpuAfter": 0.2032,
+        "drawCallsBefore": 32,
+        "drawCallsAfter": 32,
+        "verticesBefore": 77615,
+        "verticesAfter": 105617,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "below",
+        "cpuBefore": 0.4669921875,
+        "cpuAfter": 1.086953125,
+        "gpuBefore": 0.07144,
+        "gpuAfter": 0.13576,
+        "drawCallsBefore": 26,
+        "drawCallsAfter": 26,
+        "verticesBefore": 63185,
+        "verticesAfter": 82133,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "field100",
+        "cpuBefore": 1.7289265625,
+        "cpuAfter": 2.3250546875,
+        "gpuBefore": 0.309328,
+        "gpuAfter": 1.792288,
+        "drawCallsBefore": 29,
+        "drawCallsAfter": 29,
+        "verticesBefore": 120011,
+        "verticesAfter": 150809,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "field1024",
+        "cpuBefore": 1.7465109375,
+        "cpuAfter": 1.6772140625,
+        "gpuBefore": 0.22688,
+        "gpuAfter": 0.166048,
+        "drawCallsBefore": 68,
+        "drawCallsAfter": 67,
+        "verticesBefore": 216875,
+        "verticesAfter": 205733,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "reload",
+        "cpuBefore": 1.39030625,
+        "cpuAfter": 1.953290625,
+        "gpuBefore": 0.175488,
+        "gpuAfter": 0.331136,
+        "drawCallsBefore": 50,
+        "drawCallsAfter": 50,
+        "verticesBefore": 124061,
+        "verticesAfter": 155021,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "ghost",
+        "cpuBefore": 0.950909375,
+        "cpuAfter": 1.2633203125,
+        "gpuBefore": 0.107424,
+        "gpuAfter": 0.175584,
+        "drawCallsBefore": 35,
+        "drawCallsAfter": 35,
+        "verticesBefore": 78269,
+        "verticesAfter": 98495,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "clipboard",
+        "cpuBefore": 0.91415,
+        "cpuAfter": 1.179225,
+        "gpuBefore": 0.100016,
+        "gpuAfter": 0.167472,
+        "drawCallsBefore": 34,
+        "drawCallsAfter": 34,
+        "verticesBefore": 78035,
+        "verticesAfter": 98723,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "unfinished",
+        "cpuBefore": 0.8650203125,
+        "cpuAfter": 1.269353125,
+        "gpuBefore": 0.098448,
+        "gpuAfter": 0.209424,
+        "drawCallsBefore": 35,
+        "drawCallsAfter": 35,
+        "verticesBefore": 78065,
+        "verticesAfter": 98753,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      },
+      {
+        "scene": "previous-models",
+        "cpuBefore": 1.717471875,
+        "cpuAfter": 0.8585265625,
+        "gpuBefore": 0.103872,
+        "gpuAfter": 0.110208,
+        "drawCallsBefore": 39,
+        "drawCallsAfter": 39,
+        "verticesBefore": 108485,
+        "verticesAfter": 108485,
+        "allocatedBytesPerFrameBefore": -1.0,
+        "allocatedBytesPerFrameAfter": -1.0
+      }
+    ]
+  },
+  "geometry": {
+    "scope": "One cold CPU template generation per profile/LOD, not FPS",
+    "models": [
+      {
+        "profile": "CRYO",
+        "lod": 0,
+        "vertices": 1254,
+        "triangles": 418,
+        "templateBytes": 40128,
+        "coldGenerationMs": 4.0491
+      },
+      {
+        "profile": "CRYO",
+        "lod": 1,
+        "vertices": 918,
+        "triangles": 306,
+        "templateBytes": 29376,
+        "coldGenerationMs": 0.0897
+      },
+      {
+        "profile": "CRYO",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0109
+      },
+      {
+        "profile": "MELTER",
+        "lod": 0,
+        "vertices": 630,
+        "triangles": 210,
+        "templateBytes": 20160,
+        "coldGenerationMs": 0.0614
+      },
+      {
+        "profile": "MELTER",
+        "lod": 1,
+        "vertices": 426,
+        "triangles": 142,
+        "templateBytes": 13632,
+        "coldGenerationMs": 0.0553
+      },
+      {
+        "profile": "MELTER",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0117
+      },
+      {
+        "profile": "PRESS",
+        "lod": 0,
+        "vertices": 1128,
+        "triangles": 376,
+        "templateBytes": 36096,
+        "coldGenerationMs": 0.1302
+      },
+      {
+        "profile": "PRESS",
+        "lod": 1,
+        "vertices": 864,
+        "triangles": 288,
+        "templateBytes": 27648,
+        "coldGenerationMs": 0.0821
+      },
+      {
+        "profile": "PRESS",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0114
+      },
+      {
+        "profile": "CENTRIFUGE",
+        "lod": 0,
+        "vertices": 1122,
+        "triangles": 374,
+        "templateBytes": 35904,
+        "coldGenerationMs": 0.1202
+      },
+      {
+        "profile": "CENTRIFUGE",
+        "lod": 1,
+        "vertices": 822,
+        "triangles": 274,
+        "templateBytes": 26304,
+        "coldGenerationMs": 0.0893
+      },
+      {
+        "profile": "CENTRIFUGE",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0128
+      },
+      {
+        "profile": "CULTIVATOR",
+        "lod": 0,
+        "vertices": 1452,
+        "triangles": 484,
+        "templateBytes": 46464,
+        "coldGenerationMs": 0.1102
+      },
+      {
+        "profile": "CULTIVATOR",
+        "lod": 1,
+        "vertices": 1044,
+        "triangles": 348,
+        "templateBytes": 33408,
+        "coldGenerationMs": 0.0614
+      },
+      {
+        "profile": "CULTIVATOR",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0102
+      },
+      {
+        "profile": "WATER",
+        "lod": 0,
+        "vertices": 1182,
+        "triangles": 394,
+        "templateBytes": 37824,
+        "coldGenerationMs": 0.0635
+      },
+      {
+        "profile": "WATER",
+        "lod": 1,
+        "vertices": 846,
+        "triangles": 282,
+        "templateBytes": 27072,
+        "coldGenerationMs": 0.048
+      },
+      {
+        "profile": "WATER",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0074
+      },
+      {
+        "profile": "OIL",
+        "lod": 0,
+        "vertices": 1326,
+        "triangles": 442,
+        "templateBytes": 42432,
+        "coldGenerationMs": 0.0941
+      },
+      {
+        "profile": "OIL",
+        "lod": 1,
+        "vertices": 966,
+        "triangles": 322,
+        "templateBytes": 30912,
+        "coldGenerationMs": 0.0507
+      },
+      {
+        "profile": "OIL",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0074
+      },
+      {
+        "profile": "PULVERIZER",
+        "lod": 0,
+        "vertices": 666,
+        "triangles": 222,
+        "templateBytes": 21312,
+        "coldGenerationMs": 0.0384
+      },
+      {
+        "profile": "PULVERIZER",
+        "lod": 1,
+        "vertices": 570,
+        "triangles": 190,
+        "templateBytes": 18240,
+        "coldGenerationMs": 0.0292
+      },
+      {
+        "profile": "PULVERIZER",
+        "lod": 2,
+        "vertices": 30,
+        "triangles": 10,
+        "templateBytes": 960,
+        "coldGenerationMs": 0.0083
+      }
+    ],
+    "allTemplateBytes": 494592
+  },
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "actualRemoteMultiplayer": "NOT TESTED",
+  "realGameplayFps": "NOT TESTED",
+  "previousModelsPixelDifferences": {
+    "wholePriorOnlySceneChangedPixels": 1374,
+    "differenceBounds": [
+      326,
+      54,
+      463,
+      130
+    ],
+    "factoryCropXYXY": [
+      0,
+      200,
+      960,
+      600
+    ],
+    "factoryCropChangedPixels": 0,
+    "scope": "Same fixture and camera. Class identity is verified separately; pixel changes are reported without assuming their cause."
+  },
+  "newControls": false,
+  "gameplaySimulationChanged": false
+}

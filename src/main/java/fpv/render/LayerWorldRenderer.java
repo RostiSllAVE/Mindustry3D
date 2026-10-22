@@ -58,6 +58,9 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private final LayerDisplayRenderer displays=new LayerDisplayRenderer();
     private final NativeBlockAnimationAdapter blockAnimations=new NativeBlockAnimationAdapter();
     private final TurretModelRenderer turretModels=new TurretModelRenderer();
+    private final ChemicalModelRenderer chemicalModels=new ChemicalModelRenderer();
+    public long chemicalModelBuilds(){return chemicalModels.builds();}
+    public long chemicalModelBytes(){return chemicalModels.bytes();}
     private final AdvancedManufacturingRenderer advancedManufacturing=new AdvancedManufacturingRenderer();
     public long advancedManufacturingBuilds(){return advancedManufacturing.builds();}
     public long advancedManufacturingBytes(){return advancedManufacturing.bytes();}
@@ -213,7 +216,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 // Door state changes do not rebuild structural chunk meshes; the whole door is streamed below.
                 if(block instanceof mindustry.world.blocks.defense.Door||block instanceof mindustry.world.blocks.defense.AutoDoor)continue;
                 // The shared drill pass owns its entire body and read-only moving components.
-                if(AdvancedManufacturingRenderer.supports(block)||ManufacturingModelRenderer.supports(block)||DrillModelRenderer.supports(block)||LogisticsModelRenderer.supports(block)||AdvancedLogisticsModelRenderer.supports(block))continue;
+                if(ChemicalModelRenderer.supports(block)||AdvancedManufacturingRenderer.supports(block)||ManufacturingModelRenderer.supports(block)||DrillModelRenderer.supports(block)||LogisticsModelRenderer.supports(block)||AdvancedLogisticsModelRenderer.supports(block))continue;
                 if(block instanceof Turret turret&&turretModels.supports(turret)){
                     // The shared turret pass owns its alpha-shaped stationary base as well as guns.
                     continue;
@@ -279,6 +282,10 @@ public final class LayerWorldRenderer implements AutoCloseable {
             }
             float visualH=AdvancedLogisticsModelRenderer.visualHeight(b.block,h);
             if(!camera.frustum.containsBounds(x,base+visualH*.5f,z,size,b instanceof Turret.TurretBuild?(h+size)*.5f:AdvancedLogisticsModelRenderer.supports(b.block)?visualH*.75f:h*.5f,size))continue;
+            if(ChemicalModelRenderer.supports(b.block)){
+                if(!chemicalModels.render(b,animated,x,base,z,size,h,camera.position.dst2(x,base+h*.5f,z)))box(animated,NativeRegions.block(b.block),world.coordinates().bounds(c),1,1,1);
+                continue;
+            }
             if(AdvancedManufacturingRenderer.supports(b.block)){
                 if(!advancedManufacturing.render(b,animated,x,base,z,size,h,camera.position.dst2(x,base+h*.5f,z)))box(animated,NativeRegions.block(b.block),world.coordinates().bounds(c),1,1,1);
                 continue;
@@ -415,5 +422,5 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private void rect(float minX,float minY,float maxX,float maxY,float z,float r,float g,float b,float alpha){
         overlay.projectionFace(Core.atlas.white(),minX,z,-minY,maxX,z,-minY,maxX,z,-maxY,minX,z,-maxY,r,g,b,alpha);
     }
-    @Override public void close(){advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
+    @Override public void close(){chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
 }
