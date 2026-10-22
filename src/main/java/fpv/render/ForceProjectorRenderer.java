@@ -59,7 +59,7 @@ public final class ForceProjectorRenderer {
         if(!camera.frustum.containsBounds((float)x,(float)((top+bottom)*.5),(float)-y,(float)radius,(float)((top-bottom)*.5),(float)radius))return;
         if(shader==null){shader=new Shader(VERTEX,FRAGMENT);mesh=new Mesh(false,data.length/7,0,VertexAttribute.position3,new VertexAttribute(4,"a_color"));}
         shader.bind();shader.setUniformMatrix4("u_combined",camera.combined.val);color.set(building.team.color).lerp(Color.white,flash);
-        shell(x,y,bottom,top,radius,sides,rotation,flash);submitted.add(building);
+        shell(x,y,bottom,top,radius,sides,rotation,flash,building instanceof mindustry.world.blocks.defense.ForceProjector.ForceBuild);submitted.add(building);
         if(building instanceof mindustry.world.blocks.defense.ForceProjector.ForceBuild&&building.enabled)activity(camera,building,x,y,bottom,radius,flash);
     }
     /** Small emitter hologram, not a replacement for the authoritative protective prism. */
@@ -76,15 +76,22 @@ public final class ForceProjectorRenderer {
     private void orbPart(float[] vertices,double x,double y,double z,float radius,double cos,double sin,float alpha){
         for(int i=0;i<vertices.length;i+=3){reserve(1);float px=vertices[i]*radius,pz=vertices[i+2]*radius;vertex((float)(x+px*cos-pz*sin),(float)y+vertices[i+1]*radius,(float)(z+px*sin+pz*cos),alpha);}
     }
-    private void shell(double x,double y,double bottom,double top,double radius,int sides,double rotation,float flash){
+    private void shell(double x,double y,double bottom,double top,double radius,int sides,double rotation,float flash,boolean floorBlend){
         float fill=(float)(ForceConfig.FILL_ALPHA+flash*ForceConfig.FLASH_ALPHA),outline=(float)(ForceConfig.EDGE_ALPHA+flash*ForceConfig.FLASH_ALPHA);
         float width=(float)Math.max(.012,radius*ForceConfig.EDGE_RADIUS_FRACTION);
+        // Cover the existing visual micro-relief as well as flat platform contacts.
+        double low=floorBlend?Math.min(top,bottom+.025):bottom,join=floorBlend?Math.min(top,low+FloorSurfaceRelief.MAX_HEIGHT+.08):bottom;
         for(int side=0;side<sides;side++){
-            point(a,x,y,radius,sides,rotation,side,bottom);point(b,x,y,radius,sides,rotation,side+1,bottom);point(c,x,y,radius,sides,rotation,side+1,top);point(d,x,y,radius,sides,rotation,side,top);
+            if(floorBlend){
+                point(a,x,y,radius,sides,rotation,side,low);point(b,x,y,radius,sides,rotation,side+1,low);point(c,x,y,radius,sides,rotation,side+1,join);point(d,x,y,radius,sides,rotation,side,join);
+                reserve(6);vertex(a[0],a[1],a[2],0);vertex(b[0],b[1],b[2],0);vertex(c[0],c[1],c[2],fill);
+                vertex(a[0],a[1],a[2],0);vertex(c[0],c[1],c[2],fill);vertex(d[0],d[1],d[2],fill);
+            }
+            point(a,x,y,radius,sides,rotation,side,join);point(b,x,y,radius,sides,rotation,side+1,join);point(c,x,y,radius,sides,rotation,side+1,top);point(d,x,y,radius,sides,rotation,side,top);
             reserve(12);triangle(a,b,c,fill);triangle(a,c,d,fill);faces++;
             center[0]=(float)x;center[1]=(float)top;center[2]=(float)-y;triangle(center,d,c,fill*.65f);faces++;
-            center[1]=(float)bottom;triangle(center,b,a,fill*.65f);faces++;
-            edge(a,b,width,outline);edge(d,c,width,outline);edge(a,d,width,outline);
+            if(!floorBlend){center[1]=(float)bottom;triangle(center,b,a,fill*.65f);faces++;edge(a,b,width,outline);}
+            edge(d,c,width,outline);edge(a,d,width,outline);
             // Mid-height perimeter exposes the finite protective altitude from inside the field.
             point(a,x,y,radius,sides,rotation,side,(bottom+top)*.5);point(b,x,y,radius,sides,rotation,side+1,(bottom+top)*.5);edge(a,b,width*.6f,outline*.25f);
         }

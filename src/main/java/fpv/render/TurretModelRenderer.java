@@ -48,8 +48,9 @@ final class TurretModelRenderer {
         float thickness=profile.thickness(type.size),pivot=base+height+.006f;
         float baseHeight=Math.max(.06f,height-thickness*.55f-.035f);
         SpriteExtrusionGeometry.basis(90,0,0,basis);
-        emit(out,drawer.base,x,base+baseHeight*.5f,z,drawer.base.width*drawer.base.scl()/Vars.tilesize,baseHeight,
-            drawer.base.height*drawer.base.scl()/Vars.tilesize,basis,1,1,1);
+        capture.foundation=true;
+        try{emit(out,drawer.base,x,base+baseHeight*.5f,z,drawer.base.width*drawer.base.scl()/Vars.tilesize,baseHeight,
+            drawer.base.height*drawer.base.scl()/Vars.tilesize,basis,1,1,1);}finally{capture.foundation=false;}
         Batch old=Core.batch;float xs=Draw.xscl,ys=Draw.yscl;
         capture.out=out;capture.build=build;capture.x=x;capture.z=z;capture.pivot=pivot;capture.pitch=pitch;capture.depth=thickness;capture.lift=0;
         SpriteExtrusionGeometry.basis(build.rotation,pitch,0,gunBasis);
@@ -88,13 +89,20 @@ final class TurretModelRenderer {
                 int sx=art.isFlipX()?art.width-1-xx:xx,sy=art.isFlipY()?art.height-1-yy:yy;
                 alpha[xx+yy*art.width]=(byte)pixels.getA(Math.round(Math.min(art.u,art.u2)*art.texture.width)+sx,Math.round(Math.min(art.v,art.v2)*art.texture.height)+sy);
             }
-            var shape=SpriteExtrusionGeometry.generate(alpha,art.width,art.height,24,6,32,.2,16380);
+            // Thin tip/edge pixels in these native sprites fell below the old 20% coarse-cell
+            // coverage gate. Keep the same cached grid/budget, retain cells containing any art.
+            boolean retainThin=art instanceof TextureAtlas.AtlasRegion ar&&
+                (ar.name.equals("wave")||ar.name.equals("tsunami")||ar.name.equals("cyclone"));
+            var shape=retainThin?SpriteExtrusionGeometry.conservative(alpha,art.width,art.height,24,6,32,16380):
+                SpriteExtrusionGeometry.generate(alpha,art.width,art.height,24,6,32,.2,16380);
             e=new Entry(art.texture,art.u,art.v,art.u2,art.v2,art.width,art.height,shape);cache.put(art,e);bytes+=shape.vertexBytes();builds++;
         }
-        out.extrusion(art,e.shape.vertices(),x,y,z,width,depth,length,transform,r,g,b);
+        if(capture.foundation)
+            out.seatedExtrusion(art,e.shape.vertices(),x,y,z,width,depth,length,transform,r,g,b);
+        else out.extrusion(art,e.shape.vertices(),x,y,z,width,depth,length,transform,r,g,b);
     }
     private final class Capture extends Batch {
-        NativeAtlasMesh.Builder out;Turret.TurretBuild build;float x,z,pivot,pitch,depth,lift;
+        NativeAtlasMesh.Builder out;Turret.TurretBuild build;float x,z,pivot,pitch,depth,lift;boolean foundation;
         @Override protected void flush(){}
         @Override protected void draw(Texture texture,float[] vertices,int offset,int count){
             // No RegionPart uses raw vertex commands; specialized procedural drawers are preflighted out.

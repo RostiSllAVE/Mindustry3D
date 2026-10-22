@@ -1,0 +1,303 @@
+{
+  "task": "A2-16i-fix1",
+  "baselineCommit": "2619bf35b4ca410fc2dc72d33951945ad688c369",
+  "jarSha256": "cf297c0d7003770f2f4b2b26c25b53626036ec508e0ed31a88ee1b3428b7d915",
+  "tests": {
+    "java17": {
+      "passed": 192,
+      "failed": 0
+    },
+    "steam25": {
+      "passed": 192,
+      "failed": 0
+    }
+  },
+  "freshSourceVerification": {
+    "status": "PASS",
+    "freshRecompiledRuntimeClassesByteIdentical": 1035,
+    "packagedResourcesMatch": true,
+    "frozenSourceInputsMatch": true,
+    "jarSha256": "cf297c0d7003770f2f4b2b26c25b53626036ec508e0ed31a88ee1b3428b7d915"
+  },
+  "artifactVerification": {
+    "status": "PASS",
+    "jarSha256": "cf297c0d7003770f2f4b2b26c25b53626036ec508e0ed31a88ee1b3428b7d915",
+    "changedExistingEntries": [
+      "fpv/render/AdvancedLogisticsModelRenderer.class",
+      "fpv/render/AdvancedManufacturingRenderer.class",
+      "fpv/render/ChemicalModelRenderer.class",
+      "fpv/render/DrillModelRenderer.class",
+      "fpv/render/ForceProjectorRenderer.class",
+      "fpv/render/FpvWorldRenderer$BuildBeamState.class",
+      "fpv/render/FpvWorldRenderer$Candidate.class",
+      "fpv/render/FpvWorldRenderer$ChunkMesh.class",
+      "fpv/render/FpvWorldRenderer$CoarseFogMask.class",
+      "fpv/render/FpvWorldRenderer$DepthSceneBuffer.class",
+      "fpv/render/FpvWorldRenderer$Geometry.class",
+      "fpv/render/FpvWorldRenderer$PickResult.class",
+      "fpv/render/FpvWorldRenderer.class",
+      "fpv/render/LayerWorldRenderer.class",
+      "fpv/render/LiquidModelRenderer.class",
+      "fpv/render/LogisticsModelRenderer.class",
+      "fpv/render/ManufacturingModelRenderer.class",
+      "fpv/render/NativeAtlasMesh$Builder.class",
+      "fpv/render/NativeAtlasMesh$Data.class",
+      "fpv/render/PowerModelRenderer.class",
+      "fpv/render/ProjectedWallRenderer.class",
+      "fpv/render/SpriteExtrusionGeometry$Grid.class",
+      "fpv/render/SpriteExtrusionGeometry$LimitException.class",
+      "fpv/render/SpriteExtrusionGeometry$Output.class",
+      "fpv/render/SpriteExtrusionGeometry.class",
+      "fpv/render/SupportModelRenderer.class",
+      "fpv/render/TransferBeamRenderer.class",
+      "fpv/render/TurretModelRenderer$Capture.class",
+      "fpv/render/TurretModelRenderer.class",
+      "fpv/render/UtilityModelRenderer.class"
+    ],
+    "newEntries": [
+      "fpv/render/BlockVisualBounds.class",
+      "fpv/render/MechanicalMaterial.class",
+      "fpv/render/TransferBeamPose.class"
+    ],
+    "unchangedExistingRuntimeClasses": 1127,
+    "protectedPreviousFiles": 2176,
+    "noticesJnaAndMetadataUnchanged": true,
+    "maxClassMajor": 61
+  },
+  "gl": {
+    "java17": {
+      "status": "PASS",
+      "frames": 6528,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "utilityPassStateChecks": 51,
+      "powerPassStateChecks": 51
+    },
+    "steam25": {
+      "status": "PASS",
+      "frames": 6528,
+      "glErrors": 0,
+      "nativeWorldUnchangedByRendering": true,
+      "saveLoad": true,
+      "physicalAcceptance": false,
+      "utilityPassStateChecks": 51,
+      "powerPassStateChecks": 51
+    }
+  },
+  "observations": {
+    "java17": {
+      "nativeShipments": 8,
+      "realAuthoritativeShieldHits": 1,
+      "authorizedUpperBlocks": 360,
+      "acceptedXYZLinks": 0,
+      "nativePerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "upperPerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "steam25": {
+      "nativeShipments": 8,
+      "realAuthoritativeShieldHits": 1,
+      "authorizedUpperBlocks": 360,
+      "acceptedXYZLinks": 0,
+      "nativePerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "upperPerType": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "nativeOutlineBefore": [
+    {
+      "region": "cyclone",
+      "width": 74,
+      "height": 84,
+      "opaquePixels": 3942,
+      "missedOpaquePixelCentres": 12,
+      "vertices": 828
+    },
+    {
+      "region": "wave",
+      "width": 58,
+      "height": 66,
+      "opaquePixels": 2563,
+      "missedOpaquePixelCentres": 13,
+      "vertices": 780
+    },
+    {
+      "region": "tsunami",
+      "width": 98,
+      "height": 98,
+      "opaquePixels": 6369,
+      "missedOpaquePixelCentres": 33,
+      "vertices": 852
+    }
+  ],
+  "nativeOutlineAfter": [
+    {
+      "region": "tsunami",
+      "width": 98,
+      "height": 98,
+      "opaquePixels": 6369,
+      "missedOpaquePixelCentres": 0,
+      "vertices": 816
+    },
+    {
+      "region": "wave",
+      "width": 58,
+      "height": 66,
+      "opaquePixels": 2563,
+      "missedOpaquePixelCentres": 0,
+      "vertices": 732
+    },
+    {
+      "region": "cyclone",
+      "width": 74,
+      "height": 84,
+      "opaquePixels": 3942,
+      "missedOpaquePixelCentres": 0,
+      "vertices": 732
+    }
+  ],
+  "performance": [
+    {
+      "scene": "oblique",
+      "cpuBeforeMs": 1.9367953125,
+      "cpuAfterMs": 1.78630625,
+      "gpuBeforeMs": 0.70736,
+      "gpuAfterMs": 0.638688,
+      "verticesBefore": 144161,
+      "verticesAfter": 143057,
+      "drawCallsBefore": 51,
+      "drawCallsAfter": 51,
+      "allocationBefore": -1.0,
+      "allocationAfter": -1.0
+    },
+    {
+      "scene": "field100",
+      "cpuBeforeMs": 2.4279421875,
+      "cpuAfterMs": 2.57340625,
+      "gpuBeforeMs": 1.111568,
+      "gpuAfterMs": 1.12464,
+      "verticesBefore": 185915,
+      "verticesAfter": 181349,
+      "drawCallsBefore": 34,
+      "drawCallsAfter": 34,
+      "allocationBefore": -1.0,
+      "allocationAfter": -1.0
+    },
+    {
+      "scene": "field1024",
+      "cpuBeforeMs": 6.447890625,
+      "cpuAfterMs": 5.4424796875,
+      "gpuBeforeMs": 5.679952,
+      "gpuAfterMs": 4.462384,
+      "verticesBefore": 415343,
+      "verticesAfter": 404927,
+      "drawCallsBefore": 70,
+      "drawCallsAfter": 70,
+      "allocationBefore": -1.0,
+      "allocationAfter": -1.0
+    },
+    {
+      "scene": "force-close",
+      "cpuBeforeMs": 0.5241453125,
+      "cpuAfterMs": 0.5280515625,
+      "gpuBeforeMs": 0.242192,
+      "gpuAfterMs": 0.287744,
+      "verticesBefore": 69863,
+      "verticesAfter": 69689,
+      "drawCallsBefore": 27,
+      "drawCallsAfter": 27,
+      "allocationBefore": -1.0,
+      "allocationAfter": -1.0
+    },
+    {
+      "scene": "send-close",
+      "cpuBeforeMs": 0.5645296875,
+      "cpuAfterMs": 0.4979390625,
+      "gpuBeforeMs": 0.33032,
+      "gpuAfterMs": 0.363248,
+      "verticesBefore": 85259,
+      "verticesAfter": 85235,
+      "drawCallsBefore": 38,
+      "drawCallsAfter": 38,
+      "allocationBefore": -1.0,
+      "allocationAfter": -1.0
+    },
+    {
+      "scene": "receive-close",
+      "cpuBeforeMs": 0.5203546875,
+      "cpuAfterMs": 0.510759375,
+      "gpuBeforeMs": 0.278496,
+      "gpuAfterMs": 0.42864,
+      "verticesBefore": 97649,
+      "verticesAfter": 97625,
+      "drawCallsBefore": 42,
+      "drawCallsAfter": 42,
+      "allocationBefore": -1.0,
+      "allocationAfter": -1.0
+    },
+    {
+      "scene": "projections",
+      "cpuBeforeMs": 0.62089375,
+      "cpuAfterMs": 0.5037734375,
+      "gpuBeforeMs": 0.277136,
+      "gpuAfterMs": 0.440384,
+      "verticesBefore": 82251,
+      "verticesAfter": 82251,
+      "drawCallsBefore": 33,
+      "drawCallsAfter": 33,
+      "allocationBefore": -1.0,
+      "allocationAfter": -1.0
+    }
+  ],
+  "physicalOwnerAcceptance": "NOT TESTED",
+  "physicalLinux": "NOT TESTED",
+  "remoteMultiplayer": "NOT TESTED"
+}

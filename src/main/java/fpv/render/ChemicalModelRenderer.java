@@ -21,7 +21,7 @@ final class ChemicalModelRenderer {
         var p=ChemicalModelProfile.forBlock(b.block);if(p==null||!(b instanceof GenericCrafter.GenericCrafterBuild||b instanceof SolidPump.SolidPumpBuild)||!NativeAtlasMesh.valid(b.block.region))return false;
         if(atlas!=Core.atlas){clear();atlas=Core.atlas;}var m=cache.get(b.block);if(m==null||m.region!=b.block.region||m.size!=b.block.size){m=create(b.block,p);cache.put(b.block,m);builds++;}
         int lod=ManufacturingModelProfile.lod(distanceSquared);float size=b.block.size,yaw=b.block.rotate&&b.block.rotateDraw?b.rotation*90:0;SpriteExtrusionGeometry.basis(90+yaw,0,0,basis);var a=m.parts[lod];
-        out.extrusion(m.region,a[0],x,base,z,size,h,size,basis,1,1,1);out.extrusion(m.region,a[1],x,base,z,size,h,size,basis,.16f,.16f,.16f);
+        out.foundationExtrusion(m.region,a[0],x,base,z,size,h,size,basis,1,1,1);out.extrusion(m.region,a[1],x,base,z,size,h,size,basis,.16f,.16f,.16f);
         if(lod==2){out.top(m.region,x,base+h*.915f,z,size*.96f,size*.96f,-yaw,1,1,1,false);return true;}
         float angle=(float)((clock(b)*(double)(b.block instanceof SolidPump pump?pump.rotateSpeed:p==ChemicalModelProfile.PULVERIZER?2:3))%360),stroke=stroke(b);
         if(p==ChemicalModelProfile.CRYO||p==ChemicalModelProfile.WATER){

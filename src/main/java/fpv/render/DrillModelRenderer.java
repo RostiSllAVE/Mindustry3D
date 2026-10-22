@@ -38,11 +38,11 @@ final class DrillModelRenderer {
         }
         int lod=DrillModelProfile.lod(distanceSquared);float angle=type.rotate&&type.rotateDraw?b.rotation*90f:0;
         SpriteExtrusionGeometry.basis(90+angle,0,0,basis);
-        out.extrusion(model.base,model.bodies[lod],x,base,z,size,height,size,basis,1,1,1);
+        out.foundationExtrusion(model.base,model.bodies[lod],x,base,z,size,height,size,basis,1,1,1);
         if(lod==2){
             out.top(type.fullIcon,x,base+height*.65f,z,size,size,-angle,1,1,1,false);return true;
         }
-        out.extrusion(model.base,model.foundations[lod],x,base,z,size,height,size,basis,1,1,1);
+        out.foundationExtrusion(model.base,model.foundations[lod],x,base,z,size,height,size,basis,1,1,1);
         out.extrusion(model.base,model.tunnels[lod],x,base,z,size,height,size,basis,.16f,.16f,.16f);
         float active=activity(b),light=statusLight(b);
         out.extrusion(model.base,model.lights[lod],x,base,z,size,height,size,basis,light,light,light);

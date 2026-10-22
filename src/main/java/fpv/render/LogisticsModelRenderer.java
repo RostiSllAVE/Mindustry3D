@@ -53,7 +53,7 @@ final class LogisticsModelRenderer {
         if(parts==null){var raw=LogisticsModelGeometry.model(profile,mask,lod);parts=new float[][]{material(raw.body(),model.u,model.v),material(raw.trim(),model.u,model.v),material(raw.lining(),model.u,model.v)};model.parts[index]=parts;for(var a:parts)bytes+=(long)a.length*4;}
         // Exact native footprint joins adjacent cells; the old generic Z0 .93 inset is not used for belts.
         float size=b.block.size,angle=profile.belt?b.rotation*90:0;SpriteExtrusionGeometry.basis(90+angle,0,0,basis);
-        out.extrusion(region,parts[0],x,base,z,size,height,size,basis,1,1,1);
+        out.foundationExtrusion(region,parts[0],x,base,z,size,height,size,basis,1,1,1);
         out.extrusion(region,parts[1],x,base,z,size,height,size,basis,profile.heavy?.8f:1,profile.heavy?.85f:1,1);
         out.extrusion(region,parts[2],x,base,z,size,height,size,basis,.14f,.14f,.14f);
         if(b instanceof Conveyor.ConveyorBuild belt){

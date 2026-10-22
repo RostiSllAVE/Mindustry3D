@@ -34,6 +34,8 @@ final class NativeAtlasMesh {
         private final int capacity = (int)RenderConfig.ATLAS_STREAM_VERTICES;
         Shader overflowShader;
         boolean profileWalls;
+        /** Per-view stream state. NaN retains full geometry for offline builders and tests. */
+        float eyeHeight=Float.NaN;
         private float liquidR,liquidG,liquidB;
         int streamMeshCount(){return streamMeshes.size();}
         Builder(boolean streaming) { this.streaming = streaming; }
@@ -102,19 +104,44 @@ final class NativeAtlasMesh {
         /** Cached alpha geometry, native rectangular proportions and affine pose; same world depth batch. */
         void extrusion(TextureRegion region,float[] vertices,float x,float y,float z,float width,float thickness,float length,
                        double[] basis,float r,float g,float b){
+            extrusion(region,vertices,x,y,z,width,thickness,length,basis,r,g,b,false,false,0);
+        }
+        /** Mechanical roofs are solid metal; decorative sprite alpha must not punch holes in them. */
+        void solidExtrusion(TextureRegion region,float[] vertices,float x,float y,float z,float width,float thickness,float length,double[] basis,boolean foundation){
+            extrusion(region,vertices,x,y,z,width,thickness,length,basis,1,1,1,true,foundation,0);
+        }
+        void foundationExtrusion(TextureRegion region,float[] vertices,float x,float y,float z,float width,float thickness,float length,double[] basis,float r,float g,float b){
+            extrusion(region,vertices,x,y,z,width,thickness,length,basis,r,g,b,false,true,0);
+        }
+        void seatedExtrusion(TextureRegion region,float[] vertices,float x,float y,float z,float width,float thickness,float length,double[] basis,float r,float g,float b){
+            extrusion(region,vertices,x,y,z,width,thickness,length,basis,r,g,b,false,true,-.5f);
+        }
+        private void extrusion(TextureRegion region,float[] vertices,float x,float y,float z,float width,float thickness,float length,
+                       double[] basis,float r,float g,float b,boolean solid,boolean foundation,float contactY){
             if(!valid(region))return;
+            Color paint=solid?MechanicalMaterial.color(region):null;
             Data d=data.computeIfAbsent(region.texture,t->new Data(streaming?capacity*9:4096));
             float du=Math.signum(region.u2-region.u)*.5f/region.texture.width,dv=Math.signum(region.v2-region.v)*.5f/region.texture.height;
             float u=region.u+du,v=region.v+dv,us=region.u2-du-u,vs=region.v2-dv-v;
+            // Fixed foundations are horizontal. Cull only their inward underside when seen
+            // from above; below-plane/unsupported views keep it. No shader discard/extra pass.
+            boolean hideContact=foundation&&Float.isFinite(eyeHeight)&&Math.abs(basis[1])<1e-8&&Math.abs(basis[7])<1e-8&&basis[4]>.5
+                &&eyeHeight>=y+contactY*thickness*basis[4];
             for(int i=0;i<vertices.length;i+=SpriteExtrusionGeometry.STRIDE){
+                if(hideContact&&i%24==0&&contactTriangle(vertices,i,contactY)){i+=16;continue;}
                 if(streaming&&d.count+9>d.values.length)flush(region.texture,d,overflowShader);
                 if(d.count+9>d.values.length)d.values=Arrays.copyOf(d.values,Math.max(d.values.length*2,d.count+9));
                 double px=vertices[i]*width,py=vertices[i+1]*thickness,pz=vertices[i+2]*length;
                 float shade=vertices[i+4]>.5f?1:vertices[i+4]<-.5f?.58f:.78f;
+                boolean roof=solid&&vertices[i+4]>.5f;
                 d.vertex(x+(float)(basis[0]*px+basis[3]*py+basis[6]*pz),y+(float)(basis[1]*px+basis[4]*py+basis[7]*pz),
-                    z+(float)(basis[2]*px+basis[5]*py+basis[8]*pz),r*shade,g*shade,b*shade,0,
+                    z+(float)(basis[2]*px+basis[5]*py+basis[8]*pz),roof?paint.r:r*shade,roof?paint.g:g*shade,roof?paint.b:b*shade,roof?-2-shade:0,
                     u+vertices[i+6]*us,v+vertices[i+7]*vs);
             }
+        }
+        private static boolean contactTriangle(float[] a,int i,float y){
+            return i+23<a.length&&a[i+4]<-.5f&&a[i+12]<-.5f&&a[i+20]<-.5f
+                &&a[i+1]==y&&a[i+9]==y&&a[i+17]==y;
         }
 
         /** Separate transparent-pass shader interprets a_color.a as opacity, not opaque material. */

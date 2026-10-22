@@ -85,7 +85,7 @@ public final class FpvWorldRenderer {
     private static final String ATLAS_FRAGMENT =
         "uniform sampler2D u_texture;uniform float u_ambient;uniform float u_time;uniform vec2 u_water;uniform float u_waves;uniform float u_cutoff;" +
         "varying vec4 v_color;varying vec2 v_uv;varying vec3 v_pos;" +
-        "void main(){vec4 t=texture2D(u_texture,v_uv);if(t.a<u_cutoff)discard;float light=1.0;" +
+        "void main(){vec4 t=texture2D(u_texture,v_uv);if(v_color.a< -1.0){gl_FragColor=vec4(mix(v_color.rgb,t.rgb,t.a)*(-v_color.a-2.0)*u_ambient,1.0);return;}if(t.a<u_cutoff)discard;float light=1.0;" +
         "if(v_color.a>2.0001&&u_waves>0.5)light+=u_waves*(v_color.a-2.0)*u_water.x*sin(v_pos.x*2.4+v_pos.z*1.7+u_time*u_water.y)*sin(v_pos.z*3.1-u_time*u_water.y);" +
         "gl_FragColor=vec4(t.rgb*v_color.rgb*light*u_ambient,1.0);}";
 
@@ -563,7 +563,7 @@ public final class FpvWorldRenderer {
             liquidShader.bind();liquidShader.setUniformMatrix4("u_combined",camera.combined.val);liquidShader.setUniformi("u_texture",0);liquidShader.setUniformf("u_camera",camera.position);liquidShader.setUniformf("u_time",Time.time/60f);liquidShader.setUniformf("u_waves",Core.settings.getBool(LiquidSurfaceVisual.WAVES_SETTING,true)?1:0);liquidShader.setUniformf("u_ambient",environment.ambient());
             liquidStream.overflowShader=liquidShader;liquidStream.clear();visibleLiquidChunks.clear();deferredLiquid.clear();
             streamAtlas.overflowShader=atlasShader;
-            streamAtlas.clear();
+            streamAtlas.clear();streamAtlas.eyeHeight=camera.position.y;
             dynamic.clear();
             constructionVisuals.begin();
             profiled=CameraPerformanceProfile.start();
@@ -774,7 +774,7 @@ public final class FpvWorldRenderer {
                     float h = heightFor(block);
                     if(!organicProps.append(tile,staticAtlas,x,-y,block.size,h))texturedWall(tile,staticAtlas,terrain,x,-y,block.size,h,true);
                 }
-                if(tile.overlay()!=mindustry.content.Blocks.air){
+                if(tile.build==null&&tile.overlay()!=mindustry.content.Blocks.air){
                     float height=tile.overlay().wallOre?heightFor(block):0;
                     float gap=tile.overlay() instanceof mindustry.world.blocks.environment.OreBlock&&!tile.overlay().wallOre
                         ?FloorSurfaceRelief.ORE_OFFSET:(float)RenderConfig.ATLAS_SURFACE_OFFSET;
@@ -1005,8 +1005,9 @@ public final class FpvWorldRenderer {
 
     private boolean renderBuilding(Building b) {
         float x = b.x * WORLD_SCALE, z = -b.y * WORLD_SCALE;
-        if (!near(x, z, b.block.size) || b.inFogTo(Vars.player.team())) return false;
+        if (b.inFogTo(Vars.player.team())) return false;
         float size = b.block.size * (float)RenderConfig.BUILD_FOOTPRINT_SCALE, h = heightFor(b.block);
+        if(BlockVisualBounds.applies(b.block)?!BlockVisualBounds.visible(camera,b,x,0,z,h,h):!near(x,z,b.block.size))return false;
         if(b.block instanceof mindustry.world.blocks.defense.Wall){
             texturedWall(b.tile,streamAtlas,dynamic,x,z,size,h,false);
             return true;

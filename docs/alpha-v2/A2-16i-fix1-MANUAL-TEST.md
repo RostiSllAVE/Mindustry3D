@@ -1,0 +1,11 @@
+# A2-16i-fix1 — owner visual acceptance
+
+Use Mindustry 160.7 and import `local/a2-16i-fix1/test-kit-view/mindustry-fpv-a2-16i-fix1-diagnostics.jar` through Mods → Import Mod, replace the previous diagnostic mod and restart. Enable one copy. The same JAR is intended for Windows/Linux; physical Linux acceptance is still required. Use a disposable save or a backup. Published Alpha assets are unchanged. Windows fullscreen remains recommended for the previously identified presentation issue.
+
+No controls changed: F5 switches the view, Tab opens Build Mode, and F3 retains its construction pause behavior.
+
+1. **Models and support contact.** Place Illuminator, Impact Reactor, Overdrive Projector, Phase Weaver, Tsunami, Wave and Cyclone on Z0, a Z1 platform and a Z3–Z5 structure. Also copy/paste a small mixed structure. Inspect from ground-level FPV, directly above, mid distance and the edge of the screen; rotate/aim/fire the three turrets. Optionally suspend a block in authorized Free Mode and check its underside from below. Check roofs, tips and base contact, plus neighboring conveyors/power/support blocks. Check selection/placement previews, then save/reload the disposable world.
+2. **Shield and wall gradient.** Power a Force Projector on natural terrain and an upper platform. Inspect its lower field edge from inside/outside, then let a real hostile shot hit it and observe depletion/recovery. The small hexagonal activity globe should remain. Uncovered copper/titanium/thorium/plastanium walls should have a continuous gradient matching the wall color, without repeated wall pictures. Place a structure overhead and confirm the existing projection-cover rule still applies.
+3. **Real shipments.** Reuse a valid working Launch Pad/Landing Pad campaign transfer setup on Z0 and an upper floor. Observe outgoing versus incoming pulses, their higher endpoints and faster, thicker travel. Pause/resume during an actual shipment, let it finish, and inspect an idle pad: it must not invent pulses. Confirm resources arrive once. Switch FPV/Tab, open/close menus and reload the save.
+
+Report the block, floor and viewing direction for any remaining visible cut-off or intersection. Automated geometry/SDL scenes are separate from these physical gameplay checks; they do not establish owner or remote multiplayer acceptance.

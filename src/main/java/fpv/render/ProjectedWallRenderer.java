@@ -23,12 +23,12 @@ import java.util.List;
 import mindustry.Vars;
 import mindustry.gen.Building;
 
-/** Cached exposed chunk surfaces; atlas repetition replaces stacked segment tessellation. */
+/** Cached exposed chunk surfaces with a block-coloured continuous height gradient. */
 public final class ProjectedWallRenderer {
     private static final int STRIDE=13;
     private static final VertexAttribute COLOR=new VertexAttribute(4,"a_color"),REGION=new VertexAttribute(4,"a_region");
     private static final String VERTEX="attribute vec3 a_position;attribute vec4 a_color;attribute vec2 a_texCoord0;attribute vec4 a_region;uniform mat4 u_combined;uniform vec3 u_camera;varying vec4 v_color;varying vec2 v_uv;varying vec4 v_region;varying vec3 v_world;void main(){v_color=a_color;v_uv=a_texCoord0;v_region=a_region;v_world=a_position;gl_Position=u_combined*vec4(a_position,1.0);}";
-    private static final String FRAGMENT="uniform sampler2D u_texture;uniform sampler2D u_opaqueDepth;uniform float u_opaqueCopy;uniform float u_depthEpsilon;uniform vec2 u_viewport;uniform float u_cutoff;varying vec4 v_color;varying vec2 v_uv;varying vec4 v_region;varying vec3 v_world;uniform vec3 u_camera;uniform vec2 u_viewDistance;void main(){float v_distance=distance(v_world,u_camera);if(v_distance>=u_viewDistance.y)discard;if(u_opaqueCopy>0.5&&gl_FragCoord.z>texture2D(u_opaqueDepth,gl_FragCoord.xy/u_viewport).r+u_depthEpsilon)discard;vec2 uv=fract(v_uv);vec4 t;if(v_distance>800.0){t=vec4(vec3(0.62+0.2*step(0.1,uv.y)),1.0);}else{t=texture2D(u_texture,v_region.xy+uv*v_region.zw);if(v_distance>320.0)t.rgb=mix(t.rgb,vec3(0.7),0.28);}if(t.a<u_cutoff)discard;gl_FragColor=vec4(t.rgb*v_color.rgb,t.a*v_color.a*(1.0-smoothstep(u_viewDistance.x,u_viewDistance.y,v_distance)));}";
+    private static final String FRAGMENT="uniform sampler2D u_texture;uniform sampler2D u_opaqueDepth;uniform float u_opaqueCopy;uniform float u_depthEpsilon;uniform vec2 u_viewport;varying vec4 v_color;varying vec2 v_uv;varying vec4 v_region;varying vec3 v_world;uniform vec3 u_camera;uniform vec2 u_viewDistance;void main(){float v_distance=distance(v_world,u_camera);if(v_distance>=u_viewDistance.y)discard;if(u_opaqueCopy>0.5&&gl_FragCoord.z>texture2D(u_opaqueDepth,gl_FragCoord.xy/u_viewport).r+u_depthEpsilon)discard;float h=clamp(v_uv.y,0.0,1.0);vec4 t=texture2D(u_texture,v_region.xy+vec2(0.5)*v_region.zw);float shade=mix(1.0,0.48,smoothstep(0.0,1.0,h));gl_FragColor=vec4(t.rgb*v_color.rgb*shade,t.a*v_color.a*mix(1.0,0.18,h)*(1.0-smoothstep(u_viewDistance.x,u_viewDistance.y,v_distance)));}";
     private final IntSet submitted=new IntSet();
     private final LongMap<ChunkCache> cache=new LongMap<>();
     private final IdentityHashMap<Texture,Stream> streams=new IdentityHashMap<>();
@@ -85,7 +85,7 @@ public final class ProjectedWallRenderer {
                 saved.seen=frame;
                 if(!rendering){
                     if(shader==null)shader=new Shader(VERTEX,FRAGMENT);shader.bind();shader.setUniformMatrix4("u_combined",camera.combined.val);shader.setUniformi("u_texture",0);
-                    shader.setUniformf("u_cutoff",(float)DefenseConfig.PROJECTION_TEXTURE_CUTOFF);shader.setUniformf("u_camera",camera.position.x,camera.position.y,camera.position.z);
+                    shader.setUniformf("u_camera",camera.position.x,camera.position.y,camera.position.z);
                     shader.setUniformf("u_viewDistance",(float)ProjectionViewSettings.fadeStart(),(float)maximum);
                     compositor.begin(opaqueScene);compositor.bindOpaqueDepth(shader);rendering=true;
                 }
@@ -115,10 +115,10 @@ public final class ProjectedWallRenderer {
         surfaces.clear();cached.parts.clear();cached.walls.clear();cached.bytes=0;cached.faces=0;
         for(int i=0;i<volumes.size();i++){
             var v=volumes.get(i);Building b=v.building();if(!visible(b))continue;
-            TextureRegion region=NativeRegions.block(b.block);if(!NativeAtlasMesh.valid(region))continue;
+            TextureRegion region=arc.Core.atlas.white();if(!NativeAtlasMesh.valid(region))continue;
             int firstSurface=surfaces.size();
             double h=v.halfWidth(),segment=Math.max(.01,FpvWorldRenderer.heightFor(b.block));
-            float r=.7f+b.team.color.r*.3f,g=.7f+b.team.color.g*.3f,blue=.7f+b.team.color.b*.3f;
+            var tint=b.block.mapColor;float r=tint.r,g=tint.g,blue=tint.b;
             float alpha=(float)(DefenseConfig.PROJECTION_MIN_ALPHA+(DefenseConfig.PROJECTION_ALPHA-DefenseConfig.PROJECTION_MIN_ALPHA)*v.fraction());
             for(int side=0;side<4;side++)for(int cell=0;cell<b.block.size;cell++){
                 double along=(side<2?v.x():v.y())-h+cell,other=(side<2?v.y():v.x())+(side==0||side==3?h:-h);
@@ -153,7 +153,7 @@ public final class ProjectedWallRenderer {
     private void side(TextureRegion region,int side,double plane,double lo,double hi,double bottom,double top,ProjectedWallSystem.Volume own,double segment,float r,float g,float b,float alpha){
         if(top-bottom<1e-6)return;
         double width=own.halfWidth()*2,origin=(side<2?own.x():own.y())-own.halfWidth(),sign=(side==1||side==2)?-1:1;
-        surfaces.add(new Surface(region,side,plane,lo,hi,bottom,top,sign/width,1/segment,phase(-sign*origin/width),phase(-own.baseZ()/segment),r,g,b,alpha));
+        surfaces.add(new Surface(region,side,plane,lo,hi,bottom,top,sign/width,1/(own.topZ()-own.baseZ()),phase(-sign*origin/width),-own.baseZ()/(own.topZ()-own.baseZ()),r,g,b,alpha));
     }
     private static double phase(double value){double p=value-Math.floor(value);return Math.abs(p-1)<1e-7||Math.abs(p)<1e-7?0:p;}
     private static final Comparator<Surface> SURFACE_ORDER=(a,b)->{
@@ -191,7 +191,7 @@ public final class ProjectedWallRenderer {
     private static void vertex(Data d,Surface s,double x,double y,double z,double u,double v){
         float du=Math.signum(s.region.u2-s.region.u)*.5f/s.region.texture.width,dv=Math.signum(s.region.v2-s.region.v)*.5f/s.region.texture.height;
         float[] a=d.values;int n=d.count;a[n++]=(float)x;a[n++]=(float)y;a[n++]=(float)z;a[n++]=s.r;a[n++]=s.g;a[n++]=s.b;a[n++]=s.alpha;
-        a[n++]=(float)u;a[n++]=(float)v;a[n++]=s.region.u+du;a[n++]=s.region.v+dv;a[n++]=s.region.u2-s.region.u-2*du;a[n++]=s.region.v2-s.region.v-2*dv;d.count=n;
+        a[n++]=(float)u;a[n++]=s.side==4?1:(float)v;a[n++]=s.region.u+du;a[n++]=s.region.v+dv;a[n++]=s.region.u2-s.region.u-2*du;a[n++]=s.region.v2-s.region.v-2*dv;d.count=n;
     }
     private void append(Texture texture,Data data){
         Stream stream=streams.get(texture);if(stream==null){stream=new Stream();streams.put(texture,stream);}

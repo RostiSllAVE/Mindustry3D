@@ -32,7 +32,7 @@ final class UtilityModelRenderer {
         if(atlas!=Core.atlas){clear();atlas=Core.atlas;}var m=cache.get(b.block);
         if(m==null||m.region!=region){m=create(b.block,p,region);cache.put(b.block,m);builds++;}
         int lod=ManufacturingModelProfile.lod(distance);float size=b.block.size;var a=m.parts[lod];SpriteExtrusionGeometry.basis(90,0,0,basis);
-        out.extrusion(m.region,a[0],x,base,z,size,h,size,basis,1,1,1);out.extrusion(m.region,a[1],x,base,z,size,h,size,basis,.14f,.14f,.14f);
+        out.solidExtrusion(m.region,a[0],x,base,z,size,h,size,basis,true);out.extrusion(m.region,a[1],x,base,z,size,h,size,basis,.14f,.14f,.14f);
         float cap=p==UtilityModelProfile.MINE?.701f:p==UtilityModelProfile.LIGHT?.947f:.435f;
         float width=p==UtilityModelProfile.LIGHT?.39f:p==UtilityModelProfile.MINE?.46f:.85f;
         out.top(m.top,x,base+h*cap+.004f,z,size*width,size*width,0,1,1,1,false);

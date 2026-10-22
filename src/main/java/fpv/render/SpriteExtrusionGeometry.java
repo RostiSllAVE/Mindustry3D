@@ -15,6 +15,14 @@ public final class SpriteExtrusionGeometry {
 
     public static Result generate(byte[] alpha, int width, int height, int maximumSide, int minimumSide,
                                   int threshold, double minimumCoverage, int maximumVertices) {
+        return generate(alpha,width,height,maximumSide,minimumSide,threshold,minimumCoverage,maximumVertices,false);
+    }
+    /** Retain thin native gun contours when non-divisible pixel/grid boundaries overlap. */
+    public static Result conservative(byte[] alpha,int width,int height,int maximumSide,int minimumSide,int threshold,int maximumVertices){
+        return generate(alpha,width,height,maximumSide,minimumSide,threshold,.000001,maximumVertices,true);
+    }
+    private static Result generate(byte[] alpha,int width,int height,int maximumSide,int minimumSide,
+                                   int threshold,double minimumCoverage,int maximumVertices,boolean conservative){
         if (alpha == null || width <= 0 || height <= 0 || (long)width * height != alpha.length
             || maximumSide < minimumSide || minimumSide < 1 || threshold < 1 || threshold > 255
             || !Double.isFinite(minimumCoverage) || minimumCoverage <= 0 || minimumCoverage > 1
@@ -22,7 +30,7 @@ public final class SpriteExtrusionGeometry {
             throw new IllegalArgumentException("Invalid silhouette limits");
         int side = maximumSide;
         while (true) {
-            Grid grid = sample(alpha, width, height, side, threshold, minimumCoverage);
+            Grid grid = sample(alpha, width, height, side, threshold, minimumCoverage,conservative);
             try { return mesh(grid, maximumVertices); }
             catch (LimitException limit) {
                 if (side <= minimumSide) throw new IllegalArgumentException("Silhouette exceeds vertex budget");
@@ -35,7 +43,7 @@ public final class SpriteExtrusionGeometry {
         boolean at(int x, int y) { return x >= 0 && y >= 0 && x < width && y < height && solid[x + y * width]; }
     }
 
-    private static Grid sample(byte[] alpha, int w, int h, int maximumSide, int threshold, double coverage) {
+    private static Grid sample(byte[] alpha, int w, int h, int maximumSide, int threshold, double coverage,boolean conservative) {
         int longest = Math.max(w, h);
         int gw = Math.min(w, Math.max(1, (int)Math.ceil(w * (double)maximumSide / longest)));
         int gh = Math.min(h, Math.max(1, (int)Math.ceil(h * (double)maximumSide / longest)));
@@ -43,8 +51,8 @@ public final class SpriteExtrusionGeometry {
         float[] us = new float[solid.length], vs = new float[solid.length];
         int count = 0;
         for (int gy = 0; gy < gh; gy++) for (int gx = 0; gx < gw; gx++) {
-            int x0 = gx * w / gw, x1 = (gx + 1) * w / gw;
-            int y0 = gy * h / gh, y1 = (gy + 1) * h / gh;
+            int x0 = gx * w / gw, x1 = conservative?((gx+1)*w+gw-1)/gw:(gx+1)*w/gw;
+            int y0 = gy * h / gh, y1 = conservative?((gy+1)*h+gh-1)/gh:(gy+1)*h/gh;
             int opaque = 0, bestX = x0, bestY = y0;
             double nearest = Double.POSITIVE_INFINITY, cx = (x0 + x1 - 1) / 2.0, cy = (y0 + y1 - 1) / 2.0;
             for (int y = y0; y < y1; y++) for (int x = x0; x < x1; x++) {

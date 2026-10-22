@@ -37,7 +37,7 @@ final class ManufacturingModelRenderer {
         var model=cache.get(b.block);if(model==null||model.region!=b.block.region||model.size!=b.block.size){model=create((GenericCrafter)b.block,p);cache.put(b.block,model);builds++;}
         float size=b.block.size,angle=b.block.rotate&&b.block.rotateDraw?b.rotation*90:0;int lod=ManufacturingModelProfile.lod(distanceSquared);
         SpriteExtrusionGeometry.basis(90+angle,0,0,basis);var parts=model.parts[lod];
-        out.extrusion(model.region,parts[0],x,base,z,size,height,size,basis,1,1,1);
+        out.foundationExtrusion(model.region,parts[0],x,base,z,size,height,size,basis,1,1,1);
         out.extrusion(model.region,parts[1],x,base,z,size,height,size,basis,.14f,.14f,.14f);
         if(lod==2){out.top(model.region,x,base+height*.905f,z,size*.96f,size*.96f,-angle,1,1,1,false);return true;}
         if(p.press())for(int i=0;i<p.heads;i++){

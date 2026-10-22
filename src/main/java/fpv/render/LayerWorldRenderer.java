@@ -269,7 +269,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
     }
     /** Native mutable state is streamed into one atlas batch; static hulls retain their meshes. */
     private void renderAnimated(LayerWorld world,Camera3D camera,Shader shader){
-        animated.clear();animated.overflowShader=shader;advancedLogistics.begin(runtime);
+        animated.clear();animated.eyeHeight=camera.position.y;animated.overflowShader=shader;advancedLogistics.begin(runtime);
         for(var entry:runtime.nativeBuildings().entries()){
             if(!visibleIds.contains(entry.id()))continue;
             var c=world.get(entry.id());if(c==null)continue;var b=entry.building();
@@ -288,7 +288,8 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 }
             }
             float visualH=LiquidModelRenderer.visualHeight(b.block,AdvancedLogisticsModelRenderer.visualHeight(b.block,h));
-            if(!camera.frustum.containsBounds(x,base+visualH*.5f,z,size,b instanceof Turret.TurretBuild?(h+size)*.5f:AdvancedLogisticsModelRenderer.supports(b.block)||LiquidModelRenderer.supports(b.block)?visualH*.75f:h*.5f,size))continue;
+            if(BlockVisualBounds.applies(b.block)?!BlockVisualBounds.visible(camera,b,x,base,z,h,visualH):
+                !camera.frustum.containsBounds(x,base+visualH*.5f,z,size,b instanceof Turret.TurretBuild?(h+size)*.5f:AdvancedLogisticsModelRenderer.supports(b.block)||LiquidModelRenderer.supports(b.block)?visualH*.75f:h*.5f,size))continue;
             if(SupportModelRenderer.supports(b.block)){
                 if(!supportModels.render(b,animated,x,base,z,size,h,camera.position.dst2(x,base+h*.5f,z)))box(animated,NativeRegions.block(b.block),world.coordinates().bounds(c),1,1,1);
                 continue;

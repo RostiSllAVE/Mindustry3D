@@ -29,13 +29,13 @@ public final class TransferBeamRenderer implements VolumetricBeamGeometry.Sink {
     private void submit(Building b,float base){
         if(!(b instanceof LaunchPad.LaunchPadBuild||b instanceof LandingPad.LandingPadBuild)||b.dead||Vars.player!=null&&b.inFogTo(Vars.player.team()))return;
         float progress=state.progress(b);if(progress<0)return;boolean send=b instanceof LaunchPad.LaunchPadBuild;
-        float x=b.x/Vars.tilesize,z=-b.y/Vars.tilesize,y=base+FpvWorldRenderer.heightFor(b.block)*.46f+.04f;
-        float tip=25*(send?progress:1-progress),tail=send?Math.max(0,tip-7):Math.min(25,tip+7),low=Math.min(tip,tail),high=Math.max(tip,tail);
-        if(high-low<.01||!camera.frustum.containsBounds(x,y+(low+high)*.5f,z,.25f,(high-low)*.5f,.25f))return;
+        float x=b.x/Vars.tilesize,z=-b.y/Vars.tilesize,y=base+TransferBeamPose.endpoint(FpvWorldRenderer.heightFor(b.block));
+        float tip=TransferBeamPose.tip(progress,send),tail=TransferBeamPose.tail(tip,send),low=Math.min(tip,tail),high=Math.max(tip,tail);
+        if(high-low<.01||!camera.frustum.containsBounds(x,y+(low+high)*.5f,z,TransferBeamPose.OUTER,(high-low)*.5f,TransferBeamPose.OUTER))return;
         if(send)color.set(((LaunchPad)b.block).lightColor);else color.set(((LandingPad.LandingPadBuild)b).arriving.color);
         float fade=Math.min(1,Math.min(progress+.025f,1-progress+.025f)*8);
-        alpha=.20f*fade;VolumetricBeamGeometry.emit(x,y+low,z,x,y+high,z,.16f,color.r,color.g,color.b,camera.position.x,camera.position.y,camera.position.z,this);
-        alpha=.68f*fade;VolumetricBeamGeometry.emit(x,y+low,z,x,y+high,z,.045f,1,.96f,.87f,camera.position.x,camera.position.y,camera.position.z,this);
+        alpha=.20f*fade;VolumetricBeamGeometry.emit(x,y+low,z,x,y+high,z,TransferBeamPose.OUTER,color.r,color.g,color.b,camera.position.x,camera.position.y,camera.position.z,this);
+        alpha=.68f*fade;VolumetricBeamGeometry.emit(x,y+low,z,x,y+high,z,TransferBeamPose.CORE,1,.96f,.87f,camera.position.x,camera.position.y,camera.position.z,this);
         if(send)outgoing++;else incoming++;
     }
     @Override public void vertex(float x,float y,float z,float r,float g,float b){

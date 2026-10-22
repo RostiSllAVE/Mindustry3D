@@ -85,7 +85,7 @@ final class AdvancedLogisticsModelRenderer {
             cache.put(b.block,model);builds++;
         }
         int lod=LogisticsModelProfile.lod(distanceSquared);var p=model.parts[lod];float yaw=b instanceof MassDriver.MassDriverBuild driver?(Float.isFinite(driver.rotation)?driver.rotation:90):heading(b);
-        SpriteExtrusionGeometry.basis(90,0,0,basis);out.extrusion(baseRegion,p[0],x,base,z,size,height,size,basis,1,1,1);out.extrusion(baseRegion,p[1],x,base,z,size,height,size,basis,.13f,.13f,.13f);
+        SpriteExtrusionGeometry.basis(90,0,0,basis);out.foundationExtrusion(baseRegion,p[0],x,base,z,size,height,size,basis,1,1,1);out.extrusion(baseRegion,p[1],x,base,z,size,height,size,basis,.13f,.13f,.13f);
         float recoil=b instanceof MassDriver.MassDriverBuild driver?finite(driver.reloadCounter)*((MassDriver)b.block).knockback/Vars.tilesize:0;
         float mx=x-Mathf.cosDeg(yaw)*recoil,mz=z+Mathf.sinDeg(yaw)*recoil;
         SpriteExtrusionGeometry.basis(90+yaw,0,0,basis);out.extrusion(baseRegion,p[2],mx,base,mz,size,height,size,basis,1,1,1);

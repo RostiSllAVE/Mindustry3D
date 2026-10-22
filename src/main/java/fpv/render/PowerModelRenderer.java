@@ -10,9 +10,9 @@ final class PowerModelRenderer {
  static float clock(Building b){float t=b instanceof ConsumeGenerator.ConsumeGeneratorBuild c?c.totalTime:b instanceof ImpactReactor.ImpactReactorBuild i?i.totalProgress:0;return Float.isFinite(t)?t:0;}
  boolean render(Building b,NativeAtlasMesh.Builder out,float x,float base,float z,float ignored,float h,float distance){
   var p=PowerModelProfile.forBlock(b.block);if(p==null||!NativeAtlasMesh.valid(b.block.region))return false;if(atlas!=Core.atlas){clear();atlas=Core.atlas;}var m=cache.get(b.block);if(m==null||m.region!=b.block.region){m=create(b.block,p);cache.put(b.block,m);builds++;}
-  int lod=ManufacturingModelProfile.lod(distance);float size=b.block.size,yaw=b.block.rotate&&b.block.rotateDraw?b.rotation*90:0;SpriteExtrusionGeometry.basis(90+yaw,0,0,basis);var a=m.parts[lod];out.extrusion(m.region,a[0],x,base,z,size,h,size,basis,1,1,1);out.extrusion(m.region,a[1],x,base,z,size,h,size,basis,.15f,.15f,.15f);
+  int lod=ManufacturingModelProfile.lod(distance);float size=b.block.size,yaw=b.block.rotate&&b.block.rotateDraw?b.rotation*90:0;SpriteExtrusionGeometry.basis(90+yaw,0,0,basis);var a=m.parts[lod];out.solidExtrusion(m.region,a[0],x,base,z,size,h,size,basis,true);out.extrusion(m.region,a[1],x,base,z,size,h,size,basis,.15f,.15f,.15f);
   if(lod==2||p.solar()){float roof=p.solar()?p.terminal-.049f:.801f;out.top(m.region,x,base+h*roof,z,size*(p.solar()?.88f:.96f),size*(p.solar()?.94f:.96f),-yaw,1,1,1,false);}
-  if(lod<2){SpriteExtrusionGeometry.basis(90+yaw+(clock(b)*2)%360,0,0,moving);out.extrusion(m.region,a[2],x,base,z,size,h,size,moving,1,1,1);}
+  if(lod<2){SpriteExtrusionGeometry.basis(90+yaw+(clock(b)*2)%360,0,0,moving);out.solidExtrusion(m.region,a[2],x,base,z,size,h,size,moving,false);}
   if(b.block instanceof PowerDiode diode&&NativeAtlasMesh.valid(diode.arrow))out.top(diode.arrow,x,base+h*(lod==2?.806f:.754f),z,size*.50f,size*.50f,-b.rotation*90f,1,1,1,false);
   float v=.08f+.82f*level(b);var c=p==PowerModelProfile.THORIUM||p==PowerModelProfile.RTG?mindustry.content.Items.thorium.color:mindustry.graphics.Pal.powerLight;out.extrusion(Core.atlas.white(),a[3],x,base,z,size,h,size,basis,c.r*v,c.g*v,c.b*v);return true;
  }

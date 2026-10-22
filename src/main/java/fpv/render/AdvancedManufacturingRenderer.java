@@ -23,7 +23,7 @@ final class AdvancedManufacturingRenderer {
         var p=AdvancedManufacturingProfile.forBlock(b.block);if(p==null||!(b instanceof GenericCrafter.GenericCrafterBuild||b instanceof Separator.SeparatorBuild)||!NativeAtlasMesh.valid(b.block.region))return false;
         if(atlas!=Core.atlas){clear();atlas=Core.atlas;}var m=cache.get(b.block);if(m==null||m.region!=b.block.region||m.size!=b.block.size){m=create(b.block,p);cache.put(b.block,m);builds++;}
         int lod=ManufacturingModelProfile.lod(distanceSquared);float size=b.block.size,yaw=b.block.rotate&&b.block.rotateDraw?b.rotation*90:0;SpriteExtrusionGeometry.basis(90+yaw,0,0,basis);var a=m.parts[lod];
-        out.extrusion(m.region,a[0],x,base,z,size,height,size,basis,1,1,1);out.extrusion(m.region,a[1],x,base,z,size,height,size,basis,.14f,.14f,.14f);
+        out.solidExtrusion(m.region,a[0],x,base,z,size,height,size,basis,true);out.extrusion(m.region,a[1],x,base,z,size,height,size,basis,.14f,.14f,.14f);
         if(lod==2){out.top(m.region,x,base+height*.915f,z,size*.96f,size*.96f,-yaw,1,1,1,false);return true;}
         if(p==AdvancedManufacturingProfile.COMPRESSOR){float stroke=compression(b);
             for(int side=-1;side<=1;side+=2){ // Mirror the same cached ram; its rod ends stay in the fixed housing.
@@ -31,14 +31,14 @@ final class AdvancedManufacturingRenderer {
                 out.extrusion(m.region,a[4],x+(float)basis[0]*(-.42f)*size*sign,base,z+(float)basis[2]*(-.42f)*size*sign,size*(.13f+stroke)*sign,height,size,basis,.90f,.94f,1);
             }
             var c=Items.plastanium.color;float light=.15f+.65f*heat(b);out.extrusion(Core.atlas.white(),a[5],x,base,z,size,height,size,basis,c.r*light,c.g*light,c.b*light);
-        }else if(p==AdvancedManufacturingProfile.WEAVER){float offset=shuttle(b);out.extrusion(m.region,a[3],x+(float)basis[0]*offset*size,base,z+(float)basis[2]*offset*size,size,height,size,basis,1,1,1);
-            SpriteExtrusionGeometry.basis(90+yaw+angle(b,p),0,0,movingBasis);out.extrusion(m.region,a[2],x,base,z,size,height,size,movingBasis,1,1,1);detail(m,out,lod,x,base+height*.46f,z,size*.57f,height*.04f,movingBasis);
+        }else if(p==AdvancedManufacturingProfile.WEAVER){float offset=shuttle(b);out.solidExtrusion(m.region,a[3],x+(float)basis[0]*offset*size,base,z+(float)basis[2]*offset*size,size,height,size,basis,false);
+            SpriteExtrusionGeometry.basis(90+yaw+angle(b,p),0,0,movingBasis);out.solidExtrusion(m.region,a[2],x,base,z,size,height,size,movingBasis,false);detail(m,out,lod,x,base+height*.46f,z,size*.57f,height*.04f,movingBasis);
             var c=Items.phaseFabric.color;float light=.12f+.75f*activity(b);out.extrusion(Core.atlas.white(),a[5],x,base,z,size,height,size,basis,c.r*light,c.g*light,c.b*light);
         }else if(p.furnace()){float warm=heat(b),pulse=activity(b)>0?1+Mathf.sin(clock(b)*.21f)*.05f:1,light=.06f+.94f*warm*pulse;var c=m.flameColor;
             out.extrusion(Core.atlas.white(),a[5],x,base,z,size,height,size,basis,c.r*light,c.g*.5f*light,c.b*.3f*light);
             if(warm>.001f&&NativeAtlasMesh.valid(m.flame))out.top(m.flame,x,base+height*(p==AdvancedManufacturingProfile.KILN?.84f:.81f)+.003f,z,size*m.flame.width/Math.max(1f,m.region.width),size*m.flame.height/Math.max(1f,m.region.height),-yaw,c.r*warm,c.g*warm,c.b*warm,false);
         }else{
-            if(p==AdvancedManufacturingProfile.SEPARATOR){SpriteExtrusionGeometry.basis(90+yaw+angle(b,p),0,0,movingBasis);out.extrusion(m.region,a[2],x,base,z,size,height,size,movingBasis,1,1,1);detail(m,out,lod,x,base+height*.72f,z,size*.56f,height*.06f,movingBasis);}
+            if(p==AdvancedManufacturingProfile.SEPARATOR){SpriteExtrusionGeometry.basis(90+yaw+angle(b,p),0,0,movingBasis);out.solidExtrusion(m.region,a[2],x,base,z,size,height,size,movingBasis,false);detail(m,out,lod,x,base+height*.72f,z,size*.56f,height*.06f,movingBasis);}
             else for(int side=-1;side<=1;side+=2){SpriteExtrusionGeometry.basis(90+yaw,0,side*angle(b,p),movingBasis);out.extrusion(m.region,a[2],x+(float)basis[0]*side*.17f*size,base+height*.61f,z+(float)basis[2]*side*.17f*size,height*1.2f,height*1.2f,size,movingBasis,.94f,.96f,1);}
             if(p==AdvancedManufacturingProfile.DISASSEMBLER){SpriteExtrusionGeometry.basis(90+yaw+angle(b,p),0,0,movingBasis);detail(m,out,lod,x,base+height*.89f,z,size*.24f,height*.05f,movingBasis);}
             if(b.liquids!=null&&b.liquids.currentAmount()>.001f){var c=b.liquids.current().color;float fill=finite(b.liquids.currentAmount()/Math.max(.001f,b.block.liquidCapacity));out.extrusion(Core.atlas.white(),a[5],x,base,z,size,height,size,basis,c.r*(.25f+.4f*fill),c.g*(.25f+.4f*fill),c.b*(.25f+.4f*fill));}
