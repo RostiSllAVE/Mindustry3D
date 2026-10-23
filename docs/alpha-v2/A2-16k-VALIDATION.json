@@ -1,0 +1,251 @@
+{
+  "task": "A2-16k",
+  "baselineCommit": "bd1d3d6c48bbe9806f362671d61b3ee252ae5489",
+  "jarSha256": "2dc13f2213d66d6aa815b2aa3df219edd4a038e20b4118604a64c662b91e896e",
+  "testsJava17": 196,
+  "testsStockSteam25": 196,
+  "nativeGeometryChecks": 17136473,
+  "nativeGeometryPoses": 1440,
+  "nativeProductionRecipes": 10,
+  "realNativeReleases": 136,
+  "expectedDryUpperNavalHolds": 24,
+  "graphicsScenesPerRuntime": 35,
+  "graphicsFramesPerRuntime": 4480,
+  "glErrors": 0,
+  "saveReload": "PASS disposable actual SaveIO; ground sleeping buildings enumerated by world tile anchors",
+  "authorizedUpperFactoryPlacementCallsPerGallery": 540,
+  "actualGroundProductionOutputsInEachGraphicsGallery": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "groundModelCache": {
+    "types": 6,
+    "bytes": 563712,
+    "builds": 6
+  },
+  "sharedRawGeometry": {
+    "models": [
+      {
+        "profile": "GROUND",
+        "vertices": [
+          1512,
+          1152,
+          126
+        ]
+      },
+      {
+        "profile": "AIR",
+        "vertices": [
+          1512,
+          1152,
+          96
+        ]
+      },
+      {
+        "profile": "NAVAL",
+        "vertices": [
+          1632,
+          1092,
+          96
+        ]
+      },
+      {
+        "profile": "TANK",
+        "vertices": [
+          1512,
+          1092,
+          96
+        ]
+      },
+      {
+        "profile": "SHIP",
+        "vertices": [
+          1560,
+          1200,
+          96
+        ]
+      },
+      {
+        "profile": "MECH",
+        "vertices": [
+          1596,
+          1236,
+          126
+        ]
+      }
+    ],
+    "sharedRawTemplateBytes": 540288,
+    "templates": 18
+  },
+  "modelGeometry": [
+    {
+      "block": "tank-fabricator",
+      "lodVertices": [
+        1554,
+        1122,
+        108
+      ]
+    },
+    {
+      "block": "ground-factory",
+      "lodVertices": [
+        1554,
+        1194,
+        144
+      ]
+    },
+    {
+      "block": "naval-factory",
+      "lodVertices": [
+        1698,
+        1122,
+        108
+      ]
+    },
+    {
+      "block": "ship-fabricator",
+      "lodVertices": [
+        1638,
+        1278,
+        108
+      ]
+    },
+    {
+      "block": "mech-fabricator",
+      "lodVertices": [
+        1674,
+        1314,
+        144
+      ]
+    },
+    {
+      "block": "air-factory",
+      "lodVertices": [
+        1554,
+        1194,
+        108
+      ]
+    }
+  ],
+  "performance": {
+    "scope": "Sequential final Steam25 renderer-only 960x600, two 64-frame blocks per scene; no competing tests/compilers; screenshots outside measurements; no FPS claim",
+    "results": [
+      {
+        "build": "perf-baseline-final",
+        "scene": "factories-close",
+        "cpuMeanMs": 0.8098062500000001,
+        "cpuBlocksMs": [
+          1.057671875,
+          0.561940625
+        ],
+        "gpuMeanMs": 0.569544,
+        "gpuBlocksMs": [
+          0.590368,
+          0.54872
+        ],
+        "drawCalls": [
+          51,
+          51
+        ],
+        "vertices": [
+          111695,
+          111695
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      },
+      {
+        "build": "perf-baseline-final",
+        "scene": "dense",
+        "cpuMeanMs": 1.09802421875,
+        "cpuBlocksMs": [
+          1.2249671875,
+          0.97108125
+        ],
+        "gpuMeanMs": 0.570232,
+        "gpuBlocksMs": [
+          0.620864,
+          0.5196
+        ],
+        "drawCalls": [
+          56,
+          56
+        ],
+        "vertices": [
+          146675,
+          146675
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      },
+      {
+        "build": "perf-current-final",
+        "scene": "factories-close",
+        "cpuMeanMs": 1.0653921875,
+        "cpuBlocksMs": [
+          1.272009375,
+          0.858775
+        ],
+        "gpuMeanMs": 0.42935199999999996,
+        "gpuBlocksMs": [
+          0.744416,
+          0.114288
+        ],
+        "drawCalls": [
+          50,
+          50
+        ],
+        "vertices": [
+          129431,
+          129431
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      },
+      {
+        "build": "perf-current-final",
+        "scene": "dense",
+        "cpuMeanMs": 2.1127640625,
+        "cpuBlocksMs": [
+          2.3955796875,
+          1.8299484375
+        ],
+        "gpuMeanMs": 0.36519999999999997,
+        "gpuBlocksMs": [
+          0.323024,
+          0.407376
+        ],
+        "drawCalls": [
+          55,
+          55
+        ],
+        "vertices": [
+          194375,
+          194375
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      }
+    ]
+  },
+  "freshSourceClassesByteIdentical": 1047,
+  "unchangedExistingRuntimeClasses": 1151,
+  "protectedPreviousFiles": 2185,
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "twoComputerMultiplayer": "NOT TESTED",
+  "physicalCampaignTransitions": "NOT TESTED",
+  "remoteUpperTransientAnimationClocks": "NOT CERTIFIED; protocol unchanged"
+}

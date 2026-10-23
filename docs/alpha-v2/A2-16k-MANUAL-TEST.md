@@ -1,0 +1,9 @@
+# A2-16k — Owner test (three steps)
+
+Import `mindustry-fpv-a2-16k-diagnostics.jar` using Mindustry 160.7 Mods → Import Mod, replace the previous diagnostic copy and restart. Enable only one copy. The same JAR is for Windows/Linux; the host game is installed separately. Fullscreen is recommended for the known Windows windowed-presentation issue. No new controls: F5, Tab, construction, priority and copy controls retain their existing bindings.
+
+1. **Inspect and operate all six factories.** On a disposable sandbox map place Ground/Air/Naval Factories and Tank/Ship/Mech Fabricators; Naval Factory and its exit need real water. Use F5 and Tab, inspect above/oblique/ground-level views, supply the original inputs/power, then interrupt supplies or disable production. Check sliding machinery, lights, original art and partial units; inactive machines should not look fully powered.
+2. **Watch real outputs in different directions.** Produce Dagger, Flare, Risso, Stell, Elude and Merui; rotate factories and place several neighbors. Check each real unit emerges once and clears the open bay without visual trapping, with ordinary costs/caps. Ship Fabricator's Elude is aerial. Dry elevated naval platforms must not spawn floating boats; that restriction is unchanged.
+3. **Check upper-floor use and persistence.** Place eligible factories on supported Z1/Z3/Z5 with sufficient spacing and unobstructed exits, inspect their undersides, capture/paste a small multi-floor layout, save/reload and confirm recipes, output and models. Then check Tab/F5/menu/camera behavior and one ordinary campaign save if desired. Use copies of saves; do not interpret this procedure as two-computer multiplayer acceptance.
+
+Report the block, floor, orientation and whether it was producing or idle if a problem appears. Remote elevated animation clocks remain unverified; see the technical report. Reconstructors/advanced assemblers are deliberately unchanged.
