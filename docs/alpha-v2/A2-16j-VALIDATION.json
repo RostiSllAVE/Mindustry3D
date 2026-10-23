@@ -1,0 +1,316 @@
+{
+  "task": "A2-16j",
+  "baselineCommit": "c86f5d292c035da4af2d9d41e3de0fc02f06211c",
+  "jarSha256": "a1dc7d02c7db9faa8265e2b8bd08dc4323a583026a7593fcbd9369b32e55365c",
+  "testsJava17": 194,
+  "testsStockSteam25": 194,
+  "nativeModelChecks": 36808066,
+  "nativeModelPoses": 2016,
+  "coreProfiles": 6,
+  "newRadarProfile": true,
+  "illuminatorPreserved": true,
+  "nativeCoreUnitsSpawnedInHeadlessFixture": 6,
+  "paidUpgradeFixture": "Shard -> Foundation; requirements consumed exactly once",
+  "graphicsScenesPerRuntime": 27,
+  "graphicsFramesPerRuntime": 3456,
+  "glErrors": 0,
+  "saveReload": "PASS actual disposable native SaveIO",
+  "authorizedUpperUtilityPlacementCallsPerGallery": 48,
+  "newCorePlacementPermissions": false,
+  "copiedUtilityFixture": true,
+  "groundMaterialCache": {
+    "types": 7,
+    "bytes": 1017024,
+    "builds": 7
+  },
+  "sharedRawGeometry": {
+    "sharedRawTemplateBytes": 906432,
+    "sharedTemplates": 21
+  },
+  "modelGeometry": [
+    {
+      "block": "core-nucleus",
+      "lodVertices": [
+        2538,
+        2058,
+        666
+      ]
+    },
+    {
+      "block": "core-bastion",
+      "lodVertices": [
+        2082,
+        1698,
+        594
+      ]
+    },
+    {
+      "block": "core-citadel",
+      "lodVertices": [
+        2682,
+        2202,
+        882
+      ]
+    },
+    {
+      "block": "core-shard",
+      "lodVertices": [
+        2010,
+        1530,
+        570
+      ]
+    },
+    {
+      "block": "core-foundation",
+      "lodVertices": [
+        2226,
+        1842,
+        666
+      ]
+    },
+    {
+      "block": "core-acropolis",
+      "lodVertices": [
+        2970,
+        2202,
+        594
+      ]
+    },
+    {
+      "block": "radar",
+      "lodVertices": [
+        870,
+        534,
+        366
+      ]
+    }
+  ],
+  "performance": {
+    "scope": "Serial stock Steam Java25 actual production renderer; same fixture/settings, no parallel tests, no screenshots/readbacks in 48..111 timed windows; two 64-frame blocks per scenario. Not sustained FPS or presentation latency.",
+    "results": [
+      {
+        "build": "perf-baseline",
+        "scene": "cores-close",
+        "cpuMeanMs": 1.0014296875,
+        "gpuMeanMs": 0.425528,
+        "drawCallsSamples": [
+          29,
+          29
+        ],
+        "verticesSamples": [
+          81953,
+          81953
+        ],
+        "samples": 128,
+        "cpuRangeMs": [
+          0.558546875,
+          1.4443125
+        ]
+      },
+      {
+        "build": "perf-baseline",
+        "scene": "dense",
+        "cpuMeanMs": 1.39482890625,
+        "gpuMeanMs": 0.550688,
+        "drawCallsSamples": [
+          44,
+          44
+        ],
+        "verticesSamples": [
+          124559,
+          124559
+        ],
+        "samples": 128,
+        "cpuRangeMs": [
+          1.263628125,
+          1.5260296875
+        ]
+      },
+      {
+        "build": "perf-current",
+        "scene": "cores-close",
+        "cpuMeanMs": 0.758240625,
+        "gpuMeanMs": 0.425064,
+        "drawCallsSamples": [
+          28,
+          28
+        ],
+        "verticesSamples": [
+          94661,
+          94661
+        ],
+        "samples": 128,
+        "cpuRangeMs": [
+          0.596703125,
+          0.919778125
+        ]
+      },
+      {
+        "build": "perf-current",
+        "scene": "dense",
+        "cpuMeanMs": 1.49592109375,
+        "gpuMeanMs": 0.580072,
+        "drawCallsSamples": [
+          43,
+          43
+        ],
+        "verticesSamples": [
+          132695,
+          132695
+        ],
+        "samples": 128,
+        "cpuRangeMs": [
+          1.171996875,
+          1.8198453125
+        ]
+      }
+    ]
+  },
+  "freshRecompiledClassesByteIdentical": 1041,
+  "addedRuntimeEntries": [
+    "fpv/render/CoreInfrastructureGeometry$1.class",
+    "fpv/render/CoreInfrastructureGeometry$Model.class",
+    "fpv/render/CoreInfrastructureGeometry.class",
+    "fpv/render/CoreInfrastructureProfile.class",
+    "fpv/render/CoreInfrastructureRenderer$Model.class",
+    "fpv/render/CoreInfrastructureRenderer.class"
+  ],
+  "unchangedExistingRuntimeClasses": 1145,
+  "protectedPreviousFiles": 2182,
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "physicalCampaignTransitions": "NOT TESTED",
+  "twoComputerMultiplayer": "NOT TESTED",
+  "remoteUpperRadarAnimation": "NOT CERTIFIED; existing snapshots do not carry every native animation clock",
+  "nativeDefinitions": [
+    {
+      "name": "core-shard",
+      "size": 3,
+      "health": 1100,
+      "capacity": 4000,
+      "unitCapModifier": 8,
+      "buildClass": "mindustry.world.blocks.storage.CoreBlock$CoreBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@66ba7e45",
+      "requiresCoreZone": false,
+      "spawnUnit": "alpha"
+    },
+    {
+      "name": "core-foundation",
+      "size": 4,
+      "health": 3500,
+      "capacity": 9000,
+      "unitCapModifier": 16,
+      "buildClass": "mindustry.world.blocks.storage.CoreBlock$CoreBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@70e02081",
+      "requiresCoreZone": false,
+      "spawnUnit": "beta"
+    },
+    {
+      "name": "core-nucleus",
+      "size": 5,
+      "health": 6000,
+      "capacity": 13000,
+      "unitCapModifier": 24,
+      "buildClass": "mindustry.world.blocks.storage.CoreBlock$CoreBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@70e02081",
+      "requiresCoreZone": false,
+      "spawnUnit": "gamma"
+    },
+    {
+      "name": "core-bastion",
+      "size": 4,
+      "health": 4500,
+      "capacity": 2000,
+      "unitCapModifier": 15,
+      "buildClass": "mindustry.world.blocks.storage.CoreBlock$CoreBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@70e02081",
+      "requiresCoreZone": true,
+      "spawnUnit": "evoke"
+    },
+    {
+      "name": "core-citadel",
+      "size": 5,
+      "health": 16000,
+      "capacity": 3000,
+      "unitCapModifier": 15,
+      "buildClass": "mindustry.world.blocks.storage.CoreBlock$CoreBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@70e02081",
+      "requiresCoreZone": true,
+      "spawnUnit": "incite"
+    },
+    {
+      "name": "core-acropolis",
+      "size": 6,
+      "health": 30000,
+      "capacity": 4000,
+      "unitCapModifier": 15,
+      "buildClass": "mindustry.world.blocks.storage.CoreBlock$CoreBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@70e02081",
+      "requiresCoreZone": true,
+      "spawnUnit": "emanate"
+    },
+    {
+      "name": "illuminator",
+      "size": 1,
+      "health": 40,
+      "capacity": 10,
+      "unitCapModifier": 0,
+      "buildClass": "mindustry.world.blocks.power.LightBlock$LightBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@9d200de"
+    },
+    {
+      "name": "radar",
+      "size": 1,
+      "health": 60,
+      "capacity": 10,
+      "unitCapModifier": 0,
+      "buildClass": "mindustry.world.blocks.defense.Radar$RadarBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@511505e7"
+    },
+    {
+      "name": "interplanetary-accelerator",
+      "size": 7,
+      "health": 3920,
+      "capacity": 25000,
+      "unitCapModifier": 0,
+      "buildClass": "mindustry.world.blocks.campaign.Accelerator$AcceleratorBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@646811d6"
+    },
+    {
+      "name": "launch-pad",
+      "size": 3,
+      "health": 360,
+      "capacity": 100,
+      "unitCapModifier": 0,
+      "buildClass": "mindustry.world.blocks.campaign.LaunchPad$LaunchPadBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@15fdd1f2"
+    },
+    {
+      "name": "landing-pad",
+      "size": 4,
+      "health": 640,
+      "capacity": 100,
+      "unitCapModifier": 0,
+      "buildClass": "mindustry.world.blocks.campaign.LandingPad$LandingPadBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@cb0f763"
+    },
+    {
+      "name": "micro-processor",
+      "size": 1,
+      "health": 40,
+      "capacity": 10,
+      "unitCapModifier": 0,
+      "buildClass": "mindustry.world.blocks.logic.LogicBlock$LogicBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@70e02081"
+    },
+    {
+      "name": "logic-display",
+      "size": 3,
+      "health": 360,
+      "capacity": 10,
+      "unitCapModifier": 0,
+      "buildClass": "mindustry.world.blocks.logic.LogicDisplay$LogicDisplayBuild",
+      "visibility": "mindustry.world.meta.BuildVisibility@70e02081"
+    }
+  ]
+}

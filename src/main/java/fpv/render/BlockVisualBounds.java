@@ -7,7 +7,7 @@ import mindustry.world.blocks.defense.turrets.Turret;
 /** Conservative presentation envelope, separate from authoritative placement/picking bounds. */
 final class BlockVisualBounds {
     static boolean applies(mindustry.world.Block b){
-        return b==mindustry.content.Blocks.illuminator||b==mindustry.content.Blocks.impactReactor||
+        return CoreInfrastructureRenderer.supports(b)||b==mindustry.content.Blocks.illuminator||b==mindustry.content.Blocks.impactReactor||
             b==mindustry.content.Blocks.overdriveProjector||b==mindustry.content.Blocks.phaseWeaver||
             b==mindustry.content.Blocks.wave||b==mindustry.content.Blocks.tsunami||b==mindustry.content.Blocks.cyclone;
     }
