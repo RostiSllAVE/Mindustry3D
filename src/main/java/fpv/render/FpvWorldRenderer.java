@@ -85,7 +85,7 @@ public final class FpvWorldRenderer {
     private static final String ATLAS_FRAGMENT =
         "uniform sampler2D u_texture;uniform float u_ambient;uniform float u_time;uniform vec2 u_water;uniform float u_waves;uniform float u_cutoff;" +
         "varying vec4 v_color;varying vec2 v_uv;varying vec3 v_pos;" +
-        "void main(){vec4 t=texture2D(u_texture,v_uv);if(v_color.a< -1.0){gl_FragColor=vec4(mix(v_color.rgb,t.rgb,t.a)*(-v_color.a-2.0)*u_ambient,1.0);return;}if(t.a<u_cutoff)discard;float light=1.0;" +
+        "void main(){vec4 t=texture2D(u_texture,v_uv);if(v_color.a< -1.0){gl_FragColor=vec4(mix(v_color.rgb,t.rgb,t.a)*(-v_color.a-2.0)*u_ambient,1.0);return;}if(t.a<u_cutoff)discard;if(v_color.a > -0.75 && v_color.a < -0.25){gl_FragColor=vec4(t.rgb,1.0);return;}float light=1.0;" +
         "if(v_color.a>2.0001&&u_waves>0.5)light+=u_waves*(v_color.a-2.0)*u_water.x*sin(v_pos.x*2.4+v_pos.z*1.7+u_time*u_water.y)*sin(v_pos.z*3.1-u_time*u_water.y);" +
         "gl_FragColor=vec4(t.rgb*v_color.rgb*light*u_ambient,1.0);}";
 
@@ -118,6 +118,12 @@ public final class FpvWorldRenderer {
     private final CoreInfrastructureRenderer coreModels=new CoreInfrastructureRenderer();
     private final UnitProductionRenderer unitFactories=new UnitProductionRenderer();
     private final UnitUpgradeRenderer unitUpgrades=new UnitUpgradeRenderer();
+    private final LogicModelRenderer logicModels=new LogicModelRenderer();
+    private final LayerDisplayRenderer logicDisplays=new LayerDisplayRenderer(false);
+    public long logicModelBuilds(){return logicModels.builds();}
+    public long logicModelBytes(){return logicModels.bytes();}
+    public int displayTextureUpdates(){return logicDisplays.updated();}
+    public int displayBufferCreates(){return logicDisplays.created();}
     public long unitUpgradeBuilds(){return unitUpgrades.builds();}
     public long unitUpgradeBytes(){return unitUpgrades.bytes();}
     public long unitFactoryBuilds(){return unitFactories.builds();}
@@ -273,6 +279,7 @@ public final class FpvWorldRenderer {
     private double cpuMilliseconds;
 
     public FpvWorldRenderer() {
+        logicDisplays.onRelease(streamAtlas::forget);
         environment.setTerrain(elevation);
         organicProps.setObstacles(t->!t.block().solid?0:elevation.naturalWall(t)?elevation.heightAt(t.x,-t.y):heightFor(t.block()));
     }
@@ -516,7 +523,9 @@ public final class FpvWorldRenderer {
             dynamicMesh = new Mesh(false, dynamic.maxVertices, 0, VertexAttribute.position3, COLOR);
         }
         Draw.flush();
-        constructionRenderer.prepareDisplays();
+        camera.update();syncPlacedBuildings();
+        logicDisplays.prepareWorld(placedBuildings.values(),camera);
+        constructionRenderer.prepareDisplays(camera);
         boolean depth = Gl.isEnabled(Gl.depthTest), blend = Gl.isEnabled(Gl.blend);
         boolean cull = Gl.isEnabled(Gl.cullFace), scissor = Gl.isEnabled(Gl.scissorTest);
         boolean stencil = Gl.isEnabled(Gl.stencilTest);
@@ -1021,6 +1030,7 @@ public final class FpvWorldRenderer {
             texturedWall(b.tile,streamAtlas,dynamic,x,z,size,h,false);
             return true;
         }
+        if(logicModels.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z),logicDisplays.texture(b)))return true;
         if(unitUpgrades.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(unitFactories.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(coreModels.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z)))return true;
@@ -1464,7 +1474,7 @@ public final class FpvWorldRenderer {
         placedBuildings.clear(); submittedBuildings.clear(); submittedBridges.clear(); submittedUnits.clear();submittedUnitBodies.clear();placedWorldTiles = null;
         buildingFrameCompleted = false;
         combatVisuals.clear();
-        organicProps.clear();oreDeposits.clear();powerConnections.close();unitUpgrades.clear();unitFactories.clear();coreModels.clear();utilityModels.clear();supportModels.clear();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
+        organicProps.clear();oreDeposits.clear();powerConnections.close();logicDisplays.close();logicModels.clear();unitUpgrades.clear();unitFactories.clear();coreModels.clear();utilityModels.clear();supportModels.clear();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
         clearChunks();
         if (shader != null) shader.dispose();
         if (atlasShader != null) atlasShader.dispose();

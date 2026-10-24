@@ -1,0 +1,390 @@
+{
+  "task": "A2-16l-logic",
+  "requestedTask": "A2-16l logic/display pass; prior A2-16l reconstruction artifacts preserved",
+  "baselineCommit": "b3bb11b46d0d90ac7077659e04064aa47e0610ff",
+  "jarSha256": "c74346281c439edb68241b8e7eb9787dd39f9f941aa79c316a183a3f08ffa75d",
+  "testsJava17": 201,
+  "testsStockSteam25": 201,
+  "nativeModelChecks": 773413,
+  "nativeModelPoses": 216,
+  "nativeLogicFunctionalChecks": 99,
+  "graphicsScenesPerRuntime": 31,
+  "graphicsFramesPerRuntime": 3968,
+  "newGpuPixelAndOwnershipChecksPerRuntime": 35,
+  "legacyDisplayCanvasGpuChecksPerRuntime": 7,
+  "glErrors": 0,
+  "authorizedPlacementCallsPerGallery": 7347,
+  "saveReload": "PASS disposable actual SaveIO; existing active programs redraw native buffers",
+  "clipboardModelCopy": "PASS actual native display/processor copies; native configuration and live content work after ordinary configuration",
+  "automaticClipboardLogicCodeAndLinks": "NOT SUPPORTED by existing explicit safeConfig policy; warning retained, no bypass",
+  "groundModelCache": {
+    "types": 9,
+    "bytes": 267072,
+    "builds": 9
+  },
+  "sharedRawGeometry": {
+    "models": [
+      {
+        "profile": "MICRO",
+        "size": 1,
+        "vertices": [
+          288,
+          288,
+          132
+        ]
+      },
+      {
+        "profile": "PROCESSOR",
+        "size": 2,
+        "vertices": [
+          408,
+          408,
+          132
+        ]
+      },
+      {
+        "profile": "HYPER",
+        "size": 3,
+        "vertices": [
+          588,
+          588,
+          132
+        ]
+      },
+      {
+        "profile": "CELL",
+        "size": 1,
+        "vertices": [
+          486,
+          486,
+          126
+        ]
+      },
+      {
+        "profile": "BANK",
+        "size": 2,
+        "vertices": [
+          1056,
+          1056,
+          156
+        ]
+      },
+      {
+        "profile": "DISPLAY",
+        "size": 3,
+        "vertices": [
+          144,
+          144,
+          84
+        ]
+      },
+      {
+        "profile": "LARGE_DISPLAY",
+        "size": 6,
+        "vertices": [
+          144,
+          144,
+          84
+        ]
+      },
+      {
+        "profile": "SWITCH",
+        "size": 1,
+        "vertices": [
+          288,
+          288,
+          288
+        ]
+      },
+      {
+        "profile": "MESSAGE",
+        "size": 1,
+        "vertices": [
+          156,
+          156,
+          96
+        ]
+      }
+    ],
+    "sharedRawTemplateBytes": 267072,
+    "templates": 27
+  },
+  "modelGeometry": [
+    {
+      "block": "hyper-processor",
+      "lodVertices": [
+        588,
+        588,
+        132
+      ]
+    },
+    {
+      "block": "memory-bank",
+      "lodVertices": [
+        1056,
+        1056,
+        156
+      ]
+    },
+    {
+      "block": "logic-display",
+      "lodVertices": [
+        144,
+        144,
+        84
+      ]
+    },
+    {
+      "block": "micro-processor",
+      "lodVertices": [
+        288,
+        288,
+        132
+      ]
+    },
+    {
+      "block": "memory-cell",
+      "lodVertices": [
+        486,
+        486,
+        126
+      ]
+    },
+    {
+      "block": "switch",
+      "lodVertices": [
+        288,
+        288,
+        288
+      ]
+    },
+    {
+      "block": "large-logic-display",
+      "lodVertices": [
+        144,
+        144,
+        84
+      ]
+    },
+    {
+      "block": "message",
+      "lodVertices": [
+        156,
+        156,
+        96
+      ]
+    },
+    {
+      "block": "logic-processor",
+      "lodVertices": [
+        408,
+        408,
+        132
+      ]
+    }
+  ],
+  "performance": {
+    "scope": "Sequential stock Steam Java25, 960x600, two warmed 64-frame blocks per state, 72 independent displays; renderer/native-display commands only, not full simulation or FPS acceptance. Native 2D display draw disabled outside the custom pass to avoid duplicate processing. Baseline lacks Z0 live display faces.",
+    "results": [
+      {
+        "build": "perf-baseline-final",
+        "scene": "dense-idle",
+        "cpuMeanMs": 1.166009375,
+        "cpuBlocksMs": [
+          1.6188484375,
+          0.7131703125
+        ],
+        "gpuMeanMs": 0.112936,
+        "gpuBlocksMs": [
+          0.122512,
+          0.10336
+        ],
+        "drawCalls": [
+          62,
+          62
+        ],
+        "vertices": [
+          159425,
+          159425
+        ],
+        "textureUploadsOneFrame": [
+          0,
+          0
+        ],
+        "displayPopulation": 72,
+        "allocatedBuffers": [
+          6,
+          6
+        ],
+        "displayColorBufferBytes": [
+          448512,
+          448512
+        ],
+        "displayUpdatesPerBlock": [
+          null,
+          null
+        ],
+        "displayCreatesPerBlock": [
+          null,
+          null
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      },
+      {
+        "build": "perf-baseline-final",
+        "scene": "dense-active",
+        "cpuMeanMs": 0.8460414062499999,
+        "cpuBlocksMs": [
+          0.9291109375,
+          0.762971875
+        ],
+        "gpuMeanMs": 0.107512,
+        "gpuBlocksMs": [
+          0.108528,
+          0.106496
+        ],
+        "drawCalls": [
+          62,
+          62
+        ],
+        "vertices": [
+          159425,
+          159425
+        ],
+        "textureUploadsOneFrame": [
+          0,
+          0
+        ],
+        "displayPopulation": 72,
+        "allocatedBuffers": [
+          6,
+          6
+        ],
+        "displayColorBufferBytes": [
+          448512,
+          448512
+        ],
+        "displayUpdatesPerBlock": [
+          null,
+          null
+        ],
+        "displayCreatesPerBlock": [
+          null,
+          null
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      },
+      {
+        "build": "perf-current-final",
+        "scene": "dense-idle",
+        "cpuMeanMs": 1.337071875,
+        "cpuBlocksMs": [
+          1.561621875,
+          1.112521875
+        ],
+        "gpuMeanMs": 0.136152,
+        "gpuBlocksMs": [
+          0.135904,
+          0.1364
+        ],
+        "drawCalls": [
+          126,
+          126
+        ],
+        "vertices": [
+          168251,
+          168251
+        ],
+        "textureUploadsOneFrame": [
+          0,
+          0
+        ],
+        "displayPopulation": 72,
+        "allocatedBuffers": [
+          68,
+          68
+        ],
+        "displayColorBufferBytes": [
+          5181440,
+          5181440
+        ],
+        "displayUpdatesPerBlock": [
+          0,
+          0
+        ],
+        "displayCreatesPerBlock": [
+          0,
+          0
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      },
+      {
+        "build": "perf-current-final",
+        "scene": "dense-active",
+        "cpuMeanMs": 1.3573640624999999,
+        "cpuBlocksMs": [
+          1.4533828125,
+          1.2613453125
+        ],
+        "gpuMeanMs": 0.405216,
+        "gpuBlocksMs": [
+          0.483264,
+          0.327168
+        ],
+        "drawCalls": [
+          126,
+          126
+        ],
+        "vertices": [
+          168269,
+          168269
+        ],
+        "textureUploadsOneFrame": [
+          0,
+          0
+        ],
+        "displayPopulation": 72,
+        "allocatedBuffers": [
+          68,
+          68
+        ],
+        "displayColorBufferBytes": [
+          5181440,
+          5181440
+        ],
+        "displayUpdatesPerBlock": [
+          469,
+          469
+        ],
+        "displayCreatesPerBlock": [
+          0,
+          0
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      }
+    ]
+  },
+  "freshSourceClassesByteIdentical": 1060,
+  "unchangedExistingRuntimeClasses": 1162,
+  "protectedPreviousFiles": 2191,
+  "payloadFingerprint": "payload1-2efd56e0ba0086d2926c7e6df40afd5a252a73c8ff9553db1110e7c59978e287",
+  "jarFolderIdentityBothRuntimes": "PASS",
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "twoComputerMultiplayer": "NOT TESTED",
+  "physicalCampaignTransitions": "NOT TESTED",
+  "actualImportRestartForThisBuild": "NOT TESTED; disposable native host startup/graphics passed",
+  "nativeFramePixelsInSave": "Not serialized by vanilla; processor must redraw after load"
+}

@@ -70,7 +70,7 @@ final class NativeAtlasMesh {
         }
         private void flush(Texture texture, Data d, Shader shader) {
             if (d.count == 0) return;
-            Mesh mesh = streamMeshes.computeIfAbsent(texture, t -> new Mesh(false, capacity, 0,
+            Mesh mesh = streamMeshes.computeIfAbsent(texture, t -> new Mesh(false, d.compact ? 6 : capacity, 0,
                 VertexAttribute.position3, color, VertexAttribute.texCoords));
             shader.bind(); texture.bind(0);
             mesh.setVertices(d.values, 0, d.count);
@@ -91,6 +91,11 @@ final class NativeAtlasMesh {
         void face(TextureRegion region, float x1,float y1,float z1,float x2,float y2,float z2,
                   float x3,float y3,float z3,float x4,float y4,float z4,float brightness) {
             quad(region,x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,brightness,brightness,brightness,false);
+        }
+
+        /** Native framebuffer pixels are emissive and retain their colors even in a dark biome. */
+        void screen(TextureRegion region,float ax,float ay,float az,float bx,float by,float bz,float cx,float cy,float cz,float dx,float dy,float dz){
+            quad(region,ax,ay,az,bx,by,bz,cx,cy,cz,dx,dy,dz,1,1,1,-.5f,false);
         }
 
         /** Native gun art rotates as a pitched plane; the fixed base remains in its cached mesh. */
@@ -260,7 +265,7 @@ final class NativeAtlasMesh {
         private void quad(TextureRegion region, float ax,float ay,float az,float bx,float by,float bz,
                           float cx,float cy,float cz,float dx,float dy,float dz,float r,float g,float b,float material,boolean flipV) {
             if (!valid(region)) return;
-            Data d=data.computeIfAbsent(region.texture, t -> new Data(streaming ? capacity*9 : 4096));
+            Data d=data.computeIfAbsent(region.texture, t -> new Data(streaming ? (material==-.5f?54:capacity*9) : 4096,streaming&&material==-.5f));
             if (streaming && d.count+54>d.values.length) flush(region.texture,d,overflowShader);
             if (d.count+54>d.values.length) d.values=Arrays.copyOf(d.values,Math.max(d.values.length*2,d.count+54));
             // Half-texel inset prevents neighboring atlas sprites bleeding into 3D surfaces.
@@ -273,8 +278,9 @@ final class NativeAtlasMesh {
         }
     }
     private static final class Data {
-        float[] values; int count;
-        Data(int size){values=new float[size];}
+        float[] values; int count;final boolean compact;
+        Data(int size){this(size,false);}
+        Data(int size,boolean compact){values=new float[size];this.compact=compact;}
         void vertex(float x,float y,float z,float r,float g,float b,float material,float u,float v){
             values[count++]=x;values[count++]=y;values[count++]=z;
             values[count++]=r;values[count++]=g;values[count++]=b;values[count++]=material;

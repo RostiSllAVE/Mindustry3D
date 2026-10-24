@@ -67,6 +67,11 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private final CoreInfrastructureRenderer coreModels=new CoreInfrastructureRenderer();
     private final UnitProductionRenderer unitFactories=new UnitProductionRenderer();
     private final UnitUpgradeRenderer unitUpgrades=new UnitUpgradeRenderer();
+    private final LogicModelRenderer logicModels=new LogicModelRenderer();
+    public long logicModelBuilds(){return logicModels.builds();}
+    public long logicModelBytes(){return logicModels.bytes();}
+    public int displayTextureUpdates(){return displays.updated();}
+    public int displayBufferCreates(){return displays.created();}
     public long unitUpgradeBuilds(){return unitUpgrades.builds();}
     public long unitUpgradeBytes(){return unitUpgrades.bytes();}
     public long unitFactoryBuilds(){return unitFactories.builds();}
@@ -94,6 +99,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
     public long logisticsModelBuilds(){return logisticsModels.builds();}
     public LayerWorldRenderer(){displays.onRelease(animated::forget);}
     public void prepareDisplays(){displays.prepare(runtime);}
+    public void prepareDisplays(Camera3D camera){displays.prepare(runtime,camera);}
     private fpv.units.UnitAltitudeSystem altitudes;
     private Block previewBlock;
     private int previewRotation;
@@ -232,7 +238,7 @@ public final class LayerWorldRenderer implements AutoCloseable {
                 // Door state changes do not rebuild structural chunk meshes; the whole door is streamed below.
                 if(block instanceof mindustry.world.blocks.defense.Door||block instanceof mindustry.world.blocks.defense.AutoDoor)continue;
                 // The shared drill pass owns its entire body and read-only moving components.
-                if(UnitUpgradeRenderer.supports(block)||UnitProductionRenderer.supports(block)||CoreInfrastructureRenderer.supports(block)||UtilityModelRenderer.supports(block)||SupportModelRenderer.supports(block)||LiquidModelRenderer.supports(block)||PowerModelRenderer.supports(block)||ChemicalModelRenderer.supports(block)||AdvancedManufacturingRenderer.supports(block)||ManufacturingModelRenderer.supports(block)||DrillModelRenderer.supports(block)||LogisticsModelRenderer.supports(block)||AdvancedLogisticsModelRenderer.supports(block))continue;
+                if(LogicModelRenderer.supports(block)||UnitUpgradeRenderer.supports(block)||UnitProductionRenderer.supports(block)||CoreInfrastructureRenderer.supports(block)||UtilityModelRenderer.supports(block)||SupportModelRenderer.supports(block)||LiquidModelRenderer.supports(block)||PowerModelRenderer.supports(block)||ChemicalModelRenderer.supports(block)||AdvancedManufacturingRenderer.supports(block)||ManufacturingModelRenderer.supports(block)||DrillModelRenderer.supports(block)||LogisticsModelRenderer.supports(block)||AdvancedLogisticsModelRenderer.supports(block))continue;
                 if(block instanceof Turret turret&&turretModels.supports(turret)){
                     // The shared turret pass owns its alpha-shaped stationary base as well as guns.
                     continue;
@@ -299,6 +305,10 @@ public final class LayerWorldRenderer implements AutoCloseable {
             float visualH=LiquidModelRenderer.visualHeight(b.block,AdvancedLogisticsModelRenderer.visualHeight(b.block,h));
             if(BlockVisualBounds.applies(b.block)?!BlockVisualBounds.visible(camera,b,x,base,z,h,visualH):
                 !camera.frustum.containsBounds(x,base+visualH*.5f,z,size,b instanceof Turret.TurretBuild?(h+size)*.5f:AdvancedLogisticsModelRenderer.supports(b.block)||LiquidModelRenderer.supports(b.block)?visualH*.75f:h*.5f,size))continue;
+            if(LogicModelRenderer.supports(b.block)){
+                if(!logicModels.render(b,animated,x,base,z,h,camera.position.dst2(x,base+h*.5f,z),displays.texture(b)))box(animated,NativeRegions.block(b.block),world.coordinates().bounds(c),1,1,1);
+                continue;
+            }
             if(UnitUpgradeRenderer.supports(b.block)){
                 if(!unitUpgrades.render(b,animated,x,base,z,h,camera.position.dst2(x,base+h*.5f,z)))box(animated,NativeRegions.block(b.block),world.coordinates().bounds(c),1,1,1);
                 continue;
@@ -467,5 +477,5 @@ public final class LayerWorldRenderer implements AutoCloseable {
     private void rect(float minX,float minY,float maxX,float maxY,float z,float r,float g,float b,float alpha){
         overlay.projectionFace(Core.atlas.white(),minX,z,-minY,maxX,z,-minY,maxX,z,-maxY,minX,z,-maxY,r,g,b,alpha);
     }
-    @Override public void close(){unitUpgrades.clear();unitFactories.clear();coreModels.clear();utilityModels.clear();supportModels.clear();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
+    @Override public void close(){logicModels.clear();unitUpgrades.clear();unitFactories.clear();coreModels.clear();utilityModels.clear();supportModels.clear();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();volumeRenderer.close();schematicRenderer.close();interactionRenderer.close();displays.close();constructionVisuals.close();activities.clear();for(var c:chunks.values())c.mesh.dispose();chunks.clear();for(var m:fallingMeshes.values())m.dispose();fallingMeshes.clear();if(connections!=null)connections.dispose();builder.dispose();overlay.dispose();animated.dispose();if(overlayShader!=null)overlayShader.dispose();if(gpu!=null)gpu.close();}
 }
