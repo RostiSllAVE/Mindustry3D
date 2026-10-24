@@ -37,7 +37,7 @@ final class UnitProductionRenderer {
         out.extrusion(m.region,parts[1],x,base,z,size,h,size,basis,.24f,.25f,.28f);
         if(NativeAtlasMesh.valid(m.top))out.extrusion(m.top,m.roofs[lod],x,base+.004f,z,size,h,size,basis,1,1,1);
         // Same original assembly sprite/payload, clipped by native progress. No fake unit entities.
-        contents.renderFactoryContents(b,out,x,base+h*UnitProductionGeometry.DECK+.012f,z,size);
+        contents.renderFactoryContents(b,out,x,UnitAssemblyParts.surface(base,h),z,size);
         float active=activity(b),clock=Float.isFinite(b.time)?b.time:0;
         float pulse=.08f+active*(.64f+.12f*Mathf.sin(clock*.09f));
         float r=p.erekir()?1:.52f,g=p.erekir()?.61f:.77f,bl=p.erekir()?.27f:1;
@@ -46,8 +46,8 @@ final class UnitProductionRenderer {
             for(int side=0;side<2;side++){
                 float along=carriage(b,side)*size;
                 out.solidExtrusion(m.region,parts[3+side],x+(float)basis[0]*along,base,z+(float)basis[2]*along,size,h,size,basis,false);
+                out.extrusion(Core.atlas.white(),parts[5+side],x+(float)basis[0]*along,base,z+(float)basis[2]*along,size,h,size,basis,r*active,g*active,bl*active);
             }
-            out.extrusion(Core.atlas.white(),parts[5],x,base,z,size,h,size,basis,r*active,g*active,bl*active);
         }
         return true;
     }
@@ -59,7 +59,7 @@ final class UnitProductionRenderer {
         }}
         for(int lod=0;lod<3;lod++){
             var raw=UnitProductionGeometry.model(profile,lod);
-            m.parts[lod]=new float[][]{material(raw.body(),u,v,false),material(raw.lining(),u,v,false),material(raw.lights(),u,v,true),material(raw.carriages()[0],u,v,false),material(raw.carriages()[1],u,v,false),material(raw.tools(),u,v,true)};
+            m.parts[lod]=new float[][]{material(raw.body(),u,v,false),material(raw.lining(),u,v,false),material(raw.lights(),u,v,true),material(raw.carriages()[0],u,v,false),material(raw.carriages()[1],u,v,false),material(toolSide(raw.tools(),0),u,v,true),material(toolSide(raw.tools(),1),u,v,true)};
             int count=0;for(int i=0;i<raw.body().length;i+=8)if(raw.body()[i+4]>.5f&&raw.body()[i+1]>UnitProductionGeometry.DECK+.01f)count+=8;
             var roof=m.roofs[lod]=new float[count];count=0;for(int i=0;i<raw.body().length;i+=8)if(raw.body()[i+4]>.5f&&raw.body()[i+1]>UnitProductionGeometry.DECK+.01f){System.arraycopy(raw.body(),i,roof,count,8);count+=8;}
             for(var a:m.parts[lod])bytes+=(long)a.length*4;bytes+=(long)roof.length*4;
@@ -67,4 +67,5 @@ final class UnitProductionRenderer {
         return m;
     }
     private static float[] material(float[] a,float u,float v,boolean white){var out=a.clone();for(int i=0;i<out.length;i+=8)if(white||out[i+6]<0){out[i+6]=white?.5f:u;out[i+7]=white?.5f:v;}return out;}
+    static float[] toolSide(float[] source,int side){int n=0;for(int i=0;i<source.length;i+=8)if((source[i+2]<0)==(side==0))n+=8;var out=new float[n];n=0;for(int i=0;i<source.length;i+=8)if((source[i+2]<0)==(side==0)){System.arraycopy(source,i,out,n,8);n+=8;}return out;}
 }

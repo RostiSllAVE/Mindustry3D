@@ -43,6 +43,13 @@ public final class UnitProductionNativeTest {
                         if(b.payload!=null){b.payVector.trns(b.rotdeg(),12);b.updatePayload();}
                         check(UnitProductionRenderer.activity(b)==(state==0?1:0),"no machinery at full power while disabled, starved, unconfigured or output-blocked");
                         var before=LogisticsModelNativeTest.state(b);float progress=b.progress,time=b.time;int units=Groups.unit.size(),builds=Groups.build.size();
+                        if(floor==0&&rotation==0){
+                            stream.clear();float h=FpvWorldRenderer.heightFor(type),surface=UnitAssemblyParts.surface(0,h);
+                            new NativeBlockAnimationAdapter().renderFactoryContents(b,stream,b.x/8,surface,-b.y/8,type.size);
+                            var layers=LogisticsModelNativeTest.vertices(stream);
+                            check(layers.length==(state==4?12:state==3?6:18)*9,"completed payload cannot also draw a second in-progress unit");
+                            for(int v=0;v<layers.length;v+=9)check(layers[v+1]-h*UnitAssemblyParts.BAY>.024f,"real native assembly layers clear dark floor geometry");
+                        }
                         for(float distance:new float[]{0,900,10000}){
                             float h=FpvWorldRenderer.heightFor(type),base=floor*2.5f,x=b.x/8,z=-b.y/8;stream.clear();stream.eyeHeight=base+h+2;
                             check(renderer.render(b,stream,x,base,z,h,distance),"native and upper factory render");var vertices=LogisticsModelNativeTest.vertices(stream);check(vertices.length>0,"real body volume");
@@ -61,7 +68,7 @@ public final class UnitProductionNativeTest {
                             }
                             if(state==4&&rotation==0&&distance==0){
                                 var camera=new arc.graphics.g3d.Camera3D();camera.resize(100,100);camera.fov=.05f;camera.near=.04f;camera.far=10;
-                                float tip=x+2.49f,deck=base+h*UnitProductionGeometry.DECK+.022f;
+                                float tip=x+2.49f,deck=UnitAssemblyParts.surface(base,h)+.01f;
                                 camera.position.set(tip,deck,z+5);camera.lookAt(tip,deck,z);camera.update();
                                 check(BlockVisualBounds.visible(camera,b,x,base,z,h,h),"outgoing native payload tip is not culled at screen edge");
                             }

@@ -3,7 +3,7 @@ package fpv.render;
 /** Open assembly bays. +X is the native payload exit. No tall decoration crosses that corridor.
  * Roof UVs use footprint coordinates; all immutable parts are cached per profile and LOD. */
 public final class UnitProductionGeometry {
-    public static final float DECK=.18f;
+    public static final float DECK=UnitAssemblyParts.DECK;
     public record Model(float[] body,float[] lining,float[] lights,float[][] carriages,float[] tools){}
     private static final Model[][] CACHE=new Model[UnitProductionProfile.values().length][3];
     private UnitProductionGeometry(){}
@@ -20,7 +20,7 @@ public final class UnitProductionGeometry {
             // The port shell replaces the foundation's side faces below DECK.
             b.face(-.49f,0,-.49f,.49f,0,-.49f,.49f,0,.49f,-.49f,0,.49f,0,-1,0);
             float[] shell=ports.shell(); // combined once below, not an extra per-instance mesh
-            dark.box(-.32f,DECK+.001f,-.29f,.44f,DECK+.009f,.29f,true);
+            dark.box(-.32f,DECK+.001f,-.29f,.44f,UnitAssemblyParts.BAY,.29f,true);
             switch(p){
                 case GROUND->{
                     for(int s:new int[]{-1,1}){
@@ -29,7 +29,6 @@ public final class UnitProductionGeometry {
                         b.box(-.44f,.83f,s*.355f-.08f,-.20f,.94f,s*.355f+.08f,true);
                     }
                     b.box(-.48f,DECK,-.25f,-.36f,.58f,.25f,true);
-                    arm(left,-1,.64f,.30f);arm(right,1,.64f,.30f);
                 }
                 case AIR->{
                     for(int s:new int[]{-1,1}){
@@ -39,7 +38,6 @@ public final class UnitProductionGeometry {
                     }
                     // Rear gantry leaves the +X launch opening and central vertical airspace clear.
                     b.box(-.40f,.87f,-.40f,-.29f,.98f,.40f,true);
-                    arm(left,-1,.80f,.37f);arm(right,1,.80f,.37f);
                 }
                 case NAVAL->{
                     for(int s:new int[]{-1,1}){
@@ -48,7 +46,6 @@ public final class UnitProductionGeometry {
                         if(lod==0)for(int i=0;i<3;i++)b.box(-.26f+i*.23f,DECK,s*.255f-.025f,-.20f+i*.23f,.30f,s*.255f+.025f,true);
                     }
                     b.box(-.48f,.70f,-.43f,-.32f,.83f,.43f,true);
-                    arm(left,-1,.55f,.29f);arm(right,1,.55f,.29f);
                 }
                 case TANK->{
                     for(int s:new int[]{-1,1}){
@@ -57,7 +54,6 @@ public final class UnitProductionGeometry {
                         if(lod==0)b.box(-.40f,.88f,s*.36f-.06f,-.22f,.98f,s*.36f+.06f,true);
                     }
                     b.box(-.48f,DECK,-.25f,-.38f,.74f,.25f,true);
-                    arm(left,-1,.63f,.28f);arm(right,1,.63f,.28f);
                 }
                 case SHIP->{
                     for(int s:new int[]{-1,1}){
@@ -66,7 +62,6 @@ public final class UnitProductionGeometry {
                         b.column(.34f,DECK,s*.34f,.10f,.48f,.07f,4);
                     }
                     b.column(-.35f,DECK,0,.14f,.53f,.10f,6);
-                    arm(left,-1,.78f,.31f);arm(right,1,.78f,.31f);
                 }
                 case MECH->{
                     for(int s:new int[]{-1,1}){
@@ -76,11 +71,18 @@ public final class UnitProductionGeometry {
                         b.box(-.35f,.69f,s*.35f-.06f,.25f,.80f,s*.35f+.06f,true);
                     }
                     b.box(-.46f,.79f,-.35f,-.30f,.90f,.35f,true);
-                    arm(left,-1,.66f,.32f);arm(right,1,.66f,.32f);
                 }
             }
-            for(int s:new int[]{-1,1})lights.box(-.24f,DECK+.035f,s*.27f-.008f,.40f,DECK+.065f,s*.27f+.008f,true);
-            if(lod==0)for(int s:new int[]{-1,1})tools.column(0,.45f,s*.24f,.025f,.55f,.018f,4);
+            float top=toolTop(p),origin=toolOrigin(p),anchor=toolAnchor(p);
+            UnitAssemblyParts.arm(left,-1,top,anchor,origin);UnitAssemblyParts.arm(right,1,top,anchor,origin);
+            if(lod==0)for(int s:new int[]{-1,1})UnitAssemblyParts.nozzle(tools,s,top,origin);
+            if(p==UnitProductionProfile.SHIP){
+                for(int s:new int[]{-1,1})lights.box(.315f,.48f,s*.34f-.025f,.365f,.493f,s*.34f+.025f,true);
+            }else{
+                float inner=p==UnitProductionProfile.GROUND?.30f:p==UnitProductionProfile.AIR?.33f:p==UnitProductionProfile.MECH?.31f:.28f;
+                float high=p==UnitProductionProfile.GROUND?.36f:p==UnitProductionProfile.AIR?.30f:p==UnitProductionProfile.NAVAL?.43f:p==UnitProductionProfile.TANK?.63f:.40f;
+                UnitAssemblyParts.railLight(lights,inner-.002f,high);
+            }
             float[] body=b.finish(),all=new float[shell.length+body.length];System.arraycopy(shell,0,all,0,shell.length);System.arraycopy(body,0,all,shell.length,body.length);
             return CACHE[p.ordinal()][lod]=new Model(all,combine(ports.lining(),dark.finish()),lights.finish(),new float[][]{left.finish(),right.finish()},tools.finish());
         }
@@ -95,10 +97,8 @@ public final class UnitProductionGeometry {
     private static void rail(MechanicalBlockGeometry.Builder b,float start,float end,int sign,float inner,float outer,float top){
         b.box(start,DECK,sign<0?-outer:inner,end,top,sign<0?-inner:outer,true);
     }
-    private static void arm(MechanicalBlockGeometry.Builder b,int sign,float top,float anchor){
-        b.box(-.12f,top-.055f,sign<0?-anchor:anchor-.055f,.13f,top+.035f,sign<0?-anchor+.055f:anchor,true);
-        b.box(.05f,top-.13f,sign<0?-anchor+.025f:.23f,.13f,top-.045f,sign<0?-.23f:anchor-.025f,true);
-        b.column(.09f,top-.18f,sign*.24f,.035f,top-.10f,.035f,4);
-    }
+    static float toolTop(UnitProductionProfile p){return switch(p){case GROUND->.64f;case AIR->.80f;case NAVAL->.55f;case TANK->.63f;case SHIP->.78f;case MECH->.66f;};}
+    static float toolOrigin(UnitProductionProfile p){return switch(p){case GROUND->.05f;case AIR->0;case NAVAL->.04f;case TANK->.14f;case SHIP->.13f;case MECH->.06f;};}
+    static float toolAnchor(UnitProductionProfile p){return switch(p){case GROUND->.30f;case AIR->.37f;case NAVAL->.29f;case TANK->.27f;case SHIP->.31f;case MECH->.27f;};}
     private static float[] combine(float[] a,float[] b){float[] out=new float[a.length+b.length];System.arraycopy(a,0,out,0,a.length);System.arraycopy(b,0,out,a.length,b.length);return out;}
 }

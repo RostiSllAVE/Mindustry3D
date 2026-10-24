@@ -1,0 +1,303 @@
+{
+  "task": "A2-16l",
+  "baselineCommit": "ab5bd5d989fbc41a778e44c45fde6758b2c72ae3",
+  "jarSha256": "77805c2248906c9fb4006e06b6d8b352b36663ada8a68928529c8c6117fba0d7",
+  "testsJava17": 199,
+  "testsStockSteam25": 199,
+  "factoryGeometryChecks": 17095463,
+  "factoryGeometryPoses": 1440,
+  "upgradeGeometryChecks": 31931505,
+  "upgradeGeometryPoses": 1920,
+  "mountAndSurfaceChecks": 57,
+  "sweptCarriagePoses": 476,
+  "nativeUpgradeAssertions": 4864,
+  "nativeUpgradePairs": 34,
+  "realNativeUpgradeReleases": 448,
+  "expectedDryUpperNavalHolds": 96,
+  "graphicsScenesPerRuntime": 44,
+  "graphicsFramesPerRuntime": 5632,
+  "glErrors": 0,
+  "factoryComparisonScenesPerBuild": 3,
+  "factoryComparisonFramesPerBuild": 384,
+  "saveReload": "PASS disposable actual SaveIO; not physical campaign acceptance",
+  "authorizedUpperPlacementCallsPerGallery": 1096,
+  "actualGroundUpgradeOutputsInEachGraphicsGallery": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "groundModelCache": {
+    "types": 8,
+    "bytes": 1055616,
+    "builds": 8
+  },
+  "sharedRawGeometry": {
+    "models": [
+      {
+        "profile": "ADDITIVE",
+        "size": 3,
+        "vertices": [
+          1536,
+          1176,
+          156
+        ]
+      },
+      {
+        "profile": "MULTIPLICATIVE",
+        "size": 5,
+        "vertices": [
+          2334,
+          1638,
+          186
+        ]
+      },
+      {
+        "profile": "EXPONENTIAL",
+        "size": 7,
+        "vertices": [
+          2928,
+          2076,
+          156
+        ]
+      },
+      {
+        "profile": "TETRATIVE",
+        "size": 9,
+        "vertices": [
+          3594,
+          2538,
+          186
+        ]
+      },
+      {
+        "profile": "TANK",
+        "size": 3,
+        "vertices": [
+          1614,
+          1182,
+          156
+        ]
+      },
+      {
+        "profile": "SHIP",
+        "size": 3,
+        "vertices": [
+          1596,
+          1236,
+          156
+        ]
+      },
+      {
+        "profile": "MECH",
+        "size": 3,
+        "vertices": [
+          1626,
+          1206,
+          156
+        ]
+      },
+      {
+        "profile": "PRIME",
+        "size": 5,
+        "vertices": [
+          2298,
+          1674,
+          186
+        ]
+      }
+    ],
+    "sharedRawTemplateBytes": 1010880,
+    "templates": 24
+  },
+  "modelGeometry": [
+    {
+      "block": "additive-reconstructor",
+      "lodVertices": [
+        1602,
+        1242,
+        180
+      ]
+    },
+    {
+      "block": "tetrative-reconstructor",
+      "lodVertices": [
+        3678,
+        2598,
+        216
+      ]
+    },
+    {
+      "block": "exponential-reconstructor",
+      "lodVertices": [
+        3018,
+        2130,
+        180
+      ]
+    },
+    {
+      "block": "tank-refabricator",
+      "lodVertices": [
+        1686,
+        1230,
+        180
+      ]
+    },
+    {
+      "block": "ship-refabricator",
+      "lodVertices": [
+        1674,
+        1314,
+        180
+      ]
+    },
+    {
+      "block": "prime-refabricator",
+      "lodVertices": [
+        2382,
+        1734,
+        216
+      ]
+    },
+    {
+      "block": "mech-refabricator",
+      "lodVertices": [
+        1710,
+        1278,
+        180
+      ]
+    },
+    {
+      "block": "multiplicative-reconstructor",
+      "lodVertices": [
+        2454,
+        1710,
+        216
+      ]
+    }
+  ],
+  "performance": {
+    "scope": "Sequential stock Steam25 renderer-only 960x600, two64-frame blocks per scene, no competing tests/compilers and captures outside measurements. Paused native-state fixtures, not full-simulation/FPS certification.",
+    "results": [
+      {
+        "build": "perf-baseline",
+        "scene": "upgrades-close",
+        "cpuMeanMs": 1.11085625,
+        "cpuBlocksMs": [
+          1.4707859375,
+          0.7509265625
+        ],
+        "gpuMeanMs": 0.517543746031746,
+        "gpuBlocksMs": [
+          0.5744314920634921,
+          0.460656
+        ],
+        "drawCalls": [
+          84,
+          84
+        ],
+        "vertices": [
+          141185,
+          141185
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      },
+      {
+        "build": "perf-baseline",
+        "scene": "dense",
+        "cpuMeanMs": 0.8000234374999999,
+        "cpuBlocksMs": [
+          0.925559375,
+          0.6744875
+        ],
+        "gpuMeanMs": 0.5962959999999999,
+        "gpuBlocksMs": [
+          0.649056,
+          0.543536
+        ],
+        "drawCalls": [
+          89,
+          89
+        ],
+        "vertices": [
+          183533,
+          183533
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      },
+      {
+        "build": "perf-current",
+        "scene": "upgrades-close",
+        "cpuMeanMs": 1.2743164062499999,
+        "cpuBlocksMs": [
+          1.5966296875,
+          0.952003125
+        ],
+        "gpuMeanMs": 0.5562749206349207,
+        "gpuBlocksMs": [
+          0.6618778412698413,
+          0.450672
+        ],
+        "drawCalls": [
+          83,
+          83
+        ],
+        "vertices": [
+          152345,
+          152345
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      },
+      {
+        "build": "perf-current",
+        "scene": "dense",
+        "cpuMeanMs": 1.18835625,
+        "cpuBlocksMs": [
+          1.461521875,
+          0.915190625
+        ],
+        "gpuMeanMs": 0.5785005714285714,
+        "gpuBlocksMs": [
+          0.6682331428571429,
+          0.488768
+        ],
+        "drawCalls": [
+          88,
+          88
+        ],
+        "vertices": [
+          193625,
+          193625
+        ],
+        "allocatedBytesPerFrame": [
+          -1.0,
+          -1.0
+        ]
+      }
+    ]
+  },
+  "freshSourceClassesByteIdentical": 1054,
+  "unchangedExistingRuntimeClasses": 1155,
+  "protectedPreviousFiles": 2188,
+  "payloadFingerprint": "payload1-d5abc468cfa61c5e5c739b045f576a84c488fc381bec499ea813e44b582445ac",
+  "jarFolderIdentityJava17AndSteam25": "PASS",
+  "physicalWindowsAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "twoComputerMultiplayer": "NOT TESTED",
+  "physicalCampaignTransitions": "NOT TESTED",
+  "stockRuntimeImportAndRestartForThisBuild": "NOT TESTED; automated host startup passed",
+  "remoteUpperTransientAnimationClocks": "NOT CERTIFIED; protocol unchanged"
+}

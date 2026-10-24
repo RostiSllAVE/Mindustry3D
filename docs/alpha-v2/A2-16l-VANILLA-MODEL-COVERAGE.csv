@@ -1,0 +1,448 @@
+nativeId,name,size,group,coverage,nativeClass
+0,air,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.AirBlock
+1,spawn,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.SpawnBlock
+2,remove-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.RemoveWall
+3,remove-ore,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.RemoveOre
+4,cliff,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$1
+5,build1,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+6,build2,2,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+7,build3,3,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+8,build4,4,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+9,build5,5,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+10,build6,6,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+11,build7,7,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+12,build8,8,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+13,build9,9,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+14,build10,10,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+15,build11,11,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+16,build12,12,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+17,build13,13,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+18,build14,14,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+19,build15,15,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+20,build16,16,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.ConstructBlock
+21,deep-water,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$2
+22,shallow-water,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$3
+23,tainted-water,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$4
+24,deep-tainted-water,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$5
+25,darksand-tainted-water,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$6
+26,sand-water,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$7
+27,darksand-water,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$8
+28,tar,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$9
+29,pooled-cryofluid,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$10
+30,molten-slag,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$11
+31,space,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$12
+32,empty,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.EmptyFloor
+33,stone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+34,crater-stone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$13
+35,char,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$14
+36,basalt,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$15
+37,hotrock,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$16
+38,magmarock,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$17
+39,sand-floor,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$18
+40,darksand,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$19
+41,dirt,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+42,mud,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$20
+43,dacite,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+44,rhyolite,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$21
+45,rhyolite-crater,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$22
+46,rough-rhyolite,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$23
+47,regolith,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$24
+48,yellow-stone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$25
+49,carbon-stone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$26
+50,ferric-stone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$27
+51,ferric-craters,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$28
+52,beryllic-stone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$29
+53,crystalline-stone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$30
+54,crystal-floor,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$31
+55,yellow-stone-plates,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$32
+56,red-stone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$33
+57,dense-red-stone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$34
+58,red-ice,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$35
+59,arkycite-floor,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$36
+60,arkyic-stone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$37
+61,rhyolite-vent,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$38
+62,carbon-vent,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$39
+63,arkyic-vent,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$40
+64,yellow-stone-vent,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$41
+65,red-stone-vent,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$42
+66,crystalline-vent,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$43
+67,stone-vent,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$44
+68,basalt-vent,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$45
+69,redmat,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+70,bluemat,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+71,grass,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$46
+72,salt,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$47
+73,snow,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$48
+74,ice,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$49
+75,ice-snow,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$50
+76,shale,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$51
+77,moss,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$52
+78,core-zone,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$53
+79,spore-moss,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$54
+80,stone-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$55
+81,spore-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$56
+82,dirt-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.StaticWall
+83,dacite-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.StaticWall
+84,ice-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$57
+85,snow-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.StaticWall
+86,dune-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$58
+87,regolith-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$59
+88,yellow-stone-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$60
+89,rhyolite-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$61
+90,carbon-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$62
+91,ferric-stone-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$63
+92,beryllic-stone-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$64
+93,arkyic-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$65
+94,crystalline-stone-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$66
+95,red-ice-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$67
+96,red-stone-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$68
+97,red-diamond-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$69
+98,sand-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$70
+99,salt-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.StaticWall
+100,shrubs,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.StaticWall
+101,shale-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.StaticWall
+102,spore-pine,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$71
+103,snow-pine,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.StaticTree
+104,pine,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.StaticTree
+105,white-tree-dead,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.TreeBlock
+106,white-tree,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.TreeBlock
+107,spore-cluster,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$72
+108,redweed,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$73
+109,pur-bush,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$74
+110,yellowcoral,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$75
+111,boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$76
+112,snow-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$77
+113,shale-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$78
+114,sand-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$79
+115,dacite-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$80
+116,basalt-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$81
+117,carbon-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$82
+118,ferric-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$83
+119,beryllic-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$84
+120,yellow-stone-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$85
+121,arkyic-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$86
+122,crystal-cluster,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$87
+123,vibrant-crystal-cluster,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$88
+124,crystal-blocks,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$89
+125,crystal-orbs,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$90
+126,crystalline-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$91
+127,red-ice-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$92
+128,rhyolite-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$93
+129,red-stone-boulder,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$94
+130,metal-floor,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+131,metal-floor-damaged,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+132,metal-floor-2,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+133,metal-floor-3,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+134,metal-floor-4,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+135,metal-floor-5,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+136,dark-panel-1,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+137,dark-panel-2,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+138,dark-panel-3,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+139,dark-panel-4,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+140,dark-panel-5,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+141,dark-panel-6,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.Floor
+142,dark-metal,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.StaticWall
+143,metal-tiles-1,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$95
+144,metal-tiles-2,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$96
+145,metal-tiles-3,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$97
+146,metal-tiles-4,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$98
+147,metal-tiles-5,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$99
+148,metal-tiles-6,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$100
+149,metal-tiles-7,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$101
+150,metal-tiles-8,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$102
+151,metal-tiles-9,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$103
+152,metal-tiles-10,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$104
+153,metal-tiles-11,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$105
+154,metal-tiles-12,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$106
+155,metal-tiles-13,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$107
+156,metal-wall-1,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$108
+157,metal-wall-2,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$109
+158,metal-wall-3,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$110
+159,colored-floor,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$111
+160,colored-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$112
+161,character-overlay,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$113
+162,character-overlay-white,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$114
+163,rune-overlay,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$115
+164,rune-overlay-crux,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.RuneOverlay
+165,pebbles,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.OverlayFloor
+166,tendrils,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.OverlayFloor
+167,ore-copper,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$116
+168,ore-lead,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$117
+169,ore-scrap,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.OreBlock
+170,ore-coal,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$118
+171,ore-titanium,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$119
+172,ore-thorium,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$120
+173,ore-beryllium,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.OreBlock
+174,ore-tungsten,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.OreBlock
+175,ore-crystal-thorium,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.environment.OreBlock
+176,ore-wall-thorium,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$121
+177,ore-wall-beryllium,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$122
+178,graphitic-wall,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$123
+179,ore-wall-graphite,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$124
+180,ore-wall-tungsten,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$125
+181,graphite-press,2,Miscellaneous / crafting,Dedicated manufacturing,mindustry.content.Blocks$126
+182,multi-press,3,Miscellaneous / crafting,Dedicated manufacturing,mindustry.content.Blocks$127
+183,silicon-smelter,2,Miscellaneous / crafting,Dedicated manufacturing,mindustry.content.Blocks$128
+184,silicon-crucible,3,Miscellaneous / crafting,Dedicated manufacturing,mindustry.content.Blocks$129
+185,kiln,2,Miscellaneous / crafting,Dedicated advanced manufacturing,mindustry.content.Blocks$130
+186,plastanium-compressor,2,Miscellaneous / crafting,Dedicated advanced manufacturing,mindustry.content.Blocks$131
+187,phase-weaver,2,Miscellaneous / crafting,Dedicated advanced manufacturing,mindustry.content.Blocks$132
+188,surge-smelter,3,Miscellaneous / crafting,Dedicated advanced manufacturing,mindustry.content.Blocks$133
+189,cryofluid-mixer,2,Miscellaneous / crafting,Dedicated chemical,mindustry.content.Blocks$134
+190,pyratite-mixer,2,Miscellaneous / crafting,Dedicated manufacturing,mindustry.content.Blocks$135
+191,blast-mixer,2,Miscellaneous / crafting,Dedicated manufacturing,mindustry.content.Blocks$136
+192,melter,1,Miscellaneous / crafting,Dedicated chemical,mindustry.content.Blocks$137
+193,separator,2,Miscellaneous / crafting,Dedicated advanced manufacturing,mindustry.content.Blocks$138
+194,disassembler,3,Miscellaneous / crafting,Dedicated advanced manufacturing,mindustry.content.Blocks$139
+195,spore-press,2,Miscellaneous / crafting,Dedicated chemical,mindustry.content.Blocks$140
+196,pulverizer,1,Miscellaneous / crafting,Dedicated chemical,mindustry.content.Blocks$141
+197,coal-centrifuge,2,Miscellaneous / crafting,Dedicated chemical,mindustry.content.Blocks$142
+198,incinerator,1,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$143
+199,silicon-arc-furnace,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$144
+200,electrolyzer,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$145
+201,atmospheric-concentrator,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$146
+202,oxidation-chamber,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$147
+203,electric-heater,2,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$148
+204,slag-heater,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$149
+205,phase-heater,2,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$150
+206,heat-redirector,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$151
+207,small-heat-redirector,2,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$152
+208,heat-router,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$153
+209,slag-incinerator,1,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$154
+210,carbide-crucible,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$155
+211,slag-centrifuge,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$156
+212,surge-crucible,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$157
+213,cyanogen-synthesizer,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$158
+214,phase-synthesizer,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$159
+215,heat-reactor,3,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$160
+216,copper-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$161
+217,copper-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$162
+218,titanium-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$163
+219,titanium-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$164
+220,plastanium-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$165
+221,plastanium-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$166
+222,thorium-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$167
+223,thorium-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$168
+224,phase-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$169
+225,phase-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$170
+226,surge-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$171
+227,surge-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$172
+228,door,1,Defense,Shared textured wall,mindustry.content.Blocks$173
+229,door-large,2,Defense,Shared textured wall,mindustry.content.Blocks$174
+230,scrap-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$175
+231,scrap-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$176
+232,scrap-wall-huge,3,Defense,Shared textured wall,mindustry.content.Blocks$177
+233,scrap-wall-gigantic,4,Defense,Shared textured wall,mindustry.content.Blocks$178
+234,thruster,4,Defense,Shared textured wall,mindustry.content.Blocks$179
+235,beryllium-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$180
+236,beryllium-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$181
+237,tungsten-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$182
+238,tungsten-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$183
+239,blast-door,2,Defense,Shared textured wall,mindustry.content.Blocks$184
+240,reinforced-surge-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$185
+241,reinforced-surge-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$186
+242,carbide-wall,1,Defense,Shared textured wall,mindustry.content.Blocks$187
+243,carbide-wall-large,2,Defense,Shared textured wall,mindustry.content.Blocks$188
+244,shielded-wall,2,Defense,Shared textured wall,mindustry.content.Blocks$189
+245,mender,1,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$190
+246,mend-projector,2,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$191
+247,overdrive-projector,2,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$192
+248,overdrive-dome,3,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$193
+249,force-projector,3,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$194
+250,shock-mine,1,Miscellaneous / effect,Dedicated utility,mindustry.content.Blocks$195
+251,radar,1,Miscellaneous / effect,Dedicated core/radar,mindustry.content.Blocks$196
+252,build-tower,3,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$197
+253,regen-projector,3,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$198
+254,shockwave-tower,3,Miscellaneous / effect,Generic/native fallback,mindustry.content.Blocks$199
+255,shield-projector,3,Miscellaneous / effect,Generic/native fallback,mindustry.content.Blocks$200
+256,large-shield-projector,4,Miscellaneous / effect,Generic/native fallback,mindustry.content.Blocks$201
+257,conveyor,1,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$202
+258,titanium-conveyor,1,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$203
+259,plastanium-conveyor,1,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$204
+260,armored-conveyor,1,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$205
+261,junction,1,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$206
+262,bridge-conveyor,1,Miscellaneous / distribution,Dedicated advanced item logistics,mindustry.content.Blocks$207
+263,phase-conveyor,1,Miscellaneous / distribution,Dedicated advanced item logistics,mindustry.content.Blocks$208
+264,sorter,1,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$209
+265,inverted-sorter,1,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$210
+266,router,1,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$211
+267,distributor,2,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$212
+268,overflow-gate,1,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$213
+269,underflow-gate,1,Miscellaneous / distribution,Dedicated item logistics,mindustry.content.Blocks$214
+270,unloader,1,Miscellaneous / distribution,Dedicated advanced item logistics,mindustry.content.Blocks$215
+271,mass-driver,3,Miscellaneous / distribution,Dedicated advanced item logistics,mindustry.content.Blocks$216
+272,duct,1,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$217
+273,armored-duct,1,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$218
+274,duct-router,1,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$219
+275,overflow-duct,1,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$220
+276,underflow-duct,1,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$221
+277,duct-bridge,1,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$222
+278,duct-unloader,1,Miscellaneous / distribution,Dedicated advanced item logistics,mindustry.content.Blocks$223
+279,surge-conveyor,1,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$224
+280,surge-router,1,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$225
+281,unit-cargo-loader,3,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$226
+282,unit-cargo-unload-point,2,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$227
+283,mechanical-pump,1,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$228
+284,rotary-pump,2,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$229
+285,impulse-pump,3,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$230
+286,conduit,1,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$231
+287,pulse-conduit,1,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$232
+288,plated-conduit,1,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$233
+289,liquid-router,1,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$234
+290,liquid-container,2,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$235
+291,liquid-tank,3,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$236
+292,liquid-junction,1,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$237
+293,bridge-conduit,1,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$238
+294,phase-conduit,1,Miscellaneous / liquid,Dedicated liquid,mindustry.content.Blocks$239
+295,reinforced-pump,2,Miscellaneous / liquid,Generic/native fallback,mindustry.content.Blocks$240
+296,reinforced-conduit,1,Miscellaneous / liquid,Generic/native fallback,mindustry.content.Blocks$241
+297,reinforced-liquid-junction,1,Miscellaneous / liquid,Generic/native fallback,mindustry.content.Blocks$242
+298,reinforced-bridge-conduit,1,Miscellaneous / liquid,Generic/native fallback,mindustry.content.Blocks$243
+299,reinforced-liquid-router,1,Miscellaneous / liquid,Generic/native fallback,mindustry.content.Blocks$244
+300,reinforced-liquid-container,2,Miscellaneous / liquid,Generic/native fallback,mindustry.content.Blocks$245
+301,reinforced-liquid-tank,3,Miscellaneous / liquid,Generic/native fallback,mindustry.content.Blocks$246
+302,power-node,1,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$247
+303,power-node-large,2,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$248
+304,surge-tower,2,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$249
+305,diode,1,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$250
+306,battery,1,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$251
+307,battery-large,3,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$252
+308,combustion-generator,1,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$253
+309,thermal-generator,2,Miscellaneous / power,Dedicated liquid,mindustry.content.Blocks$254
+310,steam-generator,2,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$255
+311,differential-generator,3,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$256
+312,rtg-generator,2,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$257
+313,solar-panel,1,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$258
+314,solar-panel-large,3,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$259
+315,thorium-reactor,3,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$260
+316,impact-reactor,4,Miscellaneous / power,Dedicated power,mindustry.content.Blocks$261
+317,beam-node,1,Miscellaneous / power,Generic/native fallback,mindustry.content.Blocks$262
+318,beam-tower,3,Miscellaneous / power,Generic/native fallback,mindustry.content.Blocks$263
+319,beam-link,3,Miscellaneous / power,Generic/native fallback,mindustry.content.Blocks$264
+320,turbine-condenser,3,Miscellaneous / power,Generic/native fallback,mindustry.content.Blocks$265
+321,chemical-combustion-chamber,3,Miscellaneous / power,Generic/native fallback,mindustry.content.Blocks$266
+322,pyrolysis-generator,3,Miscellaneous / power,Generic/native fallback,mindustry.content.Blocks$267
+323,flux-reactor,5,Miscellaneous / power,Generic/native fallback,mindustry.content.Blocks$268
+324,neoplasia-reactor,5,Miscellaneous / power,Generic/native fallback,mindustry.content.Blocks$269
+325,mechanical-drill,2,Miscellaneous / production,Dedicated drill,mindustry.content.Blocks$270
+326,pneumatic-drill,2,Miscellaneous / production,Dedicated drill,mindustry.content.Blocks$271
+327,laser-drill,3,Miscellaneous / production,Dedicated drill,mindustry.content.Blocks$272
+328,blast-drill,4,Miscellaneous / production,Dedicated drill,mindustry.content.Blocks$273
+329,water-extractor,2,Miscellaneous / production,Dedicated chemical,mindustry.content.Blocks$274
+330,cultivator,2,Miscellaneous / production,Dedicated chemical,mindustry.content.Blocks$275
+331,oil-extractor,3,Miscellaneous / production,Dedicated chemical,mindustry.content.Blocks$276
+332,vent-condenser,3,Miscellaneous / production,Generic/native fallback,mindustry.content.Blocks$277
+333,cliff-crusher,2,Miscellaneous / production,Generic/native fallback,mindustry.content.Blocks$278
+334,large-cliff-crusher,3,Miscellaneous / production,Generic/native fallback,mindustry.content.Blocks$279
+335,plasma-bore,2,Miscellaneous / production,Generic/native fallback,mindustry.content.Blocks$280
+336,large-plasma-bore,3,Miscellaneous / production,Generic/native fallback,mindustry.content.Blocks$281
+337,impact-drill,4,Miscellaneous / production,Generic/native fallback,mindustry.content.Blocks$282
+338,eruption-drill,5,Miscellaneous / production,Generic/native fallback,mindustry.content.Blocks$283
+339,core-shard,3,Miscellaneous / effect,Dedicated core/radar,mindustry.content.Blocks$284
+340,core-foundation,4,Miscellaneous / effect,Dedicated core/radar,mindustry.content.Blocks$285
+341,core-nucleus,5,Miscellaneous / effect,Dedicated core/radar,mindustry.content.Blocks$286
+342,core-bastion,4,Miscellaneous / effect,Dedicated core/radar,mindustry.content.Blocks$287
+343,core-citadel,5,Miscellaneous / effect,Dedicated core/radar,mindustry.content.Blocks$288
+344,core-acropolis,6,Miscellaneous / effect,Dedicated core/radar,mindustry.content.Blocks$289
+345,container,2,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$290
+346,vault,3,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$291
+347,reinforced-container,2,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$292
+348,reinforced-vault,3,Miscellaneous / effect,Dedicated support/storage,mindustry.content.Blocks$293
+349,duo,1,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$294
+350,scatter,2,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$295
+351,scorch,1,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$296
+352,hail,1,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$297
+353,wave,2,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$298
+354,lancer,2,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$299
+355,arc,1,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$300
+356,parallax,2,Defense,Generic/native fallback,mindustry.content.Blocks$301
+357,swarmer,2,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$302
+358,salvo,2,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$303
+359,segment,2,Defense,Generic/native fallback,mindustry.content.Blocks$304
+360,tsunami,3,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$305
+361,fuse,3,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$306
+362,ripple,3,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$307
+363,cyclone,3,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$308
+364,foreshadow,4,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$309
+365,spectre,4,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$310
+366,meltdown,4,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$311
+367,breach,3,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$312
+368,diffuse,3,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$313
+369,sublimate,3,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$314
+370,titan,4,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$315
+371,disperse,4,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$316
+372,afflict,4,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$317
+373,lustre,4,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$318
+374,scathe,4,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$319
+375,smite,5,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$320
+376,malign,5,Defense,Native turret parts (atlas-dependent fallback),mindustry.content.Blocks$321
+377,ground-factory,3,Unit production,Dedicated unit factory,mindustry.content.Blocks$322
+378,air-factory,3,Unit production,Dedicated unit factory,mindustry.content.Blocks$323
+379,naval-factory,3,Unit production,Dedicated unit factory,mindustry.content.Blocks$324
+380,additive-reconstructor,3,Reconstructors,Dedicated unit upgrade (NEW),mindustry.content.Blocks$325
+381,multiplicative-reconstructor,5,Reconstructors,Dedicated unit upgrade (NEW),mindustry.content.Blocks$326
+382,exponential-reconstructor,7,Reconstructors,Dedicated unit upgrade (NEW),mindustry.content.Blocks$327
+383,tetrative-reconstructor,9,Reconstructors,Dedicated unit upgrade (NEW),mindustry.content.Blocks$328
+384,repair-point,1,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$329
+385,repair-turret,2,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$330
+386,tank-fabricator,3,Unit production,Dedicated unit factory,mindustry.content.Blocks$331
+387,ship-fabricator,3,Unit production,Dedicated unit factory,mindustry.content.Blocks$332
+388,mech-fabricator,3,Unit production,Dedicated unit factory,mindustry.content.Blocks$333
+389,tank-refabricator,3,Reconstructors,Dedicated unit upgrade (NEW),mindustry.content.Blocks$334
+390,ship-refabricator,3,Reconstructors,Dedicated unit upgrade (NEW),mindustry.content.Blocks$335
+391,mech-refabricator,3,Reconstructors,Dedicated unit upgrade (NEW),mindustry.content.Blocks$336
+392,prime-refabricator,5,Reconstructors,Dedicated unit upgrade (NEW),mindustry.content.Blocks$337
+393,tank-assembler,5,Assemblers,Generic/native fallback,mindustry.content.Blocks$338
+394,ship-assembler,5,Assemblers,Generic/native fallback,mindustry.content.Blocks$339
+395,mech-assembler,5,Assemblers,Generic/native fallback,mindustry.content.Blocks$340
+396,basic-assembler-module,5,Assemblers,Generic/native fallback,mindustry.content.Blocks$341
+397,unit-repair-tower,2,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$342
+398,payload-conveyor,3,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$343
+399,payload-router,3,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$344
+400,reinforced-payload-conveyor,3,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$345
+401,reinforced-payload-router,3,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$346
+402,payload-mass-driver,3,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$347
+403,large-payload-mass-driver,5,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$348
+404,small-deconstructor,3,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$349
+405,deconstructor,5,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$350
+406,constructor,3,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$351
+407,large-constructor,5,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$352
+408,payload-loader,3,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$353
+409,payload-unloader,3,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$354
+410,power-source,1,Miscellaneous / power,Generic/native fallback,mindustry.content.Blocks$355
+411,power-void,1,Miscellaneous / power,Generic/native fallback,mindustry.content.Blocks$356
+412,item-source,1,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$357
+413,item-void,1,Miscellaneous / distribution,Generic/native fallback,mindustry.content.Blocks$358
+414,liquid-source,1,Miscellaneous / liquid,Generic/native fallback,mindustry.content.Blocks$359
+415,liquid-void,1,Miscellaneous / liquid,Generic/native fallback,mindustry.content.Blocks$360
+416,payload-source,5,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$361
+417,payload-void,5,Miscellaneous / units,Generic/native fallback,mindustry.content.Blocks$362
+418,heat-source,1,Miscellaneous / crafting,Generic/native fallback,mindustry.content.Blocks$363
+419,target-dummy,2,Defense,Generic/native fallback,mindustry.content.Blocks$364
+420,illuminator,1,Miscellaneous / effect,Dedicated utility,mindustry.content.Blocks$365
+421,legacy-mech-pad,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.legacy.LegacyMechPad
+422,legacy-unit-factory,1,Environment/internal,Environment/internal path; not a factory target,mindustry.world.blocks.legacy.LegacyUnitFactory
+423,legacy-unit-factory-air,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$366
+424,legacy-unit-factory-ground,1,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$367
+425,command-center,2,Environment/internal,Environment/internal path; not a factory target,mindustry.content.Blocks$368
+426,launch-pad,3,Miscellaneous / effect,Dedicated utility,mindustry.content.Blocks$369
+427,advanced-launch-pad,4,Miscellaneous / effect,Dedicated utility,mindustry.content.Blocks$370
+428,landing-pad,4,Miscellaneous / effect,Dedicated utility,mindustry.content.Blocks$371
+429,interplanetary-accelerator,7,Miscellaneous / effect,Generic/native fallback,mindustry.content.Blocks$372
+430,message,1,Logic,Generic/native fallback,mindustry.content.Blocks$373
+431,switch,1,Logic,Generic/native fallback,mindustry.content.Blocks$374
+432,micro-processor,1,Logic,Generic/native fallback,mindustry.content.Blocks$375
+433,logic-processor,2,Logic,Generic/native fallback,mindustry.content.Blocks$376
+434,hyper-processor,3,Logic,Generic/native fallback,mindustry.content.Blocks$377
+435,memory-cell,1,Logic,Generic/native fallback,mindustry.content.Blocks$378
+436,memory-bank,2,Logic,Generic/native fallback,mindustry.content.Blocks$379
+437,logic-display,3,Logic,Generic/native fallback,mindustry.content.Blocks$380
+438,large-logic-display,6,Logic,Generic/native fallback,mindustry.content.Blocks$381
+439,tile-logic-display,1,Logic,Generic/native fallback,mindustry.content.Blocks$382
+440,canvas,2,Logic,Generic/native fallback,mindustry.content.Blocks$383
+441,large-canvas,3,Logic,Generic/native fallback,mindustry.content.Blocks$384
+442,reinforced-message,1,Logic,Generic/native fallback,mindustry.content.Blocks$385
+443,world-processor,1,Logic,Generic/native fallback,mindustry.content.Blocks$386
+444,world-cell,1,Logic,Generic/native fallback,mindustry.content.Blocks$387
+445,world-message,1,Logic,Generic/native fallback,mindustry.content.Blocks$388
+446,world-switch,1,Logic,Generic/native fallback,mindustry.content.Blocks$389

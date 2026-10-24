@@ -93,6 +93,9 @@ final class NativeBlockAnimationAdapter {
     }
     /** Existing native payload/progress presentation, seated inside an open factory bay. */
     void renderFactoryContents(UnitFactory.UnitFactoryBuild b,NativeAtlasMesh.Builder out,float x,float top,float z,float size){
+        renderAssemblyContents(b,out,x,top,z,size);
+    }
+    void renderAssemblyContents(UnitBlock.UnitBuild b,NativeAtlasMesh.Builder out,float x,float top,float z,float size){
         var block=(UnitBlock)b.block;
         out.top(block.outRegion,x,top+.002f,z,size,size,-b.rotation*90,1,1,1,false);
         renderUnitContents(b,out,x,top,z,size,false);
@@ -109,27 +112,28 @@ final class NativeBlockAnimationAdapter {
             if(live!=null&&!live.dead&&live.type==release.payload.type&&live.team==b.team)release.flashUntil=Time.time+24;
         }
         release.payload=build.payload==null?null:build.payload.unit;
-        if(target!=null&&progress(b)>0){
-            float p=progress(b);sprite(out,target.fullIcon,x,top+.012f,z,b.rotdeg()-90,p,size);
+        boolean preview=target!=null&&progress(b)>0&&(drawFrame||!(b instanceof UnitFactory.UnitFactoryBuild)||build.payload==null);
+        if(preview){
+            float p=progress(b);sprite(out,target.fullIcon,x,top+(drawFrame?.012f:.030f),z,b.rotdeg()-90,p,drawFrame?size:size*.70f);
             float scan=Mathf.sin(build.time*.1f)*.5f+.5f;
             if(drawFrame)out.top(Core.atlas.white(),x,top+.016f,z+(scan-.5f)*size*.8f,size*.75f,.025f,-b.rotation*90,b.team.color.r,b.team.color.g,b.team.color.b,false);
             else{
                 float offset=(scan-.5f)*size*.50f,angle=-b.rotdeg();
-                out.top(Core.atlas.white(),x-offset*Mathf.sinDeg(angle),top+.016f,z+offset*Mathf.cosDeg(angle),size*.56f,.025f,angle,b.team.color.r,b.team.color.g,b.team.color.b,false);
+                out.top(Core.atlas.white(),x-offset*Mathf.sinDeg(angle),top+.050f,z+offset*Mathf.cosDeg(angle),size*.56f,.025f,angle,b.team.color.r,b.team.color.g,b.team.color.b,false);
             }
         }
         if(build.payload!=null){
             UnitPayload payload=build.payload;
             float px=payload.x()/Vars.tilesize,pz=-payload.y()/Vars.tilesize;
             // During reconstruction, the old unit is still a payload, never a second actor.
-            if(target==null||progress(b)<.5f)sprite(out,payload.unit.type.fullIcon,px,top+.01f,pz,payload.rotation()-90,1,size);
+            if(drawFrame?target==null||progress(b)<.5f:!preview)sprite(out,payload.unit.type.fullIcon,px,top+.01f,pz,payload.rotation()-90,1,drawFrame?size:size*.70f);
             if(payload.overlayTime>0)out.top(payload.overlayRegion==null?mindustry.gen.Icon.warning.getRegion():payload.overlayRegion,x,top+.02f,z,.45f,.45f,0,1,.15f,.1f,false);
         }
         if(drawFrame)out.top(block.topRegion,x,top+.025f,z,size,size,0,1,1,1,false);
         if(release.flashUntil>Time.time){
             float span=size*(.4f+(1-(release.flashUntil-Time.time)/24)*.3f);
-            out.top(Core.atlas.white(),x,top+.03f,z,span,.025f,0,b.team.color.r,b.team.color.g,b.team.color.b,false);
-            out.top(Core.atlas.white(),x,top+.03f,z,.025f,span,0,b.team.color.r,b.team.color.g,b.team.color.b,false);
+            out.top(Core.atlas.white(),x,top+(drawFrame?.03f:.065f),z,span,.025f,0,b.team.color.r,b.team.color.g,b.team.color.b,false);
+            out.top(Core.atlas.white(),x,top+(drawFrame?.03f:.065f),z,.025f,span,0,b.team.color.r,b.team.color.g,b.team.color.b,false);
         }
     }
     private void sprite(NativeAtlasMesh.Builder out,TextureRegion region,float x,float y,float z,float nativeAngle,float fraction,float limit){
