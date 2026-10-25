@@ -59,4 +59,3 @@ final class SmokeHarness {
     }catch(Throwable t){fail(t);}}
     void fail(Throwable t){done=true;out.child("failed.txt").writeString(t.toString());Log.err(t);Core.app.post(Core.app::exit);}
 }
-
