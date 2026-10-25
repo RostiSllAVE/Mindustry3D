@@ -192,6 +192,27 @@ public final class FpvWorldRenderer {
     private final EnvironmentRenderer environment = new EnvironmentRenderer();
     private final TerrainElevation elevation = new TerrainElevation();
     private final FloorSurfaceRelief floorRelief = new FloorSurfaceRelief(CHUNK);
+    private MountainStyle mountainStyle=MountainStyle.SMOOTH;
+    private final MountainGeometry mountainGeometry=new MountainGeometry(CHUNK);
+    private final MountainGeometry.Source mountainSource=new MountainGeometry.Source(){
+        public boolean natural(int x,int y){Tile t=Vars.world.tile(x,y);return t!=null&&elevation.naturalWall(x,y)&&discovered(t);}
+        public float corner(int x,int y,int c){return elevation.tileCornerHeight(x,y,c);}
+        public float maximum(){return elevation.maxHeight();}
+    };
+    private NativeAtlasMesh.Builder mountainTarget;
+    private TextureRegion mountainMaterial,mountainOre;
+    private final MountainGeometry.Sink mountainSink=(v,shade,top)->{
+        mountainTarget.terrainTriangle(mountainMaterial,v,shade,0);
+        if(top&&mountainOre!=null)mountainTarget.terrainTriangle(mountainOre,v,shade,.02f);
+    };
+    private long terrainChunkBuilds,terrainChunkBuildNanos;
+    public record TerrainMeshStats(String style,long builds,long buildNanos,long vertices,long bytes,int chunks){}
+    public TerrainMeshStats terrainMeshStats(){
+        long vertices=0;
+        for(var c:chunks.values())vertices+=(c.bytes-(c.atlas==null?0:c.atlas.bytes)-(c.liquid==null?0:c.liquid.bytes))/28+
+            (c.atlas==null?0:c.atlas.bytes/36)+(c.liquid==null?0:c.liquid.bytes/36);
+        return new TerrainMeshStats(mountainStyle.label(),terrainChunkBuilds,terrainChunkBuildNanos,vertices,cachedBytes,chunks.size());
+    }
     private final java.util.function.Predicate<Tile> floorVisible = this::discovered;
     private final java.util.function.IntConsumer coarseStaticStructure=this::coarseStaticStructure;
     private long terrainRevision=-1;
@@ -670,6 +691,8 @@ public final class FpvWorldRenderer {
     }
 
     private void syncWorld() {
+        MountainStyle selected=MountainStyle.current();
+        if(selected!=mountainStyle){mountainStyle=selected;clearChunks();}
         syncVegetationStructures();
         if(vegetationContent!=Vars.content){
             vegetationContent=Vars.content;vegetationHeight=vegetationPadding=0;
@@ -777,6 +800,7 @@ public final class FpvWorldRenderer {
     }
 
     private ChunkMesh buildChunk(int cx, int cy) {
+        long mountainBuildStarted=System.nanoTime();
         terrain.clear();staticAtlas.clear();liquidStatic.clear();
         floorRelief.prepare(cx,cy,floorVisible);
         for (int y = cy * CHUNK; y < Math.min(worldHeight, (cy + 1) * CHUNK); y++) {
@@ -793,7 +817,12 @@ public final class FpvWorldRenderer {
                 floorSurface(tile,floor,0,false);
                 Block block = tile.block();
                 if(elevation.naturalWall(tile)){
-                    terrainTile(tile,staticAtlas,terrain);
+                    if(mountainStyle==MountainStyle.SMOOTH)terrainTile(tile,staticAtlas,terrain);
+                    else{
+                        mountainTarget=staticAtlas;mountainMaterial=NativeRegions.wall(tile.block(),tile);
+                        mountainOre=tile.overlay().wallOre?NativeRegions.floor(tile.overlay(),tile):null;
+                        mountainGeometry.emit(mountainSource,x,y,mountainStyle,mountainSink);
+                    }
                     continue;
                 }
                 if (tile.build == null && block != mindustry.content.Blocks.air && tile.isCenter()) {
@@ -812,7 +841,9 @@ public final class FpvWorldRenderer {
         }
         Mesh mesh=null;
         if(terrain.count>0){mesh=new Mesh(true,terrain.count/7,0,VertexAttribute.position3,COLOR);mesh.setVertices(terrain.vertices,0,terrain.count);}
-        return new ChunkMesh(mesh,staticAtlas.upload(),liquidStatic.upload(),revision,(long)terrain.count*4,discoveryHash(cx,cy));
+        var result=new ChunkMesh(mesh,staticAtlas.upload(),liquidStatic.upload(),revision,(long)terrain.count*4,discoveryHash(cx,cy));
+        terrainChunkBuilds++;terrainChunkBuildNanos+=System.nanoTime()-mountainBuildStarted;
+        return result;
     }
 
     /** Only cached presentation vertices move; native XYZ/picking/physical terrain remain untouched. */

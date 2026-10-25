@@ -160,6 +160,18 @@ final class NativeAtlasMesh {
                 x+width/2,ne,z-depth/2,x-width/2,nw,z-depth/2,shade,shade,shade,false,true);
         }
 
+        /** Explicit local UVs preserve world texel density for clipped mountain treads/risers. */
+        void terrainTriangle(TextureRegion region,float[] xyzuv,float shade,float offset){
+            if(!valid(region))return;
+            Data d=data.get(region.texture);
+            if(d==null){d=new Data(streaming?capacity*9:4096);data.put(region.texture,d);}
+            if(streaming&&d.count+27>d.values.length)flush(region.texture,d,overflowShader);
+            if(d.count+27>d.values.length)d.values=Arrays.copyOf(d.values,Math.max(d.values.length*2,d.count+27));
+            float u=region.u+Math.signum(region.u2-region.u)*.5f/region.texture.width,v=region.v+Math.signum(region.v2-region.v)*.5f/region.texture.height;
+            float us=region.u2-Math.signum(region.u2-region.u)*.5f/region.texture.width-u,vs=region.v2-Math.signum(region.v2-region.v)*.5f/region.texture.height-v;
+            for(int i=0;i<15;i+=5)d.vertex(xyzuv[i],xyzuv[i+1]+offset,xyzuv[i+2],shade,shade,shade,0,u+xyzuv[i+3]*us,v+xyzuv[i+4]*vs);
+        }
+
         /** Four triangles retain a natural cell's interior relief even when its edges are anchored.
          * Per-vertex slope lighting and UVs are shared by the floor and its ore overlay. */
         void floorReliefTop(TextureRegion region,float x,float z,float sw,float se,float ne,float nw,float center,
