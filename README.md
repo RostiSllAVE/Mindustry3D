@@ -20,6 +20,11 @@ The project builds on Mindustry's existing systems. Construction still needs res
 
 <img src="assets/workshop-preview.png" alt="Mindustry³ project artwork" width="320">
 
+<img width="1879" height="1164" alt="Screenshot 2026-10-25 175137" src="https://github.com/user-attachments/assets/4adfe5e8-419f-4e5a-af7c-3acda332c39f" />
+<img width="1804" height="1220" alt="Screenshot 2026-10-25 175553" src="https://github.com/user-attachments/assets/05273d3d-0936-4fcc-a381-770ee417c72b" />
+<img width="2047" height="1106" alt="Screenshot 2026-10-25 180144" src="https://github.com/user-attachments/assets/ecd759e8-aa15-4588-98af-9af57a6aa32c" />
+<img width="1816" height="1077" alt="Screenshot 2026-10-25 175823" src="https://github.com/user-attachments/assets/bac8704d-60a1-4f48-a2de-565caf94d3f1" />
+<img width="2118" height="940" alt="Screenshot 2026-10-25 180236" src="https://github.com/user-attachments/assets/d9428f04-5110-4db4-8f28-8fdc66ab5010" />
 
 ## Main features
 
