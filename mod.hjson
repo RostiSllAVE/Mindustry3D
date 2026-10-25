@@ -2,7 +2,7 @@ name: mindustry-fpv
 displayName: "Mindustry³ / FPV"
 author: RostiSllAVE
 description: "Experimental fan-made 3D/FPV conversion. Tested release target: Windows 64-bit, Mindustry 160.7. One Linux laptop launch reported by owner; broader Linux compatibility is not certified. Android is not supported. F5: view; Tab: Build; F7: camera. Multiplayer requires matching code/resources."
-version: 0.18.31
+version: 0.19.0
 minGameVersion: 160.7
 java: true
 main: fpv.FpvMod

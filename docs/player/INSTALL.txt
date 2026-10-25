@@ -1,58 +1,36 @@
-MINDUSTRY3 / FPV - EXPERIMENTAL ALPHA 1.0.4 (MOD 0.18.31)
+MINDUSTRY3 / FPV - ALPHA 2.0.0 RC1 (MOD 0.19.0)
+LOCAL RELEASE CANDIDATE - NOT A PUBLISHED RELEASE
 
-Supported release target: Windows 64-bit, Mindustry 160.7.
-Install Mindustry separately. This package does not contain the game or Java.
-Steam's bundled Java 25.0.1 is sufficient. No JDK, Python, PowerShell or developer
-files are needed to play. An owner-reported Linux laptop launch is not broad
-Linux certification. Android is not supported.
+Unofficial experimental fan-made mod. Install Mindustry 160.7 separately.
+Primary target: Windows 64-bit. Linux desktop RC acceptance is pending.
+Android is unsupported. No separate Java, JDK, Python or developer files needed.
 
-JAR DOWNLOAD
-1. Back up your saves. Download mindustry-fpv-0.18.31.jar.
-2. In Mindustry open Mods > Import Mod > Import File. Choose that JAR.
-3. Accept replacement of an older Mindustry FPV mod. Do not enable two copies.
-4. Restart Mindustry normally through Steam.
-5. Enable Fullscreen in the game's graphics settings. Start a map or save.
+1. Back up saves. In Mindustry open Mods > Import Mod > Import File.
+2. Select mindustry-fpv-0.19.0.jar; accept replacement of the previous mod.
+3. Enable only ONE copy; do not combine Workshop and imported versions.
+4. Restart Mindustry normally, through its standalone launcher or Steam.
+5. Use Fullscreen; open a disposable map and press F5, then Tab for Build Mode.
 
-CONVENIENCE ZIP DOWNLOAD
-Extract the ZIP first. Import the JAR inside using the steps above.
-Do not import this convenience ZIP, the source ZIP, or the Workshop folder.
+Convenience ZIP: extract it, then import the JAR inside.
+Do not import the corresponding-source ZIP or Workshop upload ZIP.
+Workshop/Mod Browser availability of this RC cannot be tested until an approved
+publication. Existing public releases are unchanged by this local preparation.
 
-STEAM WORKSHOP (AFTER A WORKSHOP RELEASE HAS BEEN APPROVED)
-Subscribe to the approved item, wait for Steam to finish downloading, restart
-Mindustry, check that the mod is enabled, then start a map and press F5.
-Do not combine a subscribed copy with an imported JAR of this same mod.
-This local preparation does not publish an item or prove subscription works.
-
-MOD BROWSER (AFTER THIS CANDIDATE IS PUBLISHED AND INDEXED)
-Open Mods > Mod Browser, find Mindustry3 / FPV, install and restart.
-Check that the installed version is 0.18.31 on Mindustry 160.7. If it is not yet
-listed, use the ready-to-import JAR; indexing is not immediate.
-
-ESSENTIAL CONTROLS
-F5: original 2D / FPV 3D view.
-Tab: Build Mode / return to flight. Build Mode releases the mouse cursor.
-F7: first-person / third-person camera views.
-F9: flight mode. In Stabilized mode, WASD moves relative to the view.
-Esc: menus/cancellation. Mouse capture is released while menus are open.
-More controls are listed in the project's README; FPV settings are in the game.
+F5: 2D/FPV. Tab: Build/flight. F7: camera. Alt+F7: smoothing. Alt+wheel: distance.
+F9: flight mode. F3: pause/resume construction without deleting plans.
+F4 in Build: 3D selection; drag XY and wheel for Z. Use its Copy/Paste buttons.
+Click a blueprint to prioritize; Alt+click when a placement tool is selected.
+Menus, Build Mode and focus loss release capture. See README for other bindings.
 
 KNOWN LIMITATIONS
-This is an unofficial experimental fan-made mod, not an official game release.
-Fullscreen is strongly recommended: windowed mode has caused severe slowdown
-on the development PC. Visual glitches and incomplete custom-mod support remain.
-Multiplayer is experimental. All peers need matching code, resources and version;
-the JAR and extracted Workshop package from this release have the same identity.
-The owner reports working GitHub/Workshop installation for the previous release.
-This new candidate has not been uploaded or subscription-tested. Independent
-multiplayer and clean-Windows tests remain pending.
+Windowed mode caused severe stalls on the owner's Windows hardware; fullscreen
+removed them in that test. Cosmetic/LOD approximations and custom-mod issues
+remain possible. Linux mouse capture/compositor and two-laptop networking need
+owner acceptance. If HOST MOUSE appears, native capture was unavailable and mouse
+look is bounded; keyboard look remains. All peers need the exact matching build.
+No independent internet multiplayer certification or universal FPS claim is made.
 
-IF SOMETHING GOES WRONG
-Check that the game is 160.7 and only one copy of the mod is enabled. Restart.
-If the HUD says HOST MOUSE, native capture was unavailable and arrow keys remain
-available at the window edge. Include a relevant log excerpt in a bug report;
-remove private paths, account details, IP addresses and tokens before sharing.
-
-LICENSE AND SOURCE
-Project: GPL-3.0-only. See LICENSE and THIRD_PARTY_NOTICES.md.
-JNA/libffi notices are included in the JAR and convenience package.
-Use the matching mindustry-fpv-0.18.31-corresponding-source.zip for this binary.
+LICENSE / SOURCE
+GPL-3.0-only. LICENSE, THIRD_PARTY_NOTICES and JNA/libffi notices are included.
+Use mindustry-fpv-0.19.0-corresponding-source.zip for this exact binary.
+The game itself and its runtime are not distributed in these packages.

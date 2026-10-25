@@ -44,10 +44,12 @@ def jar_entries(jar):
         raise ValueError('Repository/packaged metadata differ')
     return entries
 
-def package(jar, out, commit=None):
+def package(jar, out, commit=None, release_title=None, tag=None):
     import re
     entries = jar_entries(jar)
     version = re.search(r'^version:\s*(\S+)', entries['mod.hjson'].decode(), re.M).group(1)
+    release_title = release_title or f'Mindustry³ {version} [v160.7]'
+    tag = tag or f'v{version}'
     git = ['git', '-c', 'safe.directory=' + ROOT.as_posix(), '-C', str(ROOT)]
     if commit:
         head = subprocess.check_output(git + ['rev-parse', 'HEAD'], text=True).strip()
@@ -96,21 +98,23 @@ def package(jar, out, commit=None):
                     source.writestr(name, exported.read(name))
                 source.writestr('SOURCE-MANIFEST.json', json.dumps(manifest, indent=2))
     (out / 'INSTALL.txt').write_bytes(notes)
-    for name in ('ALPHA-1.0.4-BROWSER.md', 'BROWSER-VALIDATION.json'):
-        evidence = ROOT / 'docs/releases' / name
-        if evidence.is_file(): (out / name).write_bytes(evidence.read_bytes())
+    for evidence in sorted((ROOT / 'docs/alpha-v2').glob('A2-18-*')):
+        if evidence.is_file() and evidence.suffix in ('.md','.json','.csv'):
+            (out / evidence.name).write_bytes(evidence.read_bytes())
     candidate = {'status': 'LOCAL ONLY; no GitHub release created',
-                 'repository': 'RostiSllAVE/Mindustry3D', 'tag_name': 'v1.0.4-alpha.1',
-                 'name': 'Mindustry³ Alpha 1.0.4 [v160.7]', 'modVersion': version,
+                 'repository': 'RostiSllAVE/Mindustry3D', 'tag_name': tag,
+                 'name': release_title, 'modVersion': version,
                  'sourceCommit': commit, 'prerelease': True, 'mustPublishNonDraftAfterApproval': True,
                  'requiredAssets': [jar.name, f'mindustry-fpv-{version}-corresponding-source.zip', 'SHA256SUMS.txt']}
     (out / 'RELEASE-CANDIDATE.json').write_bytes((json.dumps(candidate, indent=2) + '\n').encode())
     files = {p.name: {'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()} for p in out.iterdir() if p.is_file()}
-    manifest = {'version': version, 'recommendedRelease': 'Mindustry³ Alpha 1.0.4 [v160.7]', 'target': 'Windows x64 / Mindustry 160.7', 'sourceCommit': commit, 'sourceFileCount': source_count,
+    manifest = {'version': version, 'recommendedRelease': release_title, 'target': 'Mindustry 160.7 desktop; Windows x64 tested; Linux owner acceptance pending', 'sourceCommit': commit, 'sourceFileCount': source_count,
                 'payloadIdentity': identity, 'jarEntries': len(entries), 'workshopEntries': len(unpacked),
                 'status': 'LOCAL ONLY; publishing and real Workshop subscription are not performed', 'files': files}
     (out / 'release-manifest.json').write_bytes((json.dumps(manifest, indent=2) + '\n').encode())
-    (out / 'SHA256SUMS.txt').write_bytes(('\n'.join(v['sha256'] + '  ' + n for n, v in files.items()) + '\n').encode())
+    checksum_files = dict(files)
+    checksum_files['release-manifest.json'] = {'bytes': (out / 'release-manifest.json').stat().st_size, 'sha256': hashlib.sha256((out / 'release-manifest.json').read_bytes()).hexdigest()}
+    (out / 'SHA256SUMS.txt').write_bytes(('\n'.join(v['sha256'] + '  ' + n for n, v in checksum_files.items()) + '\n').encode())
     print(json.dumps(manifest, indent=2))
 
 if __name__ == '__main__':
@@ -118,5 +122,7 @@ if __name__ == '__main__':
     parser.add_argument('--jar', required=True, type=Path)
     parser.add_argument('--out', required=True, type=Path)
     parser.add_argument('--source-commit', help='Verified clean HEAD; omit only for test staging')
+    parser.add_argument('--release-title')
+    parser.add_argument('--tag')
     args = parser.parse_args()
-    package(args.jar, args.out, args.source_commit)
+    package(args.jar, args.out, args.source_commit, args.release_title, args.tag)

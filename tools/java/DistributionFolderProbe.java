@@ -13,7 +13,7 @@ public final class DistributionFolderProbe {
             var result=Jval.newObject();
             try{
                 var mod=Vars.mods.getMod("mindustry-fpv");
-                if(mod==null||mod.main==null||!mod.file.isDirectory()||!"0.18.31".equals(mod.meta.version))throw new AssertionError("Expected loaded compiled folder mod");
+                if(mod==null||mod.main==null||!mod.file.isDirectory()||!System.getProperty("probe.version", "0.19.0").equals(mod.meta.version))throw new AssertionError("Expected loaded compiled folder mod");
                 if(!mod.prePublish())throw new AssertionError("Native publisher prerequisite validation failed");
                 Pixmap preview=new Pixmap(mod.file.child("preview.png"));
                 try{if(preview.width!=512||preview.height!=512)throw new AssertionError("Invalid preview size");}finally{preview.dispose();}

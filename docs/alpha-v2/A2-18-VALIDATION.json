@@ -1,0 +1,78 @@
+{
+  "status": "READY WITH KNOWN LIMITATIONS",
+  "publicVersion": "Alpha 2.0.0 RC1",
+  "internalVersion": "0.19.0",
+  "target": "160.7",
+  "acceptedGameplayCommit": "3fc6f3ea6d8f2dda8931559f2498938dae51d420",
+  "jarSha256": "050cdf7b6b8c5f59969be89c53411a0cc92787e535a28385344ec973406610a3",
+  "payloadIdentity": "payload1-c159bad5421a1651d25065dbb65adb2ea075ed9e0d6f747c5925960c6cc53979",
+  "fpvClasses": 1081,
+  "runtimeClassesChanged": 0,
+  "jarEntries": 1261,
+  "jarBytes": 4754805,
+  "java17ProgramsPassed": 214,
+  "java25ProgramsPassed": 214,
+  "programsFailedFinal": 0,
+  "initialTestInfrastructureFailures": {
+    "java25MissingTemporaryDirectory": 2,
+    "nativeImportZipNormalization": 1
+  },
+  "actualGlPerRuntime": {
+    "scenes": 174,
+    "frames": 9729,
+    "errors": 0,
+    "runtimes": [
+      "17.0.20.1",
+      "25.0.1"
+    ]
+  },
+  "distributionNormalStartupRuns": 4,
+  "nativeImportAndRestartRuns": 2,
+  "compiledWorkshopNormalStartupRuns": 2,
+  "browserChecks": 9,
+  "devRuntimeSafetyTests": 6,
+  "realLocalhostThreeProcessNavalFixture": "PASS; JAR + compiled folder clients; protocol 4 READY; single release/cost and authoritative XYZ/GPU",
+  "fullHistoricalNetworkFixture": "FAIL diagnostic capacity: 13 production + 4 lab channels >16; no connection attempted",
+  "realTwoComputerMultiplayer": "NOT TESTED",
+  "physicalSteamRcImportAndInput": "NOT TESTED",
+  "physicalLinuxRcCapture": "NOT TESTED",
+  "physicalCleanMachine": "NOT TESTED; isolated same-PC profiles only",
+  "linuxLocalEnvironment": "WSL listing Access denied; no bypass",
+  "oldArtifactPreservationExpected": 2465,
+  "referenceFilesPreservationExpected": 98,
+  "performance": {
+    "file": "A2-18-PERFORMANCE.csv",
+    "scenarios": 7,
+    "shortSamplesPerScenario": 180,
+    "longSamplesPerScenario": 600,
+    "longWarmupPerScenario": 120,
+    "asyncGpuSamplesPerScenario": 599,
+    "limits": "Fixture-loop throughput, not physical presentation FPS; no dedicated mod-init timer, long-run leak certification or universal improvement claim"
+  },
+  "dependencies": {
+    "host": "Separate official Mindustry 160.7 with Arc/SDL, assets/textures/native bridge and bundled runtime",
+    "bundled": "JNA 5.19.1 core/native dispatch resources with JNA/Apache/libffi notices",
+    "nativeMouse": "Existing Windows system APIs or the host mapped SDL bridge on Linux; optional native failures retain bounded fallback",
+    "buildOnly": "Python, full JDK17, official compile-only desktop.jar, pinned JNA jar; none needed by players"
+  },
+  "forbiddenTrackedArtifacts": [],
+  "trackedFilesOver50MiB": [],
+  "browserUpstreamSha256": "2089e4cba6fe841d5f479959fa23d8b434708b258ab2ca277a4fc565b9741577",
+  "published": false,
+  "workshopUploaded": false,
+  "remoteTagCreated": false,
+  "standaloneExeCopyFixture": "PASS; three views,90 frames,GL0; overlay not production import acceptance",
+  "existingHistoryPrivacy": {
+    "realNameAuthorLabelCommits": [
+      "a596de389d78e56af0502ebf5bf618a9f45bdabf",
+      "8ea43186f198d34aa4bc0e58f0ad68dd2613970d",
+      "6b5e2a1f7f0284581d78c29b3c0396049dca0f3f",
+      "337b9e633a254c7dd5c8feac13f48595e80a3d83",
+      "dbbd9adfa39ecb4c93b80fc3c54cef418b565931",
+      "935dd68ab8afbaf9783fa0b23561fb97a067abdf"
+    ],
+    "personalEmailObserved": false,
+    "historyRewritten": false,
+    "newCheckpointIdentity": "approved public username + GitHub noreply"
+  }
+}

@@ -4,12 +4,13 @@ from pathlib import Path
 from dev_runtime import ROOT,host_jar,runtime,inspect
 
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--build',type=Path,required=True);p.add_argument('--java',choices=['java17','bundled25'],required=True);p.add_argument('--run',required=True);a=p.parse_args()
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--build',type=Path,required=True);p.add_argument('--jar',type=Path,help='Explicit production JAR; otherwise discover the diagnostic JAR');p.add_argument('--java',choices=['java17','bundled25'],required=True);p.add_argument('--run',required=True);a=p.parse_args()
  if not a.run.replace('-','').isalnum():p.error('Use a new simple run name')
  build=a.build.resolve();result=build/(a.run+'-tests.json');logfile=build/(a.run+'-tests.log')
  if result.exists() or logfile.exists():p.error('Existing evidence is preserved; choose a new run')
- jars=list(build.glob('mindustry-fpv-*-diagnostics.jar'))
- if len(jars)!=1:p.error('Expected exactly one built diagnostic JAR')
+ jars=[a.jar.resolve()] if a.jar else list(build.glob('mindustry-fpv-*-diagnostics.jar'))
+ if len(jars)!=1 or not jars[0].is_file():p.error('Expected exactly one built diagnostic JAR')
+ (build/'tmp').mkdir(exist_ok=True)
  java=runtime(a.java);cp=os.pathsep.join(map(str,[build/'test-classes',jars[0],host_jar(),ROOT/'lib/jna-5.19.1.jar']))
  results=[]
  with logfile.open('x',encoding='utf-8') as log:
