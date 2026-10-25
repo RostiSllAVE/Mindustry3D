@@ -8,7 +8,7 @@ What began as an FPV flight experiment gradually became a much larger project: a
 
 **Current candidate:** Alpha 2.0.0 RC1 · **Mod version:** 0.19.0 · **Target game:** Mindustry 160.7.
 
-RC1 is prepared locally and has **not been publicly released**. This is my experimental, fan-made mod, not an official Mindustry release.
+This is my experimental, fan-made mod, not an official Mindustry release.
 
 ## What is Mindustry³?
 
