@@ -40,6 +40,7 @@ public final class SupportEffectsRenderer {
     private final IntMap<HealingBeam> beamEnds=new IntMap<>();
     private Object worldTiles;
     private int tileChanges=-1,leaks,pools,heals,pulses,primitives;
+    private boolean candidatesValid;
     private Camera3D camera;
     private UnitAltitudeSystem altitudes;
     private DoubleBinaryOperator surface;
@@ -57,7 +58,7 @@ public final class SupportEffectsRenderer {
     public boolean wasTowerSubmitted(Building source){return source!=null&&towerSubmitted.get(source.id)==source;}
     public HealingBeam healingBeam(Building source){return source==null?null:beamEnds.get(source.id);}
     public HealingBeam healingBeam(Unit source){return source==null?null:beamEnds.get(source.id);}
-    public void clear(){candidates.clear();puddles.clear();worldTiles=null;tileChanges=-1;clearFrame();}
+    public void clear(){candidates.clear();puddles.clear();worldTiles=null;candidatesValid=false;tileChanges=-1;clearFrame();}
     public void clearFrame(){leakSubmitted.clear();healSubmitted.clear();unitHealSubmitted.clear();towerSubmitted.clear();beamEnds.clear();leaks=pools=heals=pulses=primitives=0;}
 
     public void render(Camera3D camera,Iterable<Building> placed,UnitAltitudeSystem altitudes,
@@ -65,10 +66,11 @@ public final class SupportEffectsRenderer {
         clearFrame();
         if(Vars.world==null||Vars.state==null||Vars.player==null)return;
         if(worldTiles!=Vars.world.tiles){clear();worldTiles=Vars.world.tiles;}
-        if(tileChanges!=Vars.world.tileChanges){
+        // -1 is a legitimate native post-load tileChanges value, not an invalid-cache sentinel.
+        if(!candidatesValid||tileChanges!=Vars.world.tileChanges){
             candidates.clear();
             for(Building b:placed)if(b instanceof Conduit.ConduitBuild||b instanceof RepairTurret.RepairPointBuild||b instanceof RepairTower.RepairTowerBuild)candidates.add(b);
-            tileChanges=Vars.world.tileChanges;
+            tileChanges=Vars.world.tileChanges;candidatesValid=true;
         }
         this.camera=camera;this.altitudes=altitudes;this.surface=rendererSurface;this.sink=sink;
         for(Building b:candidates){
@@ -170,7 +172,7 @@ public final class SupportEffectsRenderer {
         Unit3DState pose=altitudes==null?null:altitudes.unitState(target);if(pose==null)return;
         double ax=(build.x+Angles.trnsx(rotation,type.length))/(double)Vars.tilesize;
         double ay=(build.y+Angles.trnsy(rotation,type.length))/(double)Vars.tilesize;
-        double az=buildingTop(build)+.065;
+        double az=buildingTop(build)+TurretModelRenderer.auxiliaryRoofOffset(type)+.03;
         if(healing(ax,ay,az,pose.x(),pose.y(),pose.z(),type.beamWidth*strength/Vars.tilesize,type.laserColor,build.id)){
             healSubmitted.put(build.id,build);beamEnds.put(build.id,new HealingBeam(ax,ay,az,pose.x(),pose.y(),pose.z(),target.id));
         }

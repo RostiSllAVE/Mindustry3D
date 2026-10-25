@@ -34,6 +34,8 @@ final class TurretModelRenderer {
     int vertices(TextureRegion art){var e=cache.get(art);return e==null?0:e.shape.vertexCount();}
     void clear(){cache.clear();supported.clear();atlas=null;bytes=0;}
     static boolean auxiliarySupports(mindustry.world.Block block){return block instanceof RepairTurret||block instanceof PointDefenseTurret||block instanceof TractorBeamTurret;}
+    static float auxiliaryDepth(mindustry.world.Block block){return Math.min(.38f,Math.max(.10f,block.size*.17f));}
+    static float auxiliaryRoofOffset(mindustry.world.Block block){return .006f+auxiliaryDepth(block)*.5f;}
     /** Native turret bases and complete head sprites, including the non-combat repair family. */
     boolean renderAuxiliary(Building build,NativeAtlasMesh.Builder out,float x,float base,float z,float height){
         TextureRegion foundation;float yaw;
@@ -43,7 +45,7 @@ final class TurretModelRenderer {
         else return false;
         if(!NativeAtlasMesh.valid(foundation)||!NativeAtlasMesh.valid(build.block.region))return false;
         if(atlas!=Core.atlas){clear();atlas=Core.atlas;}
-        float depth=Math.min(.38f,Math.max(.10f,build.block.size*.17f)),baseHeight=Math.max(.06f,height-depth*.55f-.035f);
+        float depth=auxiliaryDepth(build.block),baseHeight=Math.max(.06f,height-depth*.55f-.035f);
         SpriteExtrusionGeometry.basis(90,0,0,basis);capture.foundation=true;
         try{emit(out,foundation,x,base+baseHeight*.5f,z,foundation.width*foundation.scl()/Vars.tilesize,baseHeight,foundation.height*foundation.scl()/Vars.tilesize,basis,1,1,1);}
         finally{capture.foundation=false;}

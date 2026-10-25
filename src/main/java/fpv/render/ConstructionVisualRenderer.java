@@ -14,12 +14,21 @@ public final class ConstructionVisualRenderer implements AutoCloseable {
     private static final int MAX_GHOSTS=256,MAX_BEAMS=256;
     private final NativeAtlasMesh.Builder batch=new NativeAtlasMesh.Builder(true);
     private Shader shader;
-    private int ghosts,beams;
+    private int ghosts,beams,arrows;
+    private static final Color ARROW=Color.valueOf("70f5ff"),ARROW_SHADOW=Color.valueOf("101c26");
+    private Color arrowColor;private float arrowAlpha;
+    private final BuildDirectionArrow.Sink arrowSink=(ax,ay,az,bx,by,bz,width,outline)->
+        ribbon(ax,ay,az,bx,by,bz,width,outline?ARROW_SHADOW:arrowColor,outline?.75f:arrowAlpha);
+    public int directionArrows(){return arrows;}
     public record Stats(int ghosts,int beams,int streamMeshes){}
     public Stats stats(){return new Stats(ghosts,beams,batch.streamMeshCount());}
-    public void begin(){ghosts=beams=0;batch.clear();}
+    public void begin(){ghosts=beams=arrows=0;batch.clear();}
     public void ghost(Block block,double x,double y,double z,double height,int rotation,boolean valid,float alpha){
-        if(block==null)return;ghost(NativeRegions.block(block),x,y,z,block.size,height,block.rotate?-rotation*90:0,valid,alpha);
+        if(block==null)return;int before=ghosts;ghost(NativeRegions.block(block),x,y,z,block.size,height,block.rotate?-rotation*90:0,valid,alpha);
+        if(ghosts>before&&block.rotate&&alpha>.01f){
+            arrowColor=valid?ARROW:mindustry.graphics.Pal.remove;arrowAlpha=.85f;
+            BuildDirectionArrow.emit(x,y,z+height,block.size,rotation,arc.util.Time.millis()*.001,arrowSink);arrows++;
+        }
     }
     public void ghost(TextureRegion region,double x,double y,double z,double size,double height,double angle,boolean valid,float alpha){
         if(ghosts>=MAX_GHOSTS||!NativeAtlasMesh.valid(region)||!Double.isFinite(x+y+z+size+height)||size<=0||height<0)return;

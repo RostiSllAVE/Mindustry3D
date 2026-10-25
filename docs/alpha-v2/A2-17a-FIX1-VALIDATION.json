@@ -1,0 +1,38 @@
+{
+  "baselineCommit": "b3faf9a632bcf2b489963d4634ede117c776e8a6",
+  "jarSha256": "d356e2226113ed4b032c1dfba99f68fa58a217459cff561cfefb05c7f8651220",
+  "matchingClasses": 1081,
+  "java17Programs": 214,
+  "java25Programs": 214,
+  "baselineProbe": "hp=50.0->62.28749 target=true strength=0.6323336 efficiency=1.0 enabled=true pose=Unit3DState[unitId=1860870, typeId=17, teamId=1, x=44.5, y=41.5, z=6.188206282670881, vx=0.0, vy=0.0, vz=0.0, yaw=0.0, pitch=0.0, roll=0.0, desiredAltitude=6.188206282670881, radius=2.4748737812042236, halfHeight=0.20999999344348907, flying=true] inUpdater=true\ncurrent efficiency=1.0 strength=0.6323336 pose=Unit3DState[unitId=1860870, typeId=17, teamId=1, x=44.5, y=41.5, z=6.188206282670881, vx=0.0, vy=0.0, vz=0.0, yaw=0.0, pitch=0.0, roll=0.0, desiredAltitude=6.188206282670881, radius=2.4748737812042236, halfHeight=0.20999999344348907, flying=true]\nstats=Stats[leakingConduits=0, puddles=0, healingBeams=0, repairPulses=0, primitives=0]\nbeam=null\nplaced=2 candidates=[] client=false sourceFog=false targetFog=false changes=-1 cached=-1 map=[2621480=Building#1860867[40,40]:repair-turret, 524296=Building#1860866[8,8]:core-shard]",
+  "fixedProbe": "hp=50.0->62.28749 target=true strength=0.6323336 efficiency=1.0 enabled=true pose=Unit3DState[unitId=1860870, typeId=17, teamId=1, x=44.5, y=41.5, z=6.188206282670881, vx=0.0, vy=0.0, vz=0.0, yaw=0.0, pitch=0.0, roll=0.0, desiredAltitude=6.188206282670881, radius=2.4748737812042236, halfHeight=0.20999999344348907, flying=true] inUpdater=true\ncurrent efficiency=1.0 strength=0.6323336 pose=Unit3DState[unitId=1860870, typeId=17, teamId=1, x=44.5, y=41.5, z=6.188206282670881, vx=0.0, vy=0.0, vz=0.0, yaw=0.0, pitch=0.0, roll=0.0, desiredAltitude=6.188206282670881, radius=2.4748737812042236, halfHeight=0.20999999344348907, flying=true]\nstats=Stats[leakingConduits=0, puddles=0, healingBeams=1, repairPulses=0, primitives=18]\nbeam=HealingBeam[ax=41.22762680053711, ay=40.68181610107422, az=1.4659999895095825, bx=44.5, by=41.5, bz=6.188206282670881, targetId=1860870]\nplaced=2 candidates=[Building#1860867[40,40]:repair-turret] client=false sourceFog=false targetFog=false changes=-1 cached=-1 map=[2621480=Building#1860867[40,40]:repair-turret, 524296=Building#1860866[8,8]:core-shard]",
+  "graphics": {
+    "repair-arrows-final25": {
+      "status": "PASS",
+      "java": "25.0.1",
+      "scenes": 33,
+      "frames": 1584,
+      "checks": 3654,
+      "glErrors": 0,
+      "physicalAcceptance": false
+    },
+    "repair-arrows-final17": {
+      "status": "PASS",
+      "java": "17.0.20.1",
+      "scenes": 33,
+      "frames": 1584,
+      "checks": 3654,
+      "glErrors": 0,
+      "physicalAcceptance": false
+    }
+  },
+  "preserved": {
+    "previousArtifacts": 2363,
+    "changed": [],
+    "referenceFiles": 98,
+    "referenceChanged": []
+  },
+  "physicalOwnerAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "twoComputerAcceptance": "NOT TESTED"
+}
