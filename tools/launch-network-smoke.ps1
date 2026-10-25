@@ -3,17 +3,18 @@ param([Parameter(Mandatory=$true)][string]$RunId,[int]$Port=16567,[string]$ModJa
       [string]$JavaHome=$env:FPV_JDK,[string]$DesktopJar,[string]$ServerJar,[string]$GameDir=$env:FPV_MINDUSTRY,
       [string]$WorkshopFolder)
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'dev-runtime.ps1')
 if($RunId -notmatch '^[a-zA-Z0-9-]+$'){throw 'Use a simple unique run ID'}
 $projectRoot=Split-Path -Parent $PSScriptRoot
 $runRoot=Join-Path $projectRoot ('local\net-lab\'+$RunId)
 if(Test-Path -LiteralPath $runRoot){throw 'This run already exists; choose a fresh ID'}
 if(-not $JavaHome){throw 'Supply -JavaHome or FPV_JDK for this developer test'}
-if(-not $GameDir){throw 'Supply -GameDir or FPV_MINDUSTRY for this developer test'}
+if(-not $GameDir){$GameDir=Get-FpvDevGameDir}
 $javaExe=Join-Path $JavaHome 'bin\java.exe'
 $hostJar=if($DesktopJar){$DesktopJar}else{Join-Path $GameDir 'jre\desktop.jar'}
 $serverJar=if($ServerJar){$ServerJar}else{Join-Path $projectRoot ('local\server-runtime\server-release-v'+$HostVersion+'.jar')}
 $version=[regex]::Match((Get-Content (Join-Path $projectRoot 'mod.hjson') -Raw),'(?m)^version:\s*(\S+)').Groups[1].Value
-$modJar=if($ModJar){(Resolve-Path -LiteralPath $ModJar).Path}else{Join-Path $projectRoot ('dist\mindustry-fpv-'+$version+'.jar')}
+$modJar=if($ModJar){(Resolve-Path -LiteralPath $ModJar).Path}else{Get-FpvDevDiagnosticJar}
 foreach($file in @($javaExe,$hostJar,$serverJar,$modJar)){if(-not(Test-Path -LiteralPath $file)){throw "Missing $file"}}
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 foreach($runtime in @($hostJar,$serverJar)){

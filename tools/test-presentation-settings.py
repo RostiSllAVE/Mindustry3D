@@ -1,3 +1,4 @@
+from dev_runtime import host_jar
 """Exercise the actual Arc settings writer against disposable copies; never launch a game."""
 from pathlib import Path
 import hashlib, json, subprocess, uuid
@@ -6,7 +7,7 @@ root=Path(__file__).resolve().parents[1]
 folder=root/'local/presentation-settings-tests'/uuid.uuid4().hex
 folder.mkdir(parents=True)
 java=Path(r'D:\Linux\tools\jdk17\jdk-17.0.20.1+1\bin')
-host=Path(r'D:\SteamLibrary\steamapps\common\Mindustry\jre\desktop.jar')
+host=Path(str(host_jar()))
 classes=folder/'classes';classes.mkdir()
 temporary=folder/'tmp';temporary.mkdir()
 subprocess.run([str(java/'javac.exe'),'-J-Djava.io.tmpdir='+str(temporary),'--release','17','-encoding','UTF-8','-cp',str(host),'-d',str(classes),str(root/'tools/ProfileVideoSettings.java')],check=True)

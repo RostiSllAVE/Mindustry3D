@@ -1,5 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$Run,[switch]$MouseInteraction,[switch]$AutomaticConstruction,[switch]$ElevatedTurrets,[switch]$XyzPower,[switch]$WallAi)
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'dev-runtime.ps1')
 if($Run -notmatch '^[a-z0-9-]+$'){throw 'Simple test run name required'}
 $taskRoot=Split-Path -Parent $PSScriptRoot
 $taskLab=Join-Path $taskRoot ('local\layer-lab\'+$Run)
@@ -7,10 +8,9 @@ $taskOut=Join-Path $taskRoot ('local\layer-smoke\'+$Run)
 if(Test-Path -LiteralPath $taskOut){throw 'Test output already exists; use a new run name'}
 $taskVersion=[regex]::Match((Get-Content -LiteralPath (Join-Path $taskRoot 'src\main\resources\mod.hjson') -Raw),'(?m)^version:\s*(\S+)').Groups[1].Value
 New-Item -ItemType Directory -Force -Path "$taskLab\saves\mods","$taskLab\tmp",$taskOut | Out-Null
-& (Join-Path $taskRoot 'tools\install-profile-mod.ps1') -SourceJar (Join-Path $taskRoot "dist\mindustry-fpv-$taskVersion.jar") -ModsDirectory (Join-Path $taskLab 'saves\mods') -BackupRoot (Join-Path $taskRoot 'local\backups')
+& (Join-Path $taskRoot 'tools\install-profile-mod.ps1') -SourceJar (Get-FpvDevDiagnosticJar) -ModsDirectory (Join-Path $taskLab 'saves\mods') -BackupRoot (Join-Path $taskRoot 'local\backups')
 $taskHost='D:\SteamLibrary\steamapps\common\Mindustry\jre\desktop.jar'
-Set-Content -LiteralPath "$taskLab\steam_appid.txt" -Value '1127400'
-$taskArgs=@('-Dnodiscord=true',"-Djava.io.tmpdir=$taskLab\tmp",'-Djava.library.path=D:\SteamLibrary\steamapps\common\Mindustry',"-Dmindustry.data.dir=$taskLab\saves","-Dfpv.lab.path=$taskLab",'-Dfpv.smoke=true','-Dfpv.layers.smoke=true','-Dfpv.layers.profile=true','-Dfpv.visualProfile=true',"-Dfpv.smoke.output=$taskOut",'-cp',$taskHost,'mindustry.desktop.DesktopLauncher','-width','1280','-height','800','-maximized','false')
+$taskArgs=@('-Dnodiscord=true',"-Djava.io.tmpdir=$taskLab\tmp",('-Djava.library.path='+(Get-FpvDevGameDir)),"-Dmindustry.data.dir=$taskLab\saves","-Dfpv.lab.path=$taskLab",'-Dfpv.smoke=true','-Dfpv.layers.smoke=true','-Dfpv.layers.profile=true','-Dfpv.visualProfile=true',"-Dfpv.smoke.output=$taskOut",'-cp',$taskHost,'mindustry.desktop.DesktopLauncher','-width','1280','-height','800','-maximized','false')
 if($MouseInteraction){$taskArgs=@('-Dfpv.mouse.smoke=true')+$taskArgs}
 if($WallAi){$taskArgs=@('-Dfpv.wallAi.smoke=true')+$taskArgs}
 if($AutomaticConstruction){$taskArgs=@('-Dfpv.placement.smoke=true')+$taskArgs}

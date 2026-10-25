@@ -1,5 +1,6 @@
 param([Parameter(Mandatory=$true)][string]$Run,[Parameter(Mandatory=$true)][string]$ModJar,[int]$MapSize=128,[int]$Samples=240,[switch]$CountDraws,[switch]$Jfr,[string]$Save,[string]$SettingsFile,[int]$Width=1280,[int]$Height=800,[int]$Altitude=16,[string]$Unit='flare',[switch]$CoreSpawned,[string]$CompanionMods,[switch]$NormalInput,[switch]$Javaw)
 $ErrorActionPreference='Stop'
+. (Join-Path $PSScriptRoot 'dev-runtime.ps1')
 if($Run -notmatch '^[a-zA-Z0-9-]+$'){throw 'Simple unique label required'}
 $root=Split-Path -Parent $PSScriptRoot
 $lab=Join-Path $root ('local\camera-profile\'+$Run)
@@ -10,8 +11,7 @@ Copy-Item -LiteralPath $source -Destination (Join-Path $lab 'saves\mods\mindustr
 if($CompanionMods){foreach($file in Get-ChildItem -LiteralPath (Resolve-Path -LiteralPath $CompanionMods).Path -File){if($file.Extension -in @('.zip','.jar') -and $file.Name -ne 'mindustry-fpv.jar'){Copy-Item -LiteralPath $file.FullName -Destination (Join-Path $lab ('saves\mods\'+$file.Name))}}}
 if($SettingsFile){Copy-Item -LiteralPath (Resolve-Path -LiteralPath $SettingsFile).Path -Destination (Join-Path $lab 'saves\settings.bin')}
 if($Save){Copy-Item -LiteralPath (Resolve-Path -LiteralPath $Save).Path -Destination (Join-Path $lab 'fixture.msav')}
-Set-Content -LiteralPath (Join-Path $lab 'steam_appid.txt') -Value '1127400' -Encoding ascii
-$game='D:\SteamLibrary\steamapps\common\Mindustry'
+$game=Get-FpvDevGameDir
 $args=@('-Dnodiscord=true','-Dfpv.smoke=true','-Dfpv.cameraProfile=true','-Dfpv.visualProfile=true',('-Dfpv.cameraProfile.mapSize='+$MapSize),('-Dfpv.cameraProfile.samples='+$Samples),('-Dfpv.cameraProfile.output="'+$lab+'"'),('-Dfpv.lab.path="'+$lab+'"'),('-Djava.io.tmpdir="'+(Join-Path $lab 'tmp')+'"'),('-Dmindustry.data.dir="'+(Join-Path $lab 'saves')+'"'),('-Djava.library.path="'+$game+'"'))
 if($CountDraws){$args+='-Dfpv.cameraProfile.countDraws=true'}
 if($SettingsFile){$args+='-Dfpv.cameraProfile.userSettings=true'}

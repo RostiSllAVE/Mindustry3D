@@ -1,3 +1,4 @@
+from dev_runtime import host_jar
 """Build reproducible isolated measurement jars; never install into a player profile."""
 from pathlib import Path
 import hashlib,json,sys,zipfile,subprocess
@@ -7,7 +8,7 @@ folder=root/'local/camera-profile-staging'/label
 folder.mkdir(parents=True,exist_ok=False)
 sources=sorted((root/'src/main/java').rglob('*.java'))+sorted((root/'build/generated').rglob('*.java'))
 classes=folder/'classes';classes.mkdir()
-args=['--release','17','-encoding','UTF-8','-classpath',r'D:\SteamLibrary\steamapps\common\Mindustry\jre\desktop.jar'+';'+str(root/'lib/jna-5.19.1.jar'),'-d',str(classes)]+[str(p) for p in sources]
+args=['--release','17','-encoding','UTF-8','-classpath',str(host_jar())+';'+str(root/'lib/jna-5.19.1.jar'),'-d',str(classes)]+[str(p) for p in sources]
 argfile=folder/'compile.args';argfile.write_text('\n'.join('"'+a.replace('\\','/')+'"' for a in args))
 subprocess.run([r'D:\Linux\tools\jdk17\jdk-17.0.20.1+1\bin\javac.exe','@'+str(argfile)],check=True)
 base=root/'local/backups/before-camera-perf-0.18.27/mindustry-fpv.jar'

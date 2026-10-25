@@ -9,6 +9,7 @@ import shutil
 import sys
 import zipfile
 from preflight import ROOT, run
+from dev_runtime import host_jar, jdk_home, java_tool
 
 metadata = ROOT / "src/main/resources/mod.hjson"
 if not (ROOT / "mod.hjson").is_file() or (ROOT / "mod.hjson").read_bytes() != metadata.read_bytes():
@@ -23,11 +24,7 @@ compiler = shutil.which("javac")
 if not jdk_hint and not compiler:
     raise SystemExit("Source build only: set FPV_JDK/JAVA_HOME or put a complete JDK on PATH")
 jdk = Path(jdk_hint) if jdk_hint else Path(compiler).resolve().parent.parent
-host_hint = os.environ.get("FPV_MINDUSTRY")
-if not host_hint:
-    raise SystemExit("Source build only: set FPV_MINDUSTRY to your Mindustry installation or desktop.jar")
-host = Path(host_hint)
-if host.is_dir(): host = host / "jre/desktop.jar"
+host = host_jar()
 jna = Path(os.environ.get("FPV_JNA", str(ROOT / "lib/jna-5.19.1.jar")))
 for path in (jdk / "bin/javac.exe", host, jna):
     if not path.is_file():

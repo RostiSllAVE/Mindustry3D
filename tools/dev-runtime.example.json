@@ -1,0 +1,5 @@
+{
+  "gameRoot": "../ForCodex/OriginalGameMindustry",
+  "java17": "../tools/jdk17/jdk-17.0.20.1+1",
+  "diagnosticJar": "local/a2-16l-logic/test-kit/mindustry-fpv-a2-16l-logic-diagnostics.jar"
+}
