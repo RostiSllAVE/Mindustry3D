@@ -16,6 +16,8 @@ import mindustry.gen.Unit;
 import mindustry.world.Tile;
 import mindustry.world.blocks.payloads.PayloadBlock.PayloadBlockBuild;
 import mindustry.world.blocks.payloads.UnitPayload;
+import mindustry.world.blocks.payloads.PayloadConveyor;
+import mindustry.world.blocks.payloads.PayloadRouter;
 
 /** Native payload production/transport remains intact. Only the final add-to-world boundary gains full XYZ clearance. */
 public final class FactorySpawnSafety implements AutoCloseable {
@@ -33,6 +35,8 @@ public final class FactorySpawnSafety implements AutoCloseable {
     private float releaseFrame=Float.NaN;
     private Object releaseWorld;
     private String obstruction="";
+    private record Factory(mindustry.world.Block block,arc.func.Prov<Building> original,arc.func.Prov<Building> replacement){}
+    private final ArrayList<Factory> factories=new ArrayList<>();
     public String lastObstruction(){return obstruction;}
     private boolean obstructed(String reason){obstruction=reason;return false;}
     public FactorySpawnSafety(World3DAdapter world,UnitAltitudeSystem altitudes){if(world==null||altitudes==null)throw new IllegalArgumentException("Spawn world required");this.world=world;this.altitudes=altitudes;}
@@ -42,14 +46,33 @@ public final class FactorySpawnSafety implements AutoCloseable {
         unit.vel.set(release.vx,release.vy);altitudes.initializePayloadRelease(unit,release.placement.z);
         sameFrameReleases.add(unit);releases++;
     }
-    public void install(){if(installed)return;installed=true;Events.on(UnitCreateEvent.class,create);Events.on(UnitUnloadEvent.class,unload);Events.on(WorldLoadEvent.class,load);wrapLoadedPayloads();}
+    public void install(){if(installed)return;installed=true;installConveyors();Events.on(UnitCreateEvent.class,create);Events.on(UnitUnloadEvent.class,unload);Events.on(WorldLoadEvent.class,load);wrapLoadedPayloads();}
+    private void installConveyors(){
+        // Wrap at the actual native hand-off/update, including carrier drops, sandbox sources
+        // and saved payloads. No per-frame full-world scan or new transport scheduler.
+        for(var block:new mindustry.world.Block[]{mindustry.content.Blocks.payloadConveyor,mindustry.content.Blocks.payloadRouter}){
+            var original=block.buildType;arc.func.Prov<Building> replacement;
+            if(block instanceof PayloadRouter router)replacement=()->router.new PayloadRouterBuild(){
+                @Override public void handlePayload(Building source,mindustry.world.blocks.payloads.Payload payload){super.handlePayload(source,payload);wrap(this);}
+                @Override public void updateTile(){wrap(this);super.updateTile();}
+            };
+            else if(block instanceof PayloadConveyor conveyor)replacement=()->conveyor.new PayloadConveyorBuild(){
+                @Override public void handlePayload(Building source,mindustry.world.blocks.payloads.Payload payload){super.handlePayload(source,payload);wrap(this);}
+                @Override public void updateTile(){wrap(this);super.updateTile();}
+            };else continue;
+            factories.add(new Factory(block,original,replacement));block.buildType=replacement;
+        }
+    }
     private void wrapLoadedPayloads(){if(Vars.net.client())return;for(Building building:Groups.build)wrap(building);}
     @SuppressWarnings({"rawtypes","unchecked"})
     private void wrap(Building building){
-        if(closed||Vars.net.client()||building.tile instanceof fpv.construction.LayerTile||!(building instanceof PayloadBlockBuild holder)||!(holder.payload instanceof UnitPayload original))return;
-        if(original instanceof FactorySpawnSafety.SafePayload safe){safe.holder=holder;safe.retryAt=0;return;}
+        if(closed||Vars.net.client()||building.tile instanceof fpv.construction.LayerTile||!(building.getPayload() instanceof UnitPayload original))return;
+        if(!(building instanceof PayloadBlockBuild||building instanceof PayloadConveyor.PayloadConveyorBuild))return;
+        if(original instanceof FactorySpawnSafety.SafePayload safe){if(safe.holder!=building){safe.holder=building;safe.retryAt=0;}return;}
         if(original.getClass()!=UnitPayload.class)return;
-        SafePayload replacement=new SafePayload(original.unit,holder);replacement.overlayTime=original.overlayTime;replacement.overlayRegion=original.overlayRegion;holder.payload=replacement;
+        SafePayload replacement=new SafePayload(original.unit,building);replacement.overlayTime=original.overlayTime;replacement.overlayRegion=original.overlayRegion;
+        if(building instanceof PayloadBlockBuild holder)holder.payload=replacement;
+        else ((PayloadConveyor.PayloadConveyorBuild)building).item=replacement;
     }
     public int releases(){return releases;}
     public int blockedAttempts(){return blocked;}
@@ -57,7 +80,11 @@ public final class FactorySpawnSafety implements AutoCloseable {
     public boolean releaseUpper(Building source,Unit unit,double nativeX,double nativeY){
         if(closed||Vars.net.client()||source==null||!(source.tile instanceof fpv.construction.LayerTile)||unit==null||unit.type==null||unit.isAdded()||unit.dead||
             !unit.spawnedByCore&&!mindustry.entities.Units.canCreate(unit.team,unit.type)||!Double.isFinite(nativeX+nativeY))return false;
-        Placement placement=upperPlacement(source,unit,nativeX,nativeY);if(placement==null){blocked++;return false;}
+        Placement placement=upperPlacement(source,unit,nativeX,nativeY);if(placement==null){blocked++;
+            obstruction=unit instanceof mindustry.gen.WaterMovec?"output requires navigable water and a clear XYZ hull":"output hull overlaps terrain, a structure, a unit or a 3D barrier";
+            if(!Vars.headless&&source.getPayload() instanceof UnitPayload payload)payload.showOverlay(mindustry.gen.Icon.warning);
+            return false;
+        }
         unit.set((float)(placement.x*Vars.tilesize),(float)(placement.y*Vars.tilesize));
         unit.vel.setZero();unit.add();if(!unit.isAdded())return false;
         altitudes.initializePayloadRelease(unit,placement.z);unit.unloaded();sameFrameReleases.add(unit);releases++;
@@ -202,6 +229,7 @@ public final class FactorySpawnSafety implements AutoCloseable {
         SafePayload(Unit unit,Building holder){super(unit);this.holder=holder;}
         @Override public void update(Unit unitHolder,Building buildingHolder){holder=buildingHolder;super.update(unitHolder,buildingHolder);}
         @Override public boolean dump(){
+            if(unit.isAdded())return true;
             if(holder!=null&&holder.getPayload()!=this){
                 holder=null;for(Building b:Groups.build)if(b.getPayload()==this){holder=b;break;}
             }
@@ -210,7 +238,7 @@ public final class FactorySpawnSafety implements AutoCloseable {
             Placement p=placement(unit,holder);
             if(p==null){
                 blocked++;retryAt=Time.time+6;
-                if(unit instanceof mindustry.gen.WaterMovec){
+                {
                     String reason=obstruction.isEmpty()?"output hull overlaps another unit or 3D barrier":obstruction;
                     if(!reason.equals(reportedObstruction)){arc.util.Log.info("[FPV] @ waiting at @,@: @",unit.type.name,holder.tile.x,holder.tile.y,reason);reportedObstruction=reason;}
                     if(!Vars.headless)showOverlay(mindustry.gen.Icon.warning);
@@ -218,15 +246,20 @@ public final class FactorySpawnSafety implements AutoCloseable {
                 return false;
             }
             reportedObstruction="";
+            // Keep the native cap/authority/events, but replace its final XY-only occupancy
+            // veto with the full XYZ sweep above. Native dump would reject other floors.
+            if(!mindustry.entities.Units.canCreate(unit.team,unit.type)){
+                if(!Vars.headless)showOverlay(mindustry.gen.Icon.cancel);return false;
+            }
             float oldX=unit.x,oldY=unit.y,oldVX=unit.vel.x,oldVY=unit.vel.y;
             unit.set((float)(p.x*Vars.tilesize),(float)(p.y*Vars.tilesize));
             boolean added=false;Pending previous=pending;pending=new Pending(unit,p,oldVX,oldVY);
             try{
-                if(!super.dump()){retryAt=Time.time+6;return false;}
+                unit.add();unit.unloaded();Events.fire(new UnitUnloadEvent(unit));mindustry.entities.Units.notifyUnitSpawn(unit);
                 added=unit.isAdded();
                 return true;
             }finally{pending=previous;if(!added)unit.set(oldX,oldY);}
         }
     }
-    @Override public void close(){if(closed)return;closed=true;sameFrameReleases.clear();if(installed){Events.remove(UnitCreateEvent.class,create);Events.remove(UnitUnloadEvent.class,unload);Events.remove(WorldLoadEvent.class,load);}installed=false;}
+    @Override public void close(){if(closed)return;closed=true;sameFrameReleases.clear();if(installed){Events.remove(UnitCreateEvent.class,create);Events.remove(UnitUnloadEvent.class,unload);Events.remove(WorldLoadEvent.class,load);}for(var f:factories)if(f.block.buildType==f.replacement)f.block.buildType=f.original;factories.clear();installed=false;}
 }

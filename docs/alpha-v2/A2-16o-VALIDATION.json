@@ -1,0 +1,120 @@
+{
+  "baseline": "d071769",
+  "configurationCheckpoint": "d409f22",
+  "label": "A2-16o \u2014 unreleased diagnostic",
+  "java17RegressionPrograms": 207,
+  "standaloneJava25RegressionPrograms": 207,
+  "failedRegressionPrograms": 0,
+  "diagnosticJarSha256": "4e7d9d1fc9808eb33c9f3396e129101291af3a90f66857c2a3dfa1220f1f84ee",
+  "graphics": {
+    "a216o-final17": {
+      "status": "PASS",
+      "java": "17.0.20.1",
+      "steamHost": false,
+      "scenes": 25,
+      "frames": 1125,
+      "glErrors": 0,
+      "nativeSupport": "PASS 40 actual repair HP/start-stop and live tiled-screen GPU/cache/orientation checks",
+      "physicalAcceptance": false
+    },
+    "a216o-final25": {
+      "status": "PASS",
+      "java": "25.0.1",
+      "steamHost": false,
+      "scenes": 25,
+      "frames": 1125,
+      "glErrors": 0,
+      "nativeSupport": "PASS 40 actual repair HP/start-stop and live tiled-screen GPU/cache/orientation checks",
+      "physicalAcceptance": false
+    }
+  },
+  "visualSettingsPixelDifferences": {
+    "world64 / world8192": {
+      "differentPixels": 226710,
+      "totalPixels": 576000
+    },
+    "detail20 / detail240": {
+      "differentPixels": 306875,
+      "totalPixels": 576000
+    }
+  },
+  "baselineRelease": {
+    "expectedFailureReproduced": true,
+    "nativeRetryExpired": true,
+    "exitCode": 1,
+    "reason": "Clear XYZ placement rejected by native XY occupancy on accepted d071769 JAR"
+  },
+  "sourceCorrespondence": {
+    "matchingFpvClasses": 1070,
+    "allBytesEqual": true,
+    "compiler": "17.0.20.1 --release 17",
+    "host": "official standalone160.7",
+    "sourceFiles": 467
+  },
+  "originalReferenceFilesUnchanged": 98,
+  "previousArtifactsUnchanged": 2194,
+  "nativeDefinitionCount": 447,
+  "newDedicatedProfiles": 14,
+  "sharedTemplateBytes": 407808,
+  "benchmark": {
+    "before": [
+      {
+        "scene": "top",
+        "cpuMs": "0.9516708333333334",
+        "gpuMs": "0.564361680672269",
+        "gpuSamples": "119"
+      },
+      {
+        "scene": "oblique",
+        "cpuMs": "0.9395633333333334",
+        "gpuMs": "0.4851866890756303",
+        "gpuSamples": "119"
+      },
+      {
+        "scene": "dense",
+        "cpuMs": "0.52944",
+        "gpuMs": "0.43954554621848735",
+        "gpuSamples": "119"
+      },
+      {
+        "scene": "dense",
+        "cpuMs": "0.490805",
+        "gpuMs": "0.3867105882352941",
+        "gpuSamples": "119"
+      }
+    ],
+    "after": [
+      {
+        "scene": "top",
+        "cpuMs": "1.0743316666666667",
+        "gpuMs": "0.11253673949579832",
+        "gpuSamples": "119"
+      },
+      {
+        "scene": "oblique",
+        "cpuMs": "1.8002925",
+        "gpuMs": "0.18469001680672267",
+        "gpuSamples": "119"
+      },
+      {
+        "scene": "dense",
+        "cpuMs": "0.8671516666666667",
+        "gpuMs": "0.09141136134453781",
+        "gpuSamples": "119"
+      },
+      {
+        "scene": "dense",
+        "cpuMs": "0.722535",
+        "gpuMs": "0.09135112605042016",
+        "gpuSamples": "119"
+      }
+    ]
+  },
+  "benchmarkScope": "single sequential pair; same standalone Java25, 160x160 map, 14 types on four floors plus 100-source field; 60 warmup and 120 measured frames per scene; async GPU queries; no parallel tests or readbacks inside measured frames; not a whole-game FPS certification",
+  "legacySupportHelper": "same repair-snapshot assertion fails on accepted baseline and modified paused fixture; focused actual HP tests pass",
+  "physicalAcceptance": {
+    "WindowsControlsAndImport": "NOT TESTED",
+    "Linux": "NOT TESTED",
+    "twoComputerMultiplayer": "NOT TESTED"
+  }
+}

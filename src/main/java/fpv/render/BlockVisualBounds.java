@@ -7,7 +7,7 @@ import mindustry.world.blocks.defense.turrets.Turret;
 /** Conservative presentation envelope, separate from authoritative placement/picking bounds. */
 final class BlockVisualBounds {
     static boolean applies(mindustry.world.Block b){
-        return LogicModelRenderer.supports(b)||UnitUpgradeRenderer.supports(b)||UnitProductionRenderer.supports(b)||CoreInfrastructureRenderer.supports(b)||b==mindustry.content.Blocks.illuminator||b==mindustry.content.Blocks.impactReactor||
+        return SandboxModelRenderer.supports(b)||LogicModelRenderer.supports(b)||UnitUpgradeRenderer.supports(b)||UnitProductionRenderer.supports(b)||CoreInfrastructureRenderer.supports(b)||b==mindustry.content.Blocks.illuminator||b==mindustry.content.Blocks.impactReactor||
             b==mindustry.content.Blocks.overdriveProjector||b==mindustry.content.Blocks.phaseWeaver||
             b==mindustry.content.Blocks.wave||b==mindustry.content.Blocks.tsunami||b==mindustry.content.Blocks.cyclone;
     }
@@ -18,6 +18,10 @@ final class BlockVisualBounds {
             // capped sprite in the presentation envelope without enlarging collision/picking.
             float offset=Math.max(Math.abs(factory.payload.x()/mindustry.Vars.tilesize-x),Math.abs(-factory.payload.y()/mindustry.Vars.tilesize-z));
             if(Float.isFinite(offset))radius=Math.max(radius,offset+b.block.size*.44f);
+        }
+        if(SandboxModelRenderer.supports(b.block)&&b.getPayload()!=null){
+            var p=b.getPayload();float offset=Math.max(Math.abs(p.x()/mindustry.Vars.tilesize-x),Math.abs(-p.y()/mindustry.Vars.tilesize-z));
+            if(Float.isFinite(offset))radius=Math.max(radius,offset+b.block.size*.5f);
         }
         if(b instanceof Turret.TurretBuild){
             // A long native gun rotates in XYZ around the top pivot, not around the box centre.

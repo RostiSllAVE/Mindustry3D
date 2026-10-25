@@ -19,14 +19,10 @@ output = ROOT / "dist" / ("mindustry-fpv-" + version + ".jar")
 manifest_output = output.with_name(output.stem + "-manifest.json")
 if output.exists() or manifest_output.exists():
     raise SystemExit("Refusing to overwrite an existing versioned build: " + str(output))
-jdk_hint = os.environ.get("FPV_JDK") or os.environ.get("JAVA_HOME")
-compiler = shutil.which("javac")
-if not jdk_hint and not compiler:
-    raise SystemExit("Source build only: set FPV_JDK/JAVA_HOME or put a complete JDK on PATH")
-jdk = Path(jdk_hint) if jdk_hint else Path(compiler).resolve().parent.parent
+jdk = jdk_home()
 host = host_jar()
 jna = Path(os.environ.get("FPV_JNA", str(ROOT / "lib/jna-5.19.1.jar")))
-for path in (jdk / "bin/javac.exe", host, jna):
+for path in (java_tool(jdk,"javac"), host, jna):
     if not path.is_file():
         raise SystemExit(f"Missing required local dependency: {path}")
 if hashlib.sha256(jna.read_bytes()).hexdigest() != "4fb141dd8ef6b0585ffceea4bc49602fbc6312fa977e2c488794ea3e6aafecae":
@@ -44,18 +40,18 @@ sources = sorted((ROOT / "src/main/java").rglob("*.java")) + sorted((build / "ge
 args = ["--release", "17", "-encoding", "UTF-8", "-classpath", str(host) + os.pathsep + str(jna), "-d", str(classes)] + [str(p) for p in sources]
 argfile = build / "javac.args"
 argfile.write_text("\n".join('"' + a.replace("\\", "/") + '"' for a in args), encoding="utf-8")
-subprocess.run([str(jdk / "bin/javac.exe"), "@" + str(argfile)], check=True)
+subprocess.run([str(java_tool(jdk,"javac")), "@" + str(argfile)], check=True)
 tests = sorted((ROOT / "src/test/java").rglob("*.java"))
 if tests:
     testclasses = build / "test-classes"
     testclasses.mkdir(exist_ok=True)
     cp = str(classes) + os.pathsep + str(host) + os.pathsep + str(jna)
-    subprocess.run([str(jdk / "bin/javac.exe"), "--release", "17", "-encoding", "UTF-8", "-classpath", cp, "-d", str(testclasses)] + [str(p) for p in tests], check=True)
+    subprocess.run([str(java_tool(jdk,"javac")), "--release", "17", "-encoding", "UTF-8", "-classpath", cp, "-d", str(testclasses)] + [str(p) for p in tests], check=True)
     test_tmp = build / "test-tmp"
     test_tmp.mkdir(exist_ok=True)
     for test in tests:
         name = test.relative_to(ROOT / "src/test/java").with_suffix("").as_posix().replace("/", ".")
-        subprocess.run([str(jdk / "bin/java.exe"), "-Djava.io.tmpdir=" + str(test_tmp), "-ea", "-cp", str(testclasses) + os.pathsep + cp, name], check=True)
+        subprocess.run([str(java_tool(jdk,"java")), "-Djava.io.tmpdir=" + str(test_tmp), "-ea", "-cp", str(testclasses) + os.pathsep + cp, name], check=True)
 dist = ROOT / "dist"
 dist.mkdir(exist_ok=True)
 entries = []

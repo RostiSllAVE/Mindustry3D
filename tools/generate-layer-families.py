@@ -73,7 +73,11 @@ private boolean referencesPending;
 """,
 "logic.SwitchBlock.SwitchBuild":"",
 "logic.LogicDisplay.LogicDisplayBuild":"",
-"logic.TileableLogicDisplay.TileableLogicDisplayBuild":"",
+"logic.TileableLogicDisplay.TileableLogicDisplayBuild":"""
+// The common upper proxy suppresses native onProximityAdded RPC/lifecycle work.
+// Preserve this family's local canvas regrouping on actual adjacency changes.
+@Override public void onProximityUpdate(){super.onProximityUpdate();needsUpdate=true;}
+""",
 "logic.CanvasBlock.CanvasBuild":"@Override public void onProximityUpdate(){blending=0;for(int i=0;i<4;i++){Tile other=tile.nearby(Geometry.d4x(i)*block.size,Geometry.d4y(i)*block.size);if(other!=null&&other.block()==block&&other.team()==team)blending|=1<<i;}}",
 "defense.Door.DoorBuild":"@Override public void configured(Unit unit,Object value){owner.configureValue(this,value);} @Override public void tapped(){configure(!open);} @Override public void onProximityUpdate(){updateChained();}",
 "defense.Thruster.ThrusterBuild":"",
@@ -94,7 +98,7 @@ private boolean referencesPending;
 "units.RepairTower.RepairTowerBuild":"@Override public void updateTile(){LayerAreaBehavior.tower(owner,this);}",
 }
 turret='''
-@Override public boolean canControl(){return false;}
+@Override public boolean canControl(){return owner.liveTurret(this)&&super.canControl();}
 @Override public void updateTile(){if(owner.prepareTurret(this))super.updateTile();}
 @Override protected Posc findEnemy(float range){return owner.turretEnemy(this,range);}
 @Override protected void findTarget(){target=findEnemy(range());if(target==null&&trackingRange()!=range())target=findEnemy(trackingRange());}

@@ -57,9 +57,18 @@ final class LayerDisplayRenderer implements AutoCloseable {
         TextureRegion region=textures.computeIfAbsent(building,b->new TextureRegion());Texture previous=region.texture;
         if(building instanceof LogicDisplayBuild display){
             var root=display.rootDisplay==null?display:display.rootDisplay;
+            if(display instanceof mindustry.world.blocks.logic.TileableLogicDisplay.TileableLogicDisplayBuild tiled&&
+                (tiled.tilesWidth<1||tiled.tilesHeight<1||tiled.tilesWidth>((mindustry.world.blocks.logic.TileableLogicDisplay)tiled.block).maxDisplayDimensions||tiled.tilesHeight>((mindustry.world.blocks.logic.TileableLogicDisplay)tiled.block).maxDisplayDimensions))return;
             if(root.buffer==null){save();root.ensureBuffer();created++;}
             if(!root.commands.isEmpty()){save();root.processCommands();Draw.flush();updated++;}
             display.getBufferRegion(region);
+            if(display instanceof mindustry.world.blocks.logic.TileableLogicDisplay.TileableLogicDisplayBuild tiled&&root.buffer!=null){
+                // Native drawTile: each tile owns 32 pixels of the shared canvas, with the
+                // outer frame cropped away. getBufferRegion alone returns the whole canvas.
+                int frame=((mindustry.world.blocks.logic.TileableLogicDisplay)tiled.block).frameSize;
+                int px=(tiled.tile.x-tiled.originX)*32-frame,py=(tiled.tile.y-tiled.originY)*32-frame;
+                region.set(root.buffer.getTexture(),px,py+32,32,-32);
+            }
         }else if(building instanceof CanvasBuild canvas){save();canvas.updateTexture();if(canvas.texture!=null)region.set(canvas.texture);}
         if(previous!=null&&previous!=region.texture)released.accept(previous);
         prepared++;

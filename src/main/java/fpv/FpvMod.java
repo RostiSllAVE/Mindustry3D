@@ -324,6 +324,8 @@ public final class FpvMod extends Mod {
         Core.bundle.getProperties().put("setting.fpv-auto-horizon.name","Background scenery system (OFF: legacy mountains)");
         Core.bundle.getProperties().put("setting.fpv-threat-markers.name","Show Unit Threat Markers");
         Core.bundle.getProperties().put("setting.fpv-net-diagnostics.name","Record multiplayer diagnostics (local, opt-in)");
+        Core.bundle.getProperties().put("setting.fpv-world-draw-distance.name","3D world draw distance");
+        Core.bundle.getProperties().put("setting.fpv-detail-distance.name","3D high-detail distance");
         Core.bundle.getProperties().put("setting.fpv-client-prediction.name","Local pilot prediction (multiplayer presentation)");
         Vars.ui.settings.addCategory("FPV flight", table -> {
             table.checkPref("fpv-net-diagnostics",false);
@@ -345,6 +347,8 @@ public final class FpvMod extends Mod {
             table.add("Ground units: F8 toggles creator flight when the host allows it.\nQ / E: walker stance on ground, descent / ascent in creator flight.").wrap().width(460).row();
             String[] presets={"Cinematic","Freestyle","Race","Insane","Custom"};
             table.sliderPref("fpv-performance-preset",1,0,4,1,i->presets[Mathf.clamp(i,0,4)]);
+            table.sliderPref(fpv.render.RenderDistanceSettings.WORLD,8192,64,16384,64,i->i+" tiles");
+            table.sliderPref(fpv.render.RenderDistanceSettings.DETAIL,80,20,240,5,i->i+" tiles");
             table.sliderPref("fpv-flight-speed",100,25,300,5,i->i+"%");
             table.sliderPref("fpv-flight-mode",0,0,1,1,i->i==0?"Acro":"Stabilized / independent camera");
             table.sliderPref("fpv-camera-view",0,0,2,1,CameraView::label);

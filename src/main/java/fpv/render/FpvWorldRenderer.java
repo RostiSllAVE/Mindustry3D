@@ -119,6 +119,7 @@ public final class FpvWorldRenderer {
     private final UnitProductionRenderer unitFactories=new UnitProductionRenderer();
     private final UnitUpgradeRenderer unitUpgrades=new UnitUpgradeRenderer();
     private final LogicModelRenderer logicModels=new LogicModelRenderer();
+    private final SandboxModelRenderer sandboxModels=new SandboxModelRenderer();
     private final LayerDisplayRenderer logicDisplays=new LayerDisplayRenderer(false);
     public long logicModelBuilds(){return logicModels.builds();}
     public long logicModelBytes(){return logicModels.bytes();}
@@ -507,6 +508,11 @@ public final class FpvWorldRenderer {
     }
 
     public void render(Camera3D camera) {
+        float original=camera.far;
+        try{camera.far=RenderDistanceSettings.far(original);camera.update();renderFrame(camera);}
+        finally{camera.far=original;camera.update();}
+    }
+    private void renderFrame(Camera3D camera) {
         buildingFrameCompleted = false;
         submittedBuildings.clear();
         submittedBridges.clear();
@@ -708,7 +714,7 @@ public final class FpvWorldRenderer {
         // Conservative worst-case chunk byte estimate prevents selected visible chunks exceeding the budget.
         int detailVertices=Math.max(48,24+OreDepositGeometry.MAX_ADDED_VERTICES);
         int detailLimit=Math.max(1,Math.min(MAX_CACHED_CHUNKS,(int)(RenderConfig.DETAIL_CACHE_BYTES/(CHUNK*CHUNK*(long)detailVertices*9*4))));
-        for(Candidate c:visibleChunks)if(pinnedChunks.size()<detailLimit&&c.distance2<DETAIL_DISTANCE*DETAIL_DISTANCE)pinnedChunks.add(key(c.x,c.y));
+        for(Candidate c:visibleChunks)if(pinnedChunks.size()<detailLimit&&c.distance2<RenderDistanceSettings.detail()*RenderDistanceSettings.detail())pinnedChunks.add(key(c.x,c.y));
         int uploads=(int)RenderConfig.DETAIL_UPLOADS_PER_FRAME;
         int stride=(int)RenderConfig.OVERVIEW_MIN_STRIDE;
         while((long)worldWidth*worldHeight/(stride*stride)>RenderConfig.OVERVIEW_MAX_CELLS)stride*=2;
@@ -1030,6 +1036,7 @@ public final class FpvWorldRenderer {
             texturedWall(b.tile,streamAtlas,dynamic,x,z,size,h,false);
             return true;
         }
+        if(sandboxModels.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z),logicDisplays.texture(b)))return true;
         if(logicModels.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z),logicDisplays.texture(b)))return true;
         if(unitUpgrades.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(unitFactories.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z)))return true;
@@ -1044,7 +1051,7 @@ public final class FpvWorldRenderer {
         if(advancedLogistics.render(b,streamAtlas,x,0,z,b.block.size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(logisticsModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
         if(drillModels.render(b,streamAtlas,x,0,z,size,h,camera.position.dst2(x,h*.5f,z)))return true;
-        if(camera.position.dst2(x,h*.5f,z)>DETAIL_DISTANCE*DETAIL_DISTANCE){
+        if(camera.position.dst2(x,h*.5f,z)>RenderDistanceSettings.detail()*RenderDistanceSettings.detail()){
             renderDistantBuilding(b,x,z,size,h);
             return true;
         }
@@ -1474,7 +1481,7 @@ public final class FpvWorldRenderer {
         placedBuildings.clear(); submittedBuildings.clear(); submittedBridges.clear(); submittedUnits.clear();submittedUnitBodies.clear();placedWorldTiles = null;
         buildingFrameCompleted = false;
         combatVisuals.clear();
-        organicProps.clear();oreDeposits.clear();powerConnections.close();logicDisplays.close();logicModels.clear();unitUpgrades.clear();unitFactories.clear();coreModels.clear();utilityModels.clear();supportModels.clear();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
+        organicProps.clear();oreDeposits.clear();powerConnections.close();logicDisplays.close();sandboxModels.clear();logicModels.clear();unitUpgrades.clear();unitFactories.clear();coreModels.clear();utilityModels.clear();supportModels.clear();liquidModels.clear();powerModels.clear();chemicalModels.clear();advancedManufacturing.clear();manufacturingModels.clear();drillModels.clear();logisticsModels.clear();advancedLogistics.clear();
         clearChunks();
         if (shader != null) shader.dispose();
         if (atlasShader != null) atlasShader.dispose();

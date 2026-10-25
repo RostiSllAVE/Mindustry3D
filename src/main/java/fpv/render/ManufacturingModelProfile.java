@@ -21,5 +21,5 @@ public enum ManufacturingModelProfile {
         if(b==Blocks.pyratiteMixer)return PYRATITE;if(b==Blocks.blastMixer)return BLAST;return null;
     }
     /** Heavy mechanical detail near the player; native identifying art survives every LOD. */
-    public static int lod(float distanceSquared){return distanceSquared<18*18?0:distanceSquared<50*50?1:2;}
+    public static int lod(float distanceSquared){distanceSquared=RenderDistanceSettings.normalizedSquared(distanceSquared);return distanceSquared<18*18?0:distanceSquared<50*50?1:2;}
 }

@@ -29,13 +29,13 @@ cp = str(host) + os.pathsep + str(jna)
 sources = sorted((ROOT/'src/main/java').rglob('*.java')) + sorted((ROOT/'build/generated').rglob('*.java'))
 argfile = output / 'compile.args'
 argfile.write_text('\n'.join('"'+a.replace('\\','/')+'"' for a in ['--release','17','-encoding','UTF-8','-cp',cp,'-d',str(classes)]+[str(p) for p in sources]))
-subprocess.run([str(jdk/'bin/javac.exe'),'@'+str(argfile)],check=True)
+subprocess.run([str(java_tool(jdk,'javac')),'@'+str(argfile)],check=True)
 test_sources = sorted((ROOT/'src/test/java').rglob('*.java'))
-subprocess.run([str(jdk/'bin/javac.exe'),'--release','17','-encoding','UTF-8','-cp',str(classes)+os.pathsep+cp,'-d',str(tests)]+[str(p) for p in test_sources],check=True)
+subprocess.run([str(java_tool(jdk,'javac')),'--release','17','-encoding','UTF-8','-cp',str(classes)+os.pathsep+cp,'-d',str(tests)]+[str(p) for p in test_sources],check=True)
 passed=[]
 for source in test_sources:
     name=source.relative_to(ROOT/'src/test/java').with_suffix('').as_posix().replace('/','.')
-    subprocess.run([str(jdk/'bin/java.exe'),'-Djava.io.tmpdir='+str(temp),'-ea','-cp',str(tests)+os.pathsep+str(classes)+os.pathsep+cp,name],check=True)
+    subprocess.run([str(java_tool(jdk,'java')),'-Djava.io.tmpdir='+str(temp),'-ea','-cp',str(tests)+os.pathsep+str(classes)+os.pathsep+cp,name],check=True)
     passed.append(name)
 jar=output/f'mindustry-fpv-{options.task}-diagnostics.jar'
 with zipfile.ZipFile(jar,'w',zipfile.ZIP_DEFLATED) as z:

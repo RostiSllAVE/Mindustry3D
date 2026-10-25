@@ -1646,6 +1646,11 @@ final class LayerNativeFamilies {
             @Override public void changeTeam(Team team,boolean updatePower){throw new UnsupportedOperationException("Use layer-authoritative team change");}
             @Override public void changeTeam(Team team){changeTeam(team,false);}
             @Override public int moduleBitmask(){return super.moduleBitmask()&~(1<<5);}
+
+
+            // The common upper proxy suppresses native onProximityAdded RPC/lifecycle work.
+            // Preserve this family's local canvas regrouping on actual adjacency changes.
+            @Override public void onProximityUpdate(){super.onProximityUpdate();needsUpdate=true;}
         };
         if(type==mindustry.world.blocks.logic.CanvasBlock.CanvasBuild.class)return ((mindustry.world.blocks.logic.CanvasBlock)block).new CanvasBuild(){
             @Override public Building nearby(int dx,int dy){return owner.nearby(this,dx,dy);}

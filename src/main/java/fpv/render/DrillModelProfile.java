@@ -23,5 +23,5 @@ public enum DrillModelProfile {
         return null;
     }
     /** Full machinery nearby, reduced support frame at medium range, compact body beyond 80 tiles. */
-    public static int lod(float distanceSquared){return distanceSquared<28*28?0:distanceSquared<80*80?1:2;}
+    public static int lod(float distanceSquared){distanceSquared=RenderDistanceSettings.normalizedSquared(distanceSquared);return distanceSquared<28*28?0:distanceSquared<80*80?1:2;}
 }

@@ -18,5 +18,5 @@ public enum LogisticsModelProfile {
         if(b==Blocks.sorter)return SORTER;if(b==Blocks.invertedSorter)return INVERTED_SORTER;
         if(b==Blocks.overflowGate)return OVERFLOW;if(b==Blocks.underflowGate)return UNDERFLOW;return null;
     }
-    public static int lod(float distanceSquared){return distanceSquared>80*80?2:distanceSquared>25*25?1:0;}
+    public static int lod(float distanceSquared){distanceSquared=RenderDistanceSettings.normalizedSquared(distanceSquared);return distanceSquared>80*80?2:distanceSquared>25*25?1:0;}
 }
