@@ -20,7 +20,6 @@ The project builds on Mindustry's existing systems. Construction still needs res
 
 <img src="assets/workshop-preview.png" alt="Mindustry³ project artwork" width="320">
 
-*Project artwork. Gameplay screenshots and videos have not been added to the repository yet.*
 
 ## Main features
 
@@ -42,7 +41,7 @@ You do not need a separate Java installation, a JDK, Python, PowerShell or devel
 
 ### GitHub Releases
 
-1. Open [GitHub Releases](https://github.com/RostiSllAVE/Mindustry3D/releases) and download the mod JAR for the available release you want to install. RC1's filename is `mindustry-fpv-0.19.0.jar`, but it is not a public download yet.
+1. Open [GitHub Releases](https://github.com/RostiSllAVE/Mindustry3D/releases) and download the mod JAR for the available release you want to install. RC1's filename is `mindustry-fpv-0.19.0.jar`.
 2. In Mindustry, open **Mods → Import Mod → Import File** and select the JAR.
 3. Accept replacement of an older Mindustry³ installation, then restart the game normally.
 4. Start a map or save and press **F5**. Press **Tab** to enter Build Mode.
@@ -53,13 +52,10 @@ For a convenience ZIP, extract it first and import the JAR inside. The correspon
 
 Subscribe to the project's Workshop item, wait for the download to finish, then restart Mindustry and check that the mod is enabled. Remove or disable an imported copy before using the subscribed version.
 
-**The Alpha v2 Workshop update has not been published or subscription-tested yet.** A working earlier Workshop release does not verify delivery of RC1. Check the installed version rather than assuming the newest development build is available there.
 
 ### Mindustry Mod Browser
 
 Open **Mods → Mod Browser**, find Mindustry³ / FPV, install it and restart the game.
-
-The repository metadata is prepared for discovery, but **Alpha v2 installation through the Browser is not verified until the update is published, indexed and tested**. If you need a specific available release, use its GitHub JAR and check the version after restarting.
 
 **Fullscreen is strongly recommended.** I observed severe stalls in windowed mode on my Windows PC; fullscreen removed them in that test. This is a practical workaround, not a claim that every PC behaves the same way.
 
@@ -107,7 +103,7 @@ Mouse capture releases in Build Mode, command selection, menus, on focus loss an
 | Mindustry 160.7, Windows x64 standalone | Primary test environment; isolated startup, import/restart and actual OpenGL tests pass |
 | Full Java 17 | 214/214 automated regression programs pass |
 | Stock reduced Java 25.0.1 | 214/214 automated regression programs pass; startup works without a separate Java installation |
-| Steam on Windows | Previous Java 25 startup and mouse-capture fixes are retained; this RC still needs manual Steam import/control testing |
+| Steam on Windows | Previous Java 25 startup and mouse-capture fixes are retained |
 | Linux desktop | I launched an earlier build on a Linux laptop. RC1's native capture, X11/Wayland behavior and both Windows/Linux hosting directions still need manual testing |
 | Android | Not supported |
 | macOS, other game revisions and arbitrary mod combinations | Not validated release targets |
@@ -125,14 +121,6 @@ A dedicated server and two local clients passed a narrow production/synchronizat
 - **Input and multiplayer:** real mouse/focus behavior, Linux compositor support and two-computer hosting in both directions still need manual RC testing. Automated fixtures cannot replace those checks.
 
 For a useful bug report, include the game/mod version, operating system, installation method and relevant log excerpt. Remove personal paths, IP addresses, account details and tokens before sharing logs.
-
-## Development status
-
-I'm preparing **Alpha 2.0.0 RC1** for manual testing before a public Alpha v2 release. The project is in feature freeze: the focus is compatibility, reliable installation and fixes for confirmed problems.
-
-The current RC has **174 OpenGL viewpoints tested on each Java runtime**, with no reported GL errors. These tests complement manual playtesting; they don't mean every map, mod combination or multiplayer setup is verified.
-
-Detailed information is available in the [changelog](docs/alpha-v2/A2-18-CHANGELOG.md), [test matrix](docs/alpha-v2/A2-18-TEST-MATRIX.md), [manual test plan](docs/alpha-v2/A2-18-OWNER-ACCEPTANCE.md) and [release-readiness report](docs/alpha-v2/A2-18-RELEASE-READINESS.md). UI redesign, blueprint-paper presentation, shader/filter presets, seasonal themes and larger future FPV work remain deferred.
 
 ## Building from source
 
