@@ -1,5 +1,7 @@
 # Mindustry³ — 3D & FPV for Mindustry
 
+(!Before you'll read the reposetory i would like to notice you that that entire project is 99% vibe-coded!)
+
 Mindustry³ started with a simple idea: what if I could fly a unit in Mindustry from a first-person perspective, with controls inspired by Liftoff?
 
 What began as an FPV flight experiment gradually became a much larger project: a three-dimensional Mindustry experience with XYZ movement, multi-floor factories, volumetric construction, procedural landscapes and modeled industrial machinery.
