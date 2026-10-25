@@ -15,14 +15,16 @@ import java.util.IdentityHashMap;
 final class SandboxModelRenderer {
     private record Model(TextureRegion art,float[][][] parts){}
     private final IdentityHashMap<Block,Model> cache=new IdentityHashMap<>();
+    private final TurretModelRenderer repairHeads=new TurretModelRenderer();
     private final double[] basis=new double[9],movingBasis=new double[9];private Object atlas;private long bytes,builds;
     static boolean supports(Block b){return SandboxModelProfile.forBlock(b)!=null;}
-    long bytes(){return bytes;}long builds(){return builds;}void clear(){cache.clear();atlas=null;bytes=builds=0;}
+    long bytes(){return bytes+repairHeads.bytes();}long builds(){return builds;}void clear(){cache.clear();repairHeads.clear();atlas=null;bytes=builds=0;}
     boolean render(Building b,NativeAtlasMesh.Builder out,float x,float base,float z,float h,float distance,TextureRegion live){
         var p=SandboxModelProfile.forBlock(b.block);if(p==null)return false;if(b.dead||b.health<=0)return true;
         if(!NativeAtlasMesh.valid(b.block.region))return false;
         if(atlas!=Core.atlas){clear();atlas=Core.atlas;}
         var model=cache.get(b.block);if(model==null||model.art!=b.block.region){model=create(p);cache.put(b.block,model);builds++;}
+        if(p.repair())return repairHeads.renderAuxiliary(b,out,x,base,z,h);
         float size=b.block.size;int lod=ManufacturingModelProfile.lod(distance);var a=model.parts[lod];
         SpriteExtrusionGeometry.basis(90+(p.belt()?b.rotdeg():0),0,0,basis);
         out.solidExtrusion(model.art,a[0],x,base,z,size,h,size,basis,true);
@@ -57,6 +59,7 @@ final class SandboxModelRenderer {
         out.top(art,cargo.x()/Vars.tilesize,y,-cargo.y()/Vars.tilesize,width*scale,length*scale,90-cargo.rotation(),1,1,1,false);
     }
     private Model create(SandboxModelProfile p){
+        if(p.repair())return new Model(p.block().region,new float[0][][]);
         float[][][] parts=new float[3][][];
         float u=.14f,v=.14f;var art=p.block().region;
         if(art instanceof TextureAtlas.AtlasRegion region){var pix=Core.atlas.getPixmap(region);if(pix!=null&&!pix.pixmap.isDisposed()){

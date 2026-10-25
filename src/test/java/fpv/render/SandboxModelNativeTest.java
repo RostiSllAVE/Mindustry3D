@@ -16,6 +16,8 @@ public final class SandboxModelNativeTest {
         for(var p:SandboxModelProfile.values()){
             registry.clear();
             var block=p.block();check(block!=null&&SandboxModelRenderer.supports(block),"native definition "+p);block.region=block.fullIcon=art;
+            if(block instanceof mindustry.world.blocks.units.RepairTurret repair)repair.baseRegion=art;
+            Core.atlas.getPixmaps().put(art.texture,pix);
             var raw=SandboxModelGeometry.model(p,0);check(raw==SandboxModelGeometry.model(p,0),"shared immutable geometry");
             check(raw.vertices()>=24,"volumetric model "+p);
             for(int floor:new int[]{0,1,3,5}){

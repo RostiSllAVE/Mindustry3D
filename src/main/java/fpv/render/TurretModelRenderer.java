@@ -8,6 +8,10 @@ import mindustry.Vars;
 import mindustry.entities.part.*;
 import mindustry.world.draw.DrawTurret;
 import mindustry.world.blocks.defense.turrets.Turret;
+import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
+import mindustry.world.blocks.defense.turrets.TractorBeamTurret;
+import mindustry.world.blocks.units.RepairTurret;
+import mindustry.gen.Building;
 import java.util.*;
 
 /** Native draw commands supply origins, mirrors and recoil; cached silhouettes supply volume.
@@ -15,9 +19,9 @@ import java.util.*;
  * No draw callback updates buildings or executes combat. Non-region drawers retain their old path.
  */
 final class TurretModelRenderer {
-    private record Entry(Texture texture,float u,float v,float u2,float v2,int width,int height,SpriteExtrusionGeometry.Result shape,float[] surface){
+    private record Entry(Texture texture,float u,float v,float u2,float v2,int width,int height,SpriteExtrusionGeometry.Result shape,float[] surface,float[] housing){
         boolean matches(TextureRegion r){return texture==r.texture&&u==r.u&&v==r.v&&u2==r.u2&&v2==r.v2&&width==r.width&&height==r.height;}
-        long bytes(){return shape.vertexBytes()+(long)surface.length*Float.BYTES;}
+        long bytes(){return shape.vertexBytes()+((long)surface.length+(housing==null?0:housing.length))*Float.BYTES;}
     }
     private final IdentityHashMap<TextureRegion,Entry> cache=new IdentityHashMap<>();
     private final IdentityHashMap<Turret,Boolean> supported=new IdentityHashMap<>();
@@ -29,6 +33,24 @@ final class TurretModelRenderer {
     int entries(){return cache.size();} long bytes(){return bytes;} long builds(){return builds;}
     int vertices(TextureRegion art){var e=cache.get(art);return e==null?0:e.shape.vertexCount();}
     void clear(){cache.clear();supported.clear();atlas=null;bytes=0;}
+    static boolean auxiliarySupports(mindustry.world.Block block){return block instanceof RepairTurret||block instanceof PointDefenseTurret||block instanceof TractorBeamTurret;}
+    /** Native turret bases and complete head sprites, including the non-combat repair family. */
+    boolean renderAuxiliary(Building build,NativeAtlasMesh.Builder out,float x,float base,float z,float height){
+        TextureRegion foundation;float yaw;
+        if(build instanceof RepairTurret.RepairPointBuild repair){foundation=((RepairTurret)build.block).baseRegion;yaw=repair.rotation;}
+        else if(build instanceof PointDefenseTurret.PointDefenseBuild point){foundation=((PointDefenseTurret)build.block).baseRegion;yaw=point.rotation;}
+        else if(build instanceof TractorBeamTurret.TractorBeamBuild tractor){foundation=((TractorBeamTurret)build.block).baseRegion;yaw=tractor.rotation;}
+        else return false;
+        if(!NativeAtlasMesh.valid(foundation)||!NativeAtlasMesh.valid(build.block.region))return false;
+        if(atlas!=Core.atlas){clear();atlas=Core.atlas;}
+        float depth=Math.min(.38f,Math.max(.10f,build.block.size*.17f)),baseHeight=Math.max(.06f,height-depth*.55f-.035f);
+        SpriteExtrusionGeometry.basis(90,0,0,basis);capture.foundation=true;
+        try{emit(out,foundation,x,base+baseHeight*.5f,z,foundation.width*foundation.scl()/Vars.tilesize,baseHeight,foundation.height*foundation.scl()/Vars.tilesize,basis,1,1,1);}
+        finally{capture.foundation=false;}
+        SpriteExtrusionGeometry.basis(yaw,0,0,basis);var head=build.block.region;
+        emit(out,head,x,base+height+.006f,z,head.width*head.scl()/Vars.tilesize,depth,head.height*head.scl()/Vars.tilesize,basis,1,1,1);
+        return true;
+    }
     boolean supports(Turret type){
         if(atlas!=Core.atlas){clear();atlas=Core.atlas;}
         return supported.computeIfAbsent(type,t->{
@@ -47,7 +69,7 @@ final class TurretModelRenderer {
         var type=(Turret)build.block;if(!supports(type))return false;
         var drawer=(DrawTurret)type.drawer;var profile=TurretModelProfile.forTurret(type);
         float thickness=profile.thickness(type.size),pivot=base+height+.006f;
-        float baseHeight=Math.max(.06f,height-thickness*.55f-.035f);
+        float baseHeight=Math.max(.06f,height-thickness*(.55f+(TurretBodyPolish.selected(type)?TurretBodyPolish.EXTRA:0))-.035f);
         SpriteExtrusionGeometry.basis(90,0,0,basis);
         capture.foundation=true;
         try{emit(out,drawer.base,x,base+baseHeight*.5f,z,drawer.base.width*drawer.base.scl()/Vars.tilesize,baseHeight,
@@ -75,9 +97,9 @@ final class TurretModelRenderer {
         capture.depth=TurretModelProfile.partDepth((Turret)build.block,part,thickness);Draw.color();Draw.mixcol();part.draw(params);
     }
     private void emit(NativeAtlasMesh.Builder out,TextureRegion art,float x,float y,float z,float width,float depth,float length,double[] transform,float r,float g,float b){
-        emit(out,art,x,y,z,width,depth,length,transform,r,g,b,false);
+        emit(out,art,x,y,z,width,depth,length,transform,r,g,b,false,false);
     }
-    private void emit(NativeAtlasMesh.Builder out,TextureRegion art,float x,float y,float z,float width,float depth,float length,double[] transform,float r,float g,float b,boolean surface){
+    private void emit(NativeAtlasMesh.Builder out,TextureRegion art,float x,float y,float z,float width,float depth,float length,double[] transform,float r,float g,float b,boolean surface,boolean housing){
         if(!NativeAtlasMesh.valid(art)||width==0||length==0)return;
         Entry e=cache.get(art);
         if(e==null||!e.matches(art)){
@@ -96,7 +118,7 @@ final class TurretModelRenderer {
             // Thin tip/edge pixels in these native sprites fell below the old 20% coarse-cell
             // coverage gate. Keep the same cached grid/budget, retain cells containing any art.
             boolean retainThin=art instanceof TextureAtlas.AtlasRegion ar&&
-                (ar.name.equals("wave")||ar.name.equals("tsunami")||ar.name.equals("cyclone"));
+                (ar.name.equals("wave")||ar.name.equals("tsunami")||ar.name.equals("cyclone")||ar.name.equals("repair-point")||ar.name.equals("repair-turret")||ar.name.equals("parallax")||ar.name.equals("segment"));
             var shape=retainThin?SpriteExtrusionGeometry.conservative(alpha,art.width,art.height,24,6,32,16380):
                 SpriteExtrusionGeometry.generate(alpha,art.width,art.height,24,6,32,.2,16380);
             // Decals have one cached roof, without coincident bottoms or narrow side walls.
@@ -105,11 +127,12 @@ final class TurretModelRenderer {
             for(int i=0;i<shape.vertices().length;i+=SpriteExtrusionGeometry.STRIDE)if(shape.vertices()[i+4]>.5f){
                 System.arraycopy(shape.vertices(),i,roof,next,SpriteExtrusionGeometry.STRIDE);roof[next+1]=0;next+=SpriteExtrusionGeometry.STRIDE;
             }
-            e=new Entry(art.texture,art.u,art.v,art.u2,art.v2,art.width,art.height,shape,roof);cache.put(art,e);bytes+=e.bytes();builds++;
+            e=new Entry(art.texture,art.u,art.v,art.u2,art.v2,art.width,art.height,shape,roof,null);cache.put(art,e);bytes+=e.bytes();builds++;
         }
+        if(housing&&e.housing==null){var mesh=TurretBodyPolish.shell(e.shape.vertices());e=new Entry(e.texture,e.u,e.v,e.u2,e.v2,e.width,e.height,e.shape,e.surface,mesh);cache.put(art,e);bytes+=(long)mesh.length*4;}
         if(capture.foundation)
             out.seatedExtrusion(art,e.shape.vertices(),x,y,z,width,depth,length,transform,r,g,b);
-        else out.extrusion(art,surface?e.surface:e.shape.vertices(),x,y,z,width,depth,length,transform,r,g,b);
+        else out.extrusion(art,surface?e.surface:housing?e.housing:e.shape.vertices(),x,y,z,width,depth,length,transform,r,g,b);
     }
     private final class Capture extends Batch {
         NativeAtlasMesh.Builder out;Turret.TurretBuild build;float x,z,pivot,pitch,depth,lift;boolean foundation;
@@ -140,7 +163,8 @@ final class TurretModelRenderer {
             if(alpha<.02f)return;
             emit(out,region,x+ca*forward*cp-sa*side+(float)gunBasis[3]*h,pivot+forward*sp+(float)gunBasis[4]*h,
                 z-sa*forward*cp-ca*side+(float)gunBasis[5]*h,width/Vars.tilesize,depth,length/Vars.tilesize,basis,
-                (rgba&255)/255f*alpha,((rgba>>>8)&255)/255f*alpha,((rgba>>>16)&255)/255f*alpha,overlay);
+                (rgba&255)/255f*alpha,((rgba>>>8)&255)/255f*alpha,((rgba>>>16)&255)/255f*alpha,overlay,
+                !overlay&&region==build.block.region&&TurretBodyPolish.selected(build.block));
         }
     }
 }

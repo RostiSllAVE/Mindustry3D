@@ -1,0 +1,111 @@
+{
+  "baselineCommit": "36b0ee495294ed9a0510918d6583d88adcea2c5a",
+  "jarSha256": "eb672bf4b72c59d7e9a44e8feeae08ad0871f87fe2e64948e2da004a14b1cb92",
+  "matchingClasses": 1073,
+  "java17Programs": 209,
+  "java25Programs": 209,
+  "shaderStringsUnchanged": 4,
+  "graphics": {
+    "turret-polish-gpu17": {
+      "status": "PASS",
+      "java": "17.0.20.1",
+      "scenes": 45,
+      "glErrors": 0,
+      "physicalAcceptance": false,
+      "sourceJarSha256": "eb672bf4b72c59d7e9a44e8feeae08ad0871f87fe2e64948e2da004a14b1cb92",
+      "gpuChecks": "PASS 79 auxiliary GPU/healing/cache/rotation/floor checks; PASS: 179 actual GPU checks; seven native turrets, top/side/yaw/55/-35 pitch/recoil/Z0/Z2/world depth, cached atlas stream, no simulated combat changes; 19 silhouettes, 491712 cached CPU bytes, 1 atlas streams"
+    },
+    "turret-polish-gpu25": {
+      "status": "PASS",
+      "java": "25.0.1",
+      "scenes": 45,
+      "glErrors": 0,
+      "physicalAcceptance": false,
+      "sourceJarSha256": "eb672bf4b72c59d7e9a44e8feeae08ad0871f87fe2e64948e2da004a14b1cb92",
+      "gpuChecks": "PASS 79 auxiliary GPU/healing/cache/rotation/floor checks; PASS: 179 actual GPU checks; seven native turrets, top/side/yaw/55/-35 pitch/recoil/Z0/Z2/world depth, cached atlas stream, no simulated combat changes; 19 silhouettes, 491712 cached CPU bytes, 1 atlas streams"
+    },
+    "exhaust-polish-final17": {
+      "status": "PASS",
+      "java": "17.0.20.1",
+      "scenes": 38,
+      "checks": 2310,
+      "glErrors": 0,
+      "physicalAcceptance": false,
+      "sourceJarSha256": "eb672bf4b72c59d7e9a44e8feeae08ad0871f87fe2e64948e2da004a14b1cb92"
+    },
+    "exhaust-polish-final25-cap": {
+      "status": "PASS",
+      "java": "25.0.1",
+      "scenes": 38,
+      "checks": 2310,
+      "glErrors": 0,
+      "physicalAcceptance": false,
+      "sourceJarSha256": "eb672bf4b72c59d7e9a44e8feeae08ad0871f87fe2e64948e2da004a14b1cb92"
+    },
+    "polish-input-api25": {
+      "status": "PASS",
+      "java": "25.0.1",
+      "frames": 90,
+      "viewportWidth": 960,
+      "viewportHeight": 600,
+      "glErrors": 0,
+      "nativeInputApi": "input-api: passed native tile projection, even-size/demolition offsets, native conveyor preview, queue preservation, invalid/UI/focus gates, sky aim, backend delegation, single online 2D movement authority, offline 2D fallback and policy validation",
+      "nativeMotionApi": "passed: actual Unit.update/move/impulse; single integration, native drag baseline, early/late impulses, no duplicate injection, position correction, hold and release",
+      "gpu": "PASS 35 actual GPU/native program/pixel/orientation/color/cache/ownership checks; PASS: 7 GPU checks; native display pixels, canvas texture, framebuffer/depth restore, cache reuse and cleanup",
+      "fpvModeApi": true,
+      "buildModeApi": true,
+      "physicalKeyboardAcceptance": false,
+      "steamHost": false,
+      "dataDirectory": "D:/Linux/Mindustry3-Public/local/standalone-runs/polish-input-api25/data",
+      "sourceJarSha256": "eb672bf4b72c59d7e9a44e8feeae08ad0871f87fe2e64948e2da004a14b1cb92"
+    }
+  },
+  "cpuBenchmarks": {
+    "before1": {
+      "units": 50,
+      "samples": 500,
+      "meanCpuMs": 0.5874328000000001,
+      "medianCpuMs": 0.5506,
+      "p95CpuMs": 0.8967,
+      "engines": 0,
+      "gpuTimeMeasured": false
+    },
+    "after1": {
+      "units": 50,
+      "samples": 500,
+      "meanCpuMs": 0.7938066,
+      "medianCpuMs": 0.7324,
+      "p95CpuMs": 1.1981,
+      "engines": 50,
+      "gpuTimeMeasured": false
+    },
+    "before2": {
+      "units": 50,
+      "samples": 500,
+      "meanCpuMs": 0.6019116,
+      "medianCpuMs": 0.5545,
+      "p95CpuMs": 1.0052,
+      "engines": 0,
+      "gpuTimeMeasured": false
+    },
+    "after2": {
+      "units": 50,
+      "samples": 500,
+      "meanCpuMs": 0.8599004,
+      "medianCpuMs": 0.8182,
+      "p95CpuMs": 1.3743,
+      "engines": 50,
+      "gpuTimeMeasured": false
+    }
+  },
+  "preserved": {
+    "previousArtifacts": 2237,
+    "previousArtifactsChanged": [],
+    "referenceFiles": 98,
+    "referenceFilesChanged": []
+  },
+  "physicalOwnerAcceptance": "NOT TESTED",
+  "physicalLinuxAcceptance": "NOT TESTED",
+  "twoComputerAcceptance": "NOT TESTED",
+  "gpuTimerMeasurements": "NOT MEASURED"
+}

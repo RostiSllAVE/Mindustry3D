@@ -7,12 +7,16 @@ import mindustry.world.blocks.defense.turrets.Turret;
 /** Conservative presentation envelope, separate from authoritative placement/picking bounds. */
 final class BlockVisualBounds {
     static boolean applies(mindustry.world.Block b){
-        return SandboxModelRenderer.supports(b)||LogicModelRenderer.supports(b)||UnitUpgradeRenderer.supports(b)||UnitProductionRenderer.supports(b)||CoreInfrastructureRenderer.supports(b)||b==mindustry.content.Blocks.illuminator||b==mindustry.content.Blocks.impactReactor||
+        return TurretModelRenderer.auxiliarySupports(b)||SandboxModelRenderer.supports(b)||LogicModelRenderer.supports(b)||UnitUpgradeRenderer.supports(b)||UnitProductionRenderer.supports(b)||CoreInfrastructureRenderer.supports(b)||b==mindustry.content.Blocks.illuminator||b==mindustry.content.Blocks.impactReactor||
             b==mindustry.content.Blocks.overdriveProjector||b==mindustry.content.Blocks.phaseWeaver||
             b==mindustry.content.Blocks.wave||b==mindustry.content.Blocks.tsunami||b==mindustry.content.Blocks.cyclone;
     }
     static boolean visible(Camera3D camera,Building b,float x,float base,float z,float h,float visualHeight){
         float radius=Math.max(.5f,b.block.size*.75f),low=base,high=base+Math.max(h,visualHeight)+.04f;
+        if(TurretModelRenderer.auxiliarySupports(b.block)){
+            var art=b.block.region;if(art!=null)radius=Math.max(radius,Math.max(art.width,art.height)*art.scl()/mindustry.Vars.tilesize*.6f);
+            high+=Math.min(.38f,Math.max(.10f,b.block.size*.17f))*.5f;
+        }
         if((UnitUpgradeRenderer.supports(b.block)||UnitProductionRenderer.supports(b.block))&&b instanceof mindustry.world.blocks.units.UnitBlock.UnitBuild factory&&factory.payload!=null){
             // A real outgoing payload can overhang the bay before native release. Keep its
             // capped sprite in the presentation envelope without enlarging collision/picking.

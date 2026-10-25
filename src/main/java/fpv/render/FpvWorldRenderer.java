@@ -198,6 +198,8 @@ public final class FpvWorldRenderer {
     private final SpriteExtrusionRenderer extrusion=new SpriteExtrusionRenderer();
     private final GroundFamilyRenderer groundFamily=new GroundFamilyRenderer();
     private final CreatorFlightVisuals creatorVisuals=new CreatorFlightVisuals();
+    private final FlyingEngineVisuals flyingEngines=new FlyingEngineVisuals();
+    public FlyingEngineVisuals.Stats flyingEngineStats(){return flyingEngines.stats();}
     private final arc.struct.IntSet creatorSubmitted=new arc.struct.IntSet();
     public boolean creatorFlightWasSubmitted(Unit unit){return unit!=null&&buildingFrameCompleted&&creatorSubmitted.contains(unit.id);}
     private java.util.function.Predicate<Unit> creatorFlight=unit->false;
@@ -600,7 +602,7 @@ public final class FpvWorldRenderer {
             constructionRenderer.render(camera,atlasShader);
             CameraPerformanceProfile.end(Part.LAYERS,profiled);
             profiled=CameraPerformanceProfile.start();
-            extrusion.begin();aircraftWeapons.begin();
+            extrusion.begin();aircraftWeapons.begin();flyingEngines.begin();
             boolean groundActive=unitAltitudes!=null&&unitAltitudes.groundFamily()!=null;
             if(groundActive)groundFamily.beginFrame();
             try{for (Unit unit : Groups.unit) renderUnit(unit);}finally{if(groundActive)groundFamily.endFrame();extrusion.end();}
@@ -1036,6 +1038,7 @@ public final class FpvWorldRenderer {
             texturedWall(b.tile,streamAtlas,dynamic,x,z,size,h,false);
             return true;
         }
+        if(turretModels.renderAuxiliary(b,streamAtlas,x,0,z,h))return true;
         if(sandboxModels.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z),logicDisplays.texture(b)))return true;
         if(logicModels.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z),logicDisplays.texture(b)))return true;
         if(unitUpgrades.render(b,streamAtlas,x,0,z,h,camera.position.dst2(x,h*.5f,z)))return true;
@@ -1191,7 +1194,7 @@ public final class FpvWorldRenderer {
         float yaw=controlledPose!=null?(float)controlledPose.yaw():pose==null?unit.rotation:(float)pose.yaw();
         float pitch=controlledPose!=null?(float)controlledPose.pitch():pose==null?0:(float)pose.pitch();
         float roll=controlledPose!=null?(float)controlledPose.roll():pose==null?0:(float)pose.roll();
-        float radius=Math.max(size,SpriteExtrusionRenderer.bodyRadius(unit));
+        float radius=Math.max(Math.max(size,SpriteExtrusionRenderer.bodyRadius(unit)),FlyingEngineVisuals.reach(unit));
         if(family){
             radius=Math.max(radius,(float)GroundFamilyRenderer.horizontalRadius(unit));
             float low=Math.min(h,(float)elevation.heightAt(x,z)),high=h+Math.max(radius,(float)(GroundFamilyRenderer.profileTop(unit,pitch,roll)+fpv.combat.MechWeaponAim3D.upperEnvelope(unit)));
@@ -1205,6 +1208,10 @@ public final class FpvWorldRenderer {
             if(family)groundFamily.renderLimbs(unit,x,h,z,yaw,pitch,roll,camera,environment.ambient(),extrusion,footSurface);
             return;
         }
+        boolean emissive=dynamic.emissive;dynamic.emissive=true;
+        try{flyingEngines.render(unit,x,h,z,yaw,pitch,roll,(float)SpriteExtrusionRenderer.halfDepth(unit),
+            controlledPose==null?unit.vel.len()*60/Vars.tilesize:controlledPose.speed(),camera,combatSink);}
+        finally{dynamic.emissive=emissive;}
         submittedUnitBodies.put(unit.id,unit);
         if(family&&groundFamily.render(unit,x,h,z,yaw,pitch,roll,camera,environment.ambient(),extrusion,footSurface)){aircraftWeapons.render(unit,camera,environment.ambient(),false);return;}
         if(NavalUnitRenderer.supports(unit)){
