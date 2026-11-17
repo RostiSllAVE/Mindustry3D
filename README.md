@@ -16,6 +16,8 @@ I'm developing Mindustry³ to explore familiar factories, units and battles from
 
 The project builds on Mindustry's existing systems. Construction still needs resources and valid support, weapons still use real combat rules, and multiplayer keeps the server authoritative.
 
+(NEW)(NEED LAST VERSION ALPHA V2.0.1)Test server in game: mtdkxa8j.free.tryportwarp.cc:14300
+
 ## Screenshots and gameplay media
 
 <img src="assets/workshop-preview.png" alt="Mindustry³ project artwork" width="320">
