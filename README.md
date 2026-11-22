@@ -1,12 +1,14 @@
 # Mindustry³ — 3D & FPV for Mindustry
 
+(Development terminated)
+
 (!Before you'll read the repository i want to notice you that the entire project is 99% vibe-coded!)
 
 Mindustry³ started with a simple idea: what if I could fly a unit in Mindustry from a first-person perspective, with controls inspired by Liftoff?
 
 What began as an FPV flight experiment gradually became a much larger project: a three-dimensional Mindustry experience with XYZ movement, multi-floor factories, volumetric construction, procedural landscapes and modeled industrial machinery.
 
-**Current candidate:** Alpha 2.0.0 RC1 · **Mod version:** 0.19.0 · **Target game:** Mindustry 160.7.
+**Current candidate:** Alpha 2.0.2 RC1 · **Mod version:** 0.20.140 · **Target game:** Mindustry 160.7.
 
 This is my experimental, fan-made mod, not an official Mindustry release.
 
@@ -48,7 +50,7 @@ You do not need a separate Java installation, a JDK, Python, PowerShell or devel
 
 ### GitHub Releases
 
-1. Open [GitHub Releases](https://github.com/RostiSllAVE/Mindustry3D/releases) and download the mod JAR for the available release you want to install. RC1's filename is `mindustry-fpv-0.19.0.jar`.
+1. Open [GitHub Releases](https://github.com/RostiSllAVE/Mindustry3D/releases) and download the mod JAR for the available release you want to install.
 2. In Mindustry, open **Mods → Import Mod → Import File** and select the JAR.
 3. Accept replacement of an older Mindustry³ installation, then restart the game normally.
 4. Start a map or save and press **F5**. Press **Tab** to enter Build Mode.
